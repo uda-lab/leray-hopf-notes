@@ -1,10 +1,10 @@
 {
   "total_decls": 1412,
-  "annotated": 37,
-  "full": 37,
+  "annotated": 58,
+  "full": 58,
   "gloss": 0,
-  "unannotated": 1375,
-  "pct_annotated": 2.6,
+  "unannotated": 1354,
+  "pct_annotated": 4.1,
   "chapters": {
     "spaces": {
       "label_ja": "関数空間と基本設定",
@@ -20,26 +20,26 @@
     },
     "ode": {
       "label_ja": "Galerkin ODE 系",
-      "annotated": 0,
-      "full": 0,
+      "annotated": 4,
+      "full": 4,
       "gloss": 0
     },
     "energy": {
       "label_ja": "エネルギー恒等式と不等式",
-      "annotated": 5,
-      "full": 5,
+      "annotated": 12,
+      "full": 12,
       "gloss": 0
     },
     "compactness": {
       "label_ja": "コンパクト性（空間・時間）",
-      "annotated": 8,
-      "full": 8,
+      "annotated": 9,
+      "full": 9,
       "gloss": 0
     },
     "limit-passage": {
       "label_ja": "極限移行（非線形項）",
-      "annotated": 2,
-      "full": 2,
+      "annotated": 10,
+      "full": 10,
       "gloss": 0
     },
     "capstone-r3": {
@@ -62,8 +62,8 @@
     },
     "misc": {
       "label_ja": "その他・共通基盤",
-      "annotated": 0,
-      "full": 0,
+      "annotated": 1,
+      "full": 1,
       "gloss": 0
     }
   }
