@@ -1,0 +1,34 @@
+name: LerayHopf.weakFormNS_limit_passage
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の Aubin–Lions 極限 $u$ は、任意の許容テスト対に対して**弱 Navier–Stokes 恒等式**を満たす。すなわち発散ゼロな Schwartz テスト $w$ と、コンパクト台が開区間 $(0,T)$ に含まれる $C^1$ 時間関数 $\psi$ に対して、被積分関数
+
+  $$-\langle u(t),w\rangle\,\psi'(t)+\psi(t)\bigl(\nu\,B(u(t),w)+b(u(t),u(t),w)\bigr)$$
+
+  の $[0,T]$ 上の積分が $0$ になる。ここで $B$ は粘性形式、$b$ は移流形式である。仮定 `htest` は $H^1$ グラフ位相でのテスト近似性であり、非線形項の極限を閉じるために用いる。
+proof_ja: |
+  テスト $y$ を引数とする弱形式汎関数
+
+  $$\Phi(y)=\int_0^T\Bigl(-\langle u(t),y\rangle\,\psi'(t)+\psi(t)\bigl(\nu\,B(u(t),y)+b(u(t),u(t),y)\bigr)\Bigr)\,dt$$
+
+  を考える。各 Galerkin テストの上では[[Galerkin テスト極限の消滅|LerayHopf.weakFormNS_galerkinTest_limit]]により $\Phi$ が消える。
+
+  $\Phi$ は三つのスロットで右線形なので、任意の Galerkin テスト $v$ に対して $\Phi(w)=\Phi(v)+\Phi(w-v)=\Phi(w-v)$ となる。ただし右線形の分解は $u(t)\in H^1$ となる概至る所の $t$ で成り立つ。
+
+  差の評価として、任意の発散ゼロ Schwartz テスト $z$ に対し
+
+  $$\lvert\Phi(z)\rvert\le A\,\lVert z\rVert+B_0\,\sqrt{V(z)}$$
+
+  が成り立つ。運動項は Cauchy–Schwarz と一様評価 $\lVert u(t)\rVert\le\lVert u_0\rVert$、粘性項は粘性形式の絶対値評価、非線形項は移流形式の極限評価による。ここで係数 $A,B_0$ は $u_0$・$\psi$・時刻に依存する定数で、$V$ は粘性散逸の二乗形式である。
+
+  仮定 `htest` は各精度 $1/(k+1)$ で Galerkin テスト $v_k$ を、$\lVert v_k-w\rVert$ と $\sqrt{V(v_k-w)}$ がともに小さくなるように供給する。したがって
+
+  $$\lvert\Phi(w)\rvert=\lvert\Phi(w-v_k)\rvert\ \longrightarrow\ 0$$
+
+  となり、$\Phi(w)=0$ を得る。最後にこれを弱形式の目標へ書き換える。
+gap:
+  level: large
+  note: |
+    右スロット加法性 `stokesTestPairing_R3_sub_right` と `bForm_R3_sub_3` は $u(t)\in H^1$ でしか使えないため、a.e.-$t$ の $H^1$ 所属を経由して積分の等式に持ち込む。極限曲線の時間可測性 `u_aestronglyMeasurable` と `√V(u·)` の可積分性がなければ、`WeakFormNS` の区間積分は非可測な被積分関数に対してゴミの $0$ へ潰れる。テスト近似の原子は $H^1$ グラフ近似性 `htest`（`R3TestApproxH1`）で、これは PR-4 で本命題に入る。issue #4 PR-4 の主要成果物。
+chapter: limit-passage
+tags: [weak-formulation, limit-passage, h1-test-approx]

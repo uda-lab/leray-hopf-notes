@@ -1,0 +1,28 @@
+name: LerayHopf.perTest_lipschitz_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の**各 Galerkin テストに対する等 Lipschitz 評価**。発散ゼロな Schwartz テスト $w$ をレベル $n_0$ に固定し、任意の Galerkin レベル $n\ge n_0$ を取る。このときスカラー対関数 $t\mapsto\langle u_n(t),w\rangle$ は $[0,\infty)$ 上で Lipschitz 連続であり、Lipschitz 定数は
+
+  $$L(w)=\nu\,C_s(w)\,\lVert u_0\rVert+C_b(w)\,\lVert u_0\rVert^2$$
+
+  で与えられる。ここで $C_s(w)$ は粘性形式の評価定数、$C_b(w)$ は移流形式の評価定数であり、$n$ にはよらない。
+proof_ja: |
+  Galerkin 常微分方程式（微分則 $u'$ と ODE 法則）から、スカラー曲線 $t\mapsto\langle u_n(t),w\rangle$ は前進時刻で微分可能であり、その導関数は
+
+  $$-\bigl(\nu\,B(u_n(t),w)+b(u_n(t),u_n(t),w)\bigr)$$
+
+  に等しい。ここで $B$ は粘性（Stokes）形式、$b$ は移流形式である。
+
+  粘性形式は固定元との内積で表せる。負 Laplacian への書き換えと成分随伴により、ある固定元 $v_\ast\in L^2$ が存在して $B(x,w)=\langle v_\ast,x\rangle$ となり、$C_s(w)=\lVert v_\ast\rVert$ と取れる。移流形式は評価定数 $C_b(w)$ による双線形評価
+
+  $$\lvert b(u,v,w)\rvert\le C_b(w)\,\lVert u\rVert\,\lVert v\rVert$$
+
+  をもつ。
+
+  一様ノルム評価 $\lVert u_n(t)\rVert\le\lVert u_0\rVert$ を代入すると、導関数のノルムが $L(w)$ で一様に上から抑えられる。凸集合 $[0,\infty)$ 上の平均値定理により、これが Lipschitz 評価を与える。
+gap:
+  level: mild
+  note: |
+    粘性形式を固定元との内積へ書き換える部分は `stokesTestPairing_R3_eq_sum_inner_negLap` と成分射影の随伴 `L2VF_projComponent_R3.adjoint` を組み合わせる。レベル $n_0$ から $n\ge n_0$ への持ち上げは `𝔊.mono_range`、Schwartz witness の取り出しは `𝔊.range_schwartz` による。導関数評価の平均値定理は `Convex.norm_image_sub_le_of_norm_hasDerivWithin_le`。
+chapter: limit-passage
+tags: [equi-lipschitz, galerkin-test, mean-value]

@@ -1,0 +1,30 @@
+name: LerayHopf.viscous_lsc_under_strongL2
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の Aubin–Lions 極限 $u$ の**粘性散逸の下半連続性とエネルギー類所属**。次の三つが成り立つ。ほとんどすべての $t\in[0,T]$ で $u(t)\in H^1_\sigma$ である。粘性形式 $s\mapsto\nu\,V(u(s))$ は $[0,T]$ 上区間可積分である。そして
+
+  $$\int_0^T\nu\,V(u(s))\,ds\ \le\ \tfrac12\lVert u_0\rVert^2$$
+
+  が成り立つ。ここで $V$ は粘性散逸の二乗形式である。
+proof_ja: |
+  各点での弱 $H^1$ 下半連続性を用いる。ほとんどすべての $t$ で極限 $u(t)$ は $H^1$ に属し、粘性形式について
+
+  $$V(u(t))\ \le\ \liminf_n\,V(u_n(t))$$
+
+  が拡張実数（$[0,\infty]$ 値）の意味で成り立つ。これは Fourier–Plancherel 経由で示される。
+
+  時間について Fatou の補題を適用すると
+
+  $$\int_0^T V(u)\ \le\ \liminf_n\int_0^T V(u_n)$$
+
+  を得る。各近似列は正則性評価から
+
+  $$\int_0^T\nu\,V(u_n)\ \le\ \tfrac12\lVert u_0\rVert^2$$
+
+  を満たすので、右辺は $\tfrac12\lVert u_0\rVert^2$ で抑えられる。可積分性は有限性から従う。
+gap:
+  level: large
+  note: |
+    各点弱 $H^1$ 下半連続性は `viscous_pointwise_lsc` が Fourier–Plancherel 経由（全列・$L^2$ での弱収束、$H^1$ ヒルベルト型や Banach–Alaoglu を使わない）で供給する。時間可測性は `viscousFormSq_aestronglyMeasurable_of_memH1` で、Fatou は `lintegral_liminf_le'`、各近似列の評価は `reg_bound` による。$\nu$ 形と $\nu=1$ 形の間の再スケールは `viscousFormSq_R3_eq_smul`。
+chapter: energy
+tags: [viscous-dissipation, lower-semicontinuity, fatou, energy-class]

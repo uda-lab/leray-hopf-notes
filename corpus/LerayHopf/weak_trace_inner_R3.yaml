@@ -1,0 +1,22 @@
+name: LerayHopf.weak_trace_inner_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の良い代表元 $v$ について、初期値との内積が初期値のノルム二乗へ収束する。すなわち $t\to0^+$ のとき
+
+  $$\langle v(t),u_0\rangle\ \longrightarrow\ \langle u_0,u_0\rangle=\lVert u_0\rVert^2.$$
+
+  ここで $v$ は一様ノルム評価 $\lVert v(t)\rVert\le\lVert u_0\rVert$、端点条件 $v(0)=u_0$、および各 Galerkin テストに対する時間 Lipschitz 連続性をもつと仮定する。
+proof_ja: |
+  $\varepsilon/4$ 分割で示す。まず発散ゼロ部分空間の稠密性により、初期値を近似する Galerkin テスト $w$（$u_0$ の Galerkin 射影 $P_m u_0$）を $\lVert u_0-w\rVert$ が十分小さくなるように取る。
+
+  内積の差を
+
+  $$\langle v(t),u_0\rangle-\lVert u_0\rVert^2=\langle v(t),u_0-w\rangle+\bigl(\langle v(t),w\rangle-\langle v(0),w\rangle\bigr)-\langle v(0),u_0-w\rangle$$
+
+  と分解する（端点条件 $v(0)=u_0$ を用いた）。第一項と第三項は一様評価 $\lVert v(t)\rVert\le\lVert u_0\rVert$ と Cauchy–Schwarz、および $\lVert u_0-w\rVert$ が小さいことから各々 $\varepsilon/4$ 以下になる。中央の項は Galerkin テスト $w$ に対する時間 Lipschitz 連続性から、$t$ が十分小さいとき $\varepsilon/4$ 以下になる。三項を合わせて差が $\varepsilon$ 未満になる。
+gap:
+  level: mild
+  note: |
+    トーラスの `weak_trace_inner`（`TorusTraceEnergy.lean`）の $\mathbb{R}^3$ 版で、`L2Sigma_R3` と `IsGalerkinTest_R3` と `𝔊.tendsto_id` がトーラスの対応物を置き換える。稠密テストの選択は `𝔊.tendsto_id` による初期値での近似列から取る。
+chapter: limit-passage
+tags: [initial-trace, weak-trace, density]

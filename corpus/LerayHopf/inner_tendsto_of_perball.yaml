@@ -1,0 +1,20 @@
+name: LerayHopf.inner_tendsto_of_perball
+tier: full
+statement_ja: |
+  **球ごとの収束から固定方向の内積収束**を導く。点列 $u_n$ と極限 $u$ について、すべての球半径 $k$（自然数）で球制限が $L^2(B_k)$ 収束し、かつ一様ノルム評価 $\lVert u_n\rVert\le M$、$\lVert u\rVert\le M$ が成り立つとする。このとき任意の固定した方向 $e$ に対して
+
+  $$\langle e,u_n\rangle\ \longrightarrow\ \langle e,u\rangle.$$
+proof_ja: |
+  球と裾の $\varepsilon/3$ 分割で示す。まず $e$ の球外の裾のノルム $\lVert e-e|_{B_{k_0}}\rVert$ が $\varepsilon/(3C)$ 未満になる半径 $k_0$ を取る（$C=M+\lVert e\rVert+1$）。
+
+  内積を球部分と裾部分に分ける。球部分は $e$ と $u_n$ の球制限どうしの内積で、球制限の強収束により収束する。裾部分は Cauchy–Schwarz と一様評価から
+
+  $$\lVert e-e|_{B_{k_0}}\rVert\cdot M<\varepsilon/3$$
+
+  で抑えられ、$u_n$ 側・$u$ 側の両方に同じ評価が効く。三つを合わせて内積の差が $\varepsilon$ 未満になる。
+gap:
+  level: mild
+  note: |
+    裾のノルムが半径とともに $0$ へ行くことは `tendsto_norm_tailVF'_zero`、内積の球・裾分解は `inner_eq_ball_add_tail'`、裾内積の評価は `abs_tail_inner_le'` による。この補題は各点弱収束（`weak_tendsto_of_inner_tendsto` 経由）や良い代表元の全時刻弱収束を、球ごとの局所強収束から橋渡しする要となる。
+chapter: compactness
+tags: [weak-convergence, local-compactness, ball-tail-split]

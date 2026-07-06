@@ -1,0 +1,24 @@
+name: LerayHopf.weakFormNS_galerkinTest_limit
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の Aubin–Lions 極限 $u$ に対し、**Galerkin テストに限った弱形式の消滅**が成り立つ。ある射影レベルの不動点となる Galerkin テスト $w$ と、コンパクト台が $(0,T)$ に含まれる $C^1$ 時間関数 $\psi$ に対して、
+
+  $$\int_0^T\Bigl(-\langle u(t),w\rangle\,\psi'(t)+\psi(t)\bigl(\nu\,B(u(t),w)+b(u(t),u(t),w)\bigr)\Bigr)\,dt=0$$
+
+  となる。ここで $B$ は粘性形式、$b$ は移流形式である。
+proof_ja: |
+  近似列 $u_n$ を Galerkin 極限へ抽出された部分列とし、被積分関数 $F_n(t)$ を $u_n$ で作る。$w$ は射影レベルの不動点なので、各 $n$ で近似 ODE をテスト $w$ に対して積分でき、時間微分項を部分積分すると（台が $(0,T)$ の内部にあるため境界項が消え）近似列に対する等式 $\int_0^T F_n=0$ が成り立つ。
+
+  次に $n\to\infty$ を取る。線形項では、粘性形式 $B(x,w)$ を負 Laplacian への書き換えと成分随伴によって固定元 $v_\ast$ との内積 $\langle v_\ast,x\rangle$ に表し、$u_n(t)\rightharpoonup u(t)$ の弱 $L^2$ 収束で移行する。運動項も同様に弱収束で移る。非線形項は[[強 $L^2$ 収束下の移流項の極限|LerayHopf.bForm_tendsto_of_strongL2]]による。
+
+  時間積分の入れ替えは、一様評価 $\lVert u_n(t)\rVert\le\lVert u_0\rVert$ と $\psi,\psi'$ の有界性から得られる定数の優関数を使った優収束定理で正当化する。よって
+
+  $$\int_0^T F_n\ \longrightarrow\ \int_0^T F_\infty$$
+
+  となり、左辺が恒等的に $0$ なので極限も $0$ である。
+gap:
+  level: large
+  note: |
+    粘性形式を固定元 $v_\ast$ との内積へ書き換える部分は `stokesTestPairing_R3_eq_sum_inner_negLap` と成分射影の随伴を組み合わせる。近似列の弱 $L^2$ 収束は球ごとの強収束 `strong_convergence_ae` から `inner_tendsto_of_perball` で得る。優収束の定数優関数は `‖u₀‖` と `ψ` の上限から構成する。
+chapter: limit-passage
+tags: [weak-formulation, galerkin-test, integration-by-parts]

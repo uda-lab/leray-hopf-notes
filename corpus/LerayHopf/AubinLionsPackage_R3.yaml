@@ -1,7 +1,9 @@
 name: LerayHopf.AubinLionsPackage_R3
 tier: full
 statement_ja: |
-  $\mathbb{R}^3$ での Aubin–Lions パッケージ。Galerkin 列でパラメータ化され、抽出部分列、その狭義単調性、極限曲線 $u$、そして**局所的な時空収束**をもつ。局所収束は、すべての球半径 $R$ について $L^2\bigl(0,T;L^2(B_R)\bigr)$ での収束を主張する。
+  $\mathbb{R}^3$ での Aubin–Lions パッケージ。Galerkin 列でパラメータ化され、抽出部分列、その狭義単調性、極限曲線 $u$、その時間可測性、そして**局所的な時空収束**をもつ。
+
+  局所収束は二つの形で担われる。積分形はすべての球半径 $R$ について $L^2\bigl(0,T;L^2(B_R)\bigr)$ での収束を主張し、概至る所形は各 $R$ についてほとんどすべての $t$ で球制限 $u_n(t)|_{B_R}$ が $u(t)|_{B_R}$ へ収束することを主張する。時間可測性は極限曲線の弱可測性のみを課す最小限の時間正則性で、連続性でも Bochner 時間微分でもトレースでもない。
 proof_ja: |
   $\mathbb{R}^3$ では、質量が無限遠へ逃げるため、tightness なしには大域的な強 $L^2$ 収束が偽になる。そこで収束を局所版に再定式化し、[[局所空間コンパクト性|LerayHopf.spatial_compactness_R3]]（局所 Rellich）が支える形にする。
 
@@ -9,6 +11,8 @@ proof_ja: |
 gap:
   level: large
   note: |
-    $\mathbb{R}^3$ に固有の困難で、大域 Rellich の破綻ゆえ収束は局所化される。形式化レビュー当時の公理 `aubin_lions_R3` はその後証明済み定理へ置き換えられ、プロジェクトは追加公理ゼロに到達した。局所収束は tightness を要さず真であり、Schwartz テストの減衰が裾を一様に抑えることで非線形項の極限移行を成立させる。
+    $\mathbb{R}^3$ に固有の困難で、大域 Rellich の破綻ゆえ収束は局所化される。形式化レビュー当時の公理 `aubin_lions_R3` はその後証明済み定理へ置き換えられ（生成子は `aubinLionsPackage_R3_of_timeCompactness`）、プロジェクトは追加公理ゼロに到達した。局所収束は tightness を要さず真であり、Schwartz テストの減衰が裾を一様に抑えることで非線形項の極限移行を成立させる。
+
+    積分形は `eLpNorm` 形（issue #31、owner 承認）で符号化され、旧来の Bochner 区間積分形が非可積分被積分関数に対し `integral_undef` でゴミの `0` へ潰れる空虚問題を避ける。時間可測性 `u_aestronglyMeasurable` は、これがなければ非可測な曲線が弱形式を空虚に満たしうる（区間積分がゴミの `0` へ潰れる）ため、Leray–Hopf 類の Bochner 可測性の半分として不可欠である。
 chapter: compactness
 tags: [aubin-lions, time-compactness, local-compactness, frontier-resolved]

@@ -1,0 +1,22 @@
+name: LerayHopf.galerkinSpaceTimeExtraction_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の**局所時空コンパクト性抽出**。局所空間コンパクト性の入力が与えられたとき、単一の狭義単調な部分列 $\varphi$ と時間可測な極限曲線 $u\colon[0,T]\to L^2_\sigma(\mathbb{R}^3)$ が存在し、**すべての球半径** $R$ について、ほとんどすべての $t\in[0,T]$ で球制限が $L^2(B_R)$ で収束する。すなわち
+
+  $$\Bigl.z_{\varphi(n)}(t)\Bigr|_{B_R}\ \longrightarrow\ \Bigl.u(t)\Bigr|_{B_R}$$
+
+  ここで縦棒は球 $B_R$ への制限を表し、収束は $L^2(B_R)$ のノルムでの収束である。
+proof_ja: |
+  空間方向の局所 Rellich コンパクト性と時間方向の一様連続性（Galerkin 曲線の時間モジュラス）を合わせ、増大する球の族に沿った対角線抽出により、単一の部分列と時間可測な極限曲線を得る。極限曲線は各球半径ごとに概至る所の時刻で球制限が強収束する。
+
+  これは有界領域での Aubin–Lions コンパクト性
+
+  $$L^2(0,T;V)\cap W^{1,q}(0,T;V')\hookrightarrow\hookrightarrow L^2(0,T;H)$$
+
+  の、$\mathbb{R}^3$ における誠実な局所的代替物である。大域的な収束ではなく球ごとの局所収束のみを主張し、tightness を要さない。
+gap:
+  level: large
+  note: |
+    mathlib は Bochner 値の Fréchet–Kolmogorov／Aubin–Lions 定理（$L^2(0,T;X)$ でのコンパクト性）を欠くため、抽出は局所版に限られる。この抽出はかつて二つのより薄い公理 `galerkin_spacetime_precompact_R3` と `galerkin_weakLimit_R3` として分離されていたが（issue #44）、その後証明され、本命題は `u_lim_aestronglyMeasurable` を通じてカーネルのみで閉じる。大域 $L^2$ 主張を一切含まないため `aubin_lions_R3` より真に弱い。
+chapter: compactness
+tags: [aubin-lions, time-compactness, diagonal-extraction, local-compactness]

@@ -1,0 +1,22 @@
+name: LerayHopf.strong_trace_of_props_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の良い代表元 $v$ は、初期値を**強** $L^2_\sigma$ の意味で達成する。すなわち $t\to0^+$ のとき $v(t)\to u_0$ が $L^2_\sigma(\mathbb{R}^3)$ のノルムで成り立つ。
+
+  仮定は一様ノルム評価 $\lVert v(t)\rVert\le\lVert u_0\rVert$、端点条件 $v(0)=u_0$、および各 Galerkin テストに対する時間 Lipschitz 連続性である。
+proof_ja: |
+  [[弱初期トレース|LerayHopf.weak_trace_inner_R3]]により、$t\to0^+$ で内積 $\langle v(t),u_0\rangle$ が $\lVert u_0\rVert^2$ へ収束する。ノルムの展開
+
+  $$\lVert v(t)-u_0\rVert^2=\lVert v(t)\rVert^2-2\langle v(t),u_0\rangle+\lVert u_0\rVert^2$$
+
+  において、一様評価 $\lVert v(t)\rVert^2\le\lVert u_0\rVert^2$ を使うと右辺は
+
+  $$2\lVert u_0\rVert^2-2\langle v(t),u_0\rangle$$
+
+  で上から抑えられ、これは $t\to0^+$ で $0$ へ収束する。したがって $\lVert v(t)-u_0\rVert\to0$ となる。
+gap:
+  level: mild
+  note: |
+    トーラスの `strong_trace_of_props`（`TorusTraceEnergy.lean`）と同一の戦略で、弱トレースと一様ノルム評価を組み合わせてノルム収束へ格上げする。弱収束かつノルム収束が強収束を与えるという Hilbert 空間の標準事実の具体化である。
+chapter: limit-passage
+tags: [initial-trace, strong-trace, energy]

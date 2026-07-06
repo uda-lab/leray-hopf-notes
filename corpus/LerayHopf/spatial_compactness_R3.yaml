@@ -1,0 +1,20 @@
+name: LerayHopf.spatial_compactness_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の**局所空間コンパクト性**。発散ゼロで一様に $L^2$ 有界かつ一様に $H^1$ 有界な点列 $z_n$ が与えられたとき、部分列 $z_{\psi(n)}$ と極限 $g\in L^2_\sigma(\mathbb{R}^3)$ が存在して、**すべての球半径** $R$ について球 $B_R$ 上で $L^2$ 収束する。すなわち
+
+  $$\int_{\lVert x\rVert\le R}\lVert z_{\psi(n)}(x)-g(x)\rVert^2\,dx\ \longrightarrow\ 0.$$
+
+  tightness（無限遠での質量の逃散を抑える仮定）は不要である。
+proof_ja: |
+  Rellich–Kondrachov 定理は $\mathbb{R}^3$ 全体では破綻するが、その局所版であるコンパクト埋め込み
+
+  $$H^1(B_R)\hookrightarrow\hookrightarrow L^2(B_R)$$
+
+  は無条件に成り立つ。証明は Fréchet–Kolmogorov の判定条件から各球でのコンパクト性を導き、増大する球の族に沿った対角線論法で単一の部分列を取り出す。これは Leray が 1934 年に用いた構成そのものである。
+gap:
+  level: large
+  note: |
+    形式化レビュー当時は公理 `spatial_compactness_R3`（AX-SC）だったが、issue #2 で証明済み定理へ反転された（新規公理なし、カーネル公理のみ）。証明は sorry-free な Fréchet–Kolmogorov 連鎖の合成 `localCompactness_R3_of_ballCompact (localRellichInput_of_frechetKolmogorov frechetKolmogorov_holds)` である。命題は旧公理とバイト同一で、消費側（`aubin_lions_R3` の空間スロット）は不変。トーラスの大域 Rellich `rellich_L2Sigma` に対応する $\mathbb{R}^3$ の局所版であり、非有界領域ゆえ収束を球ごとに局所化する点が本質的な相違である。
+chapter: compactness
+tags: [rellich, local-compactness, frechet-kolmogorov, frontier-resolved]
