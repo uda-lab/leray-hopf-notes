@@ -155,6 +155,8 @@ pre.lean {
   tab-size: 2;
 }
 .filemeta { font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted); margin-top: 0.4rem; }
+pre.lean.source { max-height: 32rem; overflow: auto; }
+details.use > summary .filemeta { margin: 0; }
 
 .lean-kw { color: #8a2f6a; font-weight: 600; }
 .lean-cm { color: #7a8a6a; font-style: italic; }

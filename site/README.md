@@ -21,9 +21,12 @@ site/
 ## Build & preview
 
 ```bash
-# from repo root
-python3 scripts/coverage.py            # -> site/data/coverage.json
-python3 scripts/build_site_data.py     # -> site/data/nodes.json (also refreshes coverage)
+# from repo root — embed verbatim Lean source (needs a lean-pde checkout at the PIN commit)
+python3 scripts/build_site_data.py --lean-root /workspaces/lean-pde   # -> site/data/nodes.json
+
+# without a lean-pde checkout, source is omitted (has_source:false) and the proof band
+# falls back to the doc-comment + file:line reference:
+python3 scripts/build_site_data.py                                    # -> site/data/nodes.json
 
 # serve (any static server; no build step, no server-side code)
 cd site && python3 -m http.server 8000
@@ -31,7 +34,10 @@ cd site && python3 -m http.server 8000
 ```
 
 `build_site_data.py` shells out to `coverage.py` by default, so a single invocation
-refreshes both data files. Pass `--no-coverage` to skip that.
+refreshes both data files. Flags: `--no-coverage` (skip coverage refresh),
+`--out <path>` (write nodes.json elsewhere — CI uses this to avoid clobbering the
+committed source-embedded artifact). The committed `site/data/nodes.json` is built
+**with** `--lean-root`, so the site ships the verbatim Lean source per declaration.
 
 ## Data flow
 
@@ -63,3 +69,5 @@ name collisions; corpus join for those is deferred to notes#7).
 - **Empty corpus** — every node renders from extracted metadata with `未注釈` placeholders.
 - **No `decls.json`** — falls back to `names-fallback.json` (skeleton: names/kinds/files,
   no signatures or dependency edges; `has_full_metadata: false`).
+- **No `--lean-root`** — nodes carry no `source` (`has_source: false`); the proof band
+  shows the doc-comment + `file:startLine–endLine` reference instead of the Lean body.

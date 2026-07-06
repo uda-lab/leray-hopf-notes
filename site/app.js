@@ -333,19 +333,31 @@ function renderDecl(app, slug) {
     const leanProof = el('div', { class: 'pane lean' });
     leanProof.appendChild(el('h4', { text: 'Lean 証明本文' }));
     const det = el('details', { class: 'use' });
-    det.appendChild(el('summary', {}, [el('span', { class: 'summary-name', text: 'ソースを表示' })]));
     const inner = el('div', { class: 'use-body' });
-    if (node.doc) {
-      const dp = el('div', { class: 'prose' });
-      dp.style.whiteSpace = 'pre-wrap';
-      dp.textContent = node.doc;
-      inner.appendChild(dp);
+    if (node.has_source && node.source) {
+      // verbatim declaration source (embedded at build time via --lean-root), collapsed by default
+      det.appendChild(el('summary', {}, [
+        el('span', { class: 'summary-name', text: 'ソースを表示' }),
+        el('span', { class: 'filemeta', text: `${node.file}:${node.startLine}–${node.endLine}` }),
+      ]));
+      const wrap = el('div', { class: 'codewrap' });
+      wrap.appendChild(el('pre', { class: 'lean source', html: highlightLean(node.source) }));
+      inner.appendChild(wrap);
+    } else {
+      // fallback: no lean-root at build time — show doc-comment + source location reference
+      det.appendChild(el('summary', {}, [el('span', { class: 'summary-name', text: 'ソース参照' })]));
+      if (node.doc) {
+        const dp = el('div', { class: 'prose' });
+        dp.style.whiteSpace = 'pre-wrap';
+        dp.textContent = node.doc;
+        inner.appendChild(dp);
+      }
+      inner.appendChild(el('p', {
+        class: 'filemeta',
+        text: `このビルドはソース本文を埋め込んでいません（--lean-root なし）。位置: `
+          + `${node.file}:${node.startLine}–${node.endLine}`,
+      }));
     }
-    inner.appendChild(el('p', {
-      class: 'filemeta',
-      text: `本文（タクティク列）の抽出は SubVerso 導入時 (v2) に対応。現状はソース位置のみ: `
-        + `${node.file}:${node.startLine}–${node.endLine}`,
-    }));
     det.appendChild(inner);
     leanProof.appendChild(det);
 

@@ -25,12 +25,21 @@ Join model
     those records are emitted WITHOUT corpus data and listed in a warning. The corpus
     schema has no `file` tiebreaker yet; adding it is deferred to notes#7.
 
+Source embedding
+  With --lean-root <path> (a checkout of lean-pde at the PIN commit), each record's
+  verbatim declaration text (startLine..endLine, exactly as scripts/workpacket.py reads
+  it) is embedded as `source`, with `has_source: true`. Without it (e.g. CI, which has
+  no lean-pde checkout) `source` is omitted and `has_source: false` — the viewer then
+  falls back to the doc-comment + file:line reference. Source text is deterministic
+  given the PIN'd checkout, so committed output stays diff-reviewable.
+
 Determinism: nodes are sorted by slug, edge lists are sorted, and json.dump uses
 sort_keys=True so the committed output diffs cleanly.
 
 Usage:
-    python3 scripts/build_site_data.py
+    python3 scripts/build_site_data.py --lean-root /workspaces/lean-pde
     python3 scripts/build_site_data.py --no-coverage   # skip coverage.py refresh
+    python3 scripts/build_site_data.py --out /tmp/x.json --no-coverage  # CI: don't clobber
 """
 
 import argparse
@@ -194,16 +203,56 @@ def read_pin() -> str:
     return ''
 
 
+class SourceReader:
+    """Read verbatim declaration text from a lean-pde checkout (workpacket.py style:
+    1-based startLine..endLine inclusive). Caches each file's lines. No-op when the
+    lean-root is not provided or a file/range is missing."""
+
+    def __init__(self, lean_root):
+        self.root = Path(lean_root) if lean_root else None
+        self._cache: dict[str, list[str] | None] = {}
+        self.hits = 0
+        self.misses = 0
+
+    def _lines(self, rel_file):
+        if rel_file not in self._cache:
+            path = self.root / rel_file if self.root else None
+            if path and path.is_file():
+                self._cache[rel_file] = path.read_text(encoding='utf-8', errors='replace').splitlines()
+            else:
+                self._cache[rel_file] = None
+        return self._cache[rel_file]
+
+    def source_for(self, rec):
+        if not self.root:
+            return None
+        lines = self._lines(rec.get('file', ''))
+        start, end = rec.get('startLine', 0), rec.get('endLine', 0)
+        if not lines or start < 1 or end < start or end > len(lines):
+            self.misses += 1
+            return None
+        self.hits += 1
+        return '\n'.join(lines[start - 1:end])
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--no-coverage', action='store_true',
                         help='Do not shell out to coverage.py')
+    parser.add_argument('--lean-root', default=None,
+                        help='Path to a lean-pde checkout at the PIN commit; embed verbatim source')
+    parser.add_argument('--out', default=None,
+                        help='Output path for nodes.json (default site/data/nodes.json)')
     args = parser.parse_args()
 
-    records, source, has_decls = load_universe()
+    records, universe_source, has_decls = load_universe()
     if not records:
         sys.exit('ERROR: no name universe (extracted/decls.json or names-fallback.json).')
-    print(f'Universe: {len(records)} records from {source}')
+    print(f'Universe: {len(records)} records from {universe_source}')
+
+    reader = SourceReader(args.lean_root)
+    if args.lean_root:
+        print(f'Embedding source from lean-root: {args.lean_root}')
 
     chapters = load_chapters()
     corpus_by_name = load_corpus()
@@ -254,7 +303,8 @@ def main() -> None:
 
         uses = sorted({id_to_slug[d] for d in r.get('deps', []) if d in id_to_slug})
 
-        nodes_by_slug[slug] = {
+        src = reader.source_for(r)
+        node = {
             'slug': slug,
             'id': r['id'],
             'name': r['name'],
@@ -271,8 +321,12 @@ def main() -> None:
             'usedBy': [],
             'collision': is_collision,
             'capstone': r['name'] in CAPSTONE_NAMES,
+            'has_source': src is not None,
             'corpus': corpus,
         }
+        if src is not None:
+            node['source'] = src
+        nodes_by_slug[slug] = node
 
     # Reverse edges.
     for slug, node in nodes_by_slug.items():
@@ -287,8 +341,10 @@ def main() -> None:
 
     payload = {
         'pin': read_pin(),
-        'source': source,
+        'universe_source': universe_source,
         'has_full_metadata': has_decls,
+        'has_source': reader.hits > 0,
+        'source_count': reader.hits,
         'decl_count': len(nodes),
         'annotated_count': annotated,
         'capstones': sorted(n['slug'] for n in nodes if n['capstone']),
@@ -304,13 +360,15 @@ def main() -> None:
         'nodes': nodes,
     }
 
-    SITE_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = SITE_DATA_DIR / 'nodes.json'
+    out_path = Path(args.out) if args.out else (SITE_DATA_DIR / 'nodes.json')
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, 'w', encoding='utf-8') as f:
         json.dump(payload, f, ensure_ascii=False, indent=2, sort_keys=True)
         f.write('\n')
     print(f'Wrote {out_path} ({out_path.stat().st_size // 1024} KiB, '
-          f'{len(nodes)} nodes, {annotated} annotated)')
+          f'{len(nodes)} nodes, {annotated} annotated, {reader.hits} with source)')
+    if args.lean_root and reader.misses:
+        print(f'  ({reader.misses} records had no readable source range)')
 
     if collisions:
         print(f'Collision groups (corpus join deferred to notes#7): {len(collisions)} '
