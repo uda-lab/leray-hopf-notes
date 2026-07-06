@@ -1,0 +1,20 @@
+name: LerayHopf.bForm_tendsto_of_strongL2
+tier: full
+statement_ja: |
+  **強 $L^2$ 収束の下での移流項の極限移行**。発散ゼロな Schwartz テスト $w$ を固定する。$u_n\to u$ と $v_n\to v$ がともに $\mathbb{R}^3$ 上で強 $L^2$ 収束し一様有界ならば、移流形式が極限に移る。すなわち
+
+  $$b(u_n,v_n,w)\ \longrightarrow\ b(u,v,w).$$
+
+  これは移流形式の Schwartz テストに対する双線形 $L^2$ 連続性（$b$ の第 1・第 2 スロットでの評価）の解析的な帰結である。
+proof_ja: |
+  第 1・第 2 スロットの双線形性で差を分解する。
+
+  $$b(u_n,v_n,w)-b(u,v,w)=b(u_n-u,\,v_n,\,w)+b(u,\,v_n-v,\,w).$$
+
+  固定 Schwartz テスト $w$ に対する双線形 $L^2$ 評価定数 $C$ を取ると、各項は $C\,\lVert u_n-u\rVert\,\lVert v_n\rVert$ および $C\,\lVert u\rVert\,\lVert v_n-v\rVert$ で上から抑えられる。$u_n\to u$、$v_n\to v$ の強収束と一様有界性から両項が $0$ へ収束し、和も $0$ へ収束する。
+gap:
+  level: mild
+  note: |
+    分解にはスロットごとの加法性 `F.b_add_1` と `F.b_add_2`、評価定数は `F.b_bound` による。移流項は非線形項の極限移行で唯一の非自明な部分だが、$w$ が Schwartz（急減少）ゆえ全空間でも強 $L^2$ 連続性で閉じる。
+chapter: limit-passage
+tags: [convection-form, limit-passage, bilinear-continuity]
