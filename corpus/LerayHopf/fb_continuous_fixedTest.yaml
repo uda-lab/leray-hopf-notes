@@ -1,0 +1,22 @@
+name: LerayHopf.fb_continuous_fixedTest
+tier: full
+statement_ja: |
+  移流形式の候補 $b$ について、Schwartz 発散ゼロテスト場 $w$ を固定すると、$(u,v)\mapsto b(u,v,w)$ は $L^2$ で同時連続である。
+proof_ja: |
+  固定した $w$ に対する三線形評価
+
+  $$|b(u,v,w)|\le C_w\lVert u\rVert\,\lVert v\rVert$$
+
+  と、$b$ の各引数についての双線形性を用いる。標準的な有界双線形ならば連続という論法である。
+
+  値の差を
+
+  $$b(u,v,w)-b(u_0,v_0,w)=b(u-u_0,v,w)+b(u_0,v-v_0,w)$$
+
+  と分解し、各項を評価する。近い点では第二引数のノルムが一様に抑えられるので、両項が差のノルムに比例して小さくなり、任意の許容誤差以内に収まる。
+gap:
+  level: mild
+  note: |
+    自然言語では「有界双線形は連続」で済むが、形式化では距離の $\varepsilon$-$\delta$ を明示的に組み、近傍内でのノルム上界 $M$ と刻み幅 $\delta=\min(1,\varepsilon/(2CM+1))$ を手で選ぶ。定数 $C_w$ は正であるよう $|C_b|+1$ に取り直す。
+chapter: limit-passage
+tags: [convection-form, continuity, fixed-test]

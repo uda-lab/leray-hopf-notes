@@ -1,0 +1,16 @@
+name: LerayHopf.schwartzDivFree_dense_of_curlDense
+tier: full
+statement_ja: |
+  Schwartz 回転場の張る空間が発散ゼロ場の空間で稠密であるという前提のもとで、$L^2_\sigma(\mathbb{R}^3)$ の任意の元は[[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]の場の $L^2$ 極限として得られる。
+proof_ja: |
+  前提より、任意の $u\in L^2_\sigma(\mathbb{R}^3)$ は Schwartz 回転場の張る部分空間の閉包に属する。台の空間は距離空間なので、点列で閉包が捉えられ、この部分空間の元からなる近似列 $s_n\to u$ が取れる。
+
+  各 $s_n$ は回転場の有限線形結合であり、回転場は発散ゼロなので $s_n$ も発散ゼロ場の空間に属する。さらに、回転場が Schwartz 成分をもつことと成分表示が加法・スカラー倍で閉じることから、各 $s_n$ は Schwartz 発散ゼロ類に属する。
+
+  最後に、部分空間位相での収束は元の空間での収束から従うので、$s_n\to u$ が発散ゼロ場の空間の中で成り立つ。
+gap:
+  level: mild
+  note: |
+    形式化では、閉包の点列的特徴づけ（`mem_closure_iff_seq_limit`、台の空間が距離空間ゆえ Fréchet–Urysohn）で近似列を取り出し、`Submodule.span_induction` で張る空間の各元が Schwartz 成分をもつことを示す。前提の回転場稠密性 `CurlSchwartzDense` は別途[[証明済み|LerayHopf.curlSchwartzDense_holds]]である。
+chapter: limit-passage
+tags: [schwartz, div-free, density, curl]
