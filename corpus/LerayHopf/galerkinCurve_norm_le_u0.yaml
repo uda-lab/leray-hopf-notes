@@ -1,0 +1,16 @@
+name: LerayHopf.galerkinCurve_norm_le_u0
+tier: full
+statement_ja: |
+  段 $n$ に依らない一様エネルギー評価。Galerkin 解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] の解曲線について、前進時刻 $t\ge 0$ で $\lVert u(t)\rVert\le\lVert u_0\rVert$ が成り立つ。
+proof_ja: |
+  解データのエネルギー評価フィールドから
+
+  $$\tfrac12\lVert u(t)\rVert^2\le\tfrac12\lVert P_n u_0\rVert^2$$
+
+  を得て、射影の非拡大性 $\lVert P_n u_0\rVert\le\lVert u_0\rVert$ と合わせると $\lVert u(t)\rVert^2\le\lVert u_0\rVert^2$、したがって $\lVert u(t)\rVert\le\lVert u_0\rVert$ を得る。
+gap:
+  level: none
+  note: |
+    $n$ に一様な有界性であり、Galerkin 列の弱コンパクト性抽出に使われる。
+chapter: compactness
+tags: [galerkin-approximation, energy-bound]

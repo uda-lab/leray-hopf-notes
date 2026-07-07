@@ -1,0 +1,10 @@
+name: LerayHopf.galerkinSpan_hasOrthogonalProjection
+tier: full
+statement_ja: |
+  各 $n$ について、先頭部分空間 [[先頭部分空間|LerayHopf.galerkinSpan]] $V_n$ は直交射影をもつ。
+gap:
+  level: none
+  note: |
+    有限次元部分空間は完備であり、したがって閉じているから、その上への直交射影が存在する。この明示的なインスタンスは、射影 [[Galerkin 射影|LerayHopf.galerkinP]] の型検査が有限次元性から自動で通ることを保証するために置かれている。
+chapter: projections-galerkin
+tags: [galerkin-scheme, orthogonal-projection]

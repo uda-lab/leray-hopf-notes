@@ -1,0 +1,12 @@
+name: LerayHopf.exists_lerayHopf_from_package_full_R3
+tier: full
+statement_ja: |
+  完全 Galerkin コンパクト性パッケージ [[完全パッケージ|LerayHopf.GalerkinCompactnessPackageFull_R3]] から、Leray–Hopf 解 [[Leray–Hopf 解|LerayHopf.LerayHopfSolutionFull_R3]] の存在が得られる。
+proof_ja: |
+  パッケージの極限曲線を解曲線とし、弱 NS 方程式・エネルギー不等式・初期トレース・エネルギー類・時間可測性の各フィールドを、パッケージの対応する極限フィールドからそのまま供給して解の構造体を組む。
+gap:
+  level: none
+  note: |
+    パッケージが運ぶ極限の性質と Leray–Hopf 解の要求フィールドが一対一に対応するため、組み立ては直接的である。この組み立て定理が主定理 [[R3 主定理|LerayHopf.exists_lerayHopf_r3_axiomatic]] の最後の段になる。
+chapter: capstone-r3
+tags: [leray-hopf, compactness, existence]

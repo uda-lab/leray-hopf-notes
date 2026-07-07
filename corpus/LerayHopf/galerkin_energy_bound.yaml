@@ -1,0 +1,16 @@
+name: LerayHopf.galerkin_energy_bound
+tier: full
+statement_ja: |
+  一様エネルギー評価。Galerkin ODE 入力 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] の解曲線について、前進時刻 $t\ge 0$ で
+
+  $$\tfrac12\lVert u(t)\rVert^2\le\tfrac12\lVert P_n u_0\rVert^2$$
+
+  が成り立つ。
+proof_ja: |
+  エネルギー $E(s)=\tfrac12\lVert u(s)\rVert^2$ の前進時刻での導関数は $-\nu\,V_1(u(s))\le 0$（エネルギー恒等式）だから、$E$ は前進時刻で非増加である。したがって $E(t)\le E(0)$。初期条件 $u(0)=P_n u_0$ から $E(0)=\tfrac12\lVert P_n u_0\rVert^2$ を得て結論する。
+gap:
+  level: none
+  note: |
+    エネルギー恒等式が前進時刻でしか成り立たないため、非増加性も前進時刻に限る。解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] のエネルギー評価フィールドを供給する。
+chapter: ode
+tags: [galerkin-approximation, energy-bound]

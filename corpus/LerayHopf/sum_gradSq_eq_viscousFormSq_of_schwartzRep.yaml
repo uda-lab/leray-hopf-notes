@@ -1,0 +1,20 @@
+name: LerayHopf.sum_gradSq_eq_viscousFormSq_of_schwartzRep
+tier: full
+statement_ja: |
+  勾配エネルギーの Plancherel 恒等式。$L^2$ ベクトル場 $v$ が成分ごとに Schwartz 表現 $\psi$ をもつとき、成分偏微分の $L^2$ 質量の総和が Dirichlet エネルギーに等しい。すなわち
+
+  $$\sum_{i}\sum_{a}\lVert\partial_a\psi_i\rVert_{L^2}^2=V_1(v)$$
+
+  である。$V_1$ は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
+proof_ja: |
+  各成分について微分の Fourier–Plancherel
+
+  $$\lVert\partial_a\psi_i\rVert_{L^2}^2=\int(2\pi)^2\,\xi_a^2\,\lVert\mathcal{F}\psi_i\rVert^2$$
+
+  を用い、方向についての和が $\lVert\xi\rVert^2$ を与えることで $a$ について足し、さらに $i$ について足して粘性散逸を復元する。
+gap:
+  level: none
+  note: |
+    粘性散逸を成分偏微分の $L^2$ 質量の総和として表す等式であり、componentwise の $L^6$ エネルギー類評価の入力になる。方向ごとの Plancherel は本ファイルで新規に再構成している。
+chapter: compactness
+tags: [plancherel, viscous-form, schwartz]

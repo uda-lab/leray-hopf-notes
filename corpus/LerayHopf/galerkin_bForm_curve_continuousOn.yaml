@@ -1,0 +1,12 @@
+name: LerayHopf.galerkin_bForm_curve_continuousOn
+tier: full
+statement_ja: |
+  固定した段 $n$ テスト $w$ に対し、Galerkin 曲線に沿った対角移流積分 $\sigma\mapsto b(u(\sigma),u(\sigma),w)$ は前進時刻 $[0,\infty)$ 上で連続である。$b$ は NS 形式 [[NS 形式|LerayHopf.R3NSForms]] の移流形式である。
+proof_ja: |
+  移流形式の多重線型性で増分を二項に分け、各項を $n$ 一様評価 [[n 一様評価|LerayHopf.bForm_galerkin_abs_le]] で片スロットが増分 $u(\sigma)-u(\sigma_0)$（依然段 $n$）の量として抑える。Galerkin 曲線の $H^1$ 連続性 [[H¹ 連続性|LerayHopf.galerkin_curve_H1_continuousOn]] が増分を $0$ へ駆動するので、両項の和が消え、増分の絶対値を挟み込みで $0$ に収束させて連続性を得る。
+gap:
+  level: none
+  note: |
+    これはペアリングの FTC が要する区間可積分性の入力になる。連続性の強い形を採り、分数冪の連続性を挟み込みで扱っている。
+chapter: compactness
+tags: [trilinear, continuity, galerkin-approximation]

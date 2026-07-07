@@ -1,0 +1,10 @@
+name: LerayHopf.r3Evolution
+tier: full
+statement_ja: |
+  Galerkin スキーム [[Galerkin スキーム|LerayHopf.R3GalerkinScheme]] と NS 形式 [[NS 形式|LerayHopf.R3NSForms]] から、散逸発展 [[散逸発展|LerayHopf.DissipativeEvolution]] を構成する。ピボット空間は発散ゼロ部分空間 $L^2_\sigma(\mathbb{R}^3)$、正則性汎関数は $\nu=1$ の粘性散逸、粘性形式は具体的な粘性ペアリング、移流形式は $b$、テスト述語は標準的な Schwartz 発散ゼロ性である。
+gap:
+  level: none
+  note: |
+    テスト述語に Galerkin テストではなく標準的な Schwartz 発散ゼロ性 [[Schwartz 発散ゼロ性|LerayHopf.IsSchwartzDivFree_R3]] を採ることで、弱 NS 方程式がスキームに依らない全 Schwartz 発散ゼロ類でテストされ、全空間 Leray–Hopf 弱方程式の正しい定式化になる。この構成は Galerkin やコンパクト性のフィールドを持たないため sorry-free である。`@[reducible]` な `noncomputable def` である。
+chapter: energy
+tags: [dissipative-evolution, weak-formulation]

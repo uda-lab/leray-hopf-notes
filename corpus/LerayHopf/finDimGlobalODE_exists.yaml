@@ -1,0 +1,12 @@
+name: LerayHopf.finDimGlobalODE_exists
+tier: full
+statement_ja: |
+  自励的な有限次元 Galerkin ODE の前進大域解が存在する。すなわち有限次元大域 ODE の構造 [[有限次元大域 ODE|LerayHopf.FinDimGlobalODE]] は無条件に空でない。これは Galerkin ODE の背後にあった最後の辺境を、具体スキーム上で解消する。
+proof_ja: |
+  前進大域解の存在（別途構成）から曲線 $c$ とその二つの性質を取り出し、構造の四つのフィールド、すなわち曲線・初期条件・前進微分可能性・自励場方程式を、明示的導関数をもつ微分可能性を導関数の一意性を通して整える形で供給する。
+gap:
+  level: large
+  note: |
+    大域解は、先験球上の一様局所存在時間 [[一様局所存在時間|LerayHopf.galerkinField_uniform_local_time]] で $[0,\infty)$ をタイル貼りし、各タイルの局所解を一意性 [[接合の一致|LerayHopf.galerkinField_solution_agree]] で貼り合わせて構成される。構造が前進時刻構造に整理された（微分可能性・場方程式が $\forall t,\ 0\le t\to$ で量化される）ため、後進時刻の閉じ込めは不要になり、追加の仮説なしに無条件で成立する。これにより $\mathbb{R}^3$ 主定理の Galerkin 近似段が具体スキーム上で公理なしに供給される。
+chapter: ode
+tags: [galerkin-approximation, global-existence, kernel-only]

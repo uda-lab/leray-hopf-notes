@@ -1,0 +1,10 @@
+name: LerayHopf.galerkinODE_vectorField
+tier: full
+statement_ja: |
+  有限次元部分空間 $V_n$ 上の Galerkin ベクトル場 $G_n$ を定める。これは Galerkin 汎関数 [[Galerkin 汎関数|LerayHopf.galerkinODE_functional]] の、有限次元（したがって完備）内積空間 $V_n$ における Riesz 表現ベクトルである。
+gap:
+  level: mild
+  note: |
+    汎関数が $w$ について線型なので、有限次元 $V_n$ 上で自動的に連続であり、Riesz 同型の逆写像が量的な有界性評価を要さずに表現ベクトルを与える。具体スキーム上で働くことが本質的で、$V_n$ の有限次元性は具体的な先頭部分空間でのみ得られる。この $G_n$ が自励的な Galerkin ODE $c'=G_n(c)$ の右辺になる。
+chapter: ode
+tags: [galerkin-approximation, riesz-representation, vector-field]

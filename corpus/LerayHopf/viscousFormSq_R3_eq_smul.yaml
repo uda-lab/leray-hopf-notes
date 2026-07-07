@@ -1,0 +1,12 @@
+name: LerayHopf.viscousFormSq_R3_eq_smul
+tier: full
+statement_ja: |
+  粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] は粘性係数 $\nu$ について線型にスケールする。すなわち $V_\nu(u)=\nu\,V_1(u)$ である。
+proof_ja: |
+  形式の定義に先頭の $\nu$ 倍が現れることから直ちに従う。
+gap:
+  level: none
+  note: |
+    $\nu$ でスケールした散逸評価の被積分関数を、$\nu=1$ でのエネルギー恒等式に関係づけるために使われる補助等式である。
+chapter: ode
+tags: [viscous-form, scaling]

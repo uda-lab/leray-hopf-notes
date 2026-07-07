@@ -1,0 +1,12 @@
+name: LerayHopf.schemeOfBasis_P
+tier: full
+statement_ja: |
+  具体スキーム [[基底からのスキーム|LerayHopf.schemeOfBasis]] の第 $n$ 射影は、定義上、基底の先頭部分空間への直交射影 [[Galerkin 射影|LerayHopf.galerkinP]] に一致する。
+proof_ja: |
+  具体スキームの射影フィールドはまさにこの直交射影として与えられているので、両者は定義上等しい。
+gap:
+  level: none
+  note: |
+    この定義上の一致 `rfl` が、具体スキームの近似部分空間の像が明示的な有限基底をもつという有限次元性を後続の Riesz 構成へ引き渡す蝶番になる。
+chapter: projections-galerkin
+tags: [galerkin-scheme]

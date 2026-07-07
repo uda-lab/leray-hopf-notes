@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_tendsto_id
+tier: full
+statement_ja: |
+  発散ゼロ部分空間 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] の元 $u$ に対し、Galerkin 射影 [[Galerkin 射影|LerayHopf.galerkinP]] の列は恒等写像へ強収束する。すなわち $P_n u\to u$ が $n\to\infty$ で成り立つ。
+proof_ja: |
+  増大する先頭部分空間の列の合併の閉包への直交射影は各点で収束する。$u$ は密度性の仮説 [[Schwartz 発散ゼロ基底|LerayHopf.SchwartzGalerkinBasis]] によりこの閉包に属するから、閉包への射影で固定され、極限は $u$ 自身になる。
+gap:
+  level: mild
+  note: |
+    収束は発散ゼロ部分空間に制限された正直な形で主張される。発散ゼロ基底は $L^2_\sigma(\mathbb{R}^3)$ でのみ全体的であり、$L^2$ 全体では全体的でないため、制限のない形は過剰な主張になる。Lean では合併の閉包への直交射影の各点収束を `starProjection_tendsto_closure_iSup` から得る。
+chapter: projections-galerkin
+tags: [galerkin-scheme, strong-convergence]

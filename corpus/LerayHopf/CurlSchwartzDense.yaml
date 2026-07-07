@@ -1,0 +1,10 @@
+name: LerayHopf.CurlSchwartzDense
+tier: full
+statement_ja: |
+  Schwartz ベクトルポテンシャルの回転 [[curl の L² クラス|LerayHopf.curlSchwartzL2]] が張る空間の $L^2$ 閉包が、発散ゼロ部分空間 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] 全体を含むという命題を、単一の分離された解析的前提として切り出す。これが Helmholtz–Weyl 型の稠密性である。
+gap:
+  level: large
+  note: |
+    これは P5 の基底の稠密性フィールドに対応するが、それより真に薄い。外部から供給される基底族を取り除き、生成集合を構成済みの curl 族 [[curl の L² クラス|LerayHopf.curlSchwartzL2]] としており、Schwartz 性や発散ゼロ性の証拠は運ばず（それらは別途証明される）、素の稠密性、すなわち一本の部分空間包含だけを含む。この事実は mathlib にはなく、当時この段の唯一の解析的辺境だった。のちに [[curl 稠密性の証明|LerayHopf.curlSchwartzDense_holds]] として証明される。
+chapter: projections-galerkin
+tags: [curl-density, helmholtz]

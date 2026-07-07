@@ -1,0 +1,10 @@
+name: LerayHopf.L2VF_ofComponents
+tier: full
+statement_ja: |
+  三つのスカラー $L^2$ 成分から、$L^2$ ベクトル場 [[L² ベクトル場|LerayHopf.L2VF_R3]]、すなわち $L^2(\mathbb{R}^3;\mathbb{R}^3)$ の元を組み立てる。これは成分への射影の逆向きの操作である。
+gap:
+  level: none
+  note: |
+    各スカラー成分を対応する座標方向の基本ベクトルに沿って埋め込み、三つの埋め込みを足し合わせて構成する。埋め込みは $\mathbb{R}$ から $\mathbb{R}^3$ への $t\mapsto t\,e_j$ を $L^2$ 水準へ持ち上げたものである。成分への射影で元の成分がそのまま回収されること（往復同一視）が後続で使われる。
+chapter: spaces
+tags: [l2-vector-field, components]

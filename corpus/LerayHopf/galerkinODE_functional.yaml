@@ -1,0 +1,14 @@
+name: LerayHopf.galerkinODE_functional
+tier: full
+statement_ja: |
+  有限次元部分空間 $V_n$ 上の連続線型汎関数
+
+  $$w\longmapsto-\nu\,\mathrm{stokes}(u,w)-b(u,u,w)$$
+
+  を定める。その Riesz 表現ベクトルが Galerkin ベクトル場になる。粘性ペアリングは [[粘性ペアリング|LerayHopf.stokesTestPairing_R3]]、移流形式は NS 形式 [[NS 形式|LerayHopf.R3NSForms]] の $b$ である。
+gap:
+  level: mild
+  note: |
+    第二引数 $w$ についての線型性は、粘性ペアリングの右スロット線型性（span 元に対して成立）と、移流形式 $b$ の第三スロットの加法性・斉次性から来る。連続性は有限次元 $V_n$ 上では自動である。具体スキーム上で働くことが本質的で、$V_n$ の有限次元性は具体的な先頭部分空間でのみ得られる。
+chapter: ode
+tags: [galerkin-approximation, riesz-representation]

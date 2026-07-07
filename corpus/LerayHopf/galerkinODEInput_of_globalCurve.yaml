@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinODEInput_of_globalCurve
+tier: full
+statement_ja: |
+  自励場方程式 $c'=G_n(c)$ を解く大域曲線 $c\colon[0,\infty)\to V_n$、すなわち残りの辺境 [[有限次元大域 ODE|LerayHopf.FinDimGlobalODE]] から、完全な Galerkin ODE 入力 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] を組み立てる。
+proof_ja: |
+  曲線を発散ゼロ場へ移して入力の解曲線とし、初期条件・部分空間閉じ込め・前進微分可能性はそれぞれ大域 ODE の対応するフィールドから供給する。核心は弱 Galerkin ODE の導出で、自励場方程式 $c'=G_n(c)$ の右辺を Riesz 特徴づけ [[ベクトル場の特徴づけ|LerayHopf.galerkinODE_vectorField_spec]] で弱形式へ変換する。重み付き Fourier 成分曲線の連続性は、連続な線型写像 [[成分の線型写像の連続性|LerayHopf.continuous_weightedFourierComponentₗ]] と連続な Galerkin 曲線の合成として得る。
+gap:
+  level: mild
+  note: |
+    ここで弱形式とベクトル場の対応が弱形式へ流し込まれる。データを運ぶ構造体を返すため `noncomputable def` である。
+chapter: ode
+tags: [galerkin-approximation, weak-formulation]

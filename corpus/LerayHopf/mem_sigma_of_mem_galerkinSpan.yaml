@@ -1,0 +1,12 @@
+name: LerayHopf.mem_sigma_of_mem_galerkinSpan
+tier: full
+statement_ja: |
+  先頭部分空間 [[先頭部分空間|LerayHopf.galerkinSpan]] $V_n$ の元は、$L^2$ ベクトル場として見たとき発散ゼロ、すなわち発散ゼロ部分空間 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] に属する。
+proof_ja: |
+  先頭部分空間が発散ゼロ部分空間に含まれること [[部分空間の包含|LerayHopf.galerkinSpan_le_sigma]] を、その元に適用すればよい。
+gap:
+  level: none
+  note: |
+    $V_n$ の元を移流形式 $b$ の定義域である発散ゼロ場へ引き上げる埋め込みに使われる。
+chapter: ode
+tags: [galerkin-approximation, divergence-free]

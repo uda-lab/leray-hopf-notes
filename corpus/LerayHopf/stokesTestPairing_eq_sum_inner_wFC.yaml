@@ -1,0 +1,16 @@
+name: LerayHopf.stokesTestPairing_eq_sum_inner_wFC
+tier: full
+statement_ja: |
+  粘性ペアリング [[粘性ペアリング|LerayHopf.stokesTestPairing_R3]] の重み分割による双線型展開。$H^1$ の元 $u,w$ に対し
+
+  $$\mathrm{stokes}(u,w)=\sum_{j}\operatorname{Re}\langle W_j(w),W_j(u)\rangle$$
+
+  が成り立つ。$W_j$ は重み付き Fourier 成分 [[重み付き Fourier 成分|LerayHopf.weightedFourierComponent]] である。
+proof_ja: |
+  粘性ペアリングを Fourier 側の重み付き被積分関数として展開し、複素 $L^2$ の内積が第一スロットで共役線型であることを使って、各点でその実部が重み付き Fourier 成分二つの内積の被積分関数に一致することを示す。重みの平方が $(2\pi)^2\lVert\xi\rVert^2$ に等しいことで両者が揃う。
+gap:
+  level: none
+  note: |
+    重み付き Cauchy–Schwarz 評価やペアリングの FTC で使われる、粘性ペアリングを重み付き Fourier 成分の内積和として書き直す補題である。
+chapter: compactness
+tags: [stokes-pairing, weighted-fourier, bilinear]

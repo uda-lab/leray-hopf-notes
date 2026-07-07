@@ -1,0 +1,20 @@
+name: LerayHopf.galerkin_reg_bound
+tier: full
+statement_ja: |
+  一様散逸評価。Galerkin ODE 入力 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] の解曲線について、任意の $T>0$ で
+
+  $$\int_0^T V_\nu(u(t))\,dt\le\tfrac12\lVert u_0\rVert^2$$
+
+  が成り立つ。粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] は既に $\nu$ 因子を含むため右辺は $\nu$ に依存しない。
+proof_ja: |
+  被積分関数が可積分な場合、エネルギー $E(s)=\tfrac12\lVert u(s)\rVert^2$ の負号に対する片側の微積分学の基本定理を適用する。$E$ の前進導関数が $-\nu\,V_1(u)$ であること（エネルギー恒等式）から $\int_0^T V_\nu(u)=E(0)-E(T)$ となる。ここで $E(T)\ge 0$ であり、初期値は射影の非拡大性から
+
+  $$E(0)=\tfrac12\lVert P_n u_0\rVert^2\le\tfrac12\lVert u_0\rVert^2$$
+
+  を満たすので評価が閉じる。可積分でない場合は積分の規約により値が $0$ になり、評価は自明に成り立つ。
+gap:
+  level: none
+  note: |
+    $n$ にも $T$ にも依存しない一様散逸評価であり、解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] の散逸評価フィールドを供給する。片側 FTC は被積分関数の可積分性のみを要求し、導関数側の可積分性は要らない。
+chapter: ode
+tags: [galerkin-approximation, dissipation-bound]

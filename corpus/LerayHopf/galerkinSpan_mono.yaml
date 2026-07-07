@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinSpan_mono
+tier: full
+statement_ja: |
+  先頭部分空間の族 [[先頭部分空間|LerayHopf.galerkinSpan]] は $n$ について単調に増大する。すなわち $n\le m$ ならば $V_n\subseteq V_m$ である。
+proof_ja: |
+  線型包は生成集合について単調だから、先頭 $n$ 個の基底ベクトルの集合が先頭 $m$ 個の集合に含まれること、すなわち $n\le m$ を示せば十分である。これは添字の包含から直ちに従う。
+gap:
+  level: none
+  note: |
+    この入れ子性は、後段で直交射影が下位の部分空間の固定点を保つこと（射影族の入れ子性）を導くのに使われる。
+chapter: projections-galerkin
+tags: [galerkin-scheme]

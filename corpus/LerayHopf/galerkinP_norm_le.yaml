@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_norm_le
+tier: full
+statement_ja: |
+  Galerkin 射影 [[Galerkin 射影|LerayHopf.galerkinP]] は非拡大である。すなわち任意の $u$ に対し $\lVert P_n u\rVert\le\lVert u\rVert$ が成り立つ。
+proof_ja: |
+  直交射影の一般的性質そのものである。直交射影は像の上でノルムを増やさない。
+gap:
+  level: none
+  note: |
+    Galerkin スキームの非拡大性フィールドを供給する。
+chapter: projections-galerkin
+tags: [galerkin-scheme, orthogonal-projection]

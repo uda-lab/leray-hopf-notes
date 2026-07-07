@@ -10,7 +10,7 @@
     "name": {
       "type": "string",
       "description": "Fully-qualified Lean declaration name (matches extracted/names-fallback.json or decls.json).",
-      "pattern": "^[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)*$"
+      "pattern": "^[A-Za-z_Ͱ-￿][A-Za-z0-9_'.Ͱ-￿]*$"
     },
     "tier": {
       "type": "string",

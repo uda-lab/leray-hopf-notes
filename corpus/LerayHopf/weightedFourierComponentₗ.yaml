@@ -1,0 +1,10 @@
+name: LerayHopf.weightedFourierComponentₗ
+tier: full
+statement_ja: |
+  重み付き Fourier 成分 [[重み付き Fourier 成分|LerayHopf.weightedFourierComponent]] を、有限次元 Galerkin 部分空間 $V_n$ 上の $\mathbb{R}$-線型写像として定める。
+gap:
+  level: none
+  note: |
+    線型性は重み付き Fourier 成分の加法性・斉次性から来る（$H^1$ 所属の証拠の取り方には依らない）。有限次元部分空間上の線型写像なので後段で自動的に連続になり、解曲線に沿った成分曲線の連続性を導くのに使われる。
+chapter: ode
+tags: [galerkin-approximation, weighted-fourier]

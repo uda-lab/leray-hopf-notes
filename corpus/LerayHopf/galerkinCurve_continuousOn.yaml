@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinCurve_continuousOn
+tier: full
+statement_ja: |
+  Galerkin 解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] の解曲線 $t\mapsto u(t)$ は前進時刻 $[0,\infty)$ 上で $L^2$ 連続である。
+proof_ja: |
+  解データの前進微分可能性フィールドから、各点で連続性が従う。
+gap:
+  level: none
+  note: |
+    良いサンプリングによる Simon コンパクト性ルートに入る曲線ライブラリの基本項目である。
+chapter: compactness
+tags: [galerkin-approximation, continuity]

@@ -1,0 +1,16 @@
+name: LerayHopf.viscousFormSq_eq_sum_normSq_wFC
+tier: full
+statement_ja: |
+  $\nu=1$ の Dirichlet エネルギー [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] は重み付き Fourier 成分 [[重み付き Fourier 成分|LerayHopf.weightedFourierComponent]] の二乗 $\ell^2$ 質量に等しい。すなわち
+
+  $$V_1(u)=\sum_{j}\lVert W_j(u)\rVert^2$$
+
+  である。
+proof_ja: |
+  粘性散逸を Fourier 側の二乗ノルム積分として表し、各成分ごとの二乗ノルムの公表補題を $j$ について足し合わせて、総和を粘性散逸と同一視する。
+gap:
+  level: none
+  note: |
+    公表された成分和の形はここで初めて与えられる（この等式は他所ではヘッダの散文にしかない）。重み付き Fourier 成分の $\ell^2$ 質量が粘性散逸を制御するという関係が、$H^1$ 連続性やグラフノルム近似の要になる。
+chapter: compactness
+tags: [weighted-fourier, viscous-form, plancherel]

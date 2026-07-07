@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinField_uniform_local_time
+tier: full
+statement_ja: |
+  一様局所存在時間。先験球 $\overline{B}(0,R)\subseteq V_n$ 上で有効な単一の局所存在時間 $\delta>0$ が存在する。すなわち球内の任意の中心 $x_0$ と任意の初期時刻 $t_0$ に対し、$x_0$ から出発する局所解が区間 $(t_0-\delta,t_0+\delta)$ 上に存在する。ベクトル場は [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] である。
+proof_ja: |
+  場は $C^1$ [[場の C¹ 性|LerayHopf.galerkinODE_vectorField_contDiff]] だから、各中心のまわりに一様な存在時間をもつ近傍が取れる。先験球はコンパクトなので有限個のそのような開球で覆え、対応する有限個の存在時間の最小値を $\delta$ とすればよい。自励性から $t_0$ には依存しない。
+gap:
+  level: none
+  note: |
+    Picard–Lindelöf の局所存在ラッパーは import 経路の都合で本ファイルには直接なく、より下層の `IsPicardLindelof.of_contDiffAt_one` から再導出している。コンパクト性から一様時間を取る点がタイル貼り論法の鍵である。
+chapter: ode
+tags: [galerkin-approximation, ode, local-existence]

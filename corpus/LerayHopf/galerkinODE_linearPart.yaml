@@ -1,0 +1,10 @@
+name: LerayHopf.galerkinODE_linearPart
+tier: full
+statement_ja: |
+  Galerkin ベクトル場 [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] の一次部分。有限次元 $V_n$ 上の連続線型写像 $V_n\to V_n$ で、$-\nu\,\mathrm{stokes}$ 項を表す。すなわち粘性汎関数の Riesz 逆写像である。
+gap:
+  level: none
+  note: |
+    粘性ペアリング [[粘性ペアリング|LerayHopf.stokesTestPairing_R3]] の右スロット線型性から連続線型汎関数を作り、Riesz 逆写像と合成する。二次部分 [[二次部分|LerayHopf.galerkinODE_bilinearPart]] とこの一次部分への分解が、場の $C^1$ 性の証明を支える。
+chapter: ode
+tags: [galerkin-approximation, vector-field, linear]

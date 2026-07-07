@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinField_inner_self_nonpos
+tier: full
+statement_ja: |
+  各点での散逸性。$v\in V_n$ に対し Galerkin ベクトル場 [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] は $\langle v,G_n(v)\rangle\le 0$ を満たす。実際には $\langle v,G_n(v)\rangle=-\nu\,V_1(v)$ である。
+proof_ja: |
+  Riesz 特徴づけ [[ベクトル場の特徴づけ|LerayHopf.galerkinODE_vectorField_spec]] を $G_n(v)$ を $v$ でテストして適用する。移流項は $b(v,v,v)=0$（反対称性）で消え、粘性項は対角上で散逸 [[対角の散逸|LerayHopf.stokesTestPairing_R3_diag]] に潰れて $-\nu\,V_1(v)$ が残る。$\nu>0$ と粘性散逸の非負性から非正性が従う。
+gap:
+  level: none
+  note: |
+    これがエネルギーの非増加、ひいては前進時刻の先験ノルム評価を導く各点の散逸恒等式である。
+chapter: ode
+tags: [galerkin-approximation, dissipation, energy]

@@ -1,0 +1,16 @@
+name: LerayHopf.galerkinCurve_energy_identity
+tier: full
+statement_ja: |
+  Galerkin 曲線に沿った積分形のエネルギー恒等式。$0\le a\le b$ に対し
+
+  $$\tfrac12\lVert u(b)\rVert^2-\tfrac12\lVert u(a)\rVert^2=-\int_a^b V_\nu(u(\sigma))\,d\sigma$$
+
+  が成り立つ。粘性散逸形式は [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] である。
+proof_ja: |
+  曲線に沿った微分形のエネルギー恒等式、すなわちエネルギー $\tfrac12\lVert u(\sigma)\rVert^2$ が前進導関数 $-V_\nu(u(\sigma))$ をもつことを、弱形式を対角テスト $w=u(\sigma)$ に適用し移流項を反対称性で消して得る。この導関数が曲線に沿った散逸の連続性 [[散逸の連続性|LerayHopf.galerkin_viscous_curve_continuousOn]] から連続で可積分なので、微積分学の基本定理で積分形に持ち上げる。
+gap:
+  level: none
+  note: |
+    微分形のエネルギー恒等式（Galerkin ODE 入力上のもの）を積分したもので、名前が衝突するため別名を与えてある。内容は同じである。
+chapter: energy
+tags: [galerkin-approximation, energy-identity]

@@ -1,0 +1,10 @@
+name: LerayHopf.instSecondCountable_L2C_R3
+tier: full
+statement_ja: |
+  複素値 $L^2$ 空間 $L^2(\mathbb{R}^3;\mathbb{C})$ は第二可算である。したがって可分でもある。
+gap:
+  level: none
+  note: |
+    底の測度が可分測度であり値空間 $\mathbb{C}$ が第二可算であることから、$L^p$ 空間の第二可算性が従う。ただし複素 $L^p$ インスタンスには指数が有限であるという事実（`Fact ((2:ℝ≥0∞) ≠ ⊤)`）を局所的に供給する必要がある。この可分性は、後段で $H^1$ グラフ空間の可分性を有限積として組み立てるために使われる。
+chapter: spaces
+tags: [separability, second-countable]

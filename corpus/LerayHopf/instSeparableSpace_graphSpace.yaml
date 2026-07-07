@@ -1,0 +1,10 @@
+name: LerayHopf.instSeparableSpace_graphSpace
+tier: full
+statement_ja: |
+  $H^1$ グラフ空間、すなわち $L^2$ ベクトル場 [[L² ベクトル場|LerayHopf.L2VF_R3]] と三成分の複素 $L^2$ 空間との直積は可分である。
+gap:
+  level: none
+  note: |
+    第二可算空間の有限直積は第二可算であり、したがって可分である。各因子の第二可算性は、$L^2$ ベクトル場側と複素 $L^2$ 因子側（[[複素 L² の第二可算性|LerayHopf.instSecondCountable_L2C_R3]]）から得る。このグラフ空間の可分性が、$H^1$ グラフノルムで稠密な可算 curl 族を分離性から抽出する際の土台になる。
+chapter: spaces
+tags: [separability, second-countable]

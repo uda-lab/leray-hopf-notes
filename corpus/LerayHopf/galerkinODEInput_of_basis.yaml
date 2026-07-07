@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinODEInput_of_basis
+tier: full
+statement_ja: |
+  Schwartz 発散ゼロ基底 [[Schwartz 発散ゼロ基底|LerayHopf.SchwartzGalerkinBasis]] $B$（具体スキーム [[基底からのスキーム|LerayHopf.schemeOfBasis]]）と、有限次元大域存在の辺境 [[有限次元大域 ODE|LerayHopf.FinDimGlobalODE]] から、Galerkin ODE 入力 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] を構成する。
+proof_ja: |
+  大域曲線からの組み立て [[大域曲線からの入力|LerayHopf.galerkinODEInput_of_globalCurve]] をそのまま適用する薄い包みである。
+gap:
+  level: none
+  note: |
+    これは弱形式とベクトル場の対応を有限次元 Riesz 場を経由して公理を用いず片付けたもので、大域存在の穴だけが辺境として分離されたまま残る。データを運ぶため `noncomputable def` である。
+chapter: ode
+tags: [galerkin-approximation, ode]

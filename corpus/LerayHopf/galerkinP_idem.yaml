@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_idem
+tier: full
+statement_ja: |
+  Galerkin 射影 [[Galerkin 射影|LerayHopf.galerkinP]] は冪等である。すなわち $P_n(P_n u)=P_n u$ が成り立つ。
+proof_ja: |
+  直交射影は冪等作用素であり、二度施しても像の上ではもう動かない。この一般的事実を各点 $u$ に適用する。
+gap:
+  level: none
+  note: |
+    Galerkin スキームの冪等性フィールドを供給する。
+chapter: projections-galerkin
+tags: [galerkin-scheme, orthogonal-projection]

@@ -1,0 +1,20 @@
+name: LerayHopf.energy_hasDerivAt_of_localSolution
+tier: full
+statement_ja: |
+  自励方程式 $c'=G_n(c)$ の任意の局所解 $c$ に沿って、エネルギー $\tfrac12\lVert c(t)\rVert^2$ は導関数 $-\nu\,V_1(c(t))\le 0$ をもつ。ベクトル場は [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] である。
+proof_ja: |
+  エネルギーを $\tfrac12\langle c(s),c(s)\rangle$ と書き直し、内積の微分則で導関数
+
+  $$\tfrac12\bigl(\langle c(t),c'\rangle+\langle c',c(t)\rangle\bigr)$$
+
+  を得る。ここで $c'=G_n(c(t))$ を代入し、内積の対称性と各点散逸の等式形
+
+  $$\langle c(t),G_n(c(t))\rangle=-\nu\,V_1(c(t))$$
+
+  （[[各点散逸|LerayHopf.galerkinField_inner_self_nonpos]]）を用いて $-\nu\,V_1(c(t))$ に潰す。
+gap:
+  level: none
+  note: |
+    各点散逸恒等式 [[各点散逸|LerayHopf.galerkinField_inner_self_nonpos]] の局所版で、局所解に沿ったエネルギーの単調性を与える。前進時刻の先験ノルム評価の起点になる。
+chapter: ode
+tags: [galerkin-approximation, energy, local-solution]

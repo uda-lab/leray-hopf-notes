@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_mono_range
+tier: full
+statement_ja: |
+  Galerkin 射影 [[Galerkin 射影|LerayHopf.galerkinP]] の像は入れ子になっている。すなわち $m\le n$ のとき、$P_m$ で固定される点 $w$（$P_m w=w$）は $P_n$ でも固定される。
+proof_ja: |
+  $P_m w=w$ から $w$ は先頭部分空間 $V_m$ に属する。先頭部分空間は単調に増大するので $w\in V_n$ でもある。直交射影は自らの射影先の部分空間の点を固定するから、$P_n w=w$ を得る。
+gap:
+  level: none
+  note: |
+    Galerkin スキームの部分空間入れ子性フィールドを供給する。この入れ子性は、Galerkin テストが一度ある段の射影で固定されれば以降の段でも固定されることを保証し、テスト関数の取り扱いを単純化する。
+chapter: projections-galerkin
+tags: [galerkin-scheme, orthogonal-projection]

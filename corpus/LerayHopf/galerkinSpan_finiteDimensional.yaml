@@ -1,0 +1,10 @@
+name: LerayHopf.galerkinSpan_finiteDimensional
+tier: full
+statement_ja: |
+  各 $n$ について、先頭部分空間 [[先頭部分空間|LerayHopf.galerkinSpan]] $V_n$ は有限次元である。
+gap:
+  level: none
+  note: |
+    有限個のベクトルの線型包であることから、`FiniteDimensional.span_of_finite` により直ちに有限次元性が得られる。この有限次元性は、抽象 Galerkin スキームには露わでない一方、Riesz 表現による有限次元ベクトル場の構成と自動連続性を後段で可能にする鍵になる。
+chapter: projections-galerkin
+tags: [galerkin-scheme, finite-dimensional]

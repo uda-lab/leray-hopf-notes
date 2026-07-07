@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_range_schwartz
+tier: full
+statement_ja: |
+  Galerkin 射影 [[Galerkin 射影|LerayHopf.galerkinP]] の像は成分ごとに Schwartz 表現をもつ。すなわち $P_n u$ の各成分は、ある Schwartz 関数の $L^2$ クラスに一致する。
+proof_ja: |
+  $P_n u$ は先頭部分空間 $V_n$ に属するので、その部分空間の元に対する帰納法で成分 Schwartz 性を伝播させる。基底の各生成元は成分 Schwartz であり（基底の性質）、この性質は零・和・スカラー倍で閉じる。したがって $V_n$ の任意の元へ伝わる。証明は終始、成分の射影が Schwartz 関数の $L^2$ クラスに等しいという水準で進み、ベクトル値 Schwartz 関数を構成する必要はない。
+gap:
+  level: mild
+  note: |
+    Galerkin スキームの成分 Schwartz な像フィールドを供給する。伝播は部分空間所属についての帰納法（`Submodule.span_induction`）で行い、成分ごとに Schwartz の $L^2$ クラスへの変換を保つ。この成分 Schwartz 性は、後段で各 Galerkin 状態の $H^1$ 正則性や三線型評価に用いられる。
+chapter: projections-galerkin
+tags: [galerkin-scheme, schwartz]
