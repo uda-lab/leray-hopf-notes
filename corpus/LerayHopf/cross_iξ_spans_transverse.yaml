@@ -1,0 +1,16 @@
+name: LerayHopf.cross_iξ_spans_transverse
+tier: full
+statement_ja: |
+  $\xi\neq 0$ のとき、$\xi$ に直交する任意の横型ベクトル $b$（$\sum_j\xi_j b_j=0$）は回転記号として実現できる。すなわち外積 $2\pi i\,\xi\times a=b$ を満たす $a\in\mathbb{C}^3$ が存在する。言い換えると写像 $a\mapsto \xi\times a$ の像は $\xi$ の直交補空間 $\xi^\perp$ にちょうど一致する。
+proof_ja: |
+  三次元の外積の線形代数である。$\xi\neq 0$ のとき $N=\lVert\xi\rVert^2>0$ であり、横型ベクトル $b$ に対して逆像を明示的に
+
+  $$a=\frac{\xi\times b}{2\pi i\,\lVert\xi\rVert^2}$$
+
+  と与えられる。これを外積の巡回添字表示に代入し、横型条件 $\sum_j\xi_j b_j=0$ を使って各成分を計算すると $2\pi i\,\xi\times a=b$ が確かめられる。
+gap:
+  level: mild
+  note: |
+    有限次元だが、外積の巡回添字表示に沿った各成分の計算は帳尻合わせで、横型条件を成分ごとに `linear_combination` で流し込んで閉じる。分母が非零であることは $\lVert\xi\rVert^2>0$ から従う。
+chapter: spaces
+tags: [curl, helmholtz, transverse, linear-algebra]
