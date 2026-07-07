@@ -1,0 +1,8 @@
+name: LerayHopf.mulBdd
+tier: full
+statement_ja: |
+  本質的有界な実乗数 $m$ による**有界乗数作用素**を、二乗可積分関数 $g$ を積 $\xi\mapsto m(\xi)\,g(\xi)$ の定める $L^2$ 元へ送る写像として定義する。有界乗数は $L^2$ を $L^2$ の内側に保つので、この作用素は $L^2$ 上で意味をもつ。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator, fourier-multiplier]

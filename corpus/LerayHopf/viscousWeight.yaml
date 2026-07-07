@@ -1,0 +1,12 @@
+name: LerayHopf.viscousWeight
+tier: full
+statement_ja: |
+  粘性形式のスペクトル荷重を、周波数 $\xi$ に対して次の値をとる関数として定める。
+
+  $$W(\xi)=(2\pi)^2\lVert\xi\rVert^2$$
+
+  これは粘性散逸 $\nu\lVert\nabla u\rVert^2$ を Fourier 側で表したときに各周波数へかかる乗数であり、勾配の二乗が周波数の二乗ノルムに対応することを反映している。
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, fourier-multiplier, spectral-weight]

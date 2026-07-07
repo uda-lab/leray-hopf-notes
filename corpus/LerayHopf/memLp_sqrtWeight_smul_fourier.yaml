@@ -1,0 +1,20 @@
+name: LerayHopf.memLp_sqrtWeight_smul_fourier
+tier: full
+statement_ja: |
+  発散ゼロ速度場 $w$ が $H^1$ に属するとき、その第 $j$ 成分の Fourier 変換に平方根乗数を掛けた関数
+
+  $$\xi\mapsto\sqrt{W}(\xi)\,\widehat{w_j}(\xi)$$
+
+  は二乗可積分、すなわち $L^2$ に属する。
+proof_ja: |
+  平方根乗数は連続、Fourier 変換の像は可測なので、その積は可測である。二乗ノルムを計算すると
+
+  $$\bigl\lVert\sqrt{W}(\xi)\,\widehat{w_j}(\xi)\bigr\rVert^2=(2\pi)^2\lVert\xi\rVert^2\,\bigl\lVert\widehat{w_j}(\xi)\bigr\rVert^2$$
+
+  となり、右辺はまさに粘性散逸のスペクトル被積分関数である。$w$ が $H^1$ に属することから、この被積分関数の可積分性が[[粘性スペクトル被積分関数の可積分性|LerayHopf.integrable_viscous_integrand_of_memH1]]によって保証される。二乗ノルムが可積分な可測関数は $L^2$ に属する。
+gap:
+  level: mild
+  note: |
+    二乗可積分性は `memLp_two_iff_integrable_sq_norm` により二乗ノルムの可積分性へ言い換え、被積分関数の一致は概至る所の書き換えで処理する。平方根乗数を複素係数として作用させるため、`norm_smul` と実部の絶対値二乗の展開が挟まる。
+chapter: compactness
+tags: [viscous-form, fourier-multiplier, sobolev]

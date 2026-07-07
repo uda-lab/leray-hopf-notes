@@ -1,0 +1,12 @@
+name: LerayHopf.weightedFourierComponent
+tier: full
+statement_ja: |
+  $H^1$ に属する発散ゼロ速度場 $w$ の第 $j$ **荷重付き Fourier 成分**を、平方根乗数を掛けた Fourier 変換
+
+  $$\xi\mapsto\sqrt{W}(\xi)\,\widehat{w_j}(\xi)$$
+
+  が定める $L^2$ 元として定義する。これにより粘性形式が荷重付き成分の Hilbert ノルム二乗の総和として表され、粘性項を素朴な二次形式として扱えるようになる。
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, fourier-multiplier, sobolev]

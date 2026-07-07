@@ -1,0 +1,16 @@
+name: LerayHopf.norm_mulBdd_le
+tier: full
+statement_ja: |
+  乗数 $m$ が定数 $C\ge 0$ で一様に $\lvert m\rvert\le C$ と抑えられるとき、有界乗数作用素は作用素ノルム $C$ で有界である。
+
+  $$\lVert m\cdot g\rVert\le C\,\lVert g\rVert$$
+proof_ja: |
+  像のノルム二乗は $\int m(\xi)^2\lVert g(\xi)\rVert^2\,d\xi$ に等しい。各点で $m(\xi)^2\le C^2$ が成り立つので、被積分関数を単調性で押さえると
+
+  $$\lVert m\cdot g\rVert^2\le C^2\int\lVert g(\xi)\rVert^2\,d\xi=(C\lVert g\rVert)^2$$
+
+  となる。両辺は非負なので平方根をとれば主張が従う。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator, operator-norm]

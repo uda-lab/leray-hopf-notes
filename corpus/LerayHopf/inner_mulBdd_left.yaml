@@ -1,0 +1,16 @@
+name: LerayHopf.inner_mulBdd_left
+tier: full
+statement_ja: |
+  実乗数による有界乗数作用素は自己随伴である。すなわち内積のどちら側に作用させても同じ値を与える。
+
+  $$\langle c,\,m\cdot g\rangle=\langle m\cdot c,\,g\rangle$$
+proof_ja: |
+  内積は被積分関数 $\overline{c(\xi)}\,(m\cdot g)(\xi)$ の積分である。乗数 $m$ は実数値なのでその複素共役は自分自身に等しく、点ごとに次の書き換えができる。
+
+  $$\overline{c(\xi)}\,m(\xi)\,g(\xi)=\overline{m(\xi)\,c(\xi)}\,g(\xi)$$
+
+  右辺は $\langle m\cdot c,g\rangle$ の被積分関数であり、積分して等式を得る。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator, self-adjoint]

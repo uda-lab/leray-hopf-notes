@@ -1,0 +1,12 @@
+name: LerayHopf.mulBdd_smul
+tier: full
+statement_ja: |
+  有界乗数作用素は実スカラー倍と可換である。
+
+  $$m\cdot(r\,g)=r\,(m\cdot g)$$
+proof_ja: |
+  点ごとに乗数 $m(\xi)$ とスカラー $r$ の掛ける順序を入れ替えるだけで、両辺は概至る所一致し、$L^2$ 元として等しい。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator, linearity]

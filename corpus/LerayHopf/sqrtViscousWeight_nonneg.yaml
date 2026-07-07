@@ -1,0 +1,10 @@
+name: LerayHopf.sqrtViscousWeight_nonneg
+tier: full
+statement_ja: |
+  平方根乗数 $\sqrt{W}(\xi)=2\pi\lVert\xi\rVert$ は各周波数で非負である。
+proof_ja: |
+  $2\pi$ もノルム $\lVert\xi\rVert$ も非負であり、その積は非負だからである。
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, spectral-weight]

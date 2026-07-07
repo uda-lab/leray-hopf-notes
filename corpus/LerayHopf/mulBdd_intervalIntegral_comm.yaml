@@ -1,0 +1,14 @@
+name: LerayHopf.mulBdd_intervalIntegral_comm
+tier: full
+statement_ja: |
+  区間 $[a,b]$ 上で積分可能な $L^2$ 値の曲線 $G$ に対し、有界乗数作用素は Bochner 区間積分と交換する。
+
+  $$m\cdot\!\int_a^b G(s)\,ds=\int_a^b m\cdot G(s)\,ds$$
+proof_ja: |
+  両辺を任意の元 $c$ との内積で試験する。乗数の自己随伴性により、左辺と $c$ の内積は、乗数を $c$ 側へ移した $m\cdot c$ と積分との内積に等しい。内積は連続線形汎関数だから Bochner 区間積分の内側へ引き込め、被積分関数 $\langle m\cdot c,G(s)\rangle$ の区間積分になる。ふたたび自己随伴性を各点で使うとこれは $\langle c,m\cdot G(s)\rangle$ に等しく、その区間積分は右辺と $c$ の内積に一致する。すべての $c$ について内積が一致するので両辺は等しい。
+gap:
+  level: mild
+  note: |
+    内積を Bochner 積分の内外へ移す操作は、実係数へ制限した連続線形汎関数 `innerSL` の `intervalIntegral_comp_comm` による。有界乗数に限定するのは、非有界な $\sqrt{W}$ に対してはこの交換が直接には使えず、截断・優収束の極限として別に処理するためである。
+chapter: compactness
+tags: [multiplier-operator, bochner-integral, commute]
