@@ -1,39 +1,39 @@
 {
   "total_decls": 1412,
-  "annotated": 95,
-  "full": 95,
+  "annotated": 171,
+  "full": 171,
   "gloss": 0,
-  "unannotated": 1317,
-  "pct_annotated": 6.7,
+  "unannotated": 1241,
+  "pct_annotated": 12.1,
   "chapters": {
     "spaces": {
       "label_ja": "関数空間と基本設定",
-      "annotated": 15,
-      "full": 15,
+      "annotated": 20,
+      "full": 20,
       "gloss": 0
     },
     "projections-galerkin": {
       "label_ja": "Galerkin 射影と基底",
-      "annotated": 16,
-      "full": 16,
+      "annotated": 37,
+      "full": 37,
       "gloss": 0
     },
     "ode": {
       "label_ja": "Galerkin ODE 系",
-      "annotated": 9,
-      "full": 9,
+      "annotated": 38,
+      "full": 38,
       "gloss": 0
     },
     "energy": {
       "label_ja": "エネルギー恒等式と不等式",
-      "annotated": 16,
-      "full": 16,
+      "annotated": 18,
+      "full": 18,
       "gloss": 0
     },
     "compactness": {
       "label_ja": "コンパクト性（空間・時間）",
-      "annotated": 14,
-      "full": 14,
+      "annotated": 30,
+      "full": 30,
       "gloss": 0
     },
     "limit-passage": {
@@ -44,8 +44,8 @@
     },
     "capstone-r3": {
       "label_ja": "R3 主定理",
-      "annotated": 2,
-      "full": 2,
+      "annotated": 5,
+      "full": 5,
       "gloss": 0
     },
     "capstone-torus": {
