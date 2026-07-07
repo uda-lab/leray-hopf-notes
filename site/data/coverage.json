@@ -1,16 +1,16 @@
 {
   "total_decls": 1412,
-  "annotated": 250,
-  "full": 250,
-  "gloss": 0,
-  "unannotated": 1162,
-  "pct_annotated": 17.7,
+  "annotated": 334,
+  "full": 329,
+  "gloss": 5,
+  "unannotated": 1078,
+  "pct_annotated": 23.7,
   "chapters": {
     "spaces": {
       "label_ja": "関数空間と基本設定",
-      "annotated": 37,
-      "full": 37,
-      "gloss": 0
+      "annotated": 79,
+      "full": 74,
+      "gloss": 5
     },
     "projections-galerkin": {
       "label_ja": "Galerkin 射影と基底",
@@ -26,14 +26,14 @@
     },
     "energy": {
       "label_ja": "エネルギー恒等式と不等式",
-      "annotated": 18,
-      "full": 18,
+      "annotated": 19,
+      "full": 19,
       "gloss": 0
     },
     "compactness": {
       "label_ja": "コンパクト性（空間・時間）",
-      "annotated": 30,
-      "full": 30,
+      "annotated": 71,
+      "full": 71,
       "gloss": 0
     },
     "limit-passage": {
