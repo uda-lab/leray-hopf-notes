@@ -1,0 +1,10 @@
+name: LerayHopf.L2VF_R3_separable
+tier: full
+statement_ja: |
+  速度場の空間 $L^2(\mathbb{R}^3;\mathbb{R}^3)$ は可分である。すなわち可算な稠密部分集合をもつ。
+proof_ja: |
+  空間領域 $\mathbb{R}^3$ は第二可算な Borel 空間なので可算生成であり、その上の Lebesgue 測度は $\sigma$-有限である。したがって測度は可分であり、値域の Euclid 空間も有限次元ゆえ可分である。可分な測度と可分な値域から $L^2$ 空間は第二可算になり、第二可算な空間は可分である。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, separability]

@@ -1,0 +1,8 @@
+name: LerayHopf.L2VF_projComponent_R3
+tier: full
+statement_ja: |
+  速度場 $u\in L^2(\mathbb{R}^3;\mathbb{R}^3)$ の第 $j$ 実成分を、実スカラー二乗可積分空間の元として取り出す連続線形作用素。各点で第 $j$ 座標を取る連続射影を $L^2$ レベルへ持ち上げたものである。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, projection]

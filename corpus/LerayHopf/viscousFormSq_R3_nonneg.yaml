@@ -1,0 +1,12 @@
+name: LerayHopf.viscousFormSq_R3_nonneg
+tier: full
+statement_ja: |
+  粘性係数 $\nu\ge 0$ のとき、[[粘性散逸の二乗形式|LerayHopf.viscousFormSq_R3]]は非負である。
+
+  $$0\le V_\nu(u)$$
+proof_ja: |
+  粘性散逸の二乗形式は、非負の係数 $\nu$ に、スペクトル荷重 $(2\pi)^2\lVert\xi\rVert^2$ と Fourier 係数の二乗ノルムの積の積分を成分ごとに足し合わせたものを掛けた量である。被積分関数は二乗と非負因子の積なので各点で非負、したがって積分も総和も非負であり、非負の $\nu$ を掛けても非負のままである。
+gap:
+  level: none
+chapter: energy
+tags: [viscous-form, nonnegativity]

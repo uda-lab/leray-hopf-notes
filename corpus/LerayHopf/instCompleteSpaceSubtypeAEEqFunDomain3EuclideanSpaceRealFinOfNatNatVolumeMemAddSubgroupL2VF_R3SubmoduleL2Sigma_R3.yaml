@@ -1,0 +1,8 @@
+name: LerayHopf.instCompleteSpaceSubtypeAEEqFunDomain3EuclideanSpaceRealFinOfNatNatVolumeMemAddSubgroupL2VF_R3SubmoduleL2Sigma_R3
+tier: gloss
+statement_ja: |
+  発散ゼロ部分空間 [[$L^2_\sigma(\mathbb{R}^3)$|LerayHopf.L2Sigma_R3]] が完備であることを登録する。完備空間 $L^2(\mathbb{R}^3;\mathbb{R}^3)$ の閉部分空間だからである。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, divergence-free, completeness]

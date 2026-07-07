@@ -1,0 +1,8 @@
+name: LerayHopf.L2VF_projComponentC_R3
+tier: full
+statement_ja: |
+  速度場の第 $j$ 実成分を複素スカラー空間 $L^2(\mathbb{R}^3;\mathbb{C})$ へ埋め込む連続線形作用素。[[第 $j$ 実成分射影|LerayHopf.L2VF_projComponent_R3]]と、実数から複素数への標準的な埋め込みを合成したものである。Fourier 変換はこの複素成分に作用する。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, projection, complex]

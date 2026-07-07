@@ -15,6 +15,10 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    mathlib の Schwartz Fourier API は微分から乗数への恒等式を乗数を掛ける形 $\mathcal{F}(\partial\psi)=m\cdot\mathcal{F}\psi$ でもつが、それを `lineDerivOpCLM`・$L^2$ レベルの成分ごとの $\mathcal{F}$・巡回添字の組み立てに通す帳尻合わせが実質である。四つの成分の概至る所一致を束ねてから各点恒等式へ落とす。
+    mathlib の Schwartz Fourier API は、微分を乗数の掛け算にする次の恒等式をもつ。
+
+    $$\mathcal{F}(\partial\psi)=m\cdot\mathcal{F}\psi$$
+
+    これを `lineDerivOpCLM`・$L^2$ レベルの成分ごとの $\mathcal{F}$・巡回添字の組み立てに通す帳尻合わせが実質である。四つの成分の概至る所一致を束ねてから各点恒等式へ落とす。
 chapter: spaces
 tags: [curl, fourier-multiplier, helmholtz]
