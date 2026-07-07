@@ -556,7 +556,7 @@ function renderDecl(app, slug) {
         el('span', { class: 'filemeta', text: `${node.file}:${node.startLine}–${node.endLine}` }),
       ]));
       const wrap = el('div', { class: 'codewrap' });
-      const placeholder = el('p', { class: 'filemeta', text: 'ソース本文を読み込んでいます。' });
+      const placeholder = el('p', { class: 'filemeta', text: 'ソース本文を取得しています。' });
       wrap.appendChild(placeholder);
       inner.appendChild(wrap);
       let loaded = false;
@@ -574,10 +574,11 @@ function renderDecl(app, slug) {
             }));
           }
         }).catch(() => {
+          loaded = false;
           wrap.innerHTML = '';
           wrap.appendChild(el('p', {
             class: 'filemeta',
-            text: `ソース payload を読み込めませんでした。位置: ${node.file}:${node.startLine}–${node.endLine}`,
+            text: `ソース payload を読み込めませんでした。パネルを閉じて再度開くと再試行します。位置: ${node.file}:${node.startLine}–${node.endLine}`,
           }));
         });
       });
