@@ -1,0 +1,12 @@
+name: LerayHopf.continuous_weightedFourierComponentₗ
+tier: full
+statement_ja: |
+  有限次元部分空間 $V_n$ 上の重み付き Fourier 成分の線型写像 [[重み付き Fourier 成分の線型写像|LerayHopf.weightedFourierComponentₗ]] は連続である。
+proof_ja: |
+  有限次元空間からの線型写像は自動的に連続である。
+gap:
+  level: none
+  note: |
+    この連続性を、連続な（有限次元）Galerkin 解曲線と合成することで、重み付き Fourier 成分曲線の連続性フィールドを供給する。
+chapter: ode
+tags: [galerkin-approximation, weighted-fourier, continuity]
