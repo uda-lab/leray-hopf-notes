@@ -1,0 +1,14 @@
+name: LerayHopf.l2sigma_le_closure_span_curl
+tier: full
+statement_ja: |
+  発散ゼロ部分空間 $L^2_\sigma(\mathbb{R}^3)$ は、Schwartz ポテンシャルの回転が張る部分空間の $L^2$ 閉包に含まれる。すなわち発散ゼロ場は回転の線形結合で $L^2$ 近似できる。
+proof_ja: |
+  直交補空間による稠密性判定を使う。閉包は直交補空間の二重補空間に等しいので、示すべきことは「すべての回転に直交し、かつ発散ゼロである場は零である」に帰着する。
+
+  ある場 $w$ がすべての回転に直交すると、Parseval 等式と回転の Fourier 記号 $2\pi i\,\xi\times\widehat{\psi}$、および横型ベクトルの張り（$\xi\neq 0$ で $a\mapsto\xi\times a$ が $\xi^\perp$ を張ること）から、$\widehat{w}$ はほとんどすべての周波数で**縦型**（$\xi$ に平行）になる。一方、$w$ が発散ゼロなら $\widehat{w}$ は**横型**（$\xi$ に直交）である。縦型かつ横型のベクトルは零しかないので $\widehat{w}=0$、Fourier 変換の等長性から $w=0$ を得る。
+gap:
+  level: large
+  note: |
+    直交補空間還元は `Submodule.orthogonal_orthogonal_eq_closure` と `Submodule.mem_orthogonal'` による。解析の核は「すべての回転に直交する場は発散ゼロ場すべてに直交する」で、ベクトル版 Parseval 橋・回転記号の三重積の組み替え・Hermite テストの du-Bois-Reymond・縦横相殺を束ねて示す。mathlib には回転・発散作用素も Helmholtz 分解も無く、$L^2$ Fourier 等長 `Lp.fourierTransformₗᵢ` から手で構築している。
+chapter: spaces
+tags: [curl, helmholtz, density, divergence-free]

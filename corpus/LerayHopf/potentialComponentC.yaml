@@ -1,0 +1,8 @@
+name: LerayHopf.potentialComponentC
+tier: full
+statement_ja: |
+  実数値の Schwartz ポテンシャル場 $\psi$ の第 $k$ 成分を複素数値へ埋め込んだ二乗可積分クラス。実の $L^2$ クラスを実数から複素数への標準的な埋め込みで複素 $L^2$ へ移したものである。回転の Fourier 記号が作用する相手、すなわち回転ではなく**ポテンシャル**の Fourier 変換の入力となる。
+gap:
+  level: none
+chapter: spaces
+tags: [curl, helmholtz, potential]

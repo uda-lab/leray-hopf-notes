@@ -1,0 +1,16 @@
+name: LerayHopf.stokesTestPairing_R3_eq_sum_inner_negLap
+tier: full
+statement_ja: |
+  発散ゼロな Schwartz テスト場 $w$（ポテンシャル $\psi$ を代表元にもつ）に対し、[[粘性テスト対|LerayHopf.stokesTestPairing_R3]]は、$u$ の各成分を固定された負ラプラシアン場 $-\Delta\psi_j$ と対にした実 $L^2$ 内積の有限和に等しい。
+
+  $$B(u,w)=\sum_{j}\bigl\langle u_j,\,(-\Delta\psi_j)\bigr\rangle$$
+proof_ja: |
+  粘性テスト対は Fourier 側でスペクトル荷重 $(2\pi)^2\lVert\xi\rVert^2$ を挟んだ成分ごとの積分である。テスト場の成分の Fourier 変換を代表元 $\psi_j$ の Fourier 変換で書き換えると、荷重は Fourier 側で負ラプラシアン $-\Delta$ の記号にあたるので、各成分は $u_j$ と $-\Delta\psi_j$ の実 $L^2$ 内積に一致する。
+gap:
+  level: mild
+  note: |
+    各和項は成分射影が連続線形なので $u$ について $L^2$ 弱連続であり、この表示が粘性対を弱連続汎関数として示す。
+
+    $$u\mapsto\langle u_j,\,(-\Delta\psi_j)\rangle$$粘性極限移行 $B(u_n,w)\to B(u,w)$ がこの形を消費する。Fourier 変換の代表元の突き合わせで積分の被積分関数を一致させる。
+chapter: spaces
+tags: [viscous-form, fourier, plancherel, weak-continuity]

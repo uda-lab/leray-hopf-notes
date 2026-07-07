@@ -1,0 +1,20 @@
+name: LerayHopf.mem_sigma_iff_fourier_transverse
+tier: full
+statement_ja: |
+  場 $u$ が弱い意味で発散ゼロであること（すなわち発散ゼロ部分空間に属すること）は、その Fourier 変換がほとんどすべての周波数で横型、すなわち次が概至る所成り立つことと同値である。
+
+  $$\sum_j\xi_j\,\widehat{u}_j(\xi)=0$$
+
+  これは $\operatorname{div}u=0$ の Fourier 版の特徴づけである。
+proof_ja: |
+  弱発散はテスト関数 $\varphi$ の偏微分との対で測る。Plancherel 等式を通すと、この対は横型欠損を Schwartz 関数の Fourier 変換と対にしたものになる。ここで横型欠損とは次の量である。
+
+  $$\sum_j\xi_j\,\widehat{u}_j(\xi)$$
+
+  正方向は、横型ならすべての対がゼロになることによる。逆方向は、Schwartz 関数の Fourier 変換全体に対して対がゼロになる関数は概至る所ゼロという変分法の基本補題（Fourier 側の du-Bois-Reymond 型還元）による。試験記号が反 Hermite 対称な Schwartz 記号全体を張ることを使い、実 Schwartz テストの偶奇還元で締める。
+gap:
+  level: large
+  note: |
+    逆方向は反 Hermite 対称な試験記号の全射性 `schwartz_antiHermitian_has_testSymbol_preimage` と、実 Schwartz の Fourier が実数値になる Hermite 実性補題を組み合わせ、`ae_eq_zero_of_integral_contDiff_smul_eq_zero`（du-Bois-Reymond）に帰着する。Plancherel と `divTestFunctional` の対を突き合わせるのが要である。
+chapter: spaces
+tags: [divergence-free, fourier, transverse, du-bois-reymond]

@@ -1,0 +1,20 @@
+name: LerayHopf.fourier_curlSchwartz_eq_cross
+tier: full
+statement_ja: |
+  Schwartz ポテンシャル $\psi$ の回転の第 $j$ 成分の Fourier 変換は、点ごとに外積記号 $2\pi i\,\xi\times\widehat{\psi}(\xi)$ の第 $j$ 成分に等しい。ここで $\widehat{\psi}$ は回転ではなく**ポテンシャル成分**の Fourier 変換である。
+
+  $$\widehat{(\operatorname{curl}\psi)}_j(\xi)=2\pi i\,\bigl(\xi\times\widehat{\psi}(\xi)\bigr)_j$$
+proof_ja: |
+  回転の第 $j$ 成分は次の二つの偏微分の差である。
+
+  $$\partial_{j+1}\psi_{j+2}-\partial_{j+2}\psi_{j+1}$$
+
+  各偏微分の Fourier 変換は周波数因子 $2\pi i\,\xi_a$ の掛け算になるので、二つの項を組み合わせると外積記号 $\xi\times\widehat{\psi}$ の第 $j$ 成分になる。
+
+  形式化では、回転の複素成分射影が複素化した Schwartz 回転の $L^2$ クラスに一致すること、各ポテンシャル成分の Fourier 変換が概至る所で真の Schwartz Fourier 変換に一致することを確かめ、点ごとの記号恒等式で締める。左辺は回転成分の変換、右辺はポテンシャル成分の変換なので、主張は循環していない。
+gap:
+  level: mild
+  note: |
+    mathlib の Schwartz Fourier API は微分から乗数への恒等式を乗数を掛ける形 $\mathcal{F}(\partial\psi)=m\cdot\mathcal{F}\psi$ でもつが、それを `lineDerivOpCLM`・$L^2$ レベルの成分ごとの $\mathcal{F}$・巡回添字の組み立てに通す帳尻合わせが実質である。四つの成分の概至る所一致を束ねてから各点恒等式へ落とす。
+chapter: spaces
+tags: [curl, fourier-multiplier, helmholtz]
