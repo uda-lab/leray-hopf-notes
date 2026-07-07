@@ -1,0 +1,12 @@
+name: LerayHopf.h1Sigma_dense_in_L2Sigma
+tier: full
+statement_ja: |
+  $H^1$ 正則性をもつ発散ゼロ速度場は、[[発散ゼロ二乗可積分ベクトル場|LerayHopf.L2Sigma_R3]] $L^2_\sigma(\mathbb{R}^3)$ のなかで稠密である。すなわち任意の $u\in L^2_\sigma$ に対して、$H^1$ 正則性をもつ発散ゼロ速度場の列で $u$ に収束するものがある。
+proof_ja: |
+  すべての Schwartz 関数はあらゆる Sobolev 空間に属するので、Schwartz 関数を成分にもつ発散ゼロ速度場は $H^1$ 正則性をもつ。一方、発散ゼロな Schwartz 場は curl の稠密性を経由して $L^2_\sigma$ で稠密であることが既に示されている。
+
+  したがって $u$ に収束する発散ゼロ Schwartz 場の列がとれ、その各項は $H^1$ 正則性をもつ。ゆえに $H^1$ 正則な発散ゼロ場は $L^2_\sigma$ で稠密である。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev-embedding, density, divergence-free]

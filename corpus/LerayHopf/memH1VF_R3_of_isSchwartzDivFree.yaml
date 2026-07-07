@@ -1,0 +1,10 @@
+name: LerayHopf.memH1VF_R3_of_isSchwartzDivFree
+tier: full
+statement_ja: |
+  発散ゼロな速度場が Schwartz 関数を成分にもつなら、その速度場は $H^1$ 正則性をもつ。
+proof_ja: |
+  各実成分は Schwartz 関数 $\psi_j$ を代表元にもつ。複素成分への射影はこの $\psi_j$ を複素数値へ埋め込んだ Schwartz 関数の $L^2$ 元に一致する。すべての Schwartz 関数はあらゆる Sobolev 空間に属するので、各成分は $H^1$ に属し、したがって速度場は $H^1$ 正則性をもつ。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev-embedding, schwartz, divergence-free]

@@ -1,0 +1,8 @@
+name: LerayHopf.instFact_one_le_six_ennreal
+tier: gloss
+statement_ja: |
+  指数 $6$ が $1$ 以上であるという事実を登録する。$L^6$ 空間を扱うための下ごしらえである。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev-embedding, scaffold]

@@ -1,0 +1,12 @@
+name: LerayHopf.schwartz_h1_gradConv
+tier: full
+statement_ja: |
+  $H^1$ に属する関数 $f$ と方向 $m$ を固定すると、$L^2$ で $f$ に収束し、しかも $m$ 方向の微分が $f$ の弱 $m$ 方向微分へ $L^2$ 収束するような Schwartz 列が存在する。
+proof_ja: |
+  Fourier 側で荷重付き成分を Schwartz 列で近似し、逆 Fourier 変換して Schwartz 近似列 $\varphi_n$ を作る。この列は $L^2$ で $f$ に収束する。各 $\varphi_n$ の方向微分は Fourier 側では周波数因子の掛け算にあたり、荷重付き近似の収束からその $L^2$ 極限が $f$ の弱方向微分に一致する。方向 $m$ を一つ固定して、方向一様に構成した近似から取り出せばよい。
+gap:
+  level: mild
+  note: |
+    近似列 $\varphi_n=\mathcal{F}^{-1}(w^{-1}\eta_n)$ は方向 $m$ に依存せず作る。弱微分と各項の微分の一致は、$L^2$ 収束を緩増加超関数の位相へ移し、極限の一意性（緩増加超関数の空間は Hausdorff）で結ぶ。
+chapter: spaces
+tags: [sobolev-embedding, schwartz, gradient-convergence]
