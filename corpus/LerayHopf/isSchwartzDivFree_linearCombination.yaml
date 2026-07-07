@@ -1,0 +1,12 @@
+name: LerayHopf.isSchwartzDivFree_linearCombination
+tier: full
+statement_ja: |
+  [[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]に属する場たちの有限な実線形結合は、再びこの類に属する。
+proof_ja: |
+  有限和についての帰納法による。空和はゼロ場であり、空の成分表示で類に属する。
+
+  帰納段階では、和を先頭項と残りに分け、先頭項が[[スカラー倍の閉性|LerayHopf.isSchwartzDivFree_smul]]で、残りが帰納法の仮定で類に属することを示し、両者を[[和の閉性|LerayHopf.isSchwartzDivFree_add]]で合わせる。
+gap:
+  level: none
+chapter: limit-passage
+tags: [schwartz, div-free, closure]

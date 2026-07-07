@@ -1,0 +1,10 @@
+name: LerayHopf.isSchwartzDivFree_smul
+tier: full
+statement_ja: |
+  [[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]に属する場の実数倍は、再びこの類に属する。
+proof_ja: |
+  $u$ が成分表示 $\psi_u$ をもつとき、$c\,u$ の成分表示として $c\,\psi_u$ をとる。成分射影の線形性と $L^2$ 類への写像の斉次性から、これが $c\,u$ の各成分を表す。
+gap:
+  level: none
+chapter: limit-passage
+tags: [schwartz, div-free, closure]

@@ -1,0 +1,12 @@
+name: LerayHopf.isSchwartzDivFree_add
+tier: full
+statement_ja: |
+  [[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]に属する二つの場の和は、再びこの類に属する。
+proof_ja: |
+  $u$ が成分表示 $\psi_u$ を、$v$ が成分表示 $\psi_v$ をもつとき、和 $u+v$ の成分表示として成分ごとの和 $\psi_u+\psi_v$ をとる。
+
+  成分射影は線形であり、Schwartz 函数の $L^2$ 類への写像も加法的なので、この和が確かに $u+v$ の各成分を表す。
+gap:
+  level: none
+chapter: limit-passage
+tags: [schwartz, div-free, closure]

@@ -1,0 +1,12 @@
+name: LerayHopf.R3.ConvectionExtension.denseRange_H1Sigma'_subtype
+tier: full
+statement_ja: |
+  [[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]から発散ゼロ場の空間 $L^2_\sigma(\mathbb{R}^3)$ への包含写像は、稠密な像をもつ。すなわち任意の発散ゼロ場は $H^1_\sigma$ の元の $L^2$ 極限である。
+proof_ja: |
+  任意の $u\in L^2_\sigma(\mathbb{R}^3)$ に対し、$H^1_\sigma$ の元からなる近似列 $s_n\to u$ が存在する（$H^1_\sigma$ の $L^2_\sigma$ における稠密性）。この各項は再型付けした $H^1_\sigma$ に属するので、$u$ は像の閉包に入る。任意の $u$ について成り立つので、像は稠密である。
+gap:
+  level: mild
+  note: |
+    形式化では像の閉包が全体に等しいことを示す。近似列は $H^1_\sigma$ の稠密性 `h1Sigma_dense_in_L2Sigma` から取り、各項を再型付けした部分空間へ持ち上げて、収束から閉包所属を得る。
+chapter: spaces
+tags: [sobolev, h1-sigma, density]

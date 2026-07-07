@@ -1,0 +1,10 @@
+name: LerayHopf.R3.ConvectionExtension.H1Sigma'_memH1
+tier: full
+statement_ja: |
+  [[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]に属する元は、[[$H^1$ 正則性|LerayHopf.memH1VF_R3]]をもつ。
+proof_ja: |
+  所属の同値から元のベクトル場が $H^1_\sigma$ に属し、その定義には $H^1$ 正則性の条件が含まれるので、これを取り出せばよい。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev, h1-sigma, retyping]

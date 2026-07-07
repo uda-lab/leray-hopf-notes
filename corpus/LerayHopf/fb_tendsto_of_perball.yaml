@@ -1,0 +1,20 @@
+name: LerayHopf.fb_tendsto_of_perball
+tier: full
+statement_ja: |
+  Schwartz 発散ゼロテスト場 $w$ を固定する。場の列 $u_n$ が一様な $L^2$ 上界 $\lVert u_n\rVert\le M$ をもち、任意の半径 $R$ について球 $B_R$ 上で $u_n\to u$ が $L^2$ 収束するならば、対角の移流値が収束する。すなわち
+
+  $$b(u_n,u_n,w)\to b(u,u,w).$$
+
+  これは弱 Navier–Stokes 恒等式の極限移行における非線形項の要となる収束である。
+proof_ja: |
+  移流値を微分をテスト側に載せた反対称積分に書き換えると、各成分の項は、成分ごとの $L^2$ 内積の形になる。双線形の差を二つに分ける。
+
+  第一の項は、成分の差 $u_n-u$ に有界乗数を掛けたものと $u_n$ の成分の内積であり、テストの台の外側の裾を Schwartz 減衰で、球の内側を球ごとの収束で押さえて、$\varepsilon$ の三分割でゼロへ送る。第二の項は、固定した $u$ の成分と、$u_n-u$ に有界乗数を掛けたものの内積であり、乗算作用素の自己随伴性を使い、同様に固定元の裾がゼロへ向かうことと球ごとの収束から、ゼロへ送る。
+
+  両項がゼロに収束するので、差もゼロに収束し、対角の移流値の収束が従う。
+gap:
+  level: large
+  note: |
+    形式化では反対称積分を成分ごとに展開し、各 $(i,a)$ 項の差を有界乗数付き内積の二項 TERM A・TERM B に分解する。裾の評価には Schwartz 函数の裾減衰 `schwartz_ball_tail_decay`（コンパクト外での小ささ）を、球内には球制限の収束を用いる。有界乗数による乗算は $L^2$ を保ち（`mulBddR`）、成分射影の作用素ノルムは $1$ 以下。多数の $\varepsilon$ 三分割と一様上界 $M$、$2M$ の帳尻合わせが証明を大きく膨らませる。
+chapter: limit-passage
+tags: [convection-form, per-ball, weak-formulation, limit-passage]

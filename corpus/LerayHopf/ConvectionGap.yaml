@@ -1,0 +1,16 @@
+name: LerayHopf.ConvectionGap
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の弱移流作用素の「隔離された欠落」を表すデータの組。Galerkin スキームを一つ固定したうえで、次を束ねる。
+
+  第一に、発散ゼロ場の空間 $L^2_\sigma(\mathbb{R}^3)$ の全体で定義された移流形式の候補 $b(u,v,w)$。第二に、$b$ が Schwartz 発散ゼロ類の上では既に証明済みの[[Schwartz 台上の移流汎関数|LerayHopf.convFormSchwartz]]に一致するという拡張性。第三に、$b$ が $L^2_\sigma$ 全体で真に三線形であること。第四に、後ろ二つの引数について $L^2_\sigma$ 全体で反対称 $b(u,v,w)=-b(u,w,v)$ であること。第五に、Schwartz テスト場 $w$ を固定したとき $(u,v)\mapsto b(u,v,w)$ が $L^2$ で同時連続であること。第六に、Schwartz 発散ゼロ類が $L^2_\sigma(\mathbb{R}^3)$ で稠密であること。
+
+  真に欠けているのは、既に証明済みの Schwartz 類上の部分的な移流形式を、$L^2_\sigma$ 全体の総体的な作用素へ拡張する部分である。定量的評価そのものではなく、この拡張性が本当の最前線であった。
+gap:
+  level: large
+  note: |
+    これは mathlib に存在しない弱 $(u\cdot\nabla)v$ 作用素を隔離するために導入されたデータの組で、形式化レビュー当時は存在が公理として仮定されていた。その後の除去キャンペーン（issue #56）で、テンソル積上の決定域構成により存在が[[証明済み定理|LerayHopf.r3ConvectionGapOp_exists]]へ反転され、プロジェクトはカーネルのみ（追加公理ゼロ）に到達している。したがって現状ではこの組は公理ではなく、証明された作用素の仕様である。
+
+    正直な性格づけとして、この組は $L^2_\sigma$ 全体の移流形式 [[R3NSForms|LerayHopf.R3NSForms]] より一様に薄いわけではない。定量的評価と拡張内容については薄い（それらは[[条件付き導出|LerayHopf.R3NSForms_of_gap]]で導かれる）が、代数的内容（三線形性・反対称性を $L^2_\sigma$ 全体で主張する部分）は同水準であり、これは欠落した弱作用素の明示的に主張される残余である。以前の版が三スロット同時連続性を課したのは誤りで、移流形式は純 $L^2$ ノルムでは非有界（一因子が $L^\infty$/$H^1$ に住む）なので、そのような連続拡張は存在しない。連続性の仮定は固定 Schwartz テストのスロット 1,2 に限られる。
+chapter: limit-passage
+tags: [convection-form, convection-gap, frontier-resolved]

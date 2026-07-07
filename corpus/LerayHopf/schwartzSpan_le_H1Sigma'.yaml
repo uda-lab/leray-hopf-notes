@@ -1,0 +1,10 @@
+name: LerayHopf.R3.ConvectionExtension.schwartzSpan_le_H1Sigma'
+tier: full
+statement_ja: |
+  [[Schwartz スパン|LerayHopf.R3.ConvectionExtension.schwartzSpan]]は[[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]に含まれる。すなわちスパンの元はすべて $H^1$ 正則である。
+proof_ja: |
+  スパンは生成集合で張られるので、包含を示すには生成元について確かめれば十分である。各生成元は Schwartz 発散ゼロ場であり、これは[[Schwartz 場の $H^1_\sigma$ 所属|LerayHopf.R3.ConvectionExtension.schwartz_mem_H1Sigma']]により再型付けした $H^1_\sigma$ に属する。
+gap:
+  level: none
+chapter: spaces
+tags: [schwartz, span, h1-sigma]

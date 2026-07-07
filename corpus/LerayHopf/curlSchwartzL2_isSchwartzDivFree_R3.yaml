@@ -1,0 +1,10 @@
+name: LerayHopf.curlSchwartzL2_isSchwartzDivFree_R3
+tier: full
+statement_ja: |
+  任意の Schwartz ポテンシャル $\psi$ に対して、その回転場を $L^2$ の発散ゼロ場として包んだものは[[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]に属する。
+proof_ja: |
+  回転場の各成分は Schwartz 函数であり、その成分表示がちょうど各成分射影に一致する。これを成分表示として与えれば、この類に属することが直ちに従う。
+gap:
+  level: none
+chapter: limit-passage
+tags: [schwartz, div-free, curl]

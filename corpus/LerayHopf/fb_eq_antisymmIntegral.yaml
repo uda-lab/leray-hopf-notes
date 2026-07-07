@@ -1,0 +1,18 @@
+name: LerayHopf.fb_eq_antisymmIntegral
+tier: full
+statement_ja: |
+  Schwartz 発散ゼロテスト場 $w$（成分表示 $\psi_w$）を固定する。$L^2_\sigma(\mathbb{R}^3)$ の任意の $f,g$ に対して、移流形式の値は微分をテスト側に載せた反対称積分に等しい。すなわち
+
+  $$b(f,g,w)=-\sum_{i}\sum_{a}\int f_a\,g_i\,(\partial_a(\psi_w)_i)\,dx.$$
+
+  右辺は真の $L^1$ ルベーグ積分であり、極限移行の層が球で分割して扱える形をしている。
+proof_ja: |
+  左辺は固定テストのもとで $(f,g)$ について同時連続であり、右辺の反対称積分も、$L^2$ 内積の有限和として同時連続である。
+
+  両辺は稠密な Schwartz 三つ組の対の上で[[Schwartz 対での一致|LerayHopf.fb_eq_antisymmIntegral_schwartz]]により一致する。Schwartz 発散ゼロ類の稠密性から近似列を取り、両辺の連続性と極限の一意性で、全ての $f,g$ について一致が従う。
+gap:
+  level: mild
+  note: |
+    形式化では両辺の連続性（左辺は[[固定テスト連続性|LerayHopf.fb_continuous_fixedTest]]、右辺は内積の連続性）を用意し、稠密な Schwartz 対の上での一致を極限の一意性で全体へ延長する。右辺を明示の $L^1$ 積分として露出させることが、非線形項の極限移行で球分割を可能にする狙いである。
+chapter: limit-passage
+tags: [convection-form, integration-by-parts, density]

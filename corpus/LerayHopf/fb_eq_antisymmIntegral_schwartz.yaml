@@ -1,0 +1,16 @@
+name: LerayHopf.fb_eq_antisymmIntegral_schwartz
+tier: full
+statement_ja: |
+  Schwartz 発散ゼロテスト場 $w$（成分表示 $\psi_w$）を固定する。Schwartz 発散ゼロな $f',g'$ に対して、移流形式の値 $b(f',g',w)$ は、微分をテスト側に載せた反対称積分に等しい。すなわち
+
+  $$b(f',g',w)=-\sum_{i}\sum_{a}\int f'_a\,g'_i\,(\partial_a(\psi_w)_i)\,dx.$$
+proof_ja: |
+  $f',g'$ の Schwartz 成分表示を取り出し、$b$ を Schwartz 三つ組上の[[移流積分|LerayHopf.convIntegralSchwartz]]に書き換える。
+
+  次に移流積分の発散ゼロ下での分部積分表示を用いて、微分を第二引数からテスト側へ移すと、右辺の反対称積分の被積分関数が各点でほとんど至るところ一致する。よって両辺の各成分積分が一致し、総和も一致する。
+gap:
+  level: mild
+  note: |
+    右辺の反対称積分は $L^2$ 内積の有限和として書かれており、その各項の被積分関数を、移流積分の分部積分版 `convIntegralSchwartz_divFree_eq` の被積分関数と a.e. で突き合わせる。テスト側の一階微分は Schwartz なので $L^\infty$ に属し、乗算作用素が $L^2$ を保つ。
+chapter: limit-passage
+tags: [convection-form, integration-by-parts, schwartz]

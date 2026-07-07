@@ -1,0 +1,10 @@
+name: LerayHopf.convectionGap_schwartz_dense
+tier: full
+statement_ja: |
+  回転場の稠密性を前提として、$L^2_\sigma(\mathbb{R}^3)$ の各元が[[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]の場の $L^2$ 極限であるという稠密性を、移流欠落の構成が要求する形にまとめたもの。
+proof_ja: |
+  内容は[[主稠密定理|LerayHopf.schwartzDivFree_dense_of_curlDense]]そのものである。前提の回転場稠密性を渡してその結論を返すだけの入口である。
+gap:
+  level: none
+chapter: limit-passage
+tags: [schwartz, div-free, density]
