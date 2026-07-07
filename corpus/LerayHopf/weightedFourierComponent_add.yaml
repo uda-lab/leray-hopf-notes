@@ -1,0 +1,12 @@
+name: LerayHopf.weightedFourierComponent_add
+tier: full
+statement_ja: |
+  荷重付き Fourier 成分は、$H^1$ に属する二つの速度場の和に対して加法的である。
+
+  $$(w_1+w_2)_j^{\flat}=(w_1)_j^{\flat}+(w_2)_j^{\flat}$$
+proof_ja: |
+  成分射影と Fourier 変換はいずれも線形なので、$w_1+w_2$ の Fourier 変換は各々の Fourier 変換の和に等しい。平方根乗数はこの和にそのまま分配されるため、荷重付き成分も概至る所で和に分かれる。二つの $L^2$ 元が概至る所一致すれば同一の元だから、等式が従う。
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, linearity]

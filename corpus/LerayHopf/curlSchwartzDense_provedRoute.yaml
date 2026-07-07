@@ -1,0 +1,10 @@
+name: LerayHopf.curlSchwartzDense_provedRoute
+tier: full
+statement_ja: |
+  **回転稠密性の成立**。Schwartz ベクトルポテンシャルの回転が張る部分空間の $L^2$ 閉包は、弱い意味で発散ゼロな部分空間 $L^2_\sigma(\mathbb{R}^3)$ 全体を含む。これは Helmholtz–Weyl 分解の $\mathbb{R}^3$ 版であり、追加の仮定を一切もたない。
+proof_ja: |
+  これは密度移行の主定理そのものである。回転の Fourier 記号・横型による発散ゼロの特徴づけ・横型ベクトルの張り・Parseval を組み合わせ、直交補空間の稠密性判定で閉じる。
+gap:
+  level: none
+chapter: spaces
+tags: [curl, helmholtz, density, frontier-resolved]

@@ -1,0 +1,14 @@
+name: LerayHopf.sqrtViscousWeight_sq
+tier: full
+statement_ja: |
+  平方根乗数の二乗はもとのスペクトル荷重に一致する。
+
+  $$\bigl(\sqrt{W}(\xi)\bigr)^2=W(\xi)$$
+proof_ja: |
+  両辺を定義に展開すると次の等式になり、これは環の計算で等しい。
+
+  $$(2\pi\lVert\xi\rVert)^2=(2\pi)^2\lVert\xi\rVert^2$$
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, spectral-weight]

@@ -1,0 +1,22 @@
+name: LerayHopf.memSobolev_of_finite_weightedFourier_R3
+tier: full
+statement_ja: |
+  各成分 $j$ について粘性スペクトル被積分関数の積分
+
+  $$\int(2\pi)^2\lVert\xi\rVert^2\,\bigl\lVert\widehat{w_j}(\xi)\bigr\rVert^2\,d\xi$$
+
+  が有限なら、速度場 $w$ は $H^1$ 正則性をもつ。これは有限なスペクトルエネルギーから $H^1$ 所属を回収する橋渡しである。
+proof_ja: |
+  成分ごとに議論する。仮定の有限性と、成分の Fourier 変換が二乗可積分であることを合わせると、Fourier 側で荷重 $(1+\lVert\xi\rVert^2)^{1/2}$ を掛けた関数の二乗ノルムの積分が有限になる。実際その二乗は
+
+  $$(1+\lVert\xi\rVert^2)\,\bigl\lVert\widehat{w_j}(\xi)\bigr\rVert^2$$
+
+  で、これはもとの二乗可積分性と仮定の重み付き積分の和で押さえられる。
+
+  したがって荷重付き成分は二乗可積分な Sobolev 代表元を定める。この代表元が Fourier 変換の荷重付き像に一致することを緩増加超関数として確かめれば、成分が Sobolev 空間 $H^1$ に属することが従う。すべての成分について成り立つので $w$ は $H^1$ 正則性をもつ。
+gap:
+  level: mild
+  note: |
+    荷重 $(1+\lVert\xi\rVert^2)^{1/2}$ と `wPosC` の突き合わせ、および Fourier 変換の緩増加超関数レベルでの一致 `Lp.fourier_toTemperedDistribution_eq` を経由する。ここでは代表元どうしのペアリング一致で済み、du-Bois-Reymond の概至る所ステップは不要である。
+chapter: spaces
+tags: [sobolev-embedding, fourier, viscous-form]

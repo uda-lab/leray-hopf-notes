@@ -1,0 +1,10 @@
+name: LerayHopf.schwartz_h1_gradConv_multi
+tier: full
+statement_ja: |
+  $H^1$ に属する関数 $f$ に対して、$L^2$ で $f$ に収束し、しかも**すべての方向 $m$ について同時に**、$m$ 方向の微分が $f$ の弱 $m$ 方向微分へ $L^2$ 収束するような、ただ一つの Schwartz 列が存在する。
+proof_ja: |
+  方向ごとに列を取り替える前段と違い、ここでは同一の列がすべての方向で機能する。実際 Fourier 側の荷重付き近似から作る Schwartz 列 $\varphi_n=\mathcal{F}^{-1}(w^{-1}\eta_n)$ は方向によらず定まる。$L^2$ での値の収束は同じであり、任意の方向 $m$ について微分の収束と弱微分との一致も、$\varphi_n$ の構成が方向に依存しないことから一様に従う。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev-embedding, schwartz, gradient-convergence]

@@ -1,0 +1,14 @@
+name: LerayHopf.gns_L6_cc1_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の $C^1$ かつコンパクト台をもつ関数に対する **Gagliardo–Nirenberg–Sobolev 不等式**。
+
+  $$\lVert u\rVert_{L^6}\le C\,\lVert\nabla u\rVert_{L^2}$$
+
+  ここで定数 $C$ は関数 $u$ によらず、値域の空間と測度だけに依存する。これは臨界指数の関係 $\tfrac16=\tfrac12-\tfrac13$（次元 $3$、$p=2$）に対応する埋め込みである。
+proof_ja: |
+  mathlib の一般次元 Gagliardo–Nirenberg–Sobolev 不等式を、次元 $3$・指数 $p=2$・共役指数 $6$ に特殊化して適用する。臨界指数の関係 $\tfrac16=\tfrac12-\tfrac13$ と次元 $3$ の正値性を確かめれば、そのまま不等式が得られる。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev-embedding, gagliardo-nirenberg]

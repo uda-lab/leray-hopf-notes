@@ -1,0 +1,12 @@
+name: LerayHopf.IsTransverseAt
+tier: full
+statement_ja: |
+  周波数 $\xi$ における**横型条件**。Fourier ベクトル $\widehat{u}(\xi)$ が $\xi$ に直交することをいう。
+
+  $$\sum_{j}\xi_j\,\widehat{u}_j(\xi)=0$$
+
+  これは発散ゼロ $\operatorname{div}u=0$ の点ごとの制約 $\xi\cdot\widehat{u}(\xi)=0$ の Fourier 表現である。
+gap:
+  level: none
+chapter: spaces
+tags: [divergence-free, fourier, transverse]

@@ -1,0 +1,12 @@
+name: LerayHopf.norm_mulBdd_sq
+tier: full
+statement_ja: |
+  有界乗数作用素の像の $L^2$ ノルム二乗は、乗数の二乗を荷重とする積分に等しい。
+
+  $$\lVert m\cdot g\rVert^2=\int m(\xi)^2\,\lVert g(\xi)\rVert^2\,d\xi$$
+proof_ja: |
+  $L^2$ ノルム二乗は被積分関数の二乗ノルムの積分である。像は概至る所 $m(\xi)g(\xi)$ で表されるので、その二乗ノルムは $m(\xi)^2\lVert g(\xi)\rVert^2$ となり、積分すれば主張の右辺になる。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator]

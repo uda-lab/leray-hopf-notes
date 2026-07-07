@@ -1,0 +1,10 @@
+name: LerayHopf.isClosed_L2Sigma_R3
+tier: full
+statement_ja: |
+  発散ゼロ部分空間 [[$L^2_\sigma(\mathbb{R}^3)$|LerayHopf.L2Sigma_R3]] は $L^2(\mathbb{R}^3;\mathbb{R}^3)$ の閉集合である。
+proof_ja: |
+  発散ゼロ部分空間は、すべての Schwartz テスト関数に対する弱発散テスト汎関数の核の共通部分として定まる。各テスト汎関数は連続線形なのでその核は閉集合であり、閉集合の共通部分はふたたび閉集合である。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, divergence-free, closedness]

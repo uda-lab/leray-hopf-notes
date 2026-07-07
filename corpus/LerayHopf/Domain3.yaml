@@ -1,0 +1,8 @@
+name: LerayHopf.Domain3
+tier: full
+statement_ja: |
+  全空間理論の空間領域。$\mathbb{R}^3$ を三次元 Euclid 空間として扱う。内積・有限次元性・Lebesgue 測度（$\mathrm{volume}$）を備え、$\mathbb{R}^3$ 上の Leray–Hopf 理論の下地となる。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, domain]

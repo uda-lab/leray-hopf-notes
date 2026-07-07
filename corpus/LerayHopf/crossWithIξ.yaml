@@ -1,0 +1,12 @@
+name: LerayHopf.crossWithIξ
+tier: full
+statement_ja: |
+  周波数 $\xi$ とベクトル $a\in\mathbb{C}^3$ に対する点ごとの外積 $2\pi i\,\xi\times a$ を、巡回添字で成分ごとに定める。第 $i$ 成分は次の値をとる。
+
+  $$2\pi i\,\bigl(\xi_{i+1}\,a_{i+2}-\xi_{i+2}\,a_{i+1}\bigr)$$
+
+  これは回転（curl）作用素の Fourier 記号である。滑らかな場の回転を Fourier 変換すると、各微分 $\partial_a$ が周波数の掛け算 $2\pi i\,\xi_a$ に化けるため、回転はこの外積の掛け算になる。
+gap:
+  level: none
+chapter: spaces
+tags: [curl, fourier-multiplier, helmholtz]

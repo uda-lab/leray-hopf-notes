@@ -1,0 +1,10 @@
+name: LerayHopf.continuous_sqrtViscousWeight
+tier: full
+statement_ja: |
+  平方根乗数 $\sqrt{W}$ は周波数について連続である。
+proof_ja: |
+  定数 $2\pi$ とノルム関数 $\xi\mapsto\lVert\xi\rVert$ の積であり、ノルムは連続、定数倍も連続だから、その積も連続である。
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, spectral-weight, continuity]

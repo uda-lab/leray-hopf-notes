@@ -1,0 +1,8 @@
+name: LerayHopf.instHasOrthogonalProjectionRealSubtypeAEEqFunDomain3EuclideanSpaceFinOfNatNatVolumeMemAddSubgroupL2VF_R3L2Sigma_R3
+tier: gloss
+statement_ja: |
+  発散ゼロ部分空間 [[$L^2_\sigma(\mathbb{R}^3)$|LerayHopf.L2Sigma_R3]] への直交射影が存在することを登録する。完備な閉部分空間には直交射影が備わることによる。この直交射影が $\mathbb{R}^3$ 上の Leray 射影である。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, divergence-free, orthogonal-projection, leray]

@@ -1,0 +1,8 @@
+name: LerayHopf.L2C_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の複素数値の二乗可積分空間 $L^2(\mathbb{R}^3;\mathbb{C})$。Lebesgue 測度に関する複素スカラー $L^2$ 空間であり、速度場の各成分を複素数へ埋め込む際の受け皿、また Fourier 変換の値域として使う。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, complex]

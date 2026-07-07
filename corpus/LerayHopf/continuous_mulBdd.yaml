@@ -1,0 +1,10 @@
+name: LerayHopf.continuous_mulBdd
+tier: full
+statement_ja: |
+  乗数が定数 $C$ で一様に抑えられるとき、有界乗数作用素は連続である。実際 $C$-Lipschitz である。
+proof_ja: |
+  差 $g-h$ に作用素を施すと、線形性から $m\cdot g-m\cdot h$ となる。その像のノルムは作用素ノルム評価により $C\lVert g-h\rVert$ で抑えられるので、作用素は $C$-Lipschitz であり、したがって連続である。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator, continuity, lipschitz]

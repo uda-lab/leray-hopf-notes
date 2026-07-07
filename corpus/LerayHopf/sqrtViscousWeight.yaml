@@ -1,0 +1,12 @@
+name: LerayHopf.sqrtViscousWeight
+tier: full
+statement_ja: |
+  粘性スペクトル荷重の平方根乗数を、周波数 $\xi$ に対して次の値をとる非負連続関数として定める。
+
+  $$\sqrt{W}(\xi)=2\pi\lVert\xi\rVert$$
+
+  これは勾配作用素の大きさに対応する非有界な乗数であり、粘性形式を Hilbert ノルムの二乗として表すときに Fourier 係数へ掛かる因子である。
+gap:
+  level: none
+chapter: compactness
+tags: [viscous-form, fourier-multiplier, spectral-weight]

@@ -1,0 +1,8 @@
+name: LerayHopf.L2VF_R3
+tier: full
+statement_ja: |
+  $\mathbb{R}^3$ 上の $\mathbb{R}^3$ 値速度場のなす二乗可積分空間 $L^2(\mathbb{R}^3;\mathbb{R}^3)$。Lebesgue 測度に関する Bochner $L^2$ 空間であり、内積完備空間の構造をもつ。
+gap:
+  level: none
+chapter: spaces
+tags: [function-space, velocity-field]

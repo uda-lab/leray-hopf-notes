@@ -1,0 +1,12 @@
+name: LerayHopf.L2Sigma_R3_weaklyClosed
+tier: full
+statement_ja: |
+  発散ゼロ部分空間 [[$L^2_\sigma(\mathbb{R}^3)$|LerayHopf.L2Sigma_R3]] は弱位相についても閉である。
+proof_ja: |
+  発散ゼロ部分空間は線形部分空間なので凸であり、しかもノルム位相で閉である。凸集合に対しては Mazur の補題により、弱位相での閉包とノルム位相での閉包が像として一致する。すでにノルム閉なので閉包は自分自身に等しく、その弱位相での像は閉である。
+gap:
+  level: mild
+  note: |
+    Mazur の補題は mathlib の `Convex.toWeakSpace_closure` として使う。弱位相への写像 `toWeakSpace` は全単射なので、像の閉性がもとの集合の弱閉性に翻訳される。弱収束の下でエネルギー評価を閉じるための土台である。
+chapter: spaces
+tags: [function-space, divergence-free, weak-closedness, mazur]

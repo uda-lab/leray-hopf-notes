@@ -46,7 +46,7 @@ VALID_CHAPTERS = {
     'spaces', 'projections-galerkin', 'ode', 'energy', 'compactness',
     'limit-passage', 'capstone-r3', 'capstone-torus', 'bochner', 'misc',
 }
-NAME_PATTERN = re.compile(r'^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$')
+NAME_PATTERN = re.compile(r"^[A-Za-z_Ͱ-￿][A-Za-z0-9_'.Ͱ-￿]*$")
 
 
 def load_schema() -> dict | None:

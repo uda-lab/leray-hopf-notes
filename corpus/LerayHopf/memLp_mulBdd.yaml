@@ -1,0 +1,10 @@
+name: LerayHopf.memLp_mulBdd
+tier: full
+statement_ja: |
+  本質的有界な実乗数 $m$ と二乗可積分関数 $g$ に対し、積 $\xi\mapsto m(\xi)\,g(\xi)$ はふたたび二乗可積分である。
+proof_ja: |
+  Hölder の関係 $\infty\cdot 2\subseteq 2$ による。有界な因子は二乗可積分性を保つので、$L^\infty$ の $m$ と $L^2$ の $g$ の積は $L^2$ に留まる。
+gap:
+  level: none
+chapter: compactness
+tags: [multiplier-operator, holder]

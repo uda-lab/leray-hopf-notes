@@ -1,0 +1,16 @@
+name: LerayHopf.gns_L6_of_memH1_R3
+tier: full
+statement_ja: |
+  複素数値の二乗可積分関数 $f$ が $\mathbb{R}^3$ の Sobolev 空間 $H^{1}$ に属するなら、$f$ は $L^6$ に属する。これがコンパクト台を仮定しない形の次の埋め込みである。
+
+  $$H^1(\mathbb{R}^3)\hookrightarrow L^6(\mathbb{R}^3)$$
+proof_ja: |
+  まず $f$ の Sobolev 正則性から、Fourier 側で荷重 $(1+\lVert\xi\rVert^2)^{1/2}$ を掛けた関数がふたたび二乗可積分になることを取り出す。この荷重付き成分を稠密な Schwartz 列で近似し、逆 Fourier 変換して Schwartz 近似列 $\varphi_n$ を作る。
+
+  Schwartz 関数に対する Gagliardo–Nirenberg–Sobolev 不等式と、勾配を荷重付き Fourier 積分で押さえる評価を合わせると、$\varphi_n$ の $L^6$ ノルムが $n$ によらず一様に有界になる。一方 $\varphi_n$ は $L^2$ で $f$ に収束するので、概収束する部分列をとって $L^6$ ノルムの下半連続性を使えば、$f$ の $L^6$ ノルムも同じ一様上界で抑えられ、有限である。
+gap:
+  level: large
+  note: |
+    証明は四つの部品からなる。Schwartz 勾配を Fourier で押さえる Plancherel 核、$O(1/R)$ 動径截断、コンパクト台を外した Schwartz 版 GNS、そして有界乗数 `mulBdd wInv` による $L^2$ 収束と Fatou である。Sobolev 代表元の抽出には du-Bois-Reymond 型の概至る所ステップを用いる。値域が複素数値なのは Fourier 変換を経由するためで、実ベクトル場へは成分ごとに適用する。
+chapter: spaces
+tags: [sobolev-embedding, gagliardo-nirenberg, fourier]
