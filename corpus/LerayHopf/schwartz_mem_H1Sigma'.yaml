@@ -1,0 +1,12 @@
+name: LerayHopf.R3.ConvectionExtension.schwartz_mem_H1Sigma'
+tier: full
+statement_ja: |
+  [[Schwartz 発散ゼロ類|LerayHopf.IsSchwartzDivFree_R3]]に属する場は、[[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]に属する。
+proof_ja: |
+  Schwartz 函数は任意の Sobolev 空間に属するので、Schwartz 成分をもつ場は $H^1$ 正則性をもつ。加えて対象の場は発散ゼロなので、両条件を合わせて再型付けした $H^1_\sigma$ の所属が従う。
+gap:
+  level: mild
+  note: |
+    形式化では、成分表示を複素化して Schwartz とみなし、その超関数が任意の Sobolev 空間に属すること（`SchwartzMap.memSobolev`）を各成分に適用して $H^1$ 正則性を得る。成分表示と成分の a.e. 一致を経る補助段が要る。
+chapter: spaces
+tags: [schwartz, sobolev, h1-sigma]

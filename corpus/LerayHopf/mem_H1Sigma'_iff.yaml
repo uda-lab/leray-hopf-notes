@@ -1,0 +1,10 @@
+name: LerayHopf.R3.ConvectionExtension.mem_H1Sigma'_iff
+tier: full
+statement_ja: |
+  発散ゼロ場 $u$ が[[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]に属することは、$u$ をベクトル場とみなしたときに[[$H^1_\sigma$|LerayHopf.H1Sigma_R3]]に属することと同値である。
+proof_ja: |
+  再型付けは発散ゼロ場の包含写像に沿った引き戻しで定義されているので、所属条件はそのまま元のベクトル場の $H^1_\sigma$ 所属に一致する。定義の展開により両者は同値である。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev, h1-sigma, retyping]

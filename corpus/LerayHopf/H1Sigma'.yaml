@@ -1,0 +1,10 @@
+name: LerayHopf.R3.ConvectionExtension.H1Sigma'
+tier: full
+statement_ja: |
+  発散ゼロ場の空間 $L^2_\sigma(\mathbb{R}^3)$ の内部で再び型付けした $H^1_\sigma$ 部分空間。所属は、元をベクトル場とみなしたときに[[$H^1_\sigma$|LerayHopf.H1Sigma_R3]]に属することと同値である。
+
+  決定域構成では、発散ゼロ場を土台とし、その中の滑らかな $H^1$ 層をこの部分空間として扱う。
+gap:
+  level: none
+chapter: spaces
+tags: [sobolev, h1-sigma, retyping]
