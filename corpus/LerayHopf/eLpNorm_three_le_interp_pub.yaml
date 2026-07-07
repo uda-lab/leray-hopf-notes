@@ -1,0 +1,20 @@
+name: LerayHopf.eLpNorm_three_le_interp_pub
+tier: full
+statement_ja: |
+  指数 $3$ での $L^2\cap L^6$ 補間。$f\colon\mathbb{R}^3\to G$ に対し
+
+  $$\lVert f\rVert_3\le\lVert f\rVert_2^{1/2}\cdot\lVert f\rVert_6^{1/2}$$
+
+  が成り立つ。
+proof_ja: |
+  平方経由の道筋で示す。指数 $1/6+1/2=2/3$ の Hölder から
+
+  $$(\lVert f\rVert_3)^2=\bigl\lVert\,\lVert f\rVert^2\,\bigr\rVert_{3/2}\le\lVert f\rVert_6\cdot\lVert f\rVert_2$$
+
+  を得て、両辺の平方根を取る。
+gap:
+  level: none
+  note: |
+    これは非公開だった補間補題の公開複製であり、原補題は移動も公開化もされていない。三線型評価で $L^3$ ノルムを $L^2$ と $L^6$ に分けるために使われる。
+chapter: compactness
+tags: [interpolation, holder]

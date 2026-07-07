@@ -1,0 +1,10 @@
+name: LerayHopf.galerkinSpanToSigma
+tier: full
+statement_ja: |
+  先頭部分空間 [[先頭部分空間|LerayHopf.galerkinSpan]] $V_n$ の元を、発散ゼロ場 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] として包む埋め込み $V_n\to L^2_\sigma$ を定める。
+gap:
+  level: none
+  note: |
+    $V_n$ の元が発散ゼロであること [[発散ゼロ性|LerayHopf.mem_sigma_of_mem_galerkinSpan]] を証拠として付し、$L^2_\sigma$ の元にする。この埋め込みを通じて、移流形式 $b$ を Galerkin 部分空間上で評価できる。
+chapter: ode
+tags: [galerkin-approximation, embedding]

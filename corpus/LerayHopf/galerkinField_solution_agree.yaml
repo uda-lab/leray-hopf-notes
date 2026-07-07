@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinField_solution_agree
+tier: full
+statement_ja: |
+  接合の一致。自励場の二つの局所解が、重なり合う閉区間上で一点で一致するなら、重なり全体で一致する。ベクトル場は [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] である。
+proof_ja: |
+  両解を閉じ込める球上で場が局所 Lipschitz であること（$C^1$ 性 [[場の C¹ 性|LerayHopf.galerkinODE_vectorField_contDiff]] から）を用いて ODE の一意性を適用する。共通点を初期時刻として前後に分け、それぞれの半区間で一意性から一致を得て、重なり全体で結論する。
+gap:
+  level: none
+  note: |
+    ODE の一意性補題も import 経路にないため、Grönwall の軌道評価から前進・後進の一意性を再導出している。この一致が、タイルごとの局所解を貼り合わせて一本の大域解にする際の無矛盾性を保証する。
+chapter: ode
+tags: [galerkin-approximation, ode, uniqueness]

@@ -1,0 +1,16 @@
+name: LerayHopf.convIntegralSchwartz_bound_energy
+tier: full
+statement_ja: |
+  Schwartz 移流積分 [[移流積分|LerayHopf.convIntegralSchwartz]] のエネルギー類評価。絶対定数 $C_b\ge 0$ が存在し、Schwartz 表現 $\psi_u,\psi_v,\psi_w$ をもつ任意の $L^2$ 場の三つ組 $u,v,w$ に対し
+
+  $$|\operatorname{conv}(\psi_u,\psi_v,\psi_w)|\le C_b\,\lVert u\rVert^{1/2}\,V_1(u)^{1/4}\,\sqrt{V_1(v)}\,\sqrt{V_1(w)}$$
+
+  が成り立つ。$V_1$ は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
+proof_ja: |
+  各 $(i,a)$ 項に指数 $(3,2,6)$ の Hölder を適用し、$L^3$ ノルムを補間 [[L³ 補間|LerayHopf.eLpNorm_three_le_interp_pub]] で $L^2$ と $L^6$ に分け、$L^6$ ノルムを $L^6$ 評価 [[L⁶ 評価|LerayHopf.eLpNorm_six_le_of_schwartzRep]] で $C_6\sqrt{V_1}$ に抑え、偏微分の $L^2$ ノルムを勾配エネルギー恒等式で $\sqrt{V_1(v)}$ に抑える。$\lVert u\rVert_2$ と $\sqrt{V_1(u)}$ を補間して $\lVert u\rVert^{1/2}V_1(u)^{1/4}$ の因子を出し、有限和で集約する。
+gap:
+  level: none
+  note: |
+    存在量化子 $\exists C_b$ が $u,v,w$ とその Schwartz 表現すべての量化子の外にあり、場非依存性（ひいては後段の $n$ 非依存性）が構造的に明白である。
+chapter: compactness
+tags: [trilinear, energy-class, holder]

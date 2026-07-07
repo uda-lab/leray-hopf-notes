@@ -1,0 +1,12 @@
+name: LerayHopf.curlSchwartz_isSchwartz
+tier: full
+statement_ja: |
+  curl の $L^2$ クラス [[curl の L² クラス|LerayHopf.curlSchwartzL2]] は成分ごとに Schwartz 表現をもつ。すなわち各成分がある Schwartz 関数の $L^2$ クラスに一致する。
+proof_ja: |
+  curl そのもの [[Schwartz の curl|LerayHopf.curlSchwartz]] を Schwartz 表現として取り、各成分が対応する curl 成分の $L^2$ クラスに一致すること [[curl の成分往復|LerayHopf.curlSchwartzL2_projComponent]] を与えればよい。
+gap:
+  level: none
+  note: |
+    基底の成分 Schwartz 性フィールドへ直接供給される形の証拠である。
+chapter: projections-galerkin
+tags: [curl, schwartz]

@@ -1,0 +1,12 @@
+name: LerayHopf.exists_denseSeq_curlSchwartz
+tier: full
+statement_ja: |
+  curl 稠密性 [[curl 稠密性|LerayHopf.CurlSchwartzDense]] と可分性を仮定すると、curl 場を並べた単一の可算列 $e\colon\mathbb{N}\to L^2$ が存在し、その有限個の先頭が張る部分空間が発散ゼロ部分空間 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] で稠密になる。
+proof_ja: |
+  curl 族 [[curl の L² クラス|LerayHopf.curlSchwartzL2]] の像は可分空間の部分集合として可分だから、その中に閉包が族全体を覆う可算稠密部分集合を取り、これを $\mathbb{N}$ で数え上げて列 $e$ とする。各 $e_k$ は curl 場である。先頭部分空間の合併の閉包が curl 族の張る空間の閉包を含み、稠密性の仮説によりそれが発散ゼロ部分空間を含む。
+gap:
+  level: mild
+  note: |
+    これは非可算な curl 族を一本の可算な先頭部分空間の数え上げへ分離性で細める操作であり、解析ではなく整理の作業である。可算稠密部分集合の存在（`exists_countable_dense_subset`）と、先頭部分空間の合併＝像全体の張る空間という等式を組み合わせる。
+chapter: projections-galerkin
+tags: [curl, separability, dense-sequence]

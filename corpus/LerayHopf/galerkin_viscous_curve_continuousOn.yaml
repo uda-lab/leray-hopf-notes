@@ -1,0 +1,12 @@
+name: LerayHopf.galerkin_viscous_curve_continuousOn
+tier: full
+statement_ja: |
+  Galerkin 曲線に沿った Dirichlet エネルギー $s\mapsto V_1(u(s))$ は前進時刻 $[0,\infty)$ 上で連続である。粘性散逸形式は [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] である。
+proof_ja: |
+  各 $s$ で $V_1(u(s))$ を重み付き Fourier 成分の二乗和 [[粘性散逸の成分和|LerayHopf.viscousFormSq_eq_sum_normSq_wFC]] に書き直し、解データの各成分曲線の連続性フィールドから、二乗ノルムの有限和として連続性を得る。
+gap:
+  level: none
+  note: |
+    曲線に沿った散逸の連続性であり、エネルギー恒等式の積分形や移流積分項の連続性に使われる。
+chapter: compactness
+tags: [galerkin-approximation, viscous-form, continuity]

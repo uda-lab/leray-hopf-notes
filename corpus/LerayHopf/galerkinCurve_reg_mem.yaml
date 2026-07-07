@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinCurve_reg_mem
+tier: full
+statement_ja: |
+  Galerkin 近似部分空間に留まるベクトル $v$（$v=P_n v$）は $H^1$ 正則性 [[H¹ 所属|LerayHopf.memH1VF_R3]] をもつ。
+proof_ja: |
+  スキームの成分 Schwartz 性から、$P_n v$ の各実成分をある Schwartz 関数の $L^2$ クラスで表す表現が得られる。$v=P_n v$ ゆえ $v$ 自身にも同じ表現が成り立つ。各複素成分はこの実 Schwartz 関数を複素化したものの $L^2$ クラスであり、Schwartz 関数の Fourier 変換が急減少することから $H^1$（実際には任意階の Sobolev）に属する。二つの超関数としての同一視を経て結論する。
+gap:
+  level: mild
+  note: |
+    Galerkin 状態の $H^1$ 正則性は、有限次元近似部分空間の元が Schwartz 成分をもつことに帰着する。Lean では Schwartz 関数の Sobolev 所属 `SchwartzMap.memSobolev` と、$L^2$ クラスと超関数の係数一致 `toTemperedDistribution_toLp_eq` を用いる。この正則性が解データの正則性フィールドや粘性散逸の可積分性を支える。
+chapter: ode
+tags: [galerkin-approximation, sobolev, schwartz]

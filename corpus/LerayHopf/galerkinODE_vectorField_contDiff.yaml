@@ -1,0 +1,16 @@
+name: LerayHopf.galerkinODE_vectorField_contDiff
+tier: full
+statement_ja: |
+  Galerkin ベクトル場 [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] $G_n$ は有限次元 $V_n$ 上で $C^1$（実際には滑らか）である。
+proof_ja: |
+  場は二次部分 [[二次部分|LerayHopf.galerkinODE_bilinearPart]] と一次部分 [[一次部分|LerayHopf.galerkinODE_linearPart]] の和
+
+  $$u\longmapsto\mathrm{Bil}(u,u)+\mathrm{Lin}\,u$$
+
+  に等しい。対角 $u\mapsto\mathrm{Bil}(u,u)$ は連続双線型写像の合成として $C^1$ であり、一次部分は連続線型写像として $C^1$ である。両者の和は $C^1$ である。
+gap:
+  level: none
+  note: |
+    これが局所存在の要である。有限次元の自動連続性が二次・一次両部分の構成のあらゆる段で連続性を供給するため、移流形式 $b$ に連続性の仮説を追加する必要はない。この $C^1$ 性が Picard–Lindelöf 型の局所存在を起動する。
+chapter: ode
+tags: [galerkin-approximation, contdiff, vector-field]

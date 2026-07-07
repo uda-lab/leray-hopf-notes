@@ -1,0 +1,16 @@
+name: LerayHopf.bForm_galerkin_abs_le
+tier: full
+statement_ja: |
+  抽象移流形式の $n$ 一様な三線型評価。NS 形式 [[NS 形式|LerayHopf.R3NSForms]] の移流形式 $b$ は、Schwartz 移流積分 [[移流積分|LerayHopf.convIntegralSchwartz]] と同じエネルギー類評価を段 $n$ について一様に満たす。すなわち定数 $C_b\ge 0$ が存在し、すべての段 $n$ とすべての段 $n$ 状態 $u,v,w$ に対し
+
+  $$|b(u,v,w)|\le C_b\,\lVert u\rVert^{1/2}\,V_1(u)^{1/4}\,\sqrt{V_1(v)}\,\sqrt{V_1(w)}$$
+
+  が成り立つ。$V_1$ は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
+proof_ja: |
+  段 $n$ 状態 $u,v,w$ の Schwartz 表現をスキームの成分 Schwartz 性から取り、射影のピンを通して各成分の $L^2$ クラスに一致させる。移流形式のピン $b_{\mathrm{galerkin}}$ で $b$ を Schwartz 移流積分に同一視し、その積分のエネルギー類評価 [[移流積分の評価|LerayHopf.convIntegralSchwartz_bound_energy]] を適用する。
+gap:
+  level: none
+  note: |
+    存在量化子 $\exists C_b$ が段 $n$ と状態すべての量化子の外にあるため、定数は証明可能に $n$ 非依存である。これが良いサンプリングによるコンパクト性論法の要する性質である。
+chapter: compactness
+tags: [trilinear, energy-class, n-uniform]

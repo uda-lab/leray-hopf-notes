@@ -1,0 +1,12 @@
+name: LerayHopf.galSeq_R3_of_basis
+tier: full
+statement_ja: |
+  具体スキーム [[基底からのスキーム|LerayHopf.schemeOfBasis]] 上で、各段 $n$ の Galerkin 解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] を並べた列を、公理を用いずに供給する。
+proof_ja: |
+  各 $n$ に対し、無条件の解データ [[無条件解データ|LerayHopf.galerkinSolutionData_unconditional]] を割り当てる。これは証明済みの有限次元 ODE 大域解 [[有限次元大域 ODE の存在|LerayHopf.finDimGlobalODE_exists]] に基づき、Galerkin ODE の公理には一切依存しない。
+gap:
+  level: none
+  note: |
+    これはかつて各段の解データを公理から取っていた列の、公理を用いない差し替えである。型は同じで、パッケージ組み立てにそのまま渡せる。データを運ぶため `noncomputable def` である。
+chapter: capstone-r3
+tags: [galerkin-approximation, kernel-only]

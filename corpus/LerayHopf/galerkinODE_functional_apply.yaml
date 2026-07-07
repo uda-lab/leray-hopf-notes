@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinODE_functional_apply
+tier: full
+statement_ja: |
+  Galerkin 汎関数 [[Galerkin 汎関数|LerayHopf.galerkinODE_functional]] をテスト $w$ に適用した値は $-\nu\,\mathrm{stokes}(u,w)-b(u,u,w)$ である。
+proof_ja: |
+  汎関数の定義そのものだから、定義上ただちに成り立つ。
+gap:
+  level: none
+  note: |
+    汎関数の値を露わにする単純化補題であり、Riesz 特徴づけの証明で右辺を取り出すのに使われる。
+chapter: ode
+tags: [galerkin-approximation, riesz-representation]

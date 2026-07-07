@@ -1,0 +1,10 @@
+name: LerayHopf.IsGalerkinTest_R3
+tier: full
+statement_ja: |
+  発散ゼロ場 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] の元 $w$ が、スキーム $\mathfrak{G}$ に関する Galerkin テスト関数であるとは、ある段の近似射影の不動点であること、すなわちある $n$ で $P_n w=w$ が成り立つことをいう。
+gap:
+  level: none
+  note: |
+    各近似射影の像の元はこの性質を満たす。このテスト類は発散ゼロ部分空間で稠密であり（強収束フィールドによる）、弱 NS 定式化で用いる標準的な Faedo–Galerkin テスト類である。T³ 側の同名述語を鏡映したものである。
+chapter: projections-galerkin
+tags: [galerkin-test, weak-formulation]

@@ -1,0 +1,12 @@
+name: LerayHopf.curlSchwartzL2_projComponent
+tier: full
+statement_ja: |
+  curl の $L^2$ クラス [[curl の L² クラス|LerayHopf.curlSchwartzL2]] の第 $j$ 成分は、ちょうど第 $j$ curl 成分の $L^2$ クラスに一致する。
+proof_ja: |
+  curl の $L^2$ クラスは三つのスカラー curl 成分から成分組み立て [[成分からの組み立て|LerayHopf.L2VF_ofComponents]] で作られているので、成分射影の往復同一視 [[成分の往復|LerayHopf.L2VF_projComponent_ofComponents]] を適用すれば第 $j$ 成分が回収される。
+gap:
+  level: none
+  note: |
+    成分ごとの Schwartz 表現を取り出す往復補題であり、基底の成分 Schwartz 性フィールドや発散ゼロ性の証明に使われる。
+chapter: projections-galerkin
+tags: [curl, components]

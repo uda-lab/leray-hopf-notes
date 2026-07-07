@@ -1,0 +1,16 @@
+name: LerayHopf.norm_le_of_forwardSolution
+tier: full
+statement_ja: |
+  前進時刻の先験ノルム評価。区間 $[0,T]$ 上の任意の前進局所解は球 $\lVert c(t)\rVert\le\lVert c(0)\rVert$ に留まる。
+proof_ja: |
+  局所エネルギー恒等式 [[局所エネルギー恒等式|LerayHopf.energy_hasDerivAt_of_localSolution]] から、エネルギー $\tfrac12\lVert c(t)\rVert^2$ は $[0,T]$ 上で非正の導関数をもち、したがって非増加である。よって
+
+  $$\tfrac12\lVert c(t)\rVert^2\le\tfrac12\lVert c(0)\rVert^2$$
+
+  となり、$\tfrac12$ を払って平方根を取れば $\lVert c(t)\rVert\le\lVert c(0)\rVert$ を得る。
+gap:
+  level: none
+  note: |
+    この先験評価が、解を固定された先験球に閉じ込め、そこで一様な局所存在時間が使える状況を保証する。前進大域存在のタイル貼り論法の要である。
+chapter: ode
+tags: [galerkin-approximation, a-priori-bound, energy]

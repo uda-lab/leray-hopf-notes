@@ -1,0 +1,14 @@
+name: LerayHopf.curlSchwartz
+tier: full
+statement_ja: |
+  Schwartz ベクトルポテンシャル $\psi=(\psi_0,\psi_1,\psi_2)$ の回転（curl）を、ふたたび Schwartz 関数の三つ組として定める。第 $i$ 成分は巡回的に
+
+  $$(\operatorname{curl}\psi)_i=\partial_{i+1}\psi_{i+2}-\partial_{i+2}\psi_{i+1}$$
+
+  で与えられる。ここで添字は $\mathbb{Z}/3$ で巡回する。
+gap:
+  level: none
+  note: |
+    各成分は Schwartz 関数の方向微分の組合せであり、方向微分は Schwartz 性を保つので、curl は真正な Schwartz 関数のままである。これは Schwartz を保たない Leray 射影とは対照的で、非 Schwartz な場を密輸しない点が本質的である。Lean では方向微分を `lineDerivOpCLM` で表す。
+chapter: projections-galerkin
+tags: [curl, schwartz, divergence-free]

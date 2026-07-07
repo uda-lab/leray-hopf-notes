@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_preserves_sigma
+tier: full
+statement_ja: |
+  Galerkin 射影 [[Galerkin 射影|LerayHopf.galerkinP]] は発散ゼロ部分空間 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] を保存する。すなわち $u$ が発散ゼロならば $P_n u$ も発散ゼロである。
+proof_ja: |
+  射影の像は先頭部分空間 $V_n$ に入り、その $V_n$ は発散ゼロ部分空間に含まれる。後者は、生成元である基底ベクトルがすべて発散ゼロであり、発散ゼロ部分空間が部分空間であることによる。したがって像も発散ゼロである。実際には $u$ 自身が発散ゼロという仮定は不要だが、スキームのフィールドの形に合わせて残してある。
+gap:
+  level: none
+  note: |
+    Galerkin スキームの発散ゼロ保存フィールドを供給する。
+chapter: projections-galerkin
+tags: [galerkin-scheme, divergence-free]

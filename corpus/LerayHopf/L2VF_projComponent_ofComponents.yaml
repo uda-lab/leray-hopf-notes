@@ -1,0 +1,12 @@
+name: LerayHopf.L2VF_projComponent_ofComponents
+tier: full
+statement_ja: |
+  成分から組み立てたベクトル場 [[成分からの組み立て|LerayHopf.L2VF_ofComponents]] を第 $i$ 成分へ射影すると、元の第 $i$ 成分 $u_i$ が回収される。
+proof_ja: |
+  基本ベクトル $e_j$ の第 $i$ 成分は $\delta_{ij}$ だから、三項の和のうち対角項 $i=i$ だけが残り、それが $u_i$ に潰れる。非対角項はスカラー合成が零射影になって消える。
+gap:
+  level: none
+  note: |
+    成分の埋め込みと射影の合成をスカラー恒等作用素・零作用素に帰着させ、$L^2$ 上の等式として示す。これが [[成分からの組み立て|LerayHopf.L2VF_ofComponents]] と成分射影が互いに逆であることの往復同一視を与える。
+chapter: spaces
+tags: [l2-vector-field, components]

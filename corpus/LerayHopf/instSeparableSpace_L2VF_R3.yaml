@@ -1,0 +1,10 @@
+name: LerayHopf.instSeparableSpace_L2VF_R3
+tier: full
+statement_ja: |
+  $L^2$ ベクトル場の空間 [[L² ベクトル場|LerayHopf.L2VF_R3]]、すなわち $L^2(\mathbb{R}^3;\mathbb{R}^3)$ は可分である。
+gap:
+  level: none
+  note: |
+    $\mathbb{R}^3$ 上の Lebesgue 測度は可分測度であり、値空間 $\mathbb{R}^3$ は第二可算だから、$L^p$ 空間の第二可算性を経て可分性が従う。この可分性により、任意の curl 族から可算な稠密部分列を取り出せる（可算性が無償で得られる）。
+chapter: spaces
+tags: [separability, l2-vector-field]

@@ -1,0 +1,14 @@
+name: LerayHopf.galerkinSpan
+tier: full
+statement_ja: |
+  [[Schwartz 発散ゼロ基底|LerayHopf.SchwartzGalerkinBasis]] $B$ と自然数 $n$ に対し、その先頭 $n$ 個の基底ベクトルが張る有限次元部分空間
+
+  $$V_n=\operatorname{span}\{e_0,\dots,e_{n-1}\}$$
+
+  を定める。これが Galerkin 近似の第 $n$ 段の近似部分空間である。
+gap:
+  level: none
+  note: |
+    Lean では生成集合を添字集合 $\{0,\dots,n-1\}$ 上の像として与え、その線型包 `Submodule.span` として実現する。以降の有限次元性・単調性・直交射影はすべてこの定義から従う。
+chapter: projections-galerkin
+tags: [galerkin-scheme, finite-dimensional]

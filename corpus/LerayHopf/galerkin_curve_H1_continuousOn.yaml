@@ -1,0 +1,16 @@
+name: LerayHopf.galerkin_curve_H1_continuousOn
+tier: full
+statement_ja: |
+  Galerkin 曲線の $H^1$ 連続性。増分の Dirichlet エネルギーが前進時刻で $s\to s_0$ のとき消える。すなわち
+
+  $$V_1(u(s)-u(s_0))\longrightarrow 0\qquad(s\to s_0)$$
+
+  が $[0,\infty)$ 内で成り立つ。粘性散逸形式は [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] である。
+proof_ja: |
+  差の重み付き Fourier 成分線型性 [[差の線型性|LerayHopf.weightedFourierComponent_sub]] と成分和表示 [[粘性散逸の成分和|LerayHopf.viscousFormSq_eq_sum_normSq_wFC]] により、$V_1(u(s)-u(s_0))$ を各成分の差の二乗和に書き直す。各成分は解データの成分曲線の連続性フィールドにより $0$ へ収束するので、有限和も $0$ へ収束する。
+gap:
+  level: none
+  note: |
+    $H^1$ は差について閉じている（$u-v=u+(-1)\cdot v$）ことを使う。この $H^1$ 連続性が、曲線に沿った移流積分項の連続性の入力になる。
+chapter: compactness
+tags: [galerkin-approximation, viscous-form, continuity]

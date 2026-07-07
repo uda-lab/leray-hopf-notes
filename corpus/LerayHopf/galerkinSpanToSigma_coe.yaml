@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinSpanToSigma_coe
+tier: full
+statement_ja: |
+  埋め込み [[部分空間から発散ゼロ場へ|LerayHopf.galerkinSpanToSigma]] は、$L^2$ ベクトル場として見たとき元の $V_n$ 元をそのまま返す。
+proof_ja: |
+  埋め込みは証拠を付け替えるだけで台となるベクトルを変えないので、定義上ただちに成り立つ。
+gap:
+  level: none
+  note: |
+    埋め込みが台のベクトルを保つことを述べる単純化補題であり、弱形式の導出で成分を整理する際に使われる。
+chapter: ode
+tags: [galerkin-approximation, embedding]

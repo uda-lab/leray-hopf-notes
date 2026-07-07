@@ -1,0 +1,16 @@
+name: LerayHopf.GalerkinCompactnessPackageFull_R3
+tier: full
+statement_ja: |
+  ℝ³ の完全 Galerkin コンパクト性パッケージ。証明を運ぶフィールドを備え、極限曲線とその性質を保持する。
+
+  含むのは極限曲線 $\mathrm{limit}\colon[0,T]\to L^2_\sigma$、極限に対する弱 NS 方程式、$[0,T]$ 上のエネルギー不等式
+
+  $$\tfrac12\lVert\mathrm{limit}(t)\rVert^2+\int_0^t V_\nu(\mathrm{limit}(s))\,ds\le\tfrac12\lVert u_0\rVert^2$$
+
+  、初期トレース、エネルギー類（ほとんどすべての $t$ で $H^1$ 所属かつ粘性散逸が可積分）、および時間可測性である。
+gap:
+  level: none
+  note: |
+    このパッケージは、Aubin–Lions パッケージから極限移行への鎖を経て組み立てられる。エネルギー類フィールドが、極限曲線が Leray–Hopf エネルギー類に属すること、すなわちほとんどすべての $t$ での $H^1$ 所属と粘性散逸の可積分性を運び、エネルギー不等式の非空虚性を保証する。時間可測性は Aubin–Lions 極限から良い代表元の概至る所の同一視を通じて受け継ぐ。
+chapter: compactness
+tags: [galerkin-approximation, compactness, energy-inequality]

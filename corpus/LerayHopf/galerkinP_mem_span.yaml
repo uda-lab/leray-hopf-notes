@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinP_mem_span
+tier: full
+statement_ja: |
+  Galerkin 射影の像は先頭部分空間に入る。すなわち $P_n u\in V_n$ が成り立つ。ここで [[Galerkin 射影|LerayHopf.galerkinP]] は先頭部分空間 [[先頭部分空間|LerayHopf.galerkinSpan]] への直交射影である。
+proof_ja: |
+  直交射影の像はその射影先の部分空間に含まれるという一般的事実である。
+gap:
+  level: none
+  note: |
+    発散ゼロ部分空間の保存性と像の Schwartz 性を導く補助補題として使われる。
+chapter: projections-galerkin
+tags: [galerkin-scheme, orthogonal-projection]

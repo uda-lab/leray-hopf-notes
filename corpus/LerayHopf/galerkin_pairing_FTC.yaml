@@ -1,0 +1,16 @@
+name: LerayHopf.galerkin_pairing_FTC
+tier: full
+statement_ja: |
+  Galerkin 曲線に沿った弱形式ペアリングの微積分学の基本定理。段 $n$ テスト $w$ と $0\le a\le b$ に対し
+
+  $$\langle u(b)-u(a),w\rangle=\int_a^b\bigl(-\nu\,\mathrm{stokes}(u(\sigma),w)-b(u(\sigma),u(\sigma),w)\bigr)\,d\sigma$$
+
+  が成り立つ。粘性ペアリングは [[粘性ペアリング|LerayHopf.stokesTestPairing_R3]]、$b$ は NS 形式 [[NS 形式|LerayHopf.R3NSForms]] の移流形式である。
+proof_ja: |
+  スカラー関数 $g(\sigma)=\langle u(\sigma),w\rangle$ に微積分学の基本定理を適用する。その導関数は弱形式フィールドを $w$ でテストした右辺である。右辺の区間可積分性は連続性から従い、粘性項は成分曲線の連続性と内積和展開 [[内積和展開|LerayHopf.stokesTestPairing_eq_sum_inner_wFC]] により、移流項は移流積分の連続性 [[移流積分の連続性|LerayHopf.galerkin_bForm_curve_continuousOn]] による。
+gap:
+  level: none
+  note: |
+    ペアリングの FTC は良いサンプリングによるコンパクト性ルートで、極限曲線の弱形式を確立する際に使われる。
+chapter: compactness
+tags: [galerkin-approximation, ftc, weak-formulation]

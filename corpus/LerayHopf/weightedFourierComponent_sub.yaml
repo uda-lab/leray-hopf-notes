@@ -1,0 +1,12 @@
+name: LerayHopf.weightedFourierComponent_sub
+tier: full
+statement_ja: |
+  重み付き Fourier 成分 [[重み付き Fourier 成分|LerayHopf.weightedFourierComponent]] は差について線型である。すなわち $H^1$ の元 $u,v$ に対し、差の重み付き Fourier 成分は各成分の差に等しい。
+proof_ja: |
+  重み付き Fourier 成分の定義代表元は、各成分を Fourier 変換して重み $\sqrt{W}$ を掛けたものである。この代表元の上で、Fourier 変換と成分射影の線型性から差が各点の差に分かれることを示し、$L^2$ の等式として結論する。
+gap:
+  level: none
+  note: |
+    重み付き Fourier 成分の加法性・斉次性を補完する差の版であり、粘性形式を差について成分和へ展開する際に使われる。
+chapter: compactness
+tags: [weighted-fourier, linearity]

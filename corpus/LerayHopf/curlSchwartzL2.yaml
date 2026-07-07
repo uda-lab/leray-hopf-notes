@@ -1,0 +1,10 @@
+name: LerayHopf.curlSchwartzL2
+tier: full
+statement_ja: |
+  Schwartz ベクトルポテンシャルの回転 [[Schwartz の curl|LerayHopf.curlSchwartz]] の $L^2$ ベクトル場クラスを定める。各成分が対応する curl 成分の Schwartz 関数の $L^2$ クラスであるようなベクトル場である。
+gap:
+  level: none
+  note: |
+    三つのスカラー $L^2$ 成分から [[成分からの組み立て|LerayHopf.L2VF_ofComponents]] を通じて組み立てる。各成分は真正な Schwartz 関数の $L^2$ クラスなので、全体は [[L² ベクトル場|LerayHopf.L2VF_R3]] に収まる。この curl 場が発散ゼロ基底の生成元になる。
+chapter: projections-galerkin
+tags: [curl, l2-vector-field, divergence-free]

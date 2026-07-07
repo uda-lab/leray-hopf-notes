@@ -1,0 +1,12 @@
+name: LerayHopf.curlSchwartzDense_holds
+tier: full
+statement_ja: |
+  Schwartz ベクトルポテンシャルの回転（curl）が張る空間の $L^2$ 閉包は、発散ゼロ部分空間 [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]] 全体を含む。これは Helmholtz–Weyl 型の稠密性であり、密度述語 [[curl 稠密性|LerayHopf.CurlSchwartzDense]] が成り立つことを主張する。
+proof_ja: |
+  Fourier–Plancherel を経由した完全な稠密性の証明 [[curl 稠密性の証明ルート|LerayHopf.curlSchwartzDense_provedRoute]] をそのまま引き渡す。この地点は稠密性の証明が定義された地点より下流にあり、名前を保ったまま公理を証明済み定理で置き換えるための配線を担う。
+gap:
+  level: none
+  note: |
+    この主張はかつて `axiom curlSchwartzDense_holds` として仮定されていたが、湯川型正則化と Fourier 解析による証明が与えられ、現在は証明済み定理である。名前をかつての公理と同一に保つことで、下流の消費者（Schwartz 基底の存在や Galerkin スキームの存在）が一切変更を受けずに済む。これにより $\mathbb{R}^3$ 主定理の公理依存からこの項目が外れた。
+chapter: projections-galerkin
+tags: [curl-density, helmholtz, frontier-resolved]

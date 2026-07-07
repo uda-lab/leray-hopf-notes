@@ -1,0 +1,12 @@
+name: LerayHopf.galerkinState_schwartzRep
+tier: full
+statement_ja: |
+  すべての Galerkin 状態は成分ごとに Schwartz 表現をもつ。すなわち解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] の曲線値 $u(t)$ の各成分は、ある Schwartz 関数の $L^2$ クラスに一致する。
+proof_ja: |
+  スキームの成分 Schwartz 性を $P_n(u(t))$ に適用し、部分空間閉じ込めフィールド $u(t)=P_n(u(t))$ を通して $u(t)$ 自身へ移せばよい。
+gap:
+  level: none
+  note: |
+    移流形式のピン止めや、勾配エネルギー・三線型評価の鎖に成分 Schwartz 表現を供給する配管的な補題である。
+chapter: ode
+tags: [galerkin-approximation, schwartz]

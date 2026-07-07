@@ -1,0 +1,20 @@
+name: LerayHopf.stokesTestPairing_abs_le
+tier: full
+statement_ja: |
+  粘性ペアリング [[粘性ペアリング|LerayHopf.stokesTestPairing_R3]] の重み付き Cauchy–Schwarz。$H^1$ の元 $u,w$ に対し
+
+  $$|\mathrm{stokes}(u,w)|\le\sqrt{V_1(u)}\cdot\sqrt{V_1(w)}$$
+
+  が成り立つ。$V_1$ は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
+proof_ja: |
+  ペアリングを重み付き Fourier 成分の内積和 [[内積和展開|LerayHopf.stokesTestPairing_eq_sum_inner_wFC]] に書き直し、各成分で複素 $L^2$ の Cauchy–Schwarz を使って実部を成分ノルムの積で抑える。さらに有限和の Cauchy–Schwarz
+
+  $$\sum_j a_jb_j\le\sqrt{\textstyle\sum_j a_j^2}\,\sqrt{\textstyle\sum_j b_j^2}$$
+
+  を適用し、成分和表示 [[粘性散逸の成分和|LerayHopf.viscousFormSq_eq_sum_normSq_wFC]] で $V_1$ を復元する。
+gap:
+  level: none
+  note: |
+    粘性形式に対する重み付き Cauchy–Schwarz であり、良いサンプリングによるコンパクト性ルートの評価に使われる。
+chapter: compactness
+tags: [stokes-pairing, cauchy-schwarz, viscous-form]

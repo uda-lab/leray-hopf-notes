@@ -1,0 +1,16 @@
+name: LerayHopf.eLpNorm_six_le_of_schwartzRep
+tier: full
+statement_ja: |
+  成分ごとの $L^6$ エネルギー類評価。Dirichlet エネルギーに依る絶対係数 $C_6\ge 0$（$v$・表現 $\psi$・成分 $i$ に依らない）が存在し、$v$ の任意の Schwartz 表現 $\psi$ と任意の成分 $i$ に対し
+
+  $$\lVert\psi_i\rVert_{L^6}\le C_6\sqrt{V_1(v)}$$
+
+  が成り立つ。$V_1$ は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
+proof_ja: |
+  Gagliardo–Nirenberg–Sobolev により $\lVert\psi_i\rVert_{L^6}$ を勾配の $L^2$ ノルムで抑え、それを成分偏微分の $L^2$ 質量の和へ橋渡しし、勾配エネルギーの Plancherel 恒等式 [[勾配エネルギー恒等式|LerayHopf.sum_gradSq_eq_viscousFormSq_of_schwartzRep]] で $\sqrt{V_1(v)}$ に到達させる。有限和の Cauchy–Schwarz で $\sqrt 3$ の因子を出す。
+gap:
+  level: none
+  note: |
+    存在量化子 $\exists C_6$ が $v,\psi,i$ すべての量化子の外にあるため、定数は真に絶対（場に依存しない）である。この $n$ 非依存性が最終的な三線型評価の $n$ 一様性を構造的に保証する。
+chapter: compactness
+tags: [sobolev, energy-class, gns]

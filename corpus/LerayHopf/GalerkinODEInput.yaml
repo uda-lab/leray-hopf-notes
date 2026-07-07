@@ -1,0 +1,16 @@
+name: LerayHopf.GalerkinODEInput
+tier: full
+statement_ja: |
+  ℝ³ の Galerkin ODE に対する分離された解析的前提を束ねる構造である。各段 $n$ について、近似部分空間上の射影された Navier–Stokes ODE の大域解曲線と、それを解たらしめる二つの事実を運ぶ。
+
+  具体的には、大域解曲線 $u\colon[0,\infty)\to L^2_\sigma$ に加えて、初期条件 $u(0)=P_n u_0$、部分空間への閉じ込め $u(t)=P_n u(t)$、前進時刻での微分可能性、および任意の Galerkin テスト $w$ に対する弱形式
+
+  $$\langle u'(t),w\rangle+\nu\,\mathrm{stokes}(u(t),w)+b(u(t),u(t),w)=0$$
+
+  を含む。さらに重み付き Fourier 成分曲線の連続性を運ぶ。
+gap:
+  level: mild
+  note: |
+    この構造は二つの真正な mathlib の穴、すなわち大域存在（先験評価からの継続定理が mathlib にない）と、抽象三線型形式 $b$ の弱形式とベクトル場表現の対応を、証明せずに仮説として切り出す。運ぶのは素の解曲線とそれを解と定義する事実だけで、エネルギー評価・散逸評価・正則性は含まない（それらは下流で導出される）。微分可能性と弱形式が前進時刻 $t\ge 0$ に制限されているのは健全性のためで、二次のベクトル場は後進時刻で有限時間爆発しうる。前五フィールドは解データ [[Galerkin 解データ|LerayHopf.GalerkinSolutionData_R3]] の対応フィールドと同型である。
+chapter: ode
+tags: [galerkin-approximation, ode, isolated-hypothesis]

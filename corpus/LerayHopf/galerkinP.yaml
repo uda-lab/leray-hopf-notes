@@ -1,0 +1,10 @@
+name: LerayHopf.galerkinP
+tier: full
+statement_ja: |
+  [[Schwartz 発散ゼロ基底|LerayHopf.SchwartzGalerkinBasis]] $B$ に付随する第 $n$ Galerkin 射影 $P_n$ を、先頭部分空間 [[先頭部分空間|LerayHopf.galerkinSpan]] $V_n$ への直交射影として定める。これが Galerkin 近似スキームの射影族を成す。
+gap:
+  level: none
+  note: |
+    Lean では直交射影を `Submodule.starProjection` として実現する。非拡大性・冪等性・像の所属・強収束といったスキームの諸性質は、いずれもこの直交射影の一般論から導かれる。
+chapter: projections-galerkin
+tags: [galerkin-scheme, orthogonal-projection]

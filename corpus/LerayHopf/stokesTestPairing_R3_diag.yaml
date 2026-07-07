@@ -1,0 +1,12 @@
+name: LerayHopf.stokesTestPairing_R3_diag
+tier: full
+statement_ja: |
+  粘性ペアリング [[粘性ペアリング|LerayHopf.stokesTestPairing_R3]] は対角上で散逸に一致する。すなわち $\mathrm{stokes}(u,u)=V_1(u)$ であり、右辺は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
+proof_ja: |
+  両者を Fourier 側の被積分関数まで展開すると、対角では複素数とその共役の積の実部が絶対値の二乗になる。これを各成分・各点で確かめれば積分が一致する。
+gap:
+  level: none
+  note: |
+    エネルギー恒等式で、弱形式を対角テスト $w=u(t)$ に適用したときに粘性項を散逸へ潰すために使われる。
+chapter: ode
+tags: [viscous-form, stokes-pairing]

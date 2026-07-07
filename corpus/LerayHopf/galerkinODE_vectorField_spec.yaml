@@ -1,0 +1,16 @@
+name: LerayHopf.galerkinODE_vectorField_spec
+tier: full
+statement_ja: |
+  Galerkin ベクトル場 [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] $G_n$ の定義的性質。任意のテスト $w\in V_n$ に対し
+
+  $$\langle G_n(u),w\rangle=-\nu\,\mathrm{stokes}(u,w)-b(u,u,w)$$
+
+  が成り立つ。これが弱形式とベクトル場表現を結ぶ橋である。
+proof_ja: |
+  周囲の内積を有限次元 $V_n$ の内積へ移し、Riesz 同型の逆写像の特徴づけ、すなわち表現ベクトルとテスト $w$ の内積が元の汎関数の値に等しいことを適用し、汎関数の値 [[汎関数の値|LerayHopf.galerkinODE_functional_apply]] を露わにすれば右辺がそのまま現れる。
+gap:
+  level: none
+  note: |
+    これは弱形式とベクトル場の対応（R-repr）を精密化したもので、自励方程式 $c'=G_n(c)$ から弱 Galerkin ODE を導出する起点になる。符号と $\nu$ の規約は弱形式フィールドと整合する。
+chapter: ode
+tags: [galerkin-approximation, riesz-representation, weak-formulation]
