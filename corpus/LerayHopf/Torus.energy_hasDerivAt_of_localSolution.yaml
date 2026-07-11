@@ -3,9 +3,9 @@ tier: full
 statement_ja: |
   局所解に沿うエネルギーの微分：曲線 $c$ が時刻 $t$ で ODE $c' = G_n(c)$ を満たすならば、エネルギー $\tfrac{1}{2} \lVert c(t) \rVert^2$ は $t$ で微分係数
 
-  $$-\nu\, \lVert \nabla c(t) \rVert^2 \;(\le 0)$$
+  $$-\nu\, \lVert \nabla c(t) \rVert^2$$
 
-  （係数 $1$ の [[粘性形式|LerayHopf.viscousFormSq]] の $-\nu$ 倍）を持つ。
+  （係数 $1$ の [[粘性形式|LerayHopf.viscousFormSq]] の $-\nu$ 倍。$\nu \ge 0$ ならば非正）を持つ。粘性係数の符号への仮定はない。
 proof_ja: |
   汎用枠組みのエネルギー微分定理へ委譲する。内実はノルム二乗の微分公式と ODE 法則・移流の対角消滅の組合せで、微分値に現れる Stokes 対角値を [[Stokes 対角|LerayHopf.Torus.stokesTestPairing_diag]] で粘性形式に書き換える。部分空間に値を取る曲線とその周囲空間への埋め込みの微分の往復は補助補題で処理する。
 gap:
