@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    有限次元大域存在が前進時刻構造として無条件に証明されたため、残余の仮説が消えて解データが無条件になった。これが「具体スキーム上で無条件」という成果を実現し、$\mathbb{R}^3$ 主定理 [[R3 主定理|LerayHopf.exists_lerayHopf_r3_axiomatic]] の Galerkin 近似段を追加公理なしで供給する。データを運ぶ構造体を返すため `noncomputable def` である。
+    有限次元大域存在が前進時刻構造として無条件に証明されたため、残余の仮説が消えて解データが無条件になった。これが「具体スキーム上で無条件」という成果を実現し、$\mathbb{R}^3$ 主定理 [[R3 主定理|LerayHopf.exists_lerayHopf_r3]] の Galerkin 近似段を追加公理なしで供給する。データを運ぶ構造体を返すため `noncomputable def` である。
 chapter: ode
 tags: [galerkin-approximation, kernel-only]

@@ -7,7 +7,7 @@ statement_ja: |
 
   が成り立つ。$V_1$ は粘性散逸形式 [[粘性散逸形式|LerayHopf.viscousFormSq_R3]] の $\nu=1$ の値である。
 proof_ja: |
-  各 $(i,a)$ 項に指数 $(3,2,6)$ の Hölder を適用し、$L^3$ ノルムを補間 [[L³ 補間|LerayHopf.eLpNorm_three_le_interp_pub]] で $L^2$ と $L^6$ に分け、$L^6$ ノルムを $L^6$ 評価 [[L⁶ 評価|LerayHopf.eLpNorm_six_le_of_schwartzRep]] で $C_6\sqrt{V_1}$ に抑え、偏微分の $L^2$ ノルムを勾配エネルギー恒等式で $\sqrt{V_1(v)}$ に抑える。$\lVert u\rVert_2$ と $\sqrt{V_1(u)}$ を補間して $\lVert u\rVert^{1/2}V_1(u)^{1/4}$ の因子を出し、有限和で集約する。
+  各 $(i,a)$ 項に指数 $(3,2,6)$ の Hölder を適用し、$L^3$ ノルムを補間 [[L³ 補間|LerayHopf.PlancherelKernels.eLpNorm_three_le_interp]] で $L^2$ と $L^6$ に分け、$L^6$ ノルムを $L^6$ 評価 [[L⁶ 評価|LerayHopf.eLpNorm_six_le_of_schwartzRep]] で $C_6\sqrt{V_1}$ に抑え、偏微分の $L^2$ ノルムを勾配エネルギー恒等式で $\sqrt{V_1(v)}$ に抑える。$\lVert u\rVert_2$ と $\sqrt{V_1(u)}$ を補間して $\lVert u\rVert^{1/2}V_1(u)^{1/4}$ の因子を出し、有限和で集約する。
 gap:
   level: none
   note: |

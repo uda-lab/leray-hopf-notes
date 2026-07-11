@@ -1,4 +1,4 @@
-name: LerayHopf.exists_lerayHopf_torus3_statement
+name: LerayHopf.Scaffold.exists_lerayHopf_torus3_statement
 tier: full
 statement_ja: |
   この命題は、共通基盤の補助構成を扱うための公開された構成または主張である。抽出された型に現れる仮定のもとで、対応する対象の存在、保存性、評価、連続性、可測性、または極限性を与える。

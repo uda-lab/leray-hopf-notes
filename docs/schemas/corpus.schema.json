@@ -69,6 +69,7 @@
         "capstone-r3",
         "capstone-torus",
         "bochner",
+        "galerkin-generic",
         "misc"
       ]
     },

@@ -17,6 +17,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    これは $H^1$ 所属から $L^2$-Fourier 変換の具体的な荷重付き可積分性への橋渡しであり、荷重付き可積分性は[[H¹ の荷重付き可積分性|LerayHopf.memH1_weightedL2_integrable]]で与えられる。かつてこの命題には唯一の未証明ギャップが残っていたが、共有の Fourier–$L^2$ 基盤（`FourierL2.lean`）により閉じられ、現在は証明済みである。宣言のドキュメント文字列には旧い「未解決」の記述が残るが、実際の証明は完結している。
+    これは $H^1$ 所属から $L^2$-Fourier 変換の具体的な荷重付き可積分性への橋渡しであり、荷重付き可積分性は[[H¹ の荷重付き可積分性|LerayHopf.memH1_weightedL2_integrable_R]]で与えられる。かつてこの命題には唯一の未証明ギャップが残っていたが、共有の Fourier–$L^2$ 基盤（`FourierL2.lean`）により閉じられ、現在は証明済みである。宣言のドキュメント文字列には旧い「未解決」の記述が残るが、実際の証明は完結している。
 chapter: compactness
 tags: [frechet-kolmogorov, sobolev, fourier-coefficient, plancherel]
