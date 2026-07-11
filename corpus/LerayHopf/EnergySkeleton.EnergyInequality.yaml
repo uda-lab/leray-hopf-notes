@@ -1,12 +1,14 @@
 name: LerayHopf.EnergyInequality
 tier: full
 statement_ja: |
-  この定義は、エネルギー恒等式とエネルギー不等式を扱うための公開された構成または主張である。抽出された型に現れる仮定のもとで、対応する対象の存在、保存性、評価、連続性、可測性、または極限性を与える。
+  抽象エネルギー不等式の述語：エネルギーデータ $(E, A, \nu)$ に対し
+
+  $$\forall\, s, t,\quad 0 \le s \le t \;\Longrightarrow\; E(t) + \nu\, A(s,t) \le E(s).$$
 proof_ja: |
-  証明は、関連する定義を展開し、既に準備した代数的性質、射影の性質、積分評価、可測性、連続性、または収束補題を順に組み合わせる。有限次元の議論や既存の抽象補題に帰着できる箇所ではそれを用い、最後に必要な等式や不等式を整理して結論を得る。
+  主張そのものを全称文として書き下した定義である。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 3 の public full 注釈として追加。抽出元は `LerayHopf/EnergySkeleton.lean` の `LerayHopf.EnergyInequality`。詳細な証明構造は抽出済み docstring とソース範囲に保持されている。
+    `LerayHopf/EnergySkeleton.lean` の抽象層。この述語の具体的な実現は [[抽象エネルギー則からのエネルギー不等式|LerayHopf.abstract_galerkin_satisfies_EnergyInequality]] が与える。
 chapter: energy
-tags: [wave3-public, generated]
+tags: [energy-inequality, abstract-interface]
