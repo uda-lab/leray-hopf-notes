@@ -1,16 +1,16 @@
 name: LerayHopf.schwartz_trilinear_bound_L326_energy
 tier: full
 statement_ja: |
-  スカラー Schwartz 三つ組の $(3,2,6)$-Hölder 三重積評価：積分 $\int \lvert f\,g\,h\rvert$ を
+  スカラー Schwartz 三つ組の $(3,2,6)$-Hölder 三重積評価：
 
-  $$\lVert f\rVert_{L^3}\lVert g\rVert_{L^2}\lVert h\rVert_{L^6}.$$
+  $$\Bigl\lvert\int f\,g\,h\Bigr\rvert \le \lVert f\rVert_{L^3}\,\lVert g\rVert_{L^2}\,\lVert h\rVert_{L^6}.$$
 
-  型の積で抑え、さらに $L^3$・$L^6$ ノルムをエネルギー（$L^2$ ノルムと勾配エネルギー）で制御した形の評価。移流項の三重線形評価の再利用可能な単項版。
+  移流項の三重線形評価の再利用可能な単項版。$L^3$・$L^6$ ノルムをエネルギー量へ置き換える段は、これを消費する下流の評価が別途行う。
 proof_ja: |
-  指数 $\tfrac13+\tfrac12+\tfrac16=1$ の三因子 Hölder で積分を三つのノルムの積に分け、$L^3$ は $L^2\cap L^6$ 補間、$L^6$ は Sobolev 型の評価でそれぞれエネルギー量に置き換える。
+  まず積 $f\cdot h$ を指数対 $(3,6)\to 2$ の Hölder で $L^2$ に収め、次に $g$ と Cauchy–Schwarz で対にして三つのノルムの積を得る。
 gap:
   level: mild
   note: |
-    lean-pde PR #129 で private→public 化（`GalerkinTrilinearBound.lean`）。Galerkin 文脈に依存しない再利用可能な事実として公開。
+    lean-pde PR #129 で private→public 化（`GalerkinTrilinearBound.lean`）。結論は純粋な Hölder 積であり、エネルギー（勾配量）による制御は消費側の `convIntegralSchwartz_bound_energy` が補間・Sobolev 評価を併用して行う。
 chapter: limit-passage
 tags: [trilinear, holder, r3]
