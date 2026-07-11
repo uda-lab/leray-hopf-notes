@@ -46,7 +46,8 @@ VALID_TIERS = {'full', 'gloss'}
 VALID_GAP_LEVELS = {'none', 'mild', 'large'}
 VALID_CHAPTERS = {
     'spaces', 'projections-galerkin', 'ode', 'energy', 'compactness',
-    'limit-passage', 'capstone-r3', 'capstone-torus', 'bochner', 'misc',
+    'limit-passage', 'capstone-r3', 'capstone-torus', 'bochner',
+    'galerkin-generic', 'misc',
 }
 NAME_PATTERN = re.compile(r"^[A-Za-z_Ͱ-￿][A-Za-z0-9_'.Ͱ-￿]*$")
 

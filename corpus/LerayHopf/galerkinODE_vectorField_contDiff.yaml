@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   Galerkin ベクトル場 [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] $G_n$ は有限次元 $V_n$ 上で $C^1$（実際には滑らか）である。
 proof_ja: |
-  場は二次部分 [[二次部分|LerayHopf.galerkinODE_bilinearPart]] と一次部分 [[一次部分|LerayHopf.galerkinODE_linearPart]] の和
+  場は二次部分 [[二次部分|LerayHopf.Galerkin.bilinearPart]] と一次部分 [[一次部分|LerayHopf.Galerkin.linearPart]] の和
 
   $$u\longmapsto\mathrm{Bil}(u,u)+\mathrm{Lin}\,u$$
 

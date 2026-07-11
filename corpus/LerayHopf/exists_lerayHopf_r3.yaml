@@ -1,4 +1,4 @@
-name: LerayHopf.exists_lerayHopf_r3_axiomatic
+name: LerayHopf.exists_lerayHopf_r3
 tier: full
 statement_ja: |
   発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、$\mathbb{R}^3$ 上の Navier–Stokes 方程式は Leray–Hopf 弱解をもつ。

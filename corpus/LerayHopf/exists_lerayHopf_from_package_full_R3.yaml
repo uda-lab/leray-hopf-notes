@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    パッケージが運ぶ極限の性質と Leray–Hopf 解の要求フィールドが一対一に対応するため、組み立ては直接的である。この組み立て定理が主定理 [[R3 主定理|LerayHopf.exists_lerayHopf_r3_axiomatic]] の最後の段になる。
+    パッケージが運ぶ極限の性質と Leray–Hopf 解の要求フィールドが一対一に対応するため、組み立ては直接的である。この組み立て定理が主定理 [[R3 主定理|LerayHopf.exists_lerayHopf_r3]] の最後の段になる。
 chapter: capstone-r3
 tags: [leray-hopf, compactness, existence]

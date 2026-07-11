@@ -42,20 +42,28 @@ chapters:
   - id: capstone-r3
     label_ja: R3 主定理
     description: >
-      exists_lerayHopf_r3_axiomatic and its direct assembly lemmas
-      (LearyHopf/R3/AxiomaticClosure.lean, GalerkinODECapstone.lean).
+      exists_lerayHopf_r3 and its direct assembly lemmas
+      (LerayHopf/R3/SolutionInterfaces.lean, GalerkinODECapstone.lean).
 
   - id: capstone-torus
     label_ja: T³ 主定理
     description: >
-      exists_lerayHopf_torus3_axiomatic and its direct assembly lemmas
-      (LearyHopf/TorusGalerkinODECapstone.lean, AxiomaticClosure.lean).
+      exists_lerayHopf_torus3 and its direct assembly lemmas
+      (LerayHopf/Torus/GalerkinODECapstone.lean, SolutionInterfaces.lean).
 
   - id: bochner
     label_ja: Bochner 時間層
     description: >
       TimeSobolev, AEStronglyMeasurable threading, Bochner integrability,
       w1pTime, good representative / measurable representative.
+
+  - id: galerkin-generic
+    label_ja: 汎用 Galerkin 層
+    description: >
+      Domain-neutral Galerkin infrastructure shared by both lanes
+      (Galerkin.Domain, NSFormCore, FieldForms, DissipativeODE,
+      SolutionData / LerayHopfSolution / CompactnessPackage,
+      exists_lerayHopf_from_package).
 
   - id: misc
     label_ja: その他・共通基盤

@@ -1,7 +1,7 @@
 name: LerayHopf.convIntegralSchwartz_add_1
 tier: full
 statement_ja: |
-  Schwartz 表現に対する[[移流形式|LerayHopf.convForm]] $b(u,v,w)=\int(u\cdot\nabla)v\cdot w$ は、第一引数 $u$ について加法的である。
+  Schwartz 表現に対する[[移流形式|LerayHopf.convIntegralSchwartz]] $b(u,v,w)=\int(u\cdot\nabla)v\cdot w$ は、第一引数 $u$ について加法的である。
 
   $$b(u_1+u_2,v,w)=b(u_1,v,w)+b(u_2,v,w)$$
 proof_ja: |
