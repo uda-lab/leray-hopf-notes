@@ -1,10 +1,12 @@
 name: LerayHopf.tendsto_normSq_restrictToBall
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  球によるノルムの枯渇：固定した $w$ に対し、半径 $k$ の球制限のノルム二乗は $k\to\infty$ で $\lVert w\rVert^2$ へ収束する。
+proof_ja: |
+  被積分関数 $\lVert w(x)\rVert^2$ は可積分で、各球項はその集合積分である。球は全空間を単調に覆い尽くすので、単調収束（可積分な非負関数の集合積分の連続性）により全空間積分＝ノルム二乗へ収束する。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.tendsto_normSq_restrictToBall`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    可積分性は $L^2$ 所属のノルム冪の可積分性（`MemLp.integrable_norm_rpow`）から。lean-pde PR #122（issue #111 PR-3）で private→public 化・共有化された。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [spatial-compactness, restrict-to-ball, r3]

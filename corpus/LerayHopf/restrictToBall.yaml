@@ -1,12 +1,12 @@
 name: LerayHopf.restrictToBall
 tier: full
 statement_ja: |
-  $L^2(\mathbb{R}^3)$ の速度場を半径 $R$ の閉球 $B_R$ に制限し、[[球上の二乗可積分空間|LerayHopf.L2ballR3]]の要素とみなす操作。
-
-  場の下にある可測関数を経由して、球上の制限測度に対する二乗可積分性を得たうえで $L^2(B_R)$ 類として束ねる。
+  $L^2(\mathbb{R}^3)$ ベクトル場の半径 $R$ の閉球への制限。球上の $L^2$ 空間の元を与える対応で、局所 Rellich 論法（球上のコンパクト性 + 裾の一様小ささ）の基本部品。
+proof_ja: |
+  場の代表関数を球へ制限し、その二乗可積分性（全空間での可積分性の単調性から従う）で球上の $L^2$ 類を定める。
 gap:
   level: none
   note: |
-    下にある関数の二乗可積分性 `MemLp.restrict` から球上の `MemLp` を得て `MemLp.toLp` で類にする。制限は測度保存ではないので、平行移動と違って `Lp.compMeasurePreserving` は使えない。
+    lean-pde PR #122（issue #111 PR-3）で private→public 化・共有化された。
 chapter: compactness
-tags: [spatial-compactness, function-space]
+tags: [spatial-compactness, restrict-to-ball, r3]

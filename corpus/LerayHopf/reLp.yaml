@@ -1,10 +1,16 @@
 name: LerayHopf.reLp
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  実部写像
+
+  $$L^2(\mathbb{R}^3;\mathbb{C})\to L^2(\mathbb{R}^3;\mathbb{R}).$$
+
+  の連続線形写像化。複素の Fourier 側で得た極限情報を実の場へ戻す橋。
+proof_ja: |
+  点別の実部の取り出しは連続線形で絶対値を増やさないので、$L^2$ 類の水準の連続線形写像へ持ち上がる。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.reLp`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126 で `Analysis/RealComplexLpBridge.lean` へ公開移動（private→public）。
 chapter: energy
-tags: [private-helper, generated]
+tags: [real-complex-bridge, shared-infra]

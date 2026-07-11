@@ -1,10 +1,16 @@
 name: LerayHopf.fourier_schwartzC_lineDeriv_apply
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  複素化した方向微分の Fourier 記号：実 Schwartz 関数 $f$ と方向 $m$ に対し、$\partial_m f$ の複素化の Fourier 変換は点別に
+
+  $$2\pi i\,\langle\xi,m\rangle\,\widehat{f}(\xi).$$
+
+  である。
+proof_ja: |
+  方向微分の Fourier 変換規則を、複素化と方向微分の交換補題を経由して適用する。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.fourier_schwartzC_lineDeriv_apply`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

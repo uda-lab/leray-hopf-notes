@@ -1,10 +1,12 @@
 name: LerayHopf.restrictToBall_dist_le
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  球制限は $1$-Lipschitz である：二場の球制限の距離は元の距離を超えない。
+proof_ja: |
+  差との整合性により距離は差のノルムであり、制限がノルムを増やさないことに帰着する。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.restrictToBall_dist_le`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #122（issue #111 PR-3）で private→public 化・共有化された。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [spatial-compactness, restrict-to-ball, r3]

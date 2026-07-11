@@ -1,10 +1,12 @@
 name: LerayHopf.schwartz_antiHermitian_has_testSymbol_preimage
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  反 Hermite 記号のテスト記号逆像：反 Hermite 対称な複素 Schwartz 記号は、ある実 Schwartz テストのテスト記号として実現できる。弱発散ゼロ条件を Fourier 側の横断性条件と往復させる対応の片翼。
+proof_ja: |
+  Fourier 逆変換で引き戻したうえで、$i$ 倍による Hermite・反 Hermite の入れ替えと Hermite 逆像補題を組み合わせる。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.schwartz_antiHermitian_has_testSymbol_preimage`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。 Fourier 逆対（`FourierInvPair`）と反転・共役規則（`fourier_ofReal_reflect_eq_conj`）の組み合わせ。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

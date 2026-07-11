@@ -1,10 +1,12 @@
 name: LerayHopf.complexInner_compLpL_ofReal
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  実内積の複素化整合性：二つの実 $L^2$ 成分を複素 $L^2$ へ埋め込んだものの複素内積は、実内積の値（の複素埋め込み）に等しい。
+proof_ja: |
+  内積を積分表示し、実数値関数の複素共役が自明であることから点別に実の積へ落ちる。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.complexInner_compLpL_ofReal`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

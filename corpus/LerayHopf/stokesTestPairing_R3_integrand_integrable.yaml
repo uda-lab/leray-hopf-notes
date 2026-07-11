@@ -1,10 +1,12 @@
 name: LerayHopf.stokesTestPairing_R3_integrand_integrable
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Stokes テスト対の被積分関数の可積分性：両引数が span 元なら、成分ごとの重み付き Fourier 積の被積分関数は可積分である。
+proof_ja: |
+  span 元の Fourier 変換は Schwartz 代表元の急減少性を引き継ぐので、多項式重みを掛けても可積分性が保たれる。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinODEExistence.lean` の `LerayHopf.stokesTestPairing_R3_integrand_integrable`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde issue #112 PR-B（PR #133）/ #111 PR-5（PR #124）で private→public 化。
 chapter: ode
-tags: [private-helper, generated]
+tags: [galerkin, ode, r3]

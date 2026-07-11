@@ -1,10 +1,12 @@
 name: LerayHopf.viscousFormSq_aestronglyMeasurable_of_memH1
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  粘性散逸の時間可測性：a.e. の時刻で $H^1$ 所属をもつ曲線に対し、$t\mapsto$（粘性散逸）は a.e. 強可測である。エネルギー不等式の散逸積分が測度論的に意味を持つための前提。
+proof_ja: |
+  散逸を重み付き Fourier 成分のノルム二乗の和として表し、各成分の時間可測性（曲線の可測性と連続作用素の合成）から可測性を組み立てる。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.viscousFormSq_aestronglyMeasurable_of_memH1`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #130（issue #114 Tier 1）で `R3/EnergyWeakLsc.lean` に private→public 化。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [energy, measurability, r3]

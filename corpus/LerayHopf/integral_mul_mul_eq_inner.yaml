@@ -1,10 +1,12 @@
 name: LerayHopf.integral_mul_mul_eq_inner
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  三重積の内積表示：実 $L^2$ 元 $a,b$ と本質的有界な $h$ に対し、積分 $\int a\,b\,h$ は内積 $\langle a,\ h\cdot b\rangle$ に等しい。三重積の極限移行を内積の連続性の問題へ変換する要の書き換え。
+proof_ja: |
+  内積を積分表示し、乗算の点別表示を代入して被積分関数が一致することを確かめる。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.integral_mul_mul_eq_inner`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126 で `Analysis/RealComplexLpBridge.lean` へ公開移動（private→public）。
 chapter: energy
-tags: [private-helper, generated]
+tags: [real-complex-bridge, shared-infra]

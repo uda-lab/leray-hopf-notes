@@ -1,10 +1,12 @@
 name: LerayHopf.inner_L2VF_eq_integral_sum_fourier
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  ベクトル Parseval ブリッジ：二つの速度場の実内積（の複素化）は、成分ごとの Fourier 変換の積の和の積分に等しい。実側のエネルギー計算を Fourier 側へ移す要の等式。
+proof_ja: |
+  成分分解で内積を成分ごとの複素内積の和にし、各成分に Parseval 等式（Fourier 変換のユニタリ性）を適用する。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.inner_L2VF_eq_integral_sum_fourier`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。 成分ごとの複素化・Parseval の持ち回りが形式化の作業量。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

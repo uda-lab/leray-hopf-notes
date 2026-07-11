@@ -1,10 +1,14 @@
 name: LerayHopf.normSq_restrictToBall_eq_setIntegral
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  球制限のノルム二乗の集合積分表示：
+
+  $$\lVert u\vert_{B_R}\rVert^2 = \int_{B_R}\lVert u(x)\rVert^2\,dx.$$
+proof_ja: |
+  球上の $L^2$ ノルムを制限測度の積分として展開し、代表関数の a.e. 一致で全空間の場の集合積分に書き換える。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.normSq_restrictToBall_eq_setIntegral`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #122（issue #111 PR-3）で private→public 化・共有化された。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [spatial-compactness, restrict-to-ball, r3]
