@@ -1,10 +1,12 @@
 name: LerayHopf.tailVF
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $L^2(\mathbb{R}^3)$ ベクトル場の裾（半径 $R$ の閉球の補集合）への制限。球の外側のエネルギーを測る部品で、球制限と対になる。
+proof_ja: |
+  代表関数を球の補集合へ制限し、二乗可積分性の単調性で裾上の $L^2$ 類を定める。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SpatialCompactness.lean` の `LerayHopf.tailVF`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #122（issue #111 PR-3）で private→public 化・共有化された。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [spatial-compactness, restrict-to-ball, r3]

@@ -1,10 +1,12 @@
 name: LerayHopf.ae_zero_of_hermitianTest
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Hermite テストに対する du Bois-Reymond 補題：局所可積分な関数がすべての Hermite 対称 Schwartz テストとの積分で消えるなら、その関数は a.e. で零である。弱発散ゼロなどの超関数的条件から点別の結論を引き出す基本補題。
+proof_ja: |
+  実の滑らかなコンパクト台テスト $g$ を偶部 $g_E$ と奇部 $g_O$ に分解する。$g_E$ の複素化は Hermite 対称であり、奇部は $i$ 倍すると Hermite 対称になるので、いずれも仮定のテストクラスに入る。両者に対する消滅から $2g = g_E + g_O$ に対する消滅が従い、通常の du Bois-Reymond 補題（滑らかなコンパクト台テストで消える局所可積分関数は a.e. 零）に帰着する。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.ae_zero_of_hermitianTest`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。 偶奇分解と複素化の整合性が形式化の中心。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

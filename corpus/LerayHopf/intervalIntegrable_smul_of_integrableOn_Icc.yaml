@@ -1,10 +1,12 @@
 name: LerayHopf.Bochner.intervalIntegrable_smul_of_integrableOn_Icc
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、Bochner 時間層で、弱時間微分、時間軟化、可測性、または時間方向のコンパクト性を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  スカラー倍の区間可積分性：$[0,T]$ 上可積分な Bochner 曲線に有界可測なスカラー関数を掛けても区間可積分性が保たれる。時間軟化の計算の下請け。
+proof_ja: |
+  点別ノルム評価でスカラー倍の可積分性を優関数論法に帰着する。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/Bochner/TimeSobolev.lean` の `LerayHopf.Bochner.intervalIntegrable_smul_of_integrableOn_Icc`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #124 で `Bochner/TimeSobolev.lean` に一本化（旧 prime 付きコピーは削除）。
 chapter: bochner
-tags: [private-helper, generated]
+tags: [bochner, integrability]

@@ -1,10 +1,12 @@
 name: LerayHopf.L2C_eq_of_toTempered_eq
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $L^p$ から緩増加超関数への埋め込みの単射性：二つの $L^2$ 元が緩増加超関数として等しければ、$L^2$ の元として等しい。スペクトル論法で超関数の等式から $L^2$ の等式へ戻る出口。
+proof_ja: |
+  テストとの対で一致する二つの局所可積分関数は a.e. で一致する（du Bois-Reymond）ことに帰着し、$L^2$ 類の等式として読み替える。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.L2C_eq_of_toTempered_eq`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126 で `Analysis/SpectralWeakGradient.lean` へ公開移動。
 chapter: energy
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

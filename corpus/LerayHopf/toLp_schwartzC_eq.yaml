@@ -1,10 +1,12 @@
 name: LerayHopf.toLp_schwartzC_eq
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  複素化と $L^2$ 類の整合性：実 Schwartz 関数の複素化の $L^2$ 類は、実 $L^2$ 類を複素 $L^2$ へ埋め込んだものに等しい。
+proof_ja: |
+  両者の代表関数は点別に一致するので、a.e. 等式として $L^2$ 類が一致する。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.toLp_schwartzC_eq`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

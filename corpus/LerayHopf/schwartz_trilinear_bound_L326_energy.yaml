@@ -1,10 +1,16 @@
 name: LerayHopf.schwartz_trilinear_bound_L326_energy
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  スカラー Schwartz 三つ組の $(3,2,6)$-Hölder 三重積評価：
+
+  $$\Bigl\lvert\int f\,g\,h\Bigr\rvert \le \lVert f\rVert_{L^3}\,\lVert g\rVert_{L^2}\,\lVert h\rVert_{L^6}.$$
+
+  移流項の三重線形評価の再利用可能な単項版。$L^3$・$L^6$ ノルムをエネルギー量へ置き換える段は、これを消費する下流の評価が別途行う。
+proof_ja: |
+  まず積 $f\cdot h$ を指数対 $(3,6)\to 2$ の Hölder で $L^2$ に収め、次に $g$ と Cauchy–Schwarz で対にして三つのノルムの積を得る。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.schwartz_trilinear_bound_L326_energy`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #129 で private→public 化（`GalerkinTrilinearBound.lean`）。結論は純粋な Hölder 積であり、エネルギー（勾配量）による制御は消費側の `convIntegralSchwartz_bound_energy` が補間・Sobolev 評価を併用して行う。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [trilinear, holder, r3]

@@ -1,10 +1,12 @@
 name: LerayHopf.schwartz_hermitian_has_fourier_preimage
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Hermite 記号の Fourier 逆像：任意の Hermite 対称な複素 Schwartz 記号は、ある実 Schwartz 関数の複素化の Fourier 変換として得られる。実のテスト空間と Fourier 側の Hermite 記号空間の対応を与える。
+proof_ja: |
+  Fourier 変換の逆写像で引き戻し、Hermite 対称性が逆像の実数値性に翻訳されることを共役・反転規則で確かめる。得られた関数が実 Schwartz の複素化として実現されることを実部の取り出しで固定する。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.schwartz_hermitian_has_fourier_preimage`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

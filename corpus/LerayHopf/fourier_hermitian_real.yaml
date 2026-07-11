@@ -1,10 +1,12 @@
 name: LerayHopf.fourier_hermitian_real
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Hermite 対称関数の Fourier 変換の実数値性：Hermite 対称な Schwartz 関数の Fourier 変換は実数値である（虚部が消える）。前補題の逆向きの整合性。
+proof_ja: |
+  Hermite 対称性を Fourier 変換の共役・反転規則へ通すと、変換後の関数がみずからの共役に一致することが従う。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.fourier_hermitian_real`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126（issue #113 PR-2）で汎用解析層 `Analysis/FourierParseval.lean` へ公開移動。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, parseval, shared-infra]

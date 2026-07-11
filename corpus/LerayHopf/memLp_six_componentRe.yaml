@@ -1,10 +1,12 @@
 name: LerayHopf.memLp_six_componentRe
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $H^1_\sigma$ 場の複素成分の実部の $L^6$ 所属：$u$ が $H^1$ 級なら、その成分の実部は $L^6$ に属する（三次元の Sobolev 埋め込み $H^1\hookrightarrow L^6$）。
+proof_ja: |
+  成分の実部の値と弱勾配がともに $L^2$ に属することへ還元し、Gagliardo–Nirenberg–Sobolev 型の埋め込みで $L^6$ 所属を得る。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.memLp_six_componentRe`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126 で `Analysis/LpInterpolation.lean` へ公開移動。
 chapter: energy
-tags: [private-helper, generated]
+tags: [interpolation, sobolev, shared-infra]

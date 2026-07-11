@@ -1,10 +1,16 @@
 name: LerayHopf.testSymbol
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  弱発散対の Fourier テスト記号：実 Schwartz テスト $\varphi$ に対し
+
+  $$\sigma_\varphi(\xi) = \overline{\,2\pi i\;\widehat{\varphi_{\mathbb{C}}}(\xi)\,}$$
+
+  で定まる複素関数 $\sigma_\varphi$（$\varphi_{\mathbb{C}}$ は複素化）。$\varphi$ を実 Schwartz 全体で走らせたとき、これが弱発散条件の Fourier 側で横断欠損と対にできるテスト記号の族のすべてである。
+proof_ja: |
+  複素化・Fourier 変換・$2\pi i$ 倍・複素共役の合成として構成する。係数 $2\pi i$ は微分の Fourier 記号に由来し、共役は内積の第二引数側に置くための規約である。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.testSymbol`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    lean-pde PR #126 で `Analysis/FourierParseval.lean` へ公開移動。$2\pi i$ 因子と共役が記号の対称類（Hermite か反 Hermite か）を決めるため、隣接する反 Hermite 逆像補題 `schwartz_antiHermitian_has_testSymbol_preimage` はこの正確な形に依存する。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [fourier, weak-divergence, shared-infra]

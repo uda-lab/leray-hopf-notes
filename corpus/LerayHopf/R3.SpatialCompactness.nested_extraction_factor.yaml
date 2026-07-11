@@ -1,11 +1,12 @@
 name: LerayHopf.nested_extraction_factor
-file: LerayHopf/R3/SpatialCompactness.lean
-tier: gloss
+tier: full
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  入れ子抽出の因数分解：部分列抽出の族 $\Phi$ が各段で狭義単調な $\rho_k$ により $\Phi_{k+1}=\Phi_k\circ\rho_k$ と細分されていくとき、任意の $k\le n$ に対し狭義単調な $R$ が存在して $\Phi_n = \Phi_k\circ R$ と書ける。対角線論法で得た多段の部分列を、任意の基準段の部分列として一本に読み替える組合せ補題。
+proof_ja: |
+  $n$ についての帰納法である。$n=k$ では恒等写像を取る。$n$ から $n+1$ へは、帰納法の仮定の $R$ に細分 $\rho_n$ を後ろから合成すれば、狭義単調性は合成で保たれ、分解の等式は細分の仮定から従う。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SpatialCompactness.lean` の `LerayHopf.nested_extraction_factor`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    NS 固有の内容を含まない純粋な組合せ補題。lean-pde PR #122（issue #111 PR-3）で private→public 化・共有化された。 旧 ArzelaAscoliTime のコピーは削除され本原本に一本化（PR #124）。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [extraction, diagonal, combinatorics]
