@@ -1,7 +1,7 @@
 name: LerayHopf.TensorEdgeGluing.gInv_eq_of_mem
 tier: gloss
 statement_ja: |
-  決定領域の元は射影で不変であること。
+  射影が決定領域を固定すること（部分空間の元としての水準）：決定領域の元 $x$ に対し、射影の値は所属証明つきの $x$ 自身に等しい。
 gap:
   level: none
   note: |

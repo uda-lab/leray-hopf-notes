@@ -1,7 +1,7 @@
 name: LerayHopf.TensorEdgeGluing.gInv_subtype
 tier: gloss
 statement_ja: |
-  射影と包含の整合性。
+  射影と包含の合成が恒等写像であること（写像の水準）：射影は決定領域の包含の左逆である。
 gap:
   level: none
   note: |
