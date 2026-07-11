@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    同上。
+    埋め込みが実スカラー倍と可換であること（加法性 [[埋め込みの加法性|LerayHopf.velocitySpanToSigma_add]] と併せて線形性）を与える補題。Galerkin ODE 汎関数の斉次性の検証で使う。
 chapter: projections-galerkin
 tags: [galerkin, projections, torus]
