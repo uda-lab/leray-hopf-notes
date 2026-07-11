@@ -1,12 +1,12 @@
 name: LerayHopf.memH1VF_zero
 tier: full
 statement_ja: |
-  この命題は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための公開された構成または主張である。抽出された型に現れる仮定のもとで、対応する対象の存在、保存性、評価、連続性、可測性、または極限性を与える。
+  零ベクトル場は成分ごとの $H^1$ 所属を満たす。
 proof_ja: |
-  証明は、関連する定義を展開し、既に準備した代数的性質、射影の性質、積分評価、可測性、連続性、または収束補題を順に組み合わせる。有限次元の議論や既存の抽象補題に帰着できる箇所ではそれを用い、最後に必要な等式や不等式を整理して結論を得る。
+  成分への射影は線形写像なので零場の各成分は零関数であり、その重み付き Fourier 二乗和は恒等的に零、したがって総和可能である。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 3 の public full 注釈として追加。抽出元は `LerayHopf/TorusEnergyConvection.lean` の `LerayHopf.memH1VF_zero`。詳細な証明構造は抽出済み docstring とソース範囲に保持されている。
+    $H^1$ 所属はスカラー成分ごとの重み付き Fourier 和の総和可能性 [[H¹ 所属（スカラー）|LerayHopf.memH1Torus]] として定義されている（mathlib にトーラス Sobolev 空間の API が無いための Fourier 側の定義）。
 chapter: energy
-tags: [wave3-public, generated]
+tags: [sobolev, torus]

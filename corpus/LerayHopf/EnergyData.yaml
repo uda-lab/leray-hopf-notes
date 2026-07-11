@@ -1,12 +1,12 @@
 name: LerayHopf.EnergyData
 tier: full
 statement_ja: |
-  このデータ型は、エネルギー恒等式とエネルギー不等式を扱うための公開された構成または主張である。抽出された型に現れる仮定のもとで、対応する対象の存在、保存性、評価、連続性、可測性、または極限性を与える。
+  抽象エネルギー不等式のデータ：時刻の関数としての運動エネルギー $E$、区間 $[s,t]$ 上の蓄積散逸 $A(s,t)$、粘性係数 $\nu$ の三つ組。
 proof_ja: |
-  証明は、関連する定義を展開し、既に準備した代数的性質、射影の性質、積分評価、可測性、連続性、または収束補題を順に組み合わせる。有限次元の議論や既存の抽象補題に帰着できる箇所ではそれを用い、最後に必要な等式や不等式を整理して結論を得る。
+  エネルギー不等式を主張として述べるのに必要な三つの量をフィールドとして束ねるだけの定義である。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 3 の public full 注釈として追加。抽出元は `LerayHopf/EnergySkeleton.lean` の `LerayHopf.EnergyData`。詳細な証明構造は抽出済み docstring とソース範囲に保持されている。
+    最初期の抽象スケルトン層（`LerayHopf/EnergySkeleton.lean`）。この上に [[抽象エネルギー則|LerayHopf.AbstractEnergyLaw]] 系の議論（`EnergyEstimate.lean`）が組み立てられる。
 chapter: energy
-tags: [wave3-public, generated]
+tags: [energy, abstract-interface]

@@ -1,12 +1,12 @@
 name: LerayHopf.gradPairingSummable
 tier: full
 statement_ja: |
-  この命題は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための公開された構成または主張である。抽出された型に現れる仮定のもとで、対応する対象の存在、保存性、評価、連続性、可測性、または極限性を与える。
+  Parseval 移流被和項の実部の総和可能性：$v$ が成分ごとに $H^1$、$w$ が Galerkin テスト関数ならば、固定した成分対ごとに、[[移流被和項|LerayHopf.convSummand]] の実部を取った実数値の族は格子点対全体で総和可能である。
 proof_ja: |
-  証明は、関連する定義を展開し、既に準備した代数的性質、射影の性質、積分評価、可測性、連続性、または収束補題を順に組み合わせる。有限次元の議論や既存の抽象補題に帰着できる箇所ではそれを用い、最後に必要な等式や不等式を整理して結論を得る。
+  実部の取り出しは連続線形写像であり、総和可能な族の連続線形像は総和可能だから、[[被和項の複素総和可能性|LerayHopf.convSummand_summable]] から直ちに従う。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 3 の public full 注釈として追加。抽出元は `LerayHopf/TorusEnergyConvection.lean` の `LerayHopf.gradPairingSummable`。詳細な証明構造は抽出済み docstring とソース範囲に保持されている。
+    docstring は $H^1$ 条件が中央の引数に付いて対称でない理由を詳述している：乗数 $2\pi i\, l_a$ は中央因子の微分に対応するため、重みを吸収できるのは中央因子の $H^1$ だけである。三つの引数がどれも単に $L^2$ というだけでは総和可能性は成り立たない。
 chapter: energy
-tags: [wave3-public, generated]
+tags: [convection, fourier, summability, torus]

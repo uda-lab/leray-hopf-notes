@@ -1,12 +1,28 @@
 name: LerayHopf.convFormFourier_antisymm_galerkinTest
 tier: full
 statement_ja: |
-  この命題は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための公開された構成または主張である。抽出された型に現れる仮定のもとで、対応する対象の存在、保存性、評価、連続性、可測性、または極限性を与える。
+  Galerkin テスト重なり上の反対称性：$u$ を発散ゼロ場、$v, w$ をともに Galerkin テスト関数とすると、[[全 Fourier 移流形式|LerayHopf.convFormFourier]] $b$ は
+
+  $$b(u, v, w) = -\, b(u, w, v)$$
+
+  を満たす。Faedo–Galerkin 理論の移流反対称性を、部分積分を使わず Fourier 側で証明したものである。
 proof_ja: |
-  証明は、関連する定義を展開し、既に準備した代数的性質、射影の性質、積分評価、可測性、連続性、または収束補題を順に組み合わせる。有限次元の議論や既存の抽象補題に帰着できる箇所ではそれを用い、最後に必要な等式や不等式を整理して結論を得る。
+  成分 $i$ を固定し、二つの向きの格子和の和が消えることに帰着する。$v, w$ が Galerkin テスト関数なので両向きの被和項はともに総和可能である（[[被和項の総和可能性|LerayHopf.convSummand_summable]]）。
+
+  第二の向きの総和を格子点対の対合 $(k, l) \mapsto (k, -(k+l))$ で再添字化すると、二つの総和は総和可能な族の和として一本に合流し、対合の自己逆性と係数の計算 $l_a + (-(k+l))_a = -k_a$ により、合流後の被和項は共通因子と $-k_a\, \hat u_a(k)$ の積の形に整理される。
+
+  次に成分 $a$ の有限和を総和の内側へ交換し（各 $a$ で総和可能だから許される）、格子点対ごとに $a$ についての和を因数分解すると、共通因子に
+
+  $$\sum_a k_a\, \hat u_a(k)$$
+
+  が掛かった形になる。これは発散ゼロ条件そのものにより零であり、全体の総和は零関数の総和として消える。
 gap:
   level: mild
   note: |
-    Wave 3 の public full 注釈として追加。抽出元は `LerayHopf/TorusEnergyConvection.lean` の `LerayHopf.convFormFourier_antisymm_galerkinTest`。詳細な証明構造は抽出済み docstring とソース範囲に保持されている。
+    教科書では部分積分と発散ゼロ性で示す恒等式
+
+    $$\int (u \cdot \nabla) v \cdot w = -\int (u \cdot \nabla) w \cdot v$$
+
+    の Fourier 級数版。積分の代わりに格子対合 `latticeInvol`（箱截断なしの全格子上の対合）による再添字化と係数の代数計算で同じ相殺を実現する。実部の取り出し・有限和と総和の交換・総和可能性の持ち回りの管理が形式化の作業量の大半を占める。
 chapter: energy
-tags: [wave3-public, generated]
+tags: [convection, antisymmetry, fourier, torus]
