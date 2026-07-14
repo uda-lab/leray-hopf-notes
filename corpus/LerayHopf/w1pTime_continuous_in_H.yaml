@@ -5,9 +5,9 @@ statement_ja: |
 proof_ja: |
   **証明は意図的に `sorry`（ALLOW_SORRY）で開けてある。**これは Lions–Magenes の埋め込み
 
-  $$W^{1,p}(0,T;V) \cap L^q(0,T;V') \hookrightarrow C([0,T];H)$$
+  $$\bigl\{\, u \in L^p(0,T;V) \;:\; u' \in L^q(0,T;V') \,\bigr\} \hookrightarrow C([0,T];H)$$
 
-  そのもので、mathlib に欠けているベクトル値の時間 Sobolev／良い代表元理論の柱に当たる。months 級の残余と宣言され、主張は本来の強さ（連続、弱連続に弱めない）のまま保たれている。
+  （微分は $V'$ 値の弱時間微分 — `W1pTime` の仮定そのもの）で、mathlib に欠けているベクトル値の時間 Sobolev／良い代表元理論の柱に当たる。months 級の残余と宣言され、主張は本来の強さ（連続、弱連続に弱めない）のまま保たれている。
 gap:
   level: large
   note: |
