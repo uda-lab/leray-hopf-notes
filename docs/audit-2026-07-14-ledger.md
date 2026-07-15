@@ -18,14 +18,14 @@
 | F008 | Torus.energy_hasDerivAt_of_localSolution | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 微分の往復 → 内在的微分と周囲空間の微分の相互の読み替え. |
 | F009 | Torus.galerkinField_solution_agree | gap.note | 自然さ | M | ode | fixed | P1: gap.note: 継ぎ足して→接続して (both occurrences in the paragraph fixed for coherence). decls.json checked: LerayHopf.Torus.galerkinField_solution_agree doc = 'splice-agreement: two local solutions agreeing at one point agree on the overlap' — 貼り合わせ/接続 preserve this exactly. |
 | F010 | L2VF_norm_sq_eq_sum_componentC | proof_ja/gap.note | 表記(訳語ゆれ) | M | ode | fixed | P1: 殆ど至る所 (proof_ja) and a.e. (gap.note) both unified to ほとんど至る所. |
-| F011 | exists_galerkin_modewise_extraction | proof_ja | JP-13/造語 | B | compactness | fixed | P1: 証人+帯域水準→截断次数の複合書き換え（F130 と統合適用） |
+| F011 | exists_galerkin_modewise_extraction | proof_ja | JP-13/造語 | B | compactness | fixed | P1: 証人+帯域水準→打ち切り次数の複合書き換え（F130 と統合適用） |
 | F012 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | open | 一様部分列抽出の汎用エンジン |
 | F013 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | open | 配線の定理である |
 | F014 | exists_limit_curve_of_galSeq | proof_ja | 自然さ/JP-13 | M | compactness | open | のエクスポートを添えて |
 | F015 | exists_limit_curve_of_galSeq | gap.note | JP-13 | M | compactness | open | が握る唯一の取っ手となる capstone |
 | F016 | galerkin_u_norm_le | statement_ja | 自然さ | M | compactness | open | 一様球有界（エクスポート形） |
 | F017 | integral_tail_sq_limit_le | gap.note | JP-13 | M | compactness | open | 極限曲線に密輸しない誠実な経路 |
-| F018 | galerkin_test_pairing_lipschitz | statement_ja | 造語/自然さ | A | compactness | fixed | P1: 帯域水準→截断次数（owner 裁定 2026-07-15b、statement_ja + gap.note の 2 箇所） |
+| F018 | galerkin_test_pairing_lipschitz | statement_ja | 造語/自然さ | A | compactness | fixed | P1: 帯域水準→打ち切り次数（owner 裁定 2026-07-15b、statement_ja + gap.note の 2 箇所） |
 | F019 | tail_sq_le_h1EnergySq_div | statement_ja | 造語/自然さ | M | compactness | open | 尾部の $H^1$ 優越 |
 | F020 | DivFreeL2 | statement_ja | 自然さ | M | spaces | fixed | P1: statement_ja: 「発散ゼロ性の」→「発散がゼロであることの」. decls.json checked: doc confirms 'Fourier characterisation of div u=0 for L2 vector fields'; meaning preserved. |
 | F021 | DivFreeL2 | gap.note | JP-14 | M | spaces | superseded-by-#52 |  |
@@ -48,7 +48,7 @@
 | F038 | fourierBox_exhausts | statement_ja | 自然さ | A | projections-galerkin | superseded-by-#52 |  |
 | F039 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-13/造語 | B | bochner | open | 一様収束部分列（対角線論法エンジン） |
 | F040 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-14 | M | bochner | fixed | P1: eventually→ある番号以降で（reopen 後、owner 裁定に従い修正） |
-| F041 | exists_uniform_subseq_of_lipschitz_family | gap.note | 造語 | M | bochner | fixed | P1: 載荷点→技術上の要点（owner 裁定 2026-07-15b）+ 同文の帯域水準→截断次数 |
+| F041 | exists_uniform_subseq_of_lipschitz_family | gap.note | 造語 | M | bochner | fixed | P1: 載荷点→技術上の要点（owner 裁定 2026-07-15b）+ 同文の帯域水準→打ち切り次数 |
 | F042 | exists_Icc_of_compact_subset_Ioo | gap.note | JP-13 | M | bochner | open | 同時に収める区間を取る簿記の補題 |
 | F043 | isWeakTimeDeriv_zero_ae_const | statement_ja | JP-13 | M | bochner | open | du Bois-Reymond の要石： |
 | F044 | w1pTime_continuous_in_H | proof_ja | JP-13 | M | bochner | open | 良い代表元理論の柱に当たる |
