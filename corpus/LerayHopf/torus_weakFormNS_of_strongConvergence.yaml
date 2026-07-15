@@ -1,7 +1,7 @@
 name: LerayHopf.torus_weakFormNS_of_strongConvergence
 tier: full
 statement_ja: |
-  弱 NS 方程式の極限移行：$\nu > 0$、$T > 0$ とする。Aubin–Lions 補題から得られる極限曲線は、トーラスの散逸発展に関する弱 NS 方程式（時間テストと Galerkin テストでテストした分布的等式）を満たす。
+  弱 NS 方程式の極限移行：$\nu > 0$、$T > 0$ とする。Aubin–Lions 補題が与えるパッケージの極限曲線は、トーラスの散逸発展に関する弱 NS 方程式（時間テストと Galerkin テストでテストした分布的等式）を満たす。
 proof_ja: |
   時間テスト $\psi$ と空間テスト $w$（打ち切り次数 $n_0$）を固定する。トーラスではすべての空間テストが帯域制限されているので、**稠密性による近似段が不要**（本系統の要の利点）：次数 $n \ge n_0$ の各近似元では、部分積分と Galerkin ODE により弱形式の積分が厳密に零になる。
 

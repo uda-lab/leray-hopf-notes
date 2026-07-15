@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    「テスト因子が滑らか」な側の辺。
+    「テスト因子が滑らか」な側の部分加群（汎用層 `TensorEdgeGluing` の呼称では「辺」）。
 chapter: limit-passage
 tags: [determined-form, tensor, torus]
