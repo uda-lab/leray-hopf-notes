@@ -7,7 +7,7 @@ statement_ja: |
 
   を持つこと。
 proof_ja: |
-  四条件をフィールドとして束ねた述語構造である。
+  上の四条件の連言として定義する。
 gap:
   level: none
   note: |
