@@ -4,6 +4,7 @@
 - **安定 ID**: コメント掲載順に F001–F371（コメント 1/2 → 2/2 の順、SUMMARY 行は除外）。
 - **status**: `open`（未処理）／ `fixed`（修正済み、処理 PR を note に記載）／ `rejected`（却下、理由を note に記載）／ `superseded-by-#52`（#50 の用語裁定 PR #52 で処理済み）。
 - 台帳生成時（2026-07-15）に逐語引用と現行 corpus の突き合わせを機械実施し、#52 処理済み項目を `superseded-by-#52` に初期化した。引用列は識別用の先頭 32 字（正規化前の原文は issue コメント参照）。
+- **2026-07-15 再検証**（PR #53 owner レビュー指摘）: `superseded-by-#52` 全件について「引用消失＝完了」ではなく**所見の問題自体が解消されているか**を個別確認した。同一引用範囲への別修正で引用が消えていた 8 件（F035/F040/F211/F214/F249/F261/F274/F279）を `open` に戻した。F096 は reopen 後 P1 で即時修正。
 
 | ID | file | field | rule | sev | chapter | status | note |
 |---|---|---|---|---|---|---|---|
@@ -11,11 +12,11 @@
 | F002 | EnergyData | proof_ja | 表記(D3) | M | energy | fixed | P1: proof_ja: フィールドとして束ねる → 一組のデータとして指定する. Combined with F073. |
 | F003 | torus_galerkin_norm_le_u0 | proof_ja | 表記(D3) | M | energy | fixed | P1: proof_ja: エネルギー有界フィールドから → エネルギー有界性から. Combined with F084 (same span, both files identical quote). |
 | F004 | viscousEnn | gap.note(表示語) | 自然さ | M | energy | superseded-by-#52 |  |
-| F005 | Torus.galerkinField_inner_self_nonpos | proof_ja | JP-13/自然さ | M | ode | fixed | P1: proof_ja: 委譲する→帰着する. Combined with F089 (内実は→具体的には). Also applied the same 委譲→帰着 fix to the other decls this finding |
+| F005 | Torus.galerkinField_inner_self_nonpos | proof_ja | JP-13/自然さ | M | ode | fixed | P1: proof_ja: 委譲する→帰着する. Combined with F089 (内実は→具体的には). Also applied the same 委譲→帰着 fix to the other decls this finding named (energy_hasDerivAt_of_localSolution, galerkinField_solution_agree, galerkinField_uniform_local_time, norm_le_of_forwardSolution). |
 | F006 | Torus.galerkinODE_vectorField_contDiff | gap.note | 造語 | B | ode | fixed | P1: gap.note: 有効化補題 → Picard–Lindelöf 定理に必要な滑らかさを与える補題. Combined with F095 (same span). |
 | F007 | summable_norm_mFourierCoeff3_sq | gap.note | JP-13 | M | ode | fixed | P1: gap.note: ODE 機構なしで → ODE に関する結果へ依存せずに. Combined with F108 (same span). |
 | F008 | Torus.energy_hasDerivAt_of_localSolution | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 微分の往復 → 内在的微分と周囲空間の微分の相互の読み替え. |
-| F009 | Torus.galerkinField_solution_agree | gap.note | 自然さ | M | ode | fixed | P1: gap.note: 継ぎ足して→接続して (both occurrences in the paragraph fixed for coherence). decls.json checked: LerayHopf.Torus.ga |
+| F009 | Torus.galerkinField_solution_agree | gap.note | 自然さ | M | ode | fixed | P1: gap.note: 継ぎ足して→接続して (both occurrences in the paragraph fixed for coherence). decls.json checked: LerayHopf.Torus.galerkinField_solution_agree doc = 'splice-agreement: two local solutions agreeing at one point agree on the overlap' — 貼り合わせ/接続 preserve this exactly. |
 | F010 | L2VF_norm_sq_eq_sum_componentC | proof_ja/gap.note | 表記(訳語ゆれ) | M | ode | fixed | P1: 殆ど至る所 (proof_ja) and a.e. (gap.note) both unified to ほとんど至る所. |
 | F011 | exists_galerkin_modewise_extraction | proof_ja | JP-13/造語 | B | compactness | fixed | P1: 証人+帯域水準→截断次数の複合書き換え（F130 と統合適用） |
 | F012 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | open | 一様部分列抽出の汎用エンジン |
@@ -26,7 +27,7 @@
 | F017 | integral_tail_sq_limit_le | gap.note | JP-13 | M | compactness | open | 極限曲線に密輸しない誠実な経路 |
 | F018 | galerkin_test_pairing_lipschitz | statement_ja | 造語/自然さ | A | compactness | open | 帯域水準 $m$ のテスト $w$ |
 | F019 | tail_sq_le_h1EnergySq_div | statement_ja | 造語/自然さ | M | compactness | open | 尾部の $H^1$ 優越 |
-| F020 | DivFreeL2 | statement_ja | 自然さ | M | spaces | fixed | P1: statement_ja: 「発散ゼロ性の」→「発散がゼロであることの」. decls.json checked: doc confirms 'Fourier characterisation of div u=0 for L2 v |
+| F020 | DivFreeL2 | statement_ja | 自然さ | M | spaces | fixed | P1: statement_ja: 「発散ゼロ性の」→「発散がゼロであることの」. decls.json checked: doc confirms 'Fourier characterisation of div u=0 for L2 vector fields'; meaning preserved. |
 | F021 | DivFreeL2 | gap.note | JP-14 | M | spaces | superseded-by-#52 |  |
 | F022 | L2VF | gap.note | JP-13 | A | spaces | fixed | P1: gap.note theater metaphor 「主舞台」→「中心」(same span as F110, one edit serves both). |
 | F023 | IsGalerkinTest | gap.note | JP-14 | M | capstone-torus | superseded-by-#52 |  |
@@ -41,12 +42,12 @@
 | F032 | fourierCoeffCLM_apply | gap.note | JP-13/比喩 | M | projections-galerkin | open | Fourier 係数を「連続線形汎関数の値」と見なす視点の切り替 |
 | F033 | velocityProjection_n_inner_of_fixed | statement_ja | 自然さ | M | projections-galerkin | open | 帯域制限テストとの対は截断を素通しする |
 | F034 | fourierCoeffCLM | statement_ja | 造語/自然さ | M | projections-galerkin | open | 第 $k$ Fourier 係数の連続線形汎関数化 |
-| F035 | velocitySpan | gap.note | JP-13/表記 | M | projections-galerkin | superseded-by-#52 |  |
+| F035 | velocitySpan | gap.note | JP-13/表記 | M | projections-galerkin | open | 再検証で reopen: lane→系列 は #52 処理済みだが「鏡像」が残存 |
 | F036 | fourierProjection_n_tendsto | gap.note | 表記/訳語ゆれ | M | projections-galerkin | superseded-by-#52 |  |
 | F037 | mem_velocitySpan_iff | gap.note | JP-14/表記 | M | projections-galerkin | open | 以下の bridge 補題群（固定点と像の一致）の出発点。 |
 | F038 | fourierBox_exhausts | statement_ja | 自然さ | A | projections-galerkin | superseded-by-#52 |  |
 | F039 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-13/造語 | B | bochner | open | 一様収束部分列（対角線論法エンジン） |
-| F040 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-14 | M | bochner | superseded-by-#52 |  |
+| F040 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-14 | M | bochner | open | 再検証で reopen: 等 Lipschitz は #52 処理済みだが未訳 eventually が残存（owner 指摘） |
 | F041 | exists_uniform_subseq_of_lipschitz_family | gap.note | 造語 | M | bochner | open | 以降のみ）なのが載荷点 |
 | F042 | exists_Icc_of_compact_subset_Ioo | gap.note | JP-13 | M | bochner | open | 同時に収める区間を取る簿記の補題 |
 | F043 | isWeakTimeDeriv_zero_ae_const | statement_ja | JP-13 | M | bochner | open | du Bois-Reymond の要石： |
@@ -68,7 +69,7 @@
 | F059 | convBLTgalerkin | proof_ja | JP-13 | B | limit-passage | fixed | P1: 証人比喩を除去（F316 と統合適用） |
 | F060 | convValW | statement_ja | 造語 | B | limit-passage | superseded-by-#52 |  |
 | F061 | convBLTw | statement_ja/proof_ja | 造語 | M | limit-passage | superseded-by-#52 |  |
-| F062 | TorusConvectionExtension.convFormL2_antisymm | gap.note | JP-13 | M | limit-passage | open | 監査記載パスは corpus/LerayHopf/convFormL2_antisymm.yaml（同名の双子ファイル）; 実所在 corpus/LerayHopf/TorusConvectionExtension.convFormL2_a |
+| F062 | TorusConvectionExtension.convFormL2_antisymm | gap.note | JP-13 | M | limit-passage | open | 監査記載パスは corpus/LerayHopf/convFormL2_antisymm.yaml（同名の双子ファイル）; 実所在 corpus/LerayHopf/TorusConvectionExtension.convFormL2_antisymm.yaml |
 | F063 | convSummandW | gap.note | JP-13 | M | limit-passage | superseded-by-#52 |  |
 | F064 | TorusConvectionExtension.detExtend | gap.note | JP-13 | M | limit-passage | open | 監査記載パスは corpus/LerayHopf/detExtend.yaml（同名の双子ファイル）; 実所在 corpus/LerayHopf/TorusConvectionExtension.detExtend.yaml |
 | F065 | convValW_bound | gap.note | JP-13 | M | limit-passage | open | 極限移行の心臓部 |
@@ -77,18 +78,18 @@
 | F068 | velocityProjection_n_eq_of_le | gap.note | JP-13 | M | limit-passage | open | ODE を発火させる |
 | F069 | convFormL2_galerkin_pin | statement_ja | JP-14 | M | limit-passage | superseded-by-#52 |  |
 | F070 | convFormL2_def | gap.note | JP-14 | A | limit-passage | superseded-by-#52 |  |
-| F071 | AbstractGalerkinData | statement_ja | 造語 | B | energy | fixed | P1: statement_ja: データ束 → 抽象 Galerkin 近似に必要なデータとして...一組に指定する. decls.json checked: LerayHopf.AbstractGalerkinData is a str |
+| F071 | AbstractGalerkinData | statement_ja | 造語 | B | energy | rejected | 却下: issue #51 G2 裁定「束／データ束」は変更不要（owner レビュー指摘により statement_ja を原文へ復元。proof_ja の Lean 語修正は F001 で維持） |
 | F072 | AbstractGalerkinData | proof_ja | 表記 | B | energy | fixed | P1: proof_ja: rewritten to remove インスタンス/フィールド, kept 束ねた (bundling, not Lean jargon). See F001. |
-| F073 | EnergyData | proof_ja | 表記 | B | energy | fixed | P1: proof_ja: フィールド removed. decls.json checked: LerayHopf.EnergyData doc = 'kinetic energy E, accumulated dissipation A |
+| F073 | EnergyData | proof_ja | 表記 | B | energy | fixed | P1: proof_ja: フィールド removed. decls.json checked: LerayHopf.EnergyData doc = 'kinetic energy E, accumulated dissipation A, viscosity ν' — the three-quantity content is unchanged, only 'フィールドとして束ねる' reworded. |
 | F074 | EnergyData | gap.note | JP-13 | M | energy | fixed | P1: gap.note: 抽象スケルトン層 → 抽象化段階. |
 | F075 | EnergySkeleton.EnergyInequality | gap.note | JP-13 | M | energy | fixed | P1: gap.note: 抽象層 → で導入された抽象的な定義. |
 | F076 | H1SigmaTorus | gap.note | 自然さ | M | energy | superseded-by-#52 |  |
 | F077 | convFormFourier | gap.note | 自然さ | M | energy | fixed | P1: gap.note: 真正な値を持つ領域 → 意味のある値を与える領域. |
 | F078 | convFormFourier_antisymm_galerkinTest | proof_ja | JP-13 | B | energy | fixed | P1: proof_ja: 一本に合流し → 一つの総和にまとめることができ (adapted rewrite to keep 合流後 consistent, changed to まとめた後). |
 | F079 | convFormFourier_antisymm_galerkinTest | gap.note | JP-13 | M | energy | fixed | P1: gap.note: 持ち回りの管理 → 各段階での確認. |
-| F080 | convSummand | statement_ja | 自然さ | M | energy | fixed | P1: statement_ja grammar fix: 足し実部を取ると → 足して実部を取ると. No technical-term/meaning change, no decls.json check needed (partic |
+| F080 | convSummand | statement_ja | 自然さ | M | energy | fixed | P1: statement_ja grammar fix: 足し実部を取ると → 足して実部を取ると. No technical-term/meaning change, no decls.json check needed (particle-only fix). |
 | F081 | memH1VF_zero | proof_ja | 自然さ | M | energy | fixed | P1: proof_ja: 零、したがって → 零であり、したがって. |
-| F082 | ofReal_viscousFormSq_le | proof_ja | 表記 | B | energy | fixed | P1: proof_ja: ジャンク値規約により$0$に潰れる → 総和可能でない場合の実数値の総和は定義上$0$となる. decls.json checked: LerayHopf.ofReal_viscousFormSq_le doc  |
+| F082 | ofReal_viscousFormSq_le | proof_ja | 表記 | B | energy | fixed | P1: proof_ja: ジャンク値規約により$0$に潰れる → 総和可能でない場合の実数値の総和は定義上$0$となる. decls.json checked: LerayHopf.ofReal_viscousFormSq_le doc = 'the junk-0 collapse only helps the inequality' — matches; meaning preserved. |
 | F083 | torus_galerkin_energy_le | gap.note | JP-16 | M | energy | superseded-by-#52 |  |
 | F084 | torus_galerkin_norm_le_u0 | proof_ja | 表記 | B | energy | fixed | P1: same edit as F003. |
 | F085 | torus_galerkin_norm_le_u0 | gap.note | 自然さ | M | energy | superseded-by-#52 |  |
@@ -96,13 +97,13 @@
 | F087 | L2VF_norm_sq_eq_sum_componentC | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: Euclid ノルム二乗 → ユークリッドノルムの二乗. |
 | F088 | Torus.energy_hasDerivAt_of_localSolution | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 内実は → 具体的には. Combined with F008/F005 edits on same paragraph. |
 | F089 | Torus.galerkinField_inner_self_nonpos | proof_ja | 自然さ | M | ode | fixed | P1: same edit as F005. |
-| F090 | Torus.galerkinField_solution_agree | statement_ja | 自然さ | B | ode | fixed | P1: statement_ja: 継ぎ足しの整合性 → 貼り合わせの整合性. decls.json checked, same verdict as F009 (splice-agreement on overlap) — meaning |
-| F091 | Torus.galerkinField_uniform_local_time | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 内実は Picard–Lindelöf の局所存在 → 具体的には Picard–Lindelöf の局所存在定理を用いる. Also fixed 委譲する→帰着する in same sentence per F |
+| F090 | Torus.galerkinField_solution_agree | statement_ja | 自然さ | B | ode | fixed | P1: statement_ja: 継ぎ足しの整合性 → 貼り合わせの整合性. decls.json checked, same verdict as F009 (splice-agreement on overlap) — meaning preserved. |
+| F091 | Torus.galerkinField_uniform_local_time | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 内実は Picard–Lindelöf の局所存在 → 具体的には Picard–Lindelöf の局所存在定理を用いる. Also fixed 委譲する→帰着する in same sentence per F005's scope. |
 | F092 | Torus.galerkinField_uniform_local_time | gap.note | 自然さ | M | ode | fixed | P1: gap.note: 継ぎ足して → 順次貼り合わせて (both occurrences in paragraph updated for coherence). |
 | F093 | Torus.galerkinODE_functional | statement_ja | JP-16 | B | ode | superseded-by-#52 |  |
 | F094 | Torus.galerkinODE_vectorField_contDiff | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 汎用側の内実は → 汎用定理では. |
 | F095 | Torus.galerkinODE_vectorField_contDiff | gap.note | 造語 | B | ode | fixed | P1: same edit as F006. |
-| F096 | Torus.galerkinODE_vectorField_contDiff | gap.note | 造語 | B | ode | superseded-by-#52 |  |
+| F096 | Torus.galerkinODE_vectorField_contDiff | gap.note | 造語 | B | ode | fixed | P1: 「系列ごと の…段積み構成」→「系列ごとに構成していた…段階的な合成」（再検証での reopen を即時修正） |
 | F097 | Torus.galerkinODE_vectorField_spec | statement_ja | JP-13 | B | ode | rejected | 却下: issue #51 G2 裁定「橋渡し」は変更不要（和語として定着）— 監査書き換え案を適用せず原文維持 |
 | F098 | Torus.norm_le_of_forwardSolution | proof_ja | 自然さ | M | ode | fixed | P1: proof_ja: 微分の往復 → 部分空間内での微分と全空間での微分を対応させる. Also fixed 委譲する→帰着する per F005's scope. |
 | F099 | stokesTestPairing_add_left | statement_ja | JP-16 | B | ode | superseded-by-#52 |  |
@@ -112,28 +113,28 @@
 | F103 | stokesTestPairing_diag | gap.note | JP-13 | M | ode | fixed | P1: gap.note: 粘性散逸へ落ちる → 粘性散逸に等しいことを用いる (restructured surrounding clause for grammaticality). |
 | F104 | stokesTestPairing_smul_left | statement_ja | JP-16 | B | ode | superseded-by-#52 |  |
 | F105 | stokesTestPairing_smul_right | statement_ja | JP-16 | B | ode | superseded-by-#52 |  |
-| F106 | stokesTestPairing_smul_right | proof_ja | 表記 | B | ode | fixed | P1: proof_ja: mathlib では無条件に成立する → removed, restated as plain mathematical fact (実スカラー倍は総和と交換できるので従う). decls.json checke |
+| F106 | stokesTestPairing_smul_right | proof_ja | 表記 | B | ode | fixed | P1: proof_ja: mathlib では無条件に成立する → removed, restated as plain mathematical fact (実スカラー倍は総和と交換できるので従う). decls.json checked: LerayHopf.Torus.stokesTestPairing_smul_right doc = 'Right-homogeneity of stokesTestPairing on Vₙ' — no mathlib-specific content lost, scalar-summation commutativity is a general fact independent of the mathlib remark. |
 | F107 | stokesTestPairing_symm | statement_ja | JP-16 | B | ode | superseded-by-#52 |  |
 | F108 | summable_norm_mFourierCoeff3_sq | gap.note | JP-13 | M | ode | fixed | P1: 機構→ODE に関する結果へ依存せず（重複所見と統合適用） |
 | F109 | DivFreeL2 | gap.note | 自然さ | M | spaces | superseded-by-#52 |  |
-| F110 | L2VF | gap.note | JP-13 | M | spaces | fixed | P1: Same span as F022; applied 「本形式化の中心となる Hilbert 空間」(chose over the alternate ADVISORY suggestion since it stays close |
-| F111 | SpatialField | statement_ja | JP-13 | B | spaces | fixed | P1: statement_ja: 「場所取りの型」→「暫定的に導入された型」, kept 領域 Ω and 空間場 context that the suggested rewrite had dropped. decls.json ch |
-| F112 | SpatialField | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed Lean 'フィールド' jargon, applied suggested rewrite verbatim: 「台となる型と恒真命題だけからなる形式的な定義である。」decls.json ch |
+| F110 | L2VF | gap.note | JP-13 | M | spaces | fixed | P1: Same span as F022; applied 「本形式化の中心となる Hilbert 空間」(chose over the alternate ADVISORY suggestion since it stays closer to original meaning than 「主に用いる」). |
+| F111 | SpatialField | statement_ja | JP-13 | B | spaces | fixed | P1: statement_ja: 「場所取りの型」→「暫定的に導入された型」, kept 領域 Ω and 空間場 context that the suggested rewrite had dropped. decls.json checked: doc = 'Placeholder for a spatial field on a domain Ω... Realized as a real function space in a later milestone' — meaning preserved (still a contentless placeholder). |
+| F112 | SpatialField | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed Lean 'フィールド' jargon, applied suggested rewrite verbatim: 「台となる型と恒真命題だけからなる形式的な定義である。」decls.json checked: structure signature Type u_1 → Type (u_2+1) is consistent with a carrier-type field plus a trivial proposition; meaning preserved. |
 | F113 | SpatialField | gap.note | JP-13 | M | spaces | fixed | P1: gap.note 「最初期マイルストーン（M1）の足場で」→「最初期のマイルストーン（M1）で導入され」, combined with F114 in one coherent sentence. |
 | F114 | SpatialField | gap.note | 自然さ | M | spaces | fixed | P1: gap.note 「歴史的残置物である」→「現在は使用されていない旧定義である」, applied together with F113. |
 | F115 | Time | gap.note | 造語 | B | spaces | fixed | P1: gap.note 「時間変数の意図を型面で明示する」→「時間変数であることを型によって明示する」, applied suggested rewrite verbatim. |
-| F116 | Torus3 | statement_ja | 自然さ | M | spaces | fixed | P1: statement_ja: 「三つ組の直積」→「$3$ 重直積」(matched existing $N$ 個/次元 math notation style in the file). decls.json checked: doc |
-| F117 | VelocityValue | statement_ja | 自然さ | B | spaces | fixed | P1: statement_ja: 「Euclid 内積とノルムを込めて」→「標準内積とそれに付随するノルムを備えた」. Kept 'Euclid' (not 'ユークリッド') per corpus-wide established co |
+| F116 | Torus3 | statement_ja | 自然さ | M | spaces | fixed | P1: statement_ja: 「三つ組の直積」→「$3$ 重直積」(matched existing $N$ 個/次元 math notation style in the file). decls.json checked: doc = 'realized as UnitAddTorus (Fin 3) = Fin 3 → UnitAddCircle', a 3-fold product; meaning preserved. |
+| F117 | VelocityValue | statement_ja | 自然さ | B | spaces | fixed | P1: statement_ja: 「Euclid 内積とノルムを込めて」→「標準内積とそれに付随するノルムを備えた」. Kept 'Euclid' (not 'ユークリッド') per corpus-wide established convention (grepped: Domain3.yaml, L2VF_R3_separable.yaml, PlancherelKernels*.yaml all use 'Euclid 空間/ノルム' consistently) — using the suggested rewrite's 'ユークリッド' would have violated JP-14 (undeclared language alias) and GLOSSARY consistency. decls.json checked: doc = 'EuclideanSpace ℝ (Fin 3)' with standard inner product; meaning preserved. |
 | F118 | exists_galerkin_test_family | proof_ja | JP-13 | B | spaces | fixed | P1: proof_ja: 「一本の N 添字の列に平坦化する」→「自然数で添字付けられた一つの列として番号付けする」, applied suggested rewrite verbatim. |
-| F119 | exists_galerkin_test_family | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: 「生成系のリストの範囲外は零で埋める」→「各有限生成系を番号付けし、その番号の範囲外では零を対応させる」, applied together with F118 in the same sentence; kep |
+| F119 | exists_galerkin_test_family | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: 「生成系のリストの範囲外は零で埋める」→「各有限生成系を番号付けし、その番号の範囲外では零を対応させる」, applied together with F118 in the same sentence; kept mathlib-specific Nat.pair/unpair detail in gap.note (no finding there). |
 | F120 | h1EnergySq_nonneg | statement_ja | 自然さ | B | spaces | superseded-by-#52 |  |
 | F121 | h1EnergySq_nonneg | proof_ja | 自然さ | M | spaces | superseded-by-#52 |  |
 | F122 | memH1Torus | gap.note | JP-13 | M | spaces | fixed | P1: gap.note 「定義に採用した足場である」→「定義として採用したものである」, applied suggested rewrite verbatim. |
 | F123 | stokesTestPairing_bound_of_galerkinTest | statement_ja | JP-16 | B | spaces | superseded-by-#52 |  |
-| F124 | torus3_mFourierBasis | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed 'mathlib の多次元加法トーラスの' library reference, rewrote as 「一般の加法トーラスの Fourier Hilbert 基底の理論を 3 次元の場合に特殊化 |
+| F124 | torus3_mFourierBasis | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed 'mathlib の多次元加法トーラスの' library reference, rewrote as 「一般の加法トーラスの Fourier Hilbert 基底の理論を 3 次元の場合に特殊化し、三次元トーラスの標準 Fourier 基底として指数関数系を得る」, preserving the '特殊化' term since gap.note cross-references 'この特殊化'. Moved the mathlib-specific detail (`UnitAddTorus.mFourierBasis`, d = Fin 3) into gap.note per D3. decls.json checked: doc confirms 'This is UnitAddTorus.mFourierBasis instantiated at d = Fin 3'; meaning preserved. |
 | F125 | torus3_mFourierBasis | gap.note | JP-13 | M | spaces | fixed | P1: gap.note 「この基底の Hilbert 基底性から流れ出す」→「この基底が Hilbert 基底であることから従う」, applied together with F124's gap.note addition. |
 | F126 | viscousFormSq_nonneg | statement_ja | 自然さ | B | spaces | superseded-by-#52 |  |
-| F127 | instIsProbabilityMeasureUnitAddCircleVolume_lerayHopf | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed 'mathlib の...インスタンスの形に包み直すだけである' Lean-implementation phrasing, rewrote as 「既知の等式「単位加法円周の全測度は 1」から、 |
+| F127 | instIsProbabilityMeasureUnitAddCircleVolume_lerayHopf | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed 'mathlib の...インスタンスの形に包み直すだけである' Lean-implementation phrasing, rewrote as 「既知の等式「単位加法円周の全測度は 1」から、標準測度が確率測度であることが従う。」gap.note already covers the instance-declaration detail appropriately. |
 | F128 | volume_torus3_eq_haarTorus3 | proof_ja | 自然さ | M | spaces | fixed | P1: proof_ja: 「積測度の構成関数の合同で 3 因子に持ち上げる」→「各因子の測度が一致することから 3 重積測度も一致する」, applied suggested rewrite verbatim. |
 | F129 | L2C_norm_sub_fourierProjection_sq | proof_ja | 表記 | B | compactness | open | 補集合上の部分型の総和 |
 | F130 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | fixed | P1: F011 と統合適用 |
@@ -217,10 +218,10 @@
 | F208 | velocityP_initial_mem | proof_ja | JP-13 | B | projections-galerkin | fixed | P1: F031 と統合適用 |
 | F209 | velocityProjection_n_comp_of_le | statement_ja | JP-13 | B | projections-galerkin | open | 小さい箱への截断は大きい箱を忘れる |
 | F210 | velocityProjection_n_inner_of_fixed | statement_ja | JP-13 | B | projections-galerkin | open | 帯域制限テストとの対は截断を素通しする |
-| F211 | velocitySpan | gap.note | 自然さ | M | projections-galerkin | superseded-by-#52 |  |
+| F211 | velocitySpan | gap.note | 自然さ | M | projections-galerkin | open | 再検証で reopen: 「鏡像」残存（F035 と同件） |
 | F212 | velocitySpanToSigma | statement_ja | 表記 | B | projections-galerkin | open | 発散ゼロ所属の証明とともに発散ゼロ空間の元として包み直す |
 | F213 | velocitySpanToSigma | proof_ja | JP-17 | B | projections-galerkin | open | 台の元は変えず、所属証明を |
-| F214 | velocitySpanToSigma | gap.note | JP-13 | M | projections-galerkin | superseded-by-#52 |  |
+| F214 | velocitySpanToSigma | gap.note | JP-13 | M | projections-galerkin | open | 再検証で reopen: lane→系列 は #52 処理済みだが「型の橋」が残存 |
 | F215 | velocitySpanToSigma_add | proof_ja | 表記 | B | projections-galerkin | open | 部分型の外延性で一致する |
 | F216 | velocitySpanToSigma_coe | statement_ja | JP-17 | B | projections-galerkin | open | 埋め込みの台の値の保存 |
 | F217 | velocitySpanToSigma_coe | proof_ja | 表記 | B | projections-galerkin | open | 定義的等式（`rfl`）である |
@@ -231,8 +232,8 @@
 | F222 | Bochner.ContDiffBump.isTimeMollifier | gap.note | JP-13 | M | bochner | open | 軟化子の具体的な供給源。半径を潰す列を取れば |
 | F223 | Bochner.IsTimeMollifier | proof_ja | 自然さ | B | bochner | open | 四条件をフィールドとして束ねた述語構造である。 |
 | F224 | Bochner.WeakLimitToolkit.cauchySeq_inner_extend | proof_ja | 造語 | B | bochner | open | 一様球有界 |
-| F225 | Bochner.WeakLimitToolkit.cauchySeq_of_equiLipschitz_of_dense | statement_ja | 造語 | B | bochner | superseded-by-#52 |  |
-| F226 | Bochner.WeakLimitToolkit.cauchySeq_of_equiLipschitz_of_dense | proof_ja | 造語 | B | bochner | superseded-by-#52 |  |
+| F225 | Bochner.WeakLimitToolkit.cauchySeq_of_equiLipschitz_of_dense | statement_ja | 造語 | B | bochner | fixed | P1: #52（等→同程度 Lipschitz）+ P1（「連続（性）」付与、owner 裁定）で解消 |
+| F226 | Bochner.WeakLimitToolkit.cauchySeq_of_equiLipschitz_of_dense | proof_ja | 造語 | B | bochner | fixed | P1: #52（等→同程度 Lipschitz）+ P1（「連続（性）」付与、owner 裁定）で解消 |
 | F227 | Bochner.WeakLimitToolkit.exists_mem_of_ae_full | statement_ja | 自然さ | M | bochner | open | a.e. に成り立つ集合 $S$ |
 | F228 | Bochner.WeakLimitToolkit.exists_weak_limit_in_submodule | statement_ja | 自然さ | M | bochner | open | すべてのテスト $z$ に対し対の列が Cauchy |
 | F229 | Bochner.WeakLimitToolkit.exists_weak_limit_in_submodule | proof_ja | 造語 | B | bochner | open | 球有界から $M$ 有界性が従う |
@@ -255,8 +256,8 @@
 | F246 | exists_Icc_of_compact_subset_Ioo | gap.note | JP-13 | M | bochner | open | 簿記の補題。 |
 | F247 | exists_subseq_tendsto_eLpNorm_of_totallyBounded | gap.note | JP-13 | M | bochner | open | A1–A6 の鎖の出口。 |
 | F248 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-13 | B | bochner | open | 対角線論法エンジン |
-| F249 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-14 | B | bochner | superseded-by-#52 |  |
-| F250 | exists_uniform_subseq_of_lipschitz_family | statement_ja | 造語 | B | bochner | superseded-by-#52 |  |
+| F249 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-14 | B | bochner | open | 再検証で reopen: 同上（owner 指摘） |
+| F250 | exists_uniform_subseq_of_lipschitz_family | statement_ja | 造語 | B | bochner | fixed | P1: #52（等→同程度 Lipschitz）+ P1（「連続（性）」付与、owner 裁定）で解消 |
 | F251 | exists_uniform_subseq_of_lipschitz_family | proof_ja | 造語 | B | bochner | open | 一様 Cauchy 化 |
 | F252 | exists_uniform_subseq_of_lipschitz_family | gap.note | 造語 | B | bochner | open | 載荷点 |
 | F253 | exists_unitMass_weight | gap.note | JP-13 | M | bochner | open | 要石で「a.e. 定数の値」を汲み出す |
@@ -267,7 +268,7 @@
 | F258 | isCompact_stepCurve_toLp | proof_ja | 造語 | B | bochner | open | 値リストから類への組み立て写像 |
 | F259 | isWeakTimeDeriv_primitive | statement_ja | JP-14 | B | bochner | open | 分布的 FTC |
 | F260 | isWeakTimeDeriv_primitive | proof_ja | 自然さ | M | bochner | open | `sorry`（ALLOW_SORRY）で開けてある。 |
-| F261 | isWeakTimeDeriv_primitive | gap.note | JP-14 | M | bochner | superseded-by-#52 |  |
+| F261 | isWeakTimeDeriv_primitive | gap.note | JP-14 | M | bochner | open | 再検証で reopen: lane→系列 は #52 処理済みだがソフトウェア的「閉じている」が残存 |
 | F262 | isWeakTimeDeriv_unique | gap.note | JP-14 | M | bochner | open | body コメント |
 | F263 | isWeakTimeDeriv_zero_ae_const | statement_ja | JP-13 | B | bochner | open | du Bois-Reymond の要石 |
 | F264 | isWeakTimeDerivℝ_comp_clm | proof_ja | JP-13 | B | bochner | open | 全直線への移植 |
@@ -280,12 +281,12 @@
 | F271 | stepCurve | statement_ja | JP-13 | B | bochner | open | $m$ 個のセルに割り、値のリスト |
 | F272 | stepCurve | proof_ja | 自然さ | B | bochner | open | セル番号を床関数で計算し |
 | F273 | stepCurve | gap.note | JP-13 | M | bochner | open | 近似階段。A1–A6 の鎖の起点。 |
-| F274 | timeConvL2 | gap.note | JP-13 | M | bochner | superseded-by-#52 |  |
+| F274 | timeConvL2 | gap.note | JP-13 | M | bochner | open | 再検証で reopen: lane→系列 は #52 処理済みだが「時間軸鏡像」が残存 |
 | F275 | timeConvL2_norm_le | proof_ja | JP-13 | B | bochner | open | 単位質量で積分を $\lVert g \rVert$ に潰す。 |
 | F276 | timeConvL2_sub_eq_integral | statement_ja | 造語 | B | bochner | open | 軟化の欠損の積分表示 |
 | F277 | timeConvL2_sub_eq_integral | proof_ja | JP-13 | B | bochner | open | 一本の積分に合流させ |
 | F278 | timeConvL2_sub_le_translation_modulus | statement_ja | 造語 | B | bochner | open | 並進モジュラスによる欠損評価 |
-| F279 | timeConvL2_sub_le_translation_modulus | gap.note | JP-14 | M | bochner | superseded-by-#52 |  |
+| F279 | timeConvL2_sub_le_translation_modulus | gap.note | JP-14 | M | bochner | open | 再検証で reopen: lane→系列 は #52 処理済みだが「直移植」が残存 |
 | F280 | timeConvL2_tendsto_self | statement_ja | JP-13 | B | bochner | open | 半径が $0$ に潰れるとき |
 | F281 | timeConvL2_tendsto_self | proof_ja | 造語 | B | bochner | open | 並進モジュラス |
 | F282 | timeConvL2_tendsto_self | gap.note | JP-13 | M | bochner | open | 自前で組み上げられている（S1 の礎石 |
