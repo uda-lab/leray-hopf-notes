@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   埋め込みの実斉次性。
 proof_ja: |
-  加法性と同じく部分型の外延性で従う。
+  加法性と同じく、包含写像が元を変えないことから、実スカラー倍との可換性が従う。
 gap:
   level: none
   note: |

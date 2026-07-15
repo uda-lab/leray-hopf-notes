@@ -1,9 +1,9 @@
 name: LerayHopf.mem_sigma_of_mem_velocitySpan
 tier: full
 statement_ja: |
-  $V_n$ の元の発散ゼロ所属（部分型の形の言い換え）。
+  $V_n$ の各元は発散ゼロ空間に属する。
 proof_ja: |
-  [[包含|LerayHopf.velocitySpan_le_sigma]] を部分型の元に適用するだけである。
+  [[包含|LerayHopf.velocitySpan_le_sigma]] $V_n\subseteq L^2_\sigma$ から直ちに従う。
 gap:
   level: none
   note: |

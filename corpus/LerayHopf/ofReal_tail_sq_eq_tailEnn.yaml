@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\bigl(\lVert v - P_N v \rVert^2\bigr)_{[0,\infty]} = \sum_{j} \sum_{k \notin B_N} \bigl(\lVert \hat v_j(k) \rVert^2\bigr)_{[0,\infty]}.$$
 proof_ja: |
-  [[ベクトル尾部恒等式|LerayHopf.L2VF_norm_sub_velocityProjection_sq]] で実側を書き換え、埋め込みを有限和・総和と交換する。交換に要る総和可能性は、尾部族が常に総和可能な Parseval 族（[[係数の二乗総和可能性|LerayHopf.Torus.summable_norm_mFourierCoeff3_sq]]）の部分族であることから無条件に得られる。
+  [[ベクトル尾部恒等式|LerayHopf.L2VF_norm_sub_velocityProjection_sq]] を用いて実数値の左辺を書き換え、埋め込みを有限和・総和と交換する。交換に要る総和可能性は、尾部族が常に総和可能な Parseval 族（[[係数の二乗総和可能性|LerayHopf.Torus.summable_norm_mFourierCoeff3_sq]]）の部分族であることから無条件に得られる。
 gap:
   level: none
   note: |

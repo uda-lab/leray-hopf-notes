@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    $V_n$ を「発散ゼロ空間の像」として定義した配当。
+    $V_n$ を発散ゼロ空間の像として定義したことから従う。
 chapter: projections-galerkin
 tags: [galerkin, projections, torus]

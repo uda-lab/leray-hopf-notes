@@ -1,9 +1,9 @@
 name: LerayHopf.Scaffold.exists_lerayHopf_torus3_statement
 tier: full
 statement_ja: |
-  歴史的な目標文（意図的な sorry）：$\mathbb{T}^3$ 上の Leray–Hopf 解の存在を、最初期のプレースホルダ述語の水準で述べたもの。
+  開発初期に置かれた未証明の目標文：$\mathbb{T}^3$ 上の Leray–Hopf 解の存在を、最初期のプレースホルダ述語の水準で述べたもの。
 proof_ja: |
-  **証明は意図的に `sorry` のまま残されている。**プレースホルダのフィールドが自明に充足できる段階でこの定理を「閉じる」ことは不誠実である、という判断が docstring に明記されており、実際の存在定理（[[トーラス存在定理|LerayHopf.exists_lerayHopf_torus3]]、kernel-only で証明済み）と歴史的な場所取りを峻別するために残されている。
+  この宣言には証明が与えられていない。プレースホルダのフィールドが自明に充足できる段階で、暫定述語を自明に充足させても解析的な存在証明にはならないという判断が docstring に明記されており、実際の存在定理（[[トーラス存在定理|LerayHopf.exists_lerayHopf_torus3]]、kernel-only で証明済み）とは区別された、開発初期の記録として残されている。
 gap:
   level: large
   note: |

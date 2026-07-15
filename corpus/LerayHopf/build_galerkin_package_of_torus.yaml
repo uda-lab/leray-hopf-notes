@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   完全パッケージの無条件構成：$\nu > 0$、$T > 0$ と任意の発散ゼロ初期値に対し、完全 Galerkin コンパクト性パッケージを公理なしで構成する。
 proof_ja: |
-  [[公理なし Galerkin 列|LerayHopf.galSeq_of_torus]] を [[組み立ての中核|LerayHopf.build_galerkin_package_of_galSeq]] に渡すだけである。
+  [[公理なし Galerkin 列|LerayHopf.galSeq_of_torus]] から [[パッケージの組み立て|LerayHopf.build_galerkin_package_of_galSeq]] を適用すれば結論が従う。
 gap:
   level: none
   note: |

@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   公理なしの具体的 Galerkin 列：$\nu > 0$ のもとで、各次数 $n$ の Galerkin 解データの族を無条件に供給する。
 proof_ja: |
-  各 $n$ で、証明済みの有限次元 ODE 求解（前向き大域解の存在 [[前向き大域解|LerayHopf.Torus.forwardGlobalSolution_exists]] に基づく `galerkinSolutionData_torus`）を呼ぶだけである。
+  各 $n$ に、証明済みの有限次元 ODE 求解（前向き大域解の存在 [[前向き大域解|LerayHopf.Torus.forwardGlobalSolution_exists]]）を適用する。
 gap:
   level: none
   note: |

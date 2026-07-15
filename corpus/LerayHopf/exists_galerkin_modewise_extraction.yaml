@@ -9,10 +9,10 @@ proof_ja: |
 
   $$\lVert u_0 \rVert \cdot \lVert w_m \rVert$$
 
-  （Cauchy–Schwarz と [[一様球有界|LerayHopf.galerkin_u_norm_le]]）を用意し、Lipschitz 族に対する一様部分列抽出の汎用エンジン（Arzelà–Ascoli の対角線論法版 `exists_uniform_subseq_of_lipschitz_family`）へ渡す。得られた各 $m$ の極限を選択公理で一本の関数族に束ねる。
+  （Cauchy–Schwarz と [[一様ノルム評価|LerayHopf.galerkin_u_norm_le]]）を用意し、Lipschitz 族に対する一様部分列抽出定理（Arzelà–Ascoli の対角線論法版）を適用する。得られた各 $m$ の極限を選択公理で一本の関数族に束ねる。
 gap:
   level: mild
   note: |
-    Aubin–Lions 論法の「時間方向の等連続性からの抽出」を担う段。抽出は全テストに共通の単一の $\varphi$ である（対角線論法）ことが下流（極限曲線の構成）で本質的に使われる。
+    Aubin–Lions 論法の「時間方向の等連続性からの抽出」を担う段（Lean 宣言名 `exists_uniform_subseq_of_lipschitz_family`）。抽出は全テストに共通の単一の $\varphi$ である（対角線論法）ことが下流（極限曲線の構成）で本質的に使われる。
 chapter: compactness
 tags: [compactness, aubin-lions, torus]

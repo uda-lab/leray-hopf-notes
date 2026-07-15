@@ -1,13 +1,13 @@
 name: LerayHopf.galerkin_u_norm_le
 tier: full
 statement_ja: |
-  Galerkin 曲線の一様球有界（エクスポート形）：すべての $t \ge 0$ で
+  Galerkin 曲線の一様ノルム評価：すべての $t \ge 0$ で
 
   $$\lVert u_n(t) \rVert \le \lVert u_0 \rVert$$
 
   （右辺は $n$ に依らない）。
 proof_ja: |
-  エネルギー有界フィールドと Fourier 打ち切りの非拡大性を組み合わせる補助補題の言い換えである。
+  エネルギー評価と Fourier 打ち切りの非拡大性を組み合わせる補助補題の言い換えである。
 gap:
   level: none
   note: |

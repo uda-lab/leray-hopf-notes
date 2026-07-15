@@ -1,9 +1,9 @@
 name: LerayHopf.fourierCoeffCLM
 tier: full
 statement_ja: |
-  第 $k$ Fourier 係数の連続線形汎関数化：$L^2(\mathbb{T}^3; \mathbb{C})$ 上の連続 $\mathbb{C}$ 線形汎関数として、第 $k$ 基底ベクトルとの内積 $f \mapsto \langle e_k, f \rangle$ を取る。
+  第 $k$ Fourier 係数を与える連続線形汎関数：$L^2(\mathbb{T}^3; \mathbb{C})$ 上の連続 $\mathbb{C}$ 線形汎関数として、第 $k$ 基底ベクトルとの内積 $f \mapsto \langle e_k, f \rangle$ を取る。
 proof_ja: |
-  内積の連続線形汎関数化（Riesz 対応の一方向）を Fourier 基底ベクトルに適用して定める。
+  Fourier 基底ベクトルとの内積を取る連続線形汎関数として定める（Riesz 対応の一方向）。
 gap:
   level: none
   note: |

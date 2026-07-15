@@ -1,7 +1,7 @@
 name: LerayHopf.normSq_eq_integral_normSq
 tier: full
 statement_ja: |
-  $L^2$ 元のノルム二乗の点別積分表示：
+  $L^2$ 元のノルム二乗の、各点でのノルムの二乗による積分表示：
 
   $$\lVert u\rVert^2 = \int \lVert u(x)\rVert^2\,dx.$$
 

@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    Fourier 係数を「連続線形汎関数の値」と見なす視点の切り替え弁。弱収束から係数ごとの収束を取り出す議論（compactness 章）はすべてこの補題を経由する。
+    Fourier 係数を連続線形汎関数の値として扱うための補題。弱収束から係数ごとの収束を取り出す議論（compactness 章）はすべてこの補題を経由する。
 chapter: projections-galerkin
 tags: [fourier, projections, torus]

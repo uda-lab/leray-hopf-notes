@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    述語（Fourier 和の消滅）と汎関数の核による記述を往復させる橋。
+    Fourier 和による述語と発散記号の核による条件の同値を与える。
 chapter: projections-galerkin
 tags: [leray-projection, divergence-free, torus]

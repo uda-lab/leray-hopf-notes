@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    完備性（したがって直交射影の存在）の前提。発散記号を連続線形汎関数として実装したことの直接の配当である。
+    完備性（したがって直交射影の存在）の前提。発散記号を連続線形汎関数として定めたことから直接従う。
 chapter: projections-galerkin
 tags: [leray-projection, divergence-free, torus]

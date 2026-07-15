@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\bigl|\langle u_n(t), w \rangle - \langle u_n(s), w \rangle\bigr| \le L\,(t - s).$$
 proof_ja: |
-  内積 $t \mapsto \langle u_n(t), w \rangle$ の微分を ODE フィールドで書き下すと $-(\nu\, s(u_n, w) + b(u_n, u_n, w))$ になる（$n \ge m$ でテストが次数 $n$ の Galerkin 部分空間に属し ODE が使える）。Stokes 双線形形式の有界性（[[Stokes 双線形形式の有界性|LerayHopf.stokesTestPairing_bound_of_galerkinTest]]）と移流形式の第三引数固定の有界性、および一様球有界
+  内積 $t \mapsto \langle u_n(t), w \rangle$ の微分を Galerkin ODE を用いて書き下すと $-(\nu\, s(u_n, w) + b(u_n, u_n, w))$ になる（$n \ge m$ でテストが次数 $n$ の Galerkin 部分空間に属し ODE が使える）。Stokes 双線形形式の有界性（[[Stokes 双線形形式の有界性|LerayHopf.stokesTestPairing_bound_of_galerkinTest]]）と移流形式の第三引数固定の有界性、および次の一様評価
 
   $$\lVert u_n(t) \rVert \le \lVert u_0 \rVert$$
 
@@ -17,6 +17,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    $m \le n$ の閾値は「テストの打ち切り次数を $n$ へ昇格させて初めて ODE フィールドが発火する」ことの反映で、抽出エンジン側の「ある番号以降」という入力条件に対応する（全 $n$ への強化は不可能）。移流の有界性は形式束のフィールド `b_bound` による。
+    $m \le n$ の閾値は、$n \ge m$ のとき Galerkin ODE のテスト条件が満たされることの反映で、抽出定理側の「ある番号以降」という入力条件に対応する（全 $n$ への強化は不可能）。移流の有界性は形式束のフィールド `b_bound` による。
 chapter: compactness
 tags: [compactness, lipschitz, torus]

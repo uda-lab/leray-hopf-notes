@@ -7,7 +7,7 @@ statement_ja: |
 
   右辺は $n$ に依らない。
 proof_ja: |
-  各時刻で [[尾部の H¹ 優越|LerayHopf.tail_sq_le_h1EnergySq_div]] を解データの $H^1$ 正則性フィールドとともに適用する。左辺の被積分関数は曲線の連続性から、右辺の優関数は [[H¹ エネルギーの連続性|LerayHopf.h1EnergySq_continuousOn_galerkin]] から、それぞれ区間可積分である。積分の単調性で優関数の積分に移り、解データの一様正則性評価フィールド（$H^1$ エネルギーの時間積分の $n$ 一様な上界）で分子を抑え、$1 + N^2$ で割る。
+  各時刻で [[尾部の $H^1$ エネルギーによる評価|LerayHopf.tail_sq_le_h1EnergySq_div]] を解データが持つ $H^1$ 正則性とともに適用する。左辺の被積分関数は曲線の連続性から、右辺の優関数は [[H¹ エネルギーの連続性|LerayHopf.h1EnergySq_continuousOn_galerkin]] から、それぞれ区間可積分である。積分の単調性で優関数の積分に移り、解データの一様正則性評価（$H^1$ エネルギーの時間積分の $n$ 一様な上界）で分子を抑え、$1 + N^2$ で割る。
 gap:
   level: mild
   note: |

@@ -1,7 +1,7 @@
 name: LerayHopf.mem_velocitySpan_of_fixed
 tier: full
 statement_ja: |
-  固定点は像に属する（bridge の逆方向）：発散ゼロで、打ち切っても変わらない場は $V_n$ に属する。
+  固定点は $V_n$ に属する（橋渡しの逆方向）：発散ゼロで、打ち切っても変わらない場は $V_n$ に属する。
 proof_ja: |
   所属の特徴づけにおいて、その場自身を打ち切る前の場として選べば、$V_n$ への所属が従う。
 gap:
