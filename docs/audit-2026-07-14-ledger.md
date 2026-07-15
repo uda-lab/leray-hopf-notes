@@ -31,7 +31,7 @@
 | F022 | L2VF | gap.note | JP-13 | A | spaces | fixed | P1: gap.note theater metaphor 「主舞台」→「中心」(same span as F110, one edit serves both). |
 | F023 | IsGalerkinTest | gap.note | JP-14 | M | capstone-torus | superseded-by-#52 |  |
 | F024 | IsGalerkinTest | gap.note | 造語 | M | capstone-torus | open | Faedo–Galerkin の標準テスト級 |
-| F025 | torus3Evolution | statement_ja | 造語 | M | capstone-torus | open | テスト級は [[Galerkin テスト\\|LerayHopf.I |
+| F025 | torus3Evolution | statement_ja | 造語 | M | capstone-torus | open | テスト級は [[Galerkin テスト\|LerayHopf.I |
 | F026 | torus3Evolution | gap.note | JP-14 | M | capstone-torus | superseded-by-#52 |  |
 | F027 | ExistsLerayHopf | statement_ja | 自然さ/表記 | M | misc | open | 最初期スキャフォールド |
 | F028 | LerayHopfNonunique | gap.note | JP-14/自然さ | M | misc | open | Branch B（非一意性方面） |
