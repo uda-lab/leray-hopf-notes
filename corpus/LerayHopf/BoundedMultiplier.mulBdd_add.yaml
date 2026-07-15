@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\mathrm{mul}_m(g+h) = \mathrm{mul}_m\,g + \mathrm{mul}_m\,h.$$
 proof_ja: |
-  代表関数の点別分配則を a.e. 等式として $L^2$ 類へ持ち上げる。
+  代表関数の各点での分配則を a.e. 等式として $L^2$ 類へ持ち上げる。
 gap:
   level: none
   note: |

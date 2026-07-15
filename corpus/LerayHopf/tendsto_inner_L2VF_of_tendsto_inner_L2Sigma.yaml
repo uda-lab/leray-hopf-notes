@@ -1,7 +1,7 @@
 name: LerayHopf.tendsto_inner_L2VF_of_tendsto_inner_L2Sigma
 tier: full
 statement_ja: |
-  弱収束のテスト級の昇格：発散ゼロの列 $v_n$ と極限 $u$ が発散ゼロテスト全体に対して弱収束するならば、**すべての** $L^2$ テスト $y$ に対しても弱収束する。
+  弱収束を全 $L^2$ テスト関数へ拡張する補題：発散ゼロの列 $v_n$ と極限 $u$ が発散ゼロテスト全体に対して弱収束するならば、**すべての** $L^2$ テスト $y$ に対しても弱収束する。
 proof_ja: |
   Leray 射影（発散ゼロ部分空間への直交射影）を $y$ に施すと発散ゼロテストになるから、仮定の収束が使える。射影の自己随伴性と「発散ゼロ元は射影で固定される」ことから
 
@@ -11,6 +11,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    [[尾部下半連続性|LerayHopf.tailEnn_lsc_of_weak]] の前提（全 $L^2$ テストでの弱収束）を、極限曲線定理が与える発散ゼロテストでの弱収束から到達可能にする接続部品。自己随伴性は `lerayProjection_isSymmetric`、固定性は `lerayProjection_fixes_divFree` による。
+    [[打ち切り残差の下半連続性|LerayHopf.tailEnn_lsc_of_weak]] の前提（全 $L^2$ テストでの弱収束）を、極限曲線定理が与える発散ゼロテストに対する弱収束から導く補題。自己随伴性は `lerayProjection_isSymmetric`、固定性は `lerayProjection_fixes_divFree` による。
 chapter: compactness
 tags: [compactness, weak-convergence, torus]

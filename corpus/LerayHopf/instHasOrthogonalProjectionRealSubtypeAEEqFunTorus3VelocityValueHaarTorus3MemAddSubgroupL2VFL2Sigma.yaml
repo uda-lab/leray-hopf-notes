@@ -1,9 +1,9 @@
 name: LerayHopf.instHasOrthogonalProjectionRealSubtypeAEEqFunTorus3VelocityValueHaarTorus3MemAddSubgroupL2VFL2Sigma
 tier: full
 statement_ja: |
-  発散ゼロ空間への直交射影の存在（Leray 射影の存在の型クラス化）。
+  発散ゼロ空間への直交射影、すなわち Leray 射影が存在する。
 proof_ja: |
-  完備な部分空間は直交射影を持つ、という一般インスタンスが完備性の登録から自動で発火する。
+  発散ゼロ空間は完備な閉部分空間なので、直交射影の一般存在定理を適用する。
 gap:
   level: none
   note: |

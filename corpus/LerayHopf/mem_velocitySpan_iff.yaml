@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    以下の bridge 補題群（固定点と像の一致）の出発点。
+    以下の橋渡し補題群（固定点と像の一致）の出発点。
 chapter: projections-galerkin
 tags: [galerkin, projections, torus]

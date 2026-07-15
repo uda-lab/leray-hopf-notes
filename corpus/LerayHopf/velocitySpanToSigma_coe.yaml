@@ -1,9 +1,9 @@
 name: LerayHopf.velocitySpanToSigma_coe
 tier: full
 statement_ja: |
-  埋め込みの台の値の保存：埋め込んでから周囲空間へ落とした値は元の値に等しい。
+  包含写像による像は、周囲空間では元の要素に一致する。
 proof_ja: |
-  定義的等式（`rfl`）である。
+  包含写像の定義から直ちに従う。
 gap:
   level: none
   note: |

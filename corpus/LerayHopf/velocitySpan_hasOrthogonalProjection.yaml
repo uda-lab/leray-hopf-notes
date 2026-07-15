@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   $V_n$ への直交射影の存在。
 proof_ja: |
-  完備性から一般インスタンスが自動で発火する。
+  $V_n$ は有限次元で完備だから、直交射影の一般存在定理を適用する。
 gap:
   level: none
   note: |

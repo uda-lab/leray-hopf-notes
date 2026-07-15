@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   埋め込みの加法性。
 proof_ja: |
-  両辺は周囲空間の同じ元を指すので、部分型の外延性で一致する。
+  包含写像は元を変えないので、周囲空間で両辺を比較すれば一致する。
 gap:
   level: none
   note: |

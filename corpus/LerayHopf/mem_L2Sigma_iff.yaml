@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    部分空間としての定義（核の共通部分）と点別の述語を繋ぐ基本補題。
+    部分空間としての定義（核の共通部分）と各波数での述語を繋ぐ基本補題。
 chapter: projections-galerkin
 tags: [leray-projection, divergence-free, torus]

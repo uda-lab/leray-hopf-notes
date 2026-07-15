@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    弱収束のテスト級の昇格（[[テスト級の昇格|LerayHopf.tendsto_inner_L2VF_of_tendsto_inner_L2Sigma]]）で使われる。
+    弱収束を全 $L^2$ テスト関数へ拡張する [[補題|LerayHopf.tendsto_inner_L2VF_of_tendsto_inner_L2Sigma]] で使われる。
 chapter: projections-galerkin
 tags: [leray-projection, divergence-free, torus]

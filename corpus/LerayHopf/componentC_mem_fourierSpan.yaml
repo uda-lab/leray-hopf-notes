@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    $V_n$ の有限次元性をスカラー側から引き出す接続部品。
+    $V_n$ の有限次元性をスカラー成分の有限次元性から導く補題。
 chapter: projections-galerkin
 tags: [galerkin, projections, torus]

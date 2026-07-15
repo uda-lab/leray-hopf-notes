@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   スカラー打ち切りの強収束：任意の $f \in L^2(\mathbb{T}^3; \mathbb{C})$ に対し、打ち切りの値は $n \to \infty$ のとき $f$ に $L^2$ ノルムで収束する（Hilbert 空間のノルム位相での収束）。
 proof_ja: |
-  単調な部分空間族への直交射影は、合併が稠密ならば恒等写像に各点収束する、という mathlib の一般定理に、[[スパンの単調性|LerayHopf.fourierSpan_monotone]] と [[稠密性|LerayHopf.fourierSpan_iSup_dense]] を渡す。
+  単調な閉部分空間族の合併が稠密なら、その直交射影は恒等写像に強収束するという一般定理に、[[スパンの単調性|LerayHopf.fourierSpan_monotone]] と [[稠密性|LerayHopf.fourierSpan_iSup_dense]] を用いる。
 gap:
   level: none
   note: |

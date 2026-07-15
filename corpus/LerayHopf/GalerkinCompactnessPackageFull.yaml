@@ -1,12 +1,12 @@
 name: LerayHopf.GalerkinCompactnessPackageFull
 tier: full
 statement_ja: |
-  完全 Galerkin コンパクト性パッケージ：極限曲線と、その弱 NS 方程式・エネルギー不等式・初期トレース・エネルギークラス所属・時間可測性の証明を束ねた証明保持型。トーラス領域での [[汎用コンパクト性パッケージ|LerayHopf.Galerkin.CompactnessPackage]] の実現である。
+  完全 Galerkin コンパクト性パッケージ：極限曲線と、その弱 NS 方程式・エネルギー不等式・初期トレース・エネルギー類への所属・時間可測性の証明を束ねた証明保持型。トーラス領域での [[汎用コンパクト性パッケージ|LerayHopf.Galerkin.CompactnessPackage]] の実現である。
 proof_ja: |
-  汎用構成をトーラス領域データと形式束の中核に適用した略記として定める。
+  トーラス領域データ（粘性形式・テスト関数族を含む）と、移流形式を与える形式束に汎用構成を適用した略記として定める。
 gap:
   level: none
   note: |
-    `energy_class_limit` フィールドが「極限曲線が Leray–Hopf エネルギークラスに属する」こと（$[0,T]$ 上 a.e. の $H^1$ 所属と散逸の可積分性）を証明として保持する。存在定理はこの構造から [[パッケージからの存在|LerayHopf.exists_lerayHopf_from_package_full]] で取り出す。
+    `energy_class_limit` フィールドが「極限曲線が Leray–Hopf エネルギー類に属する」こと（$[0,T]$ 上 a.e. の $H^1$ 所属と散逸の可積分性）を証明として保持する。存在定理はこの構造から [[パッケージからの存在|LerayHopf.exists_lerayHopf_from_package_full]] で取り出す。
 chapter: capstone-torus
 tags: [capstone, aubin-lions, torus]

@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   Fourier スパンへの直交射影の存在。
 proof_ja: |
-  完備部分空間への直交射影の存在の一般インスタンスが自動で発火する。
+  有限次元部分空間は完備であるから、完備部分空間への直交射影存在定理を適用する。
 gap:
   level: none
   note: |

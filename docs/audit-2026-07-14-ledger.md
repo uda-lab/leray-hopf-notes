@@ -19,32 +19,32 @@
 | F009 | Torus.galerkinField_solution_agree | gap.note | 自然さ | M | ode | fixed | P1: gap.note: 継ぎ足して→接続して (both occurrences in the paragraph fixed for coherence). decls.json checked: LerayHopf.Torus.galerkinField_solution_agree doc = 'splice-agreement: two local solutions agreeing at one point agree on the overlap' — 貼り合わせ/接続 preserve this exactly. |
 | F010 | L2VF_norm_sq_eq_sum_componentC | proof_ja/gap.note | 表記(訳語ゆれ) | M | ode | fixed | P1: 殆ど至る所 (proof_ja) and a.e. (gap.note) both unified to ほとんど至る所. |
 | F011 | exists_galerkin_modewise_extraction | proof_ja | JP-13/造語 | B | compactness | fixed | P1: 証人+帯域水準→打ち切り次数の複合書き換え（F130 と統合適用） |
-| F012 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | open | 一様部分列抽出の汎用エンジン |
-| F013 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | open | 配線の定理である |
-| F014 | exists_limit_curve_of_galSeq | proof_ja | 自然さ/JP-13 | M | compactness | open | のエクスポートを添えて |
-| F015 | exists_limit_curve_of_galSeq | gap.note | JP-13 | M | compactness | open | が握る唯一の取っ手となる capstone |
-| F016 | galerkin_u_norm_le | statement_ja | 自然さ | M | compactness | open | 一様球有界（エクスポート形） |
-| F017 | integral_tail_sq_limit_le | gap.note | JP-13 | M | compactness | open | 極限曲線に密輸しない誠実な経路 |
+| F012 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | fixed | P2: エンジン→抽出定理 (with F131/F132, decls.json checked: exists_galerkin_modewise_extraction sig unchanged) |
+| F013 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | fixed | P2: 配線の定理→既に得た四つの結果を組み合わせる定理 (merged with F133; kept wikilink targets, edited display text only) |
+| F014 | exists_limit_curve_of_galSeq | proof_ja | 自然さ/JP-13 | M | compactness | fixed | P2: エクスポートを添えて→用いて...を構成し (merged with F134's broader fix, same span) |
+| F015 | exists_limit_curve_of_galSeq | gap.note | JP-13 | M | compactness | fixed | P2: 取っ手/capstone metaphor removed (merged with F135, same span) |
+| F016 | galerkin_u_norm_le | statement_ja | 自然さ | M | compactness | fixed | P2: subsumed by F144's fuller BLOCKING rewrite of the same title span |
+| F017 | integral_tail_sq_limit_le | gap.note | JP-13 | M | compactness | fixed | P2: same span as F152 ('...を極限曲線に密輸しない誠実な経路の設計'); resolved together with F152's rewrite of that gap.note sentence |
 | F018 | galerkin_test_pairing_lipschitz | statement_ja | 造語/自然さ | A | compactness | fixed | P1: 帯域水準→打ち切り次数（owner 裁定 2026-07-15b、statement_ja + gap.note の 2 箇所） |
-| F019 | tail_sq_le_h1EnergySq_div | statement_ja | 造語/自然さ | M | compactness | open | 尾部の $H^1$ 優越 |
+| F019 | tail_sq_le_h1EnergySq_div | statement_ja | 造語/自然さ | M | compactness | fixed | P2: 尾部の H¹ 優越→尾部の H^1 エネルギーによる評価; also updated the wikilink display text in integral_tail_sq_galerkin_le.yaml for consistency (decls.json checked: tail_sq_le_h1EnergySq_div sig unchanged) |
 | F020 | DivFreeL2 | statement_ja | 自然さ | M | spaces | fixed | P1: statement_ja: 「発散ゼロ性の」→「発散がゼロであることの」. decls.json checked: doc confirms 'Fourier characterisation of div u=0 for L2 vector fields'; meaning preserved. |
 | F021 | DivFreeL2 | gap.note | JP-14 | M | spaces | superseded-by-#52 |  |
 | F022 | L2VF | gap.note | JP-13 | A | spaces | fixed | P1: gap.note theater metaphor 「主舞台」→「中心」(same span as F110, one edit serves both). |
 | F023 | IsGalerkinTest | gap.note | JP-14 | M | capstone-torus | superseded-by-#52 |  |
-| F024 | IsGalerkinTest | gap.note | 造語 | M | capstone-torus | open | Faedo–Galerkin の標準テスト級 |
-| F025 | torus3Evolution | statement_ja | 造語 | M | capstone-torus | open | テスト級は [[Galerkin テスト\|LerayHopf.I |
+| F024 | IsGalerkinTest | gap.note | 造語 | M | capstone-torus | fixed | P2: Superseded by F164's rewrite on the same quote/field; applied together. decls.json not applicable (gap.note). |
+| F025 | torus3Evolution | statement_ja | 造語 | M | capstone-torus | fixed | P2: テスト級→テスト関数系 also propagated to the two other テスト級 occurrences in the same statement_ja for consistency. decls.json checked (torus3Evolution: Torus3NSForms → DissipativeEvolution). |
 | F026 | torus3Evolution | gap.note | JP-14 | M | capstone-torus | superseded-by-#52 |  |
-| F027 | ExistsLerayHopf | statement_ja | 自然さ/表記 | M | misc | open | 最初期スキャフォールド |
-| F028 | LerayHopfNonunique | gap.note | JP-14/自然さ | M | misc | open | Branch B（非一意性方面） |
-| F029 | lower_bound_from_inverse_square_lifespan | gap.note | JP-14 | M | misc | open | Branch 探索期の独立補題 |
+| F027 | ExistsLerayHopf | statement_ja | 自然さ/表記 | M | misc | fixed | P2: subsumed by F179's fuller BLOCKING rewrite of the same title span |
+| F028 | LerayHopfNonunique | gap.note | JP-14/自然さ | M | misc | fixed | P2: subsumed by F183's fuller rewrite removing both 'Branch' and '場所取り' in one sentence |
+| F029 | lower_bound_from_inverse_square_lifespan | gap.note | JP-14 | M | misc | fixed | P2: Branch→分岐 (merged with F187, preserved '探索期' context info that F187's literal rewrite would have dropped) |
 | F030 | mem_velocitySpan_of_fixed | proof_ja | JP-13/借用語彙 | B | projections-galerkin | fixed | P1: 自身を原像として取る形に書き換え（F206 と統合適用） |
 | F031 | velocityP_initial_mem | proof_ja | JP-13/借用語彙 | B | projections-galerkin | fixed | P1: u0 自身を取る形に書き換え（F208 と統合適用） |
-| F032 | fourierCoeffCLM_apply | gap.note | JP-13/比喩 | M | projections-galerkin | open | Fourier 係数を「連続線形汎関数の値」と見なす視点の切り替 |
-| F033 | velocityProjection_n_inner_of_fixed | statement_ja | 自然さ | M | projections-galerkin | open | 帯域制限テストとの対は截断を素通しする |
-| F034 | fourierCoeffCLM | statement_ja | 造語/自然さ | M | projections-galerkin | open | 第 $k$ Fourier 係数の連続線形汎関数化 |
+| F032 | fourierCoeffCLM_apply | gap.note | JP-13/比喩 | M | projections-galerkin | fixed | P2: Combined with F194 (same quote/field, same file); applied one rewrite. |
+| F033 | velocityProjection_n_inner_of_fixed | statement_ja | 自然さ | M | projections-galerkin | fixed | P2: Combined with F210 (same quote/field, same file, 截断 already renamed 打ち切り by earlier P1.5 pass); applied one rewrite. |
+| F034 | fourierCoeffCLM | statement_ja | 造語/自然さ | M | projections-galerkin | fixed | P2: Combined with F192 (identical quote/field); applied one rewrite. decls.json checked (fourierCoeffCLM: (Fin 3 → ℤ) → L2C →L[ℂ] ℂ, i.e. genuinely a continuous linear functional — statement matches). |
 | F035 | velocitySpan | gap.note | JP-13/表記 | M | projections-galerkin | fixed | P1.5: 鏡像→対応物 + ℝ³ 系統（reopen 後 P1.5 で修正） |
 | F036 | fourierProjection_n_tendsto | gap.note | 表記/訳語ゆれ | M | projections-galerkin | superseded-by-#52 |  |
-| F037 | mem_velocitySpan_iff | gap.note | JP-14/表記 | M | projections-galerkin | open | 以下の bridge 補題群（固定点と像の一致）の出発点。 |
+| F037 | mem_velocitySpan_iff | gap.note | JP-14/表記 | M | projections-galerkin | fixed | P2: Translated bridge→橋渡し per G4 and the PROTECTED-terms ruling (橋渡し must be used, not deleted); this also resolves F204 (see below). |
 | F038 | fourierBox_exhausts | statement_ja | 自然さ | A | projections-galerkin | superseded-by-#52 |  |
 | F039 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-13/造語 | B | bochner | open | 一様収束部分列（対角線論法エンジン） |
 | F040 | exists_uniform_subseq_of_lipschitz_family | statement_ja | JP-14 | M | bochner | fixed | P1: eventually→ある番号以降で（reopen 後、owner 裁定に従い修正） |
@@ -136,98 +136,98 @@
 | F126 | viscousFormSq_nonneg | statement_ja | 自然さ | B | spaces | superseded-by-#52 |  |
 | F127 | instIsProbabilityMeasureUnitAddCircleVolume_lerayHopf | proof_ja | 表記 | B | spaces | fixed | P1: proof_ja: removed 'mathlib の...インスタンスの形に包み直すだけである' Lean-implementation phrasing, rewrote as 「既知の等式「単位加法円周の全測度は 1」から、標準測度が確率測度であることが従う。」gap.note already covers the instance-declaration detail appropriately. |
 | F128 | volume_torus3_eq_haarTorus3 | proof_ja | 自然さ | M | spaces | fixed | P1: proof_ja: 「積測度の構成関数の合同で 3 因子に持ち上げる」→「各因子の測度が一致することから 3 重積測度も一致する」, applied suggested rewrite verbatim. |
-| F129 | L2C_norm_sub_fourierProjection_sq | proof_ja | 表記 | B | compactness | open | 補集合上の部分型の総和 |
+| F129 | L2C_norm_sub_fourierProjection_sq | proof_ja | 表記 | B | compactness | fixed | P2: 部分型→箱の補集合を添字集合とする; PROTECTED term 被和項 left untouched per ruling |
 | F130 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | fixed | P1: F011 と統合適用 |
-| F131 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | open | 一様部分列抽出の汎用エンジン |
-| F132 | exists_galerkin_modewise_extraction | proof_ja | 表記 | B | compactness | open | `exists_uniform_subseq_of_lipsch |
-| F133 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | open | 配線の定理である |
-| F134 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | open | のエクスポートを添えて |
-| F135 | exists_limit_curve_of_galSeq | gap.note | JP-13 | M | compactness | open | 唯一の取っ手となる capstone |
+| F131 | exists_galerkin_modewise_extraction | proof_ja | JP-13 | B | compactness | fixed | P2: applied together with F012/F132 as one coherent proof_ja rewrite |
+| F132 | exists_galerkin_modewise_extraction | proof_ja | 表記 | B | compactness | fixed | P2: Lean identifier moved from proof_ja to gap.note (backticks now only in gap.note, per D3) |
+| F133 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | fixed | P2: used F133's phrasing over F013's (cleaner, no residual engineering term); decls.json checked: exists_limit_curve_of_galSeq sig unchanged |
+| F134 | exists_limit_curve_of_galSeq | proof_ja | JP-13 | B | compactness | fixed | P2: preserved all three [[wikilink\|LeanName]] targets, edited only display text/connective wording |
+| F135 | exists_limit_curve_of_galSeq | gap.note | JP-13 | M | compactness | fixed | P2: used F135's fuller replacement over F015's; consolidated the single gap.note sentence |
 | F136 | exists_weak_limit_curve | statement_ja | 自然さ | B | compactness | superseded-by-#52 |  |
 | F137 | exists_weak_limit_curve | proof_ja | JP-14 | M | compactness | superseded-by-#52 |  |
 | F138 | exists_weak_limit_curve | proof_ja | 造語 | B | compactness | superseded-by-#52 |  |
 | F139 | galerkin_test_pairing_lipschitz | statement_ja | 造語 | B | compactness | fixed | P1: F018 と統合適用（帯域水準→打ち切り次数、owner 訂正裁定後の表記）。PR #53 |
-| F140 | galerkin_test_pairing_lipschitz | proof_ja | 表記 | B | compactness | open | ODE フィールドで書き下す |
-| F141 | galerkin_test_pairing_lipschitz | proof_ja | 造語 | B | compactness | open | および一様球有界 |
-| F142 | galerkin_test_pairing_lipschitz | gap.note | JP-13 | M | compactness | open | ODE フィールドが発火する |
-| F143 | galerkin_u_continuousOn | proof_ja | 表記 | B | compactness | open | 前向き微分可能性フィールドにより |
-| F144 | galerkin_u_norm_le | statement_ja | 造語 | B | compactness | open | 一様球有界（エクスポート形） |
-| F145 | galerkin_u_norm_le | proof_ja | 表記 | B | compactness | open | エネルギー有界フィールド |
-| F146 | h1EnergySq_continuousOn_galerkin | proof_ja | JP-13 | B | compactness | open | 有限和に潰れる |
-| F147 | integral_sq_proj_tendsto_zero_of_weak | statement_ja | 造語 | B | compactness | open | 各時刻の弱収束と一様球有界 |
-| F148 | integral_sq_proj_tendsto_zero_of_weak | proof_ja | 造語 | B | compactness | open | 各座標は弱対そのもの |
-| F149 | integral_tail_sq_galerkin_le | proof_ja | 表記 | B | compactness | open | 解データの $H^1$ 正則性フィールド |
-| F150 | integral_tail_sq_limit_le | proof_ja | JP-13 | B | compactness | open | Galerkin 側の実数経路は使えない |
-| F151 | integral_tail_sq_limit_le | proof_ja | 造語 | B | compactness | open | ENNReal 橋渡し |
-| F152 | integral_tail_sq_limit_le | gap.note | JP-13 | M | compactness | open | $H^1$ 所属を極限曲線に密輸しない |
-| F153 | ofReal_tail_sq_eq_tailEnn | statement_ja | 造語 | B | compactness | open | 尾部の拡張非負実数橋渡し |
-| F154 | ofReal_tail_sq_eq_tailEnn | proof_ja | 自然さ | M | compactness | open | で実側を書き換え |
-| F155 | tailEnn_lsc_of_weak | proof_ja | 造語 | B | compactness | open | 積添字（成分と箱外格子点の対） |
-| F156 | tailEnn_lsc_of_weak | gap.note | JP-13 | M | compactness | open | Fatou 型の骨組み |
-| F157 | tail_sq_le_h1EnergySq_div | proof_ja | 表記 | B | compactness | open | 補題 `H1_tail_bound` に委譲 |
-| F158 | tail_sq_le_h1EnergySq_div | gap.note | JP-13 | M | compactness | open | tsum のジャンク $0$ 潰れ |
-| F159 | tendsto_inner_L2VF_of_tendsto_inner_L2Sigma | statement_ja | 造語 | B | compactness | open | 弱収束のテスト級の昇格 |
-| F160 | tendsto_inner_L2VF_of_tendsto_inner_L2Sigma | gap.note | JP-13 | M | compactness | open | 到達可能にする接続部品 |
-| F161 | GalerkinCompactnessPackageFull | statement_ja | JP-16 | B | capstone-torus | open | エネルギークラス所属 |
-| F162 | GalerkinCompactnessPackageFull | proof_ja | 造語 | B | capstone-torus | open | 形式束の中核 |
-| F163 | GalerkinCompactnessPackageFull | gap.note | JP-16 | M | capstone-torus | open | Leray–Hopf エネルギークラスに属する |
-| F164 | IsGalerkinTest | gap.note | 造語 | B | capstone-torus | open | Faedo–Galerkin の標準テスト級 |
+| F140 | galerkin_test_pairing_lipschitz | proof_ja | 表記 | B | compactness | fixed | P2: ODE フィールド→Galerkin ODE を用いて; decls.json checked: galerkin_test_pairing_lipschitz sig unchanged |
+| F141 | galerkin_test_pairing_lipschitz | proof_ja | 造語 | B | compactness | fixed | P2: 一様球有界→次の一様評価 (display formula already follows inline, adapted wording rather than duplicating the formula per F141's literal suggestion) |
+| F142 | galerkin_test_pairing_lipschitz | gap.note | JP-13 | M | compactness | fixed | P2: ODE フィールドが発火する→Galerkin ODE のテスト条件が満たされる; also fixed adjacent unflagged '抽出エンジン'→'抽出定理' in the same sentence for internal consistency with F012/F131's terminology choice |
+| F143 | galerkin_u_continuousOn | proof_ja | 表記 | B | compactness | fixed | P2: 前向き微分可能性フィールド→前向き微分可能性 (kept the underlying regularity source, dropped only the Lean-field wording); decls.json checked: galerkin_u_continuousOn sig unchanged |
+| F144 | galerkin_u_norm_le | statement_ja | 造語 | B | compactness | fixed | P2: title rewritten to 一様ノルム評価; propagated the rename to two wikilink display texts elsewhere (exists_galerkin_modewise_extraction.yaml, exists_limit_curve_of_galSeq.yaml) that pointed at this declaration using the same flagged term; decls.json checked: galerkin_u_norm_le sig unchanged |
+| F145 | galerkin_u_norm_le | proof_ja | 表記 | B | compactness | fixed | P2: エネルギー有界フィールド→エネルギー評価; kept 打ち切り (not 截断) per owner ruling, rejected the literal '截断' in the suggested rewrite text |
+| F146 | h1EnergySq_continuousOn_galerkin | proof_ja | JP-13 | B | compactness | fixed | P2: 潰れる→帰着する; '帯域制限されている' phrase left untouched (already correct per owner ruling) |
+| F147 | integral_sq_proj_tendsto_zero_of_weak | statement_ja | 造語 | B | compactness | fixed | P2: 一様球有界→「列と極限曲線の一様なノルム有界性（いずれもノルムが M 以下）」（codex 指摘で両仮定の明示に修正。decls.json の署名で両有界性仮定を確認） |
+| F148 | integral_sq_proj_tendsto_zero_of_weak | proof_ja | 造語 | B | compactness | fixed | P2: 弱対→基底ベクトルとの内積...弱収束の仮定から収束する |
+| F149 | integral_tail_sq_galerkin_le | proof_ja | 表記 | B | compactness | fixed | P2: 解データのH^1正則性フィールド→解データが持つH^1正則性; also fixed the twin unflagged 'フィールド' occurrence later in the same proof_ja ('一様正則性評価フィールド'→'一様正則性評価') for internal consistency |
+| F150 | integral_tail_sq_limit_le | proof_ja | JP-13 | B | compactness | fixed | P2: Galerkin側の実数経路は使えない→実数値の尾部評価は直接適用できない; decls.json checked: integral_tail_sq_limit_le sig unchanged |
+| F151 | integral_tail_sq_limit_le | proof_ja | 造語 | B | compactness | rejected | 却下: quote 'ENNReal 橋渡し' contains the PROTECTED term 橋渡し (owner ruling: REJECT any finding suggesting its removal). Left the wikilink display text unchanged. |
+| F152 | integral_tail_sq_limit_le | gap.note | JP-13 | M | compactness | fixed | P2: 密輸しない誠実な経路→仮定せずに進める経路 |
+| F153 | ofReal_tail_sq_eq_tailEnn | statement_ja | 造語 | B | compactness | rejected | 却下: quote '尾部の拡張非負実数橋渡し' contains the PROTECTED term 橋渡し (owner ruling: REJECT any finding suggesting its removal). Left the statement_ja title unchanged. |
+| F154 | ofReal_tail_sq_eq_tailEnn | proof_ja | 自然さ | M | compactness | fixed | P2: で実側を書き換え→を用いて実数値の左辺を書き換え |
+| F155 | tailEnn_lsc_of_weak | proof_ja | 造語 | B | compactness | fixed | P2: 積添字→成分と箱外格子点の直積を添字集合とする; decls.json checked: tailEnn_lsc_of_weak sig unchanged |
+| F156 | tailEnn_lsc_of_weak | gap.note | JP-13 | M | compactness | fixed | P2: 骨組み/回収する→Fatouの補題と同型の議論...弱収束から係数ごとの収束を得る (note: this 骨組み is distinct from the PROTECTED term 骨格, not affected by that ruling) |
+| F157 | tail_sq_le_h1EnergySq_div | proof_ja | 表記 | B | compactness | fixed | P2: 補題`H1_tail_bound`に委譲→成分ごとの標準的なFourier尾部評価を適用する (Lean identifier removed from proof_ja); decls.json checked: tail_sq_le_h1EnergySq_div sig unchanged |
+| F158 | tail_sq_le_h1EnergySq_div | gap.note | JP-13 | M | compactness | fixed | P2: tsumのジャンク0潰れ→tsum規約のもとで総和不能な場合に値が0となる事態 |
+| F159 | tendsto_inner_L2VF_of_tendsto_inner_L2Sigma | statement_ja | 造語 | B | compactness | fixed | P2: テスト級の昇格→弱収束を全L^2テスト関数へ拡張する補題; propagated shortened display text to the wikilink in integral_tail_sq_limit_le.yaml; decls.json checked: tendsto_inner_L2VF_of_tendsto_inner_L2Sigma sig unchanged |
+| F160 | tendsto_inner_L2VF_of_tendsto_inner_L2Sigma | gap.note | JP-13 | M | compactness | fixed | P2: 到達可能にする接続部品→弱収束から導く補題 |
+| F161 | GalerkinCompactnessPackageFull | statement_ja | JP-16 | B | capstone-torus | fixed | P2: エネルギークラス→エネルギー類 (GLOSSARY canonical term). decls.json checked (GalerkinCompactnessPackageFull: Torus3NSForms → ℝ → ℝ → L2Sigma → Type; terminology-only change, no content impact). |
+| F162 | GalerkinCompactnessPackageFull | proof_ja | 造語 | B | capstone-torus | fixed | P2: MODIFIED rewrite: kept 形式束 (protected term — GLOSSARY confirms 散逸発展 is itself defined as an 抽象束, and decls.json confirms torus3Evolution's domain type is literally named Torus3NSForms, i.e. a real bundle type), only removed vague 中核 and programmatic 渡す. Rewrote as 'トーラス領域データと形式束（粘性形式・移流形式・テスト関数族）に汎用構成を適用した略記として定める。' |
+| F163 | GalerkinCompactnessPackageFull | gap.note | JP-16 | M | capstone-torus | fixed | P2: エネルギークラス→エネルギー類 in gap.note, per GLOSSARY canonical term. |
+| F164 | IsGalerkinTest | gap.note | 造語 | B | capstone-torus | fixed | P2: Applied verbatim; also fixes F024 on the same span. |
 | F165 | IsGalerkinTest | gap.note | 自然さ | M | capstone-torus | superseded-by-#52 |  |
-| F166 | build_galerkin_package_of_galSeq | proof_ja | 表記 | B | capstone-torus | open | Rellich 埋め込み `rellich_L2Sigma` |
-| F167 | build_galerkin_package_of_galSeq | proof_ja | JP-16 | M | capstone-torus | open | エネルギークラス仮定を |
-| F168 | build_galerkin_package_of_galSeq | proof_ja | JP-13 | B | capstone-torus | open | 証明保持構造に詰める |
-| F169 | build_galerkin_package_of_galSeq | gap.note | 表記 | M | capstone-torus | open | import 循環回避のため |
-| F170 | build_galerkin_package_of_torus | proof_ja | JP-13 | B | capstone-torus | open | 組み立ての中核に渡すだけである |
-| F171 | exists_lerayHopf_from_package_full | proof_ja | 表記 | B | capstone-torus | open | 各証明フィールドが解構造の各フィールドへ |
-| F172 | galSeq_of_torus | proof_ja | 表記 | B | capstone-torus | open | `galerkinSolutionData_torus`）を呼ぶ |
-| F173 | stokesTestPairing | gap.note | JP-16 | M | capstone-torus | open | tsum のジャンク値規約 |
-| F174 | stokesTestPairing | gap.note | 自然さ | M | capstone-torus | open | 真正な値を持つ領域の管理 |
-| F175 | torus3Evolution | statement_ja | 造語 | B | capstone-torus | open | トーラスの散逸発展の束 |
-| F176 | torus3Evolution | proof_ja | 造語 | B | capstone-torus | open | 形式束の中核を渡す |
-| F177 | torus3Evolution | gap.note | 造語 | B | capstone-torus | open | Galerkin テスト級でテストする |
+| F166 | build_galerkin_package_of_galSeq | proof_ja | 表記 | B | capstone-torus | fixed | P2: Applied verbatim, removes raw Lean identifier rellich_L2Sigma from proof_ja per D3 convention. |
+| F167 | build_galerkin_package_of_galSeq | proof_ja | JP-16 | M | capstone-torus | fixed | P2: エネルギークラス→エネルギー類, verb 供給→示す, plus swept the later 'エネルギークラスを持つ' occurrence in the same proof_ja and the wikilink display text エネルギークラスの導出→エネルギー類の導出 for corpus-internal consistency. |
+| F168 | build_galerkin_package_of_galSeq | proof_ja | JP-13 | B | capstone-torus | fixed | P2: Applied verbatim, replaces 証明保持構造に詰める with 証明保持型の元を構成する. |
+| F169 | build_galerkin_package_of_galSeq | gap.note | 表記 | M | capstone-torus | fixed | P2: Applied verbatim, wraps import in backticks. |
+| F170 | build_galerkin_package_of_torus | proof_ja | JP-13 | B | capstone-torus | fixed | P2: MODIFIED: preserved the wikilink target LerayHopf.build_galerkin_package_of_galSeq but changed its display text from 組み立ての中核 (vague 中核) to パッケージの組み立て, matching that target file's own statement_ja label. Removed 渡すだけ per JP-13. |
+| F171 | exists_lerayHopf_from_package_full | proof_ja | 表記 | B | capstone-torus | fixed | P2: Applied verbatim, removes フィールド/解構造 Lean-implementation vocabulary from proof_ja. |
+| F172 | galSeq_of_torus | proof_ja | 表記 | B | capstone-torus | fixed | P2: Applied (adapted): dropped the raw backticked Lean name `galerkinSolutionData_torus` entirely from proof_ja per D3 (Lean specifics belong in gap.note), replaced 呼ぶ with 適用する. |
+| F173 | stokesTestPairing | gap.note | JP-16 | M | capstone-torus | fixed | P2: Removed ジャンク値, kept the parenthetical explanation already present in the file (content was materially the same as the rewrite's target). |
+| F174 | stokesTestPairing | gap.note | 自然さ | M | capstone-torus | fixed | P2: Applied with 担う kept (minimal diff) instead of rewrite's 扱う — same meaning, smaller edit. |
+| F175 | torus3Evolution | statement_ja | 造語 | B | capstone-torus | rejected | 却下: REJECTED per PROTECTED-terms ruling: quote トーラスの散逸発展の束 uses 束 exactly as GLOSSARY defines 散逸発展 (line 36: '...の抽象束'), and decls.json confirms torus3Evolution's domain type is the real Lean type Torus3NSForms (a genuine bundle), so the finding's premise ('未定義語') does not hold. Did not remove 束. |
+| F176 | torus3Evolution | proof_ja | 造語 | B | capstone-torus | fixed | P2: MODIFIED for same reason as F162: kept 形式束 (protected), fixed the vague/programmatic remainder (中核, 渡す). |
+| F177 | torus3Evolution | gap.note | 造語 | B | capstone-torus | fixed | P2: Applied, no protected term involved (targets テスト級 wording, not 束). |
 | F178 | torus3Evolution | gap.note | 自然さ | M | capstone-torus | superseded-by-#52 |  |
-| F179 | ExistsLerayHopf | statement_ja | JP-13 | B | misc | open | 最初期スキャフォールド |
-| F180 | ExistsLerayHopf | proof_ja | 表記 | B | misc | open | `LerayHopfSolution`（`Statement.l |
-| F181 | ExistsLerayHopf | gap.note | JP-13 | M | misc | open | 歴史的スキャフォールドとして残る |
-| F182 | LerayHopfNonunique | statement_ja | JP-13 | B | misc | open | スキャフォールドのみ |
-| F183 | LerayHopfNonunique | gap.note | JP-13 | M | misc | open | Branch B（非一意性方面）の目標文の場所取り |
-| F184 | exists_lerayHopf_torus3_statement | statement_ja | 表記 | B | misc | open | 歴史的な目標文（意図的な sorry） |
-| F185 | exists_lerayHopf_torus3_statement | proof_ja | 表記 | B | misc | open | 証明は意図的に `sorry` のまま残されている |
-| F186 | exists_lerayHopf_torus3_statement | proof_ja | JP-13 | B | misc | open | この定理を「閉じる」ことは不誠実 |
-| F187 | lower_bound_from_inverse_square_lifespan | gap.note | 自然さ | M | misc | open | 爆発レート下界の初等的な言い換え（Branch 探索期 |
-| F188 | L2VF_ext_componentC_mFourierCoeff | proof_ja | 自然さ | M | projections-galerkin | open | 実側へ落ちる |
-| F189 | componentC_mem_fourierSpan | gap.note | JP-13 | M | projections-galerkin | open | スカラー側から引き出す接続部品 |
-| F190 | divFreeL2_iff_divSymbol | gap.note | JP-13 | M | projections-galerkin | open | 記述を往復させる橋 |
+| F179 | ExistsLerayHopf | statement_ja | JP-13 | B | misc | fixed | P2: 最初期スキャフォールド/プレースホルダ解構造→初期段階の暫定的な存在述語...暫定的な解の集合が空でないことを述べる; decls.json checked: ExistsLerayHopf sig unchanged (Ω → Prop) |
+| F180 | ExistsLerayHopf | proof_ja | 表記 | B | misc | fixed | P2: Lean struct/file names removed from proof_ja per D3 |
+| F181 | ExistsLerayHopf | gap.note | JP-13 | M | misc | fixed | P2: 歴史的スキャフォールドとして残る→開発初期の暫定的な定義として残されている |
+| F182 | LerayHopfNonunique | statement_ja | JP-13 | B | misc | fixed | P2: adapted rather than applying the literal rewrite verbatim: kept the mathematical content (相異なる二つの解構造が存在すること) instead of dropping it, only replaced the スキャフォールド metaphor with '開発初期の暫定版'; decls.json checked: LerayHopfNonunique sig unchanged |
+| F183 | LerayHopfNonunique | gap.note | JP-13 | M | misc | fixed | P2: Branch B（非一意性方面）の目標文の場所取り→非一意性を扱う将来の作業に備えて置かれた未使用の暫定命題である (subsumes F028) |
+| F184 | exists_lerayHopf_torus3_statement | statement_ja | 表記 | B | misc | fixed | P2: 歴史的な目標文（意図的なsorry）→開発初期に置かれた未証明の目標文; decls.json checked: exists_lerayHopf_torus3_statement sig unchanged |
+| F185 | exists_lerayHopf_torus3_statement | proof_ja | 表記 | B | misc | fixed | P2: merged with F186 into one coherent proof_ja rewrite; removed raw `sorry` marker and Lean docstring framing |
+| F186 | exists_lerayHopf_torus3_statement | proof_ja | JP-13 | B | misc | fixed | P2: 「閉じる」ことは不誠実→暫定述語を自明に充足させても解析的な存在証明にはならない |
+| F187 | lower_bound_from_inverse_square_lifespan | gap.note | 自然さ | M | misc | fixed | P2: 爆発レート→爆発率, Branch→分岐 (merged with F029; kept '探索期' modifier that F187's literal text alone would have dropped) |
+| F188 | L2VF_ext_componentC_mFourierCoeff | proof_ja | 自然さ | M | projections-galerkin | fixed | P2: Applied within the same proof_ja edit that also swept the two 点別 occurrences in this file (Task 2 overlap). |
+| F189 | componentC_mem_fourierSpan | gap.note | JP-13 | M | projections-galerkin | fixed | P2: Applied verbatim. |
+| F190 | divFreeL2_iff_divSymbol | gap.note | JP-13 | M | projections-galerkin | fixed | P2: Applied verbatim; 橋 here is a bare metaphor distinct from the protected 橋渡し, so removal is correct. |
 | F191 | fourierBox_exhausts | statement_ja | JP-17 | B | projections-galerkin | superseded-by-#52 |  |
-| F192 | fourierCoeffCLM | statement_ja | 造語 | B | projections-galerkin | open | 第 $k$ Fourier 係数の連続線形汎関数化 |
-| F193 | fourierCoeffCLM | proof_ja | 造語 | B | projections-galerkin | open | 内積の連続線形汎関数化 |
-| F194 | fourierCoeffCLM_apply | gap.note | JP-13 | M | projections-galerkin | open | 視点の切り替え弁 |
-| F195 | fourierProjection_n_tendsto | proof_ja | 表記 | B | projections-galerkin | open | という mathlib の一般定理に |
-| F196 | fourierSpan_hasOrthogonalProjection | proof_ja | JP-13 | B | projections-galerkin | open | 一般インスタンスが自動で発火する |
+| F192 | fourierCoeffCLM | statement_ja | 造語 | B | projections-galerkin | fixed | P2: Duplicate of F034 (same quote, same file/field); one edit covers both. |
+| F193 | fourierCoeffCLM | proof_ja | 造語 | B | projections-galerkin | fixed | P2: Applied (adapted phrasing) — removes 汎関数化 coinage from proof_ja. |
+| F194 | fourierCoeffCLM_apply | gap.note | JP-13 | M | projections-galerkin | fixed | P2: Duplicate of F032; one edit covers both. |
+| F195 | fourierProjection_n_tendsto | proof_ja | 表記 | B | projections-galerkin | fixed | P2: Applied (adapted): replaced 各点収束/渡す framing with 強収束 (the standard operator-theory term matching the underlying mathlib lemma Submodule.starProjection_tendsto_self referenced in gap.note) and 用いる instead of 渡す. Kept both wikilinks. |
+| F196 | fourierSpan_hasOrthogonalProjection | proof_ja | JP-13 | B | projections-galerkin | fixed | P2: Applied verbatim. |
 | F197 | fourierSpan_iSup_dense | proof_ja | JP-17 | B | projections-galerkin | superseded-by-#52 |  |
-| F198 | instHasOrthogonalProjectionRealSubtypeAEEqFunTorus3VelocityValueHaarTorus3MemAddSubgroupL2VFL2Sigma | statement_ja | 表記 | B | projections-galerkin | open | Leray 射影の存在の型クラス化 |
-| F199 | instHasOrthogonalProjectionRealSubtypeAEEqFunTorus3VelocityValueHaarTorus3MemAddSubgroupL2VFL2Sigma | proof_ja | JP-13 | B | projections-galerkin | open | 一般インスタンスが完備性の登録から自動で発火する |
-| F200 | isClosed_L2Sigma | gap.note | JP-13 | M | projections-galerkin | open | 直接の配当である |
-| F201 | lerayProjection_isSymmetric | gap.note | 造語 | B | projections-galerkin | open | 弱収束のテスト級の昇格 |
-| F202 | mem_sigma_of_mem_velocitySpan | statement_ja | 造語 | B | projections-galerkin | open | $V_n$ の元の発散ゼロ所属（部分型の形の言い換え） |
-| F203 | mem_sigma_of_mem_velocitySpan | proof_ja | 表記 | B | projections-galerkin | open | 包含を部分型の元に適用するだけ |
-| F204 | mem_velocitySpan_iff | gap.note | 自然さ | M | projections-galerkin | open | 以下の bridge 補題群 |
-| F205 | mem_velocitySpan_of_fixed | statement_ja | 自然さ | B | projections-galerkin | open | 固定点は像に属する（bridge の逆方向） |
+| F198 | instHasOrthogonalProjectionRealSubtypeAEEqFunTorus3VelocityValueHaarTorus3MemAddSubgroupL2VFL2Sigma | statement_ja | 表記 | B | projections-galerkin | fixed | P2: Applied verbatim. decls.json checked (instHasOrthogonalProjection...: type is LerayHopf.L2Sigma.HasOrthogonalProjection, confirming this is about direct orthogonal-projection existence on the divergence-free space, matching the rewrite). |
+| F199 | instHasOrthogonalProjectionRealSubtypeAEEqFunTorus3VelocityValueHaarTorus3MemAddSubgroupL2VFL2Sigma | proof_ja | JP-13 | B | projections-galerkin | fixed | P2: Applied verbatim. |
+| F200 | isClosed_L2Sigma | gap.note | JP-13 | M | projections-galerkin | fixed | P2: Applied (adapted) — also dropped 実装した in favor of 定めた for natural math register, consistent with the rewrite's spirit. |
+| F201 | lerayProjection_isSymmetric | gap.note | 造語 | B | projections-galerkin | fixed | P2: MODIFIED to preserve the wikilink to LerayHopf.tendsto_inner_L2VF_of_tendsto_inner_L2Sigma (display text changed from テスト級の昇格 to 補題, content changed from テスト級の昇格 framing to 弱収束を全 L^2 テスト関数へ拡張する). |
+| F202 | mem_sigma_of_mem_velocitySpan | statement_ja | 造語 | B | projections-galerkin | fixed | P2: Applied verbatim. decls.json checked (mem_sigma_of_mem_velocitySpan: ∀ n (v : V_n), ↑v ∈ L2Sigma — matches '$V_n$ の各元は発散ゼロ空間に属する'). |
+| F203 | mem_sigma_of_mem_velocitySpan | proof_ja | 表記 | B | projections-galerkin | fixed | P2: MODIFIED to preserve the wikilink to LerayHopf.velocitySpan_le_sigma (display text 包含 kept, followed by the explicit inclusion formula). |
+| F204 | mem_velocitySpan_iff | gap.note | 自然さ | M | projections-galerkin | rejected | 却下: REJECTED in favor of F037's rewrite on the same quote/span: owner ruling explicitly says untranslated bridge SHOULD be translated to 橋渡し (G4), which is what F037 does; F204's alternative (paraphrase avoiding bridge language entirely) was not applied since F037 already resolves the untranslated-English problem correctly. |
+| F205 | mem_velocitySpan_of_fixed | statement_ja | 自然さ | B | projections-galerkin | fixed | P2: Applied (adapted): translated bridge→橋渡し per G4/PROTECTED ruling instead of dropping it; also fixed the dangling '像に属する' subject to '$V_n$ に属する' for clarity. decls.json checked (mem_velocitySpan_of_fixed: ∀ n, ∀ x ∈ L2Sigma, P_n x = x → x ∈ velocitySpan n — matches '発散ゼロで、打ち切っても変わらない場は V_n に属する'). |
 | F206 | mem_velocitySpan_of_fixed | proof_ja | JP-13 | B | projections-galerkin | fixed | P1: F030 と統合適用 |
-| F207 | velocityP_fixes_span | statement_ja | 自然さ | B | projections-galerkin | open | 像は固定される（bridge の片方向） |
+| F207 | velocityP_fixes_span | statement_ja | 自然さ | B | projections-galerkin | fixed | P2: Applied (adapted): translated bridge→橋渡し, added the fixing operator P_n for clarity. decls.json checked (velocityP_fixes_span: ∀ n (v : V_n), P_n ↑v = ↑v — matches). |
 | F208 | velocityP_initial_mem | proof_ja | JP-13 | B | projections-galerkin | fixed | P1: F031 と統合適用 |
-| F209 | velocityProjection_n_comp_of_le | statement_ja | JP-13 | B | projections-galerkin | open | 小さい箱への截断は大きい箱を忘れる |
-| F210 | velocityProjection_n_inner_of_fixed | statement_ja | JP-13 | B | projections-galerkin | open | 帯域制限テストとの対は截断を素通しする |
+| F209 | velocityProjection_n_comp_of_le | statement_ja | JP-13 | B | projections-galerkin | fixed | P2: Applied (adapted, 截断→打ち切り per binding ruling). decls.json checked (velocityProjection_n_comp_of_le: n ≤ m → P_n(P_m u) = P_n u — matches 'B_m で打ち切ってから B_n で打ち切っても結果は変わらない'). |
+| F210 | velocityProjection_n_inner_of_fixed | statement_ja | JP-13 | B | projections-galerkin | fixed | P2: Combined with F033 (same file/field); resulting statement_ja: '帯域制限テストとの内積は打ち切り前後で一致する'. |
 | F211 | velocitySpan | gap.note | 自然さ | M | projections-galerkin | fixed | P1.5: F035 と統合適用（P1.5） |
-| F212 | velocitySpanToSigma | statement_ja | 表記 | B | projections-galerkin | open | 発散ゼロ所属の証明とともに発散ゼロ空間の元として包み直す |
-| F213 | velocitySpanToSigma | proof_ja | JP-17 | B | projections-galerkin | open | 台の元は変えず、所属証明を |
-| F214 | velocitySpanToSigma | gap.note | JP-13 | M | projections-galerkin | open | 再検証で reopen: lane→系列 は #52 処理済みだが「型の橋」が残存 |
-| F215 | velocitySpanToSigma_add | proof_ja | 表記 | B | projections-galerkin | open | 部分型の外延性で一致する |
-| F216 | velocitySpanToSigma_coe | statement_ja | JP-17 | B | projections-galerkin | open | 埋め込みの台の値の保存 |
-| F217 | velocitySpanToSigma_coe | proof_ja | 表記 | B | projections-galerkin | open | 定義的等式（`rfl`）である |
-| F218 | velocitySpanToSigma_smul | proof_ja | 表記 | B | projections-galerkin | open | 部分型の外延性で従う |
-| F219 | velocitySpan_hasOrthogonalProjection | proof_ja | JP-13 | B | projections-galerkin | open | 一般インスタンスが自動で発火する |
-| F220 | velocitySpan_le_sigma | gap.note | JP-13 | M | projections-galerkin | open | 定義した配当 |
+| F212 | velocitySpanToSigma | statement_ja | 表記 | B | projections-galerkin | fixed | P2: Applied verbatim. decls.json checked (velocitySpanToSigma: (n) → V_n → L2Sigma — matches 'V_n から発散ゼロ空間への埋め込み'). |
+| F213 | velocitySpanToSigma | proof_ja | JP-17 | B | projections-galerkin | fixed | P2: Applied verbatim (removes 台/部分型 Lean vocabulary from proof_ja). |
+| F214 | velocitySpanToSigma | gap.note | JP-13 | M | projections-galerkin | fixed | P2: Applied (adapted): file already used 系統 (not lane/レーン) from the earlier P1.5 rename, so kept that and the existing `galerkinSpanToSigma` backtick reference; only removed the bare metaphor 型の橋 (not the protected 橋渡し — this was plain 橋, fair game). |
+| F215 | velocitySpanToSigma_add | proof_ja | 表記 | B | projections-galerkin | fixed | P2: Applied verbatim (removes 部分型の外延性 Lean vocabulary). |
+| F216 | velocitySpanToSigma_coe | statement_ja | JP-17 | B | projections-galerkin | fixed | P2: Applied verbatim. decls.json checked (velocitySpanToSigma_coe: ↑(velocitySpanToSigma n v) = ↑v — matches '包含写像による像は周囲空間では元の要素に一致する'). |
+| F217 | velocitySpanToSigma_coe | proof_ja | 表記 | B | projections-galerkin | fixed | P2: Applied verbatim (removes `rfl` tactic name from proof_ja). |
+| F218 | velocitySpanToSigma_smul | proof_ja | 表記 | B | projections-galerkin | fixed | P2: Applied verbatim (removes 部分型の外延性). |
+| F219 | velocitySpan_hasOrthogonalProjection | proof_ja | JP-13 | B | projections-galerkin | fixed | P2: Applied verbatim. |
+| F220 | velocitySpan_le_sigma | gap.note | JP-13 | M | projections-galerkin | fixed | P2: Applied verbatim (removes 配当 metaphor). |
 | F221 | Bochner.ContDiffBump.isTimeMollifier | proof_ja | 自然さ | B | bochner | open | フィールドごとに充てるだけである。 |
 | F222 | Bochner.ContDiffBump.isTimeMollifier | gap.note | JP-13 | M | bochner | open | 軟化子の具体的な供給源。半径を潰す列を取れば |
 | F223 | Bochner.IsTimeMollifier | proof_ja | 自然さ | B | bochner | open | 四条件をフィールドとして束ねた述語構造である。 |

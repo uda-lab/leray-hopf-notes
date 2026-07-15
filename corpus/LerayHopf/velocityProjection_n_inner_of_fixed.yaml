@@ -1,7 +1,7 @@
 name: LerayHopf.velocityProjection_n_inner_of_fixed
 tier: full
 statement_ja: |
-  帯域制限テストとの対は打ち切りを素通しする：$P_n w = w$ ならば
+  帯域制限テストとの内積は打ち切り前後で一致する：$P_n w = w$ ならば
 
   $$\langle P_n u,\ w \rangle = \langle u,\ w \rangle.$$
 proof_ja: |

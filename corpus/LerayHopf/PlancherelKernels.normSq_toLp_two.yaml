@@ -1,7 +1,7 @@
 name: LerayHopf.PlancherelKernels.normSq_toLp_two
 tier: full
 statement_ja: |
-  Schwartz 関数の $L^2$ 類のノルム二乗は点別ノルム二乗の積分に等しい：
+  Schwartz 関数の $L^2$ 類のノルム二乗は各点でのノルム二乗の積分に等しい：
 
   $$\lVert g\rVert_{L^2}^2 = \int \lvert g(\xi)\rvert^2\,d\xi.$$
 proof_ja: |

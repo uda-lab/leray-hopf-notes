@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   パッケージからの存在：完全 Galerkin コンパクト性パッケージが与えられれば、Leray–Hopf 解（証明保持型 [[完全解構造|LerayHopf.LerayHopfSolutionFull]]）が存在する。
 proof_ja: |
-  汎用の存在定理 [[汎用パッケージからの存在|LerayHopf.Galerkin.exists_lerayHopf_from_package]] をトーラス領域に特殊化するだけである。パッケージの各証明フィールドが解構造の各フィールドへ移し替えられる。
+  汎用の存在定理 [[汎用パッケージからの存在|LerayHopf.Galerkin.exists_lerayHopf_from_package]] をトーラス領域に特殊化するだけである。パッケージに含まれる各性質により Leray–Hopf 解の要件がすべて満たされる。
 gap:
   level: none
   note: |
