@@ -1,7 +1,7 @@
 name: LerayHopf.integral_sq_proj_tendsto_zero_of_weak
 tier: full
 statement_ja: |
-  有限次元部分の強収束：各時刻での弱収束と列の一様有界性のもとで、レベル $N$ の打ち切りは時間二乗平均で強収束する：
+  有限次元部分の強収束：各時刻での弱収束と、列と極限曲線の一様なノルム有界性（いずれもノルムが $M$ 以下）のもとで、レベル $N$ の打ち切りは時間二乗平均で強収束する：
 
   $$\int_0^T \bigl\lVert P_N v_n(t) - P_N u(t) \bigr\rVert^2\, dt \;\longrightarrow\; 0.$$
 proof_ja: |

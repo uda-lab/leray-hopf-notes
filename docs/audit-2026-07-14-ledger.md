@@ -154,7 +154,7 @@
 | F144 | galerkin_u_norm_le | statement_ja | 造語 | B | compactness | fixed | P2: title rewritten to 一様ノルム評価; propagated the rename to two wikilink display texts elsewhere (exists_galerkin_modewise_extraction.yaml, exists_limit_curve_of_galSeq.yaml) that pointed at this declaration using the same flagged term; decls.json checked: galerkin_u_norm_le sig unchanged |
 | F145 | galerkin_u_norm_le | proof_ja | 表記 | B | compactness | fixed | P2: エネルギー有界フィールド→エネルギー評価; kept 打ち切り (not 截断) per owner ruling, rejected the literal '截断' in the suggested rewrite text |
 | F146 | h1EnergySq_continuousOn_galerkin | proof_ja | JP-13 | B | compactness | fixed | P2: 潰れる→帰着する; '帯域制限されている' phrase left untouched (already correct per owner ruling) |
-| F147 | integral_sq_proj_tendsto_zero_of_weak | statement_ja | 造語 | B | compactness | fixed | P2: 一様球有界→列の一様有界性; decls.json checked: integral_sq_proj_tendsto_zero_of_weak sig unchanged |
+| F147 | integral_sq_proj_tendsto_zero_of_weak | statement_ja | 造語 | B | compactness | fixed | P2: 一様球有界→「列と極限曲線の一様なノルム有界性（いずれもノルムが M 以下）」（codex 指摘で両仮定の明示に修正。decls.json の署名で両有界性仮定を確認） |
 | F148 | integral_sq_proj_tendsto_zero_of_weak | proof_ja | 造語 | B | compactness | fixed | P2: 弱対→基底ベクトルとの内積...弱収束の仮定から収束する |
 | F149 | integral_tail_sq_galerkin_le | proof_ja | 表記 | B | compactness | fixed | P2: 解データのH^1正則性フィールド→解データが持つH^1正則性; also fixed the twin unflagged 'フィールド' occurrence later in the same proof_ja ('一様正則性評価フィールド'→'一様正則性評価') for internal consistency |
 | F150 | integral_tail_sq_limit_le | proof_ja | JP-13 | B | compactness | fixed | P2: Galerkin側の実数経路は使えない→実数値の尾部評価は直接適用できない; decls.json checked: integral_tail_sq_limit_le sig unchanged |
