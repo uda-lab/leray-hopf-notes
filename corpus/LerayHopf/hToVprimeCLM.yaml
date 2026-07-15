@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.GelfandTriple.hToVprimeCLM
 tier: full
 statement_ja: |
-  正準埋め込みの連続線形写像版：$H \to V'$ を連続線形写像として構成する。
+  正準埋め込みの連続線形写像版：$H \to V'$ を束ねられた連続線形写像として構成する。
 proof_ja: |
   実内積は真に双線形なので、内積の連続線形汎関数化は $H$ からその双対への通常の連続線形写像であり、これに $\iota$ での前合成（それ自身連続線形）を合成する。
 gap:

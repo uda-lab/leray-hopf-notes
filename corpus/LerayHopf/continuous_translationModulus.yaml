@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    軟化収束の $\varepsilon$-$\delta$ 論法で「原点近傍でモジュラスが小さい」ことを取り出すために使う。
+    軟化収束の $\varepsilon$-$\delta$ 論法で「原点近傍で平行移動差のノルムが小さい」ことを取り出すために使う。
 chapter: bochner
 tags: [time-mollification, bochner]
