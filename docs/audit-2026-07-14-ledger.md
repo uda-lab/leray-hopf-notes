@@ -146,7 +146,7 @@
 | F136 | exists_weak_limit_curve | statement_ja | 自然さ | B | compactness | superseded-by-#52 |  |
 | F137 | exists_weak_limit_curve | proof_ja | JP-14 | M | compactness | superseded-by-#52 |  |
 | F138 | exists_weak_limit_curve | proof_ja | 造語 | B | compactness | superseded-by-#52 |  |
-| F139 | galerkin_test_pairing_lipschitz | statement_ja | 造語 | B | compactness | open | 帯域水準 $m$ のテスト $w$ |
+| F139 | galerkin_test_pairing_lipschitz | statement_ja | 造語 | B | compactness | fixed | P1: F018 と統合適用（帯域水準→打ち切り次数、owner 訂正裁定後の表記）。PR #53 |
 | F140 | galerkin_test_pairing_lipschitz | proof_ja | 表記 | B | compactness | open | ODE フィールドで書き下す |
 | F141 | galerkin_test_pairing_lipschitz | proof_ja | 造語 | B | compactness | open | および一様球有界 |
 | F142 | galerkin_test_pairing_lipschitz | gap.note | JP-13 | M | compactness | open | ODE フィールドが発火する |

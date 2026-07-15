@@ -23,6 +23,6 @@ gap:
 
     $$\int (u \cdot \nabla) v \cdot w = -\int (u \cdot \nabla) w \cdot v$$
 
-    の Fourier 級数版。積分の代わりに格子対合 `latticeInvol`（箱截断なしの全格子上の対合）による再添字化と係数の代数計算で同じ相殺を実現する。実部の取り出し・有限和と総和の交換・各段階での総和可能性の確認が形式化の作業量の大半を占める。
+    の Fourier 級数版。積分の代わりに格子対合 `latticeInvol`（箱による打ち切りなしの全格子上の対合）による再添字化と係数の代数計算で同じ相殺を実現する。実部の取り出し・有限和と総和の交換・各段階での総和可能性の確認が形式化の作業量の大半を占める。
 chapter: energy
 tags: [convection, antisymmetry, fourier, torus]

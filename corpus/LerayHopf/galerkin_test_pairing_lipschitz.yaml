@@ -17,6 +17,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    $m \le n$ の閾値は「テストの打ち切り次数を $n$ へ昇格させて初めて ODE フィールドが発火する」ことの反映で、抽出エンジン側の eventually-$n_0$ 入力に対応する（全 $n$ への強化は不可能）。移流の有界性は形式束のフィールド `b_bound` による。
+    $m \le n$ の閾値は「テストの打ち切り次数を $n$ へ昇格させて初めて ODE フィールドが発火する」ことの反映で、抽出エンジン側の「ある番号以降」という入力条件に対応する（全 $n$ への強化は不可能）。移流の有界性は形式束のフィールド `b_bound` による。
 chapter: compactness
 tags: [compactness, lipschitz, torus]
