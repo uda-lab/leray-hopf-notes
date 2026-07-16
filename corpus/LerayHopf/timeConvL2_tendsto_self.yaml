@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\lVert \rho_n \ast_t g - g \rVert \longrightarrow 0.$$
 proof_ja: |
-  欠損を平行移動差のノルムの核重み付き積分で抑える（[[平行移動差のノルム評価|LerayHopf.Bochner.timeConvL2_sub_le_translation_modulus]]）。平行移動差のノルムは原点で消えて連続なので、任意の $\varepsilon$ に対し原点近傍でこのノルムが $\varepsilon/2$ 未満になる半径 $\delta$ が取れる。核の半径が $\delta$ を下回る $n$ では核の台がその近傍に収まり、核重み付き積分は単位質量により $\varepsilon/2$ 以下、したがって欠損は $\varepsilon$ 未満になる。
+  近似誤差を平行移動差のノルムの核重み付き積分で抑える（[[平行移動差のノルム評価|LerayHopf.Bochner.timeConvL2_sub_le_translation_modulus]]）。平行移動差のノルムは原点で消えて連続なので、任意の $\varepsilon$ に対し原点近傍でこのノルムが $\varepsilon/2$ 未満になる半径 $\delta$ が取れる。核の半径が $\delta$ を下回る $n$ では核の台がその近傍に収まり、核重み付き積分は単位質量により $\varepsilon/2$ 以下、したがって近似誤差は $\varepsilon$ 未満になる。
 gap:
   level: mild
   note: |
