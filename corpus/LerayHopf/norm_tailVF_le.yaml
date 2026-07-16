@@ -1,7 +1,7 @@
 name: LerayHopf.norm_tailVF_le
 tier: full
 statement_ja: |
-  裾制限はノルムを増やさない：
+  球外制限はノルムを増やさない：
 
   $$\lVert u\vert_{B_R^c}\rVert \le \lVert u\rVert.$$
 proof_ja: |
