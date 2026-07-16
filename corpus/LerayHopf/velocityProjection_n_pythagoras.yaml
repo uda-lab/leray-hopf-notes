@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\lVert P_n u \rVert^2 + \lVert u - P_n u \rVert^2 = \lVert u \rVert^2.$$
 proof_ja: |
-  $u$ を打ち切り部分と打ち切り残差の和に分け、ノルム二乗の展開公式の交差項が [[直交性|LerayHopf.velocityProjection_n_inner_sub_self]] で消えることから従う。
+  $u$ を打ち切り部分と直交残差の和に分け、ノルム二乗の展開公式の交差項が [[直交性|LerayHopf.velocityProjection_n_inner_sub_self]] で消えることから従う。
 gap:
   level: none
   note: |
