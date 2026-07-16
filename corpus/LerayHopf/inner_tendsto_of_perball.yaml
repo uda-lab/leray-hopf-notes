@@ -5,9 +5,9 @@ statement_ja: |
 
   $$\langle e,u_n\rangle\ \longrightarrow\ \langle e,u\rangle.$$
 proof_ja: |
-  球と裾の $\varepsilon/3$ 分割で示す。まず $e$ の球外の裾のノルム $\lVert e-e|_{B_{k_0}}\rVert$ が $\varepsilon/(3C)$ 未満になる半径 $k_0$ を取る（$C=M+\lVert e\rVert+1$）。
+  球内・球外の $\varepsilon/3$ 分割で示す。まず $e$ の球外部分のノルム $\lVert e-e|_{B_{k_0}}\rVert$ が $\varepsilon/(3C)$ 未満になる半径 $k_0$ を取る（$C=M+\lVert e\rVert+1$）。
 
-  内積を球部分と裾部分に分ける。球部分は $e$ と $u_n$ の球制限どうしの内積で、球制限の強収束により収束する。裾部分は Cauchy–Schwarz と一様評価から
+  内積を球内部分と球外部分に分ける。球内部分は $e$ と $u_n$ の球制限どうしの内積で、球制限の強収束により収束する。球外部分は Cauchy–Schwarz と一様評価から
 
   $$\lVert e-e|_{B_{k_0}}\rVert\cdot M<\varepsilon/3$$
 
@@ -15,6 +15,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    裾のノルムが半径とともに $0$ へ行くことは `tendsto_norm_tailVF'_zero`、内積の球・裾分解は `inner_eq_ball_add_tail'`、裾内積の評価は `abs_tail_inner_le'` による。この補題は各点弱収束（`weak_tendsto_of_inner_tendsto` 経由）や良い代表元の全時刻弱収束を、球ごとの局所強収束から橋渡しする要となる。
+    球外部分のノルムが半径とともに $0$ へ行くことは `tendsto_norm_tailVF'_zero`、内積の球内・球外分解は `inner_eq_ball_add_tail'`、球外部分の内積の評価は `abs_tail_inner_le'` による。この補題は各点弱収束（`weak_tendsto_of_inner_tendsto` 経由）や良い代表元の全時刻弱収束を、球ごとの局所強収束から橋渡しする要となる。
 chapter: compactness
 tags: [weak-convergence, local-compactness, ball-tail-split]

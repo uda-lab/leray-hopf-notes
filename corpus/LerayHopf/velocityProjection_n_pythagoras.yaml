@@ -5,10 +5,10 @@ statement_ja: |
 
   $$\lVert P_n u \rVert^2 + \lVert u - P_n u \rVert^2 = \lVert u \rVert^2.$$
 proof_ja: |
-  $u$ を打ち切り部分と尾部の和に分け、ノルム二乗の展開公式の交差項が [[直交性|LerayHopf.velocityProjection_n_inner_sub_self]] で消えることから従う。
+  $u$ を打ち切り部分と直交残差の和に分け、ノルム二乗の展開公式の交差項が [[直交性|LerayHopf.velocityProjection_n_inner_sub_self]] で消えることから従う。
 gap:
   level: none
   note: |
-    尾部ノルムの制御（Rellich 型評価）の等式版の土台。
+    打ち切り残差のノルム制御（Rellich 型評価）の等式版の土台。
 chapter: projections-galerkin
 tags: [projections, adjoint, torus]
