@@ -320,8 +320,8 @@
 | F310 | TorusConvectionExtension.detExtend | statement_ja | 造語 | B | limit-passage | rejected | 却下: 「決定拡張」は owner 裁定の保護語（削除・置換禁止）。statement_ja のまま維持 |
 | F311 | TorusConvectionExtension.detExtend | proof_ja | 造語 | B | limit-passage | fixed | PR #58: proof_ja「テンソル辺貼り合わせ構成」→「二つのテンソル積部分空間上の線形汎関数を一致条件のもとで貼り合わせる構成」に書き換え |
 | F312 | TorusConvectionExtension.detExtend | gap.note | JP-13 | M | limit-passage | fixed | PR #58: F064 と同一箇所（gap.note の「心臓部」）を合わせて修正済み |
-| F313 | TorusConvectionExtension.edgeSlot2 | statement_ja | 造語 | B | limit-passage | fixed | PR #58: statement_ja「第二スロット Galerkin 辺」→「第 2 因子を Galerkin テスト空間に制限した部分加群」。gap.noteの「この辺と第三スロット辺の和」も同一文脈のため整合させ「この部分加群と第 3 因子を制限した部分加群の和」に修正。 |
-| F314 | TorusConvectionExtension.edgeSlot3 | statement_ja | 造語 | B | limit-passage | fixed | PR #58: edgeSlot3.yaml statement_ja「第三スロット Galerkin 辺：部分加群 ...」→「第 3 因子を Galerkin テスト空間に制限した部分加群 ...」に統合・書き換え |
+| F313 | TorusConvectionExtension.edgeSlot2 | statement_ja | 造語 | B | limit-passage | fixed | PR #58: statement_ja「第二スロット Galerkin 辺」→「三重線形形式の第 2 引数を Galerkin テスト空間に制限した部分加群」。gap.note の対応箇所も「第 3 引数を制限した部分加群の和」に整合（owner 指摘反映） |
+| F314 | TorusConvectionExtension.edgeSlot3 | statement_ja | 造語 | B | limit-passage | fixed | PR #58: edgeSlot3.yaml statement_ja「第三スロット Galerkin 辺：部分加群 ...」→「三重線形形式の第 3 引数を Galerkin テスト空間に制限した部分加群 ...」に書き換え（テンソル因子番号との混同を回避、owner 指摘反映） |
 | F315 | coeff_zero_outside_box | gap.note | 造語 | B | limit-passage | fixed | PR #58: gap.note「支持補題」→「基本補題」。直訳造語を是正。 |
 | F316 | convBLTgalerkin | proof_ja | JP-13 | B | limit-passage | fixed | P1: F059 と統合適用 |
 | F317 | convBLTgalerkin_apply | statement_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
@@ -334,14 +334,14 @@
 | F324 | convFormFourier_eq_galerkin | gap.note | JP-13 | M | limit-passage | fixed | PR #58: gap.note「...の橋。」→「...の一致を与える補題。」に修正 |
 | F325 | convFormL2_bound_galerkinTest | proof_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
 | F326 | convFormL2_def_eq_convValW | statement_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
-| F327 | convFormL2_def_eq_convValW | proof_ja | 造語 | B | limit-passage | fixed | PR #58: proof_ja「第三スロット辺」→「第 3 因子をテスト空間に制限した部分加群」。decls.jsonのedge3定義（X⊗EdgeSpan）と整合。 |
+| F327 | convFormL2_def_eq_convValW | proof_ja | 造語 | B | limit-passage | fixed | PR #58: proof_ja「第三スロット辺」→「三重線形形式の第 3 引数をテスト空間に制限した部分加群」。decls.json の edge3 定義（X⊗EdgeSpan）と整合（owner 指摘反映） |
 | F328 | convFormL2_def_eq_convValW | gap.note | JP-13 | M | limit-passage | fixed | PR #58: gap.note「Fourier 級数の値を繋ぐ橋。」→「Fourier 級数の値との一致を与える補題。」。比喩の重複を解消。 |
 | F329 | convFormL2_galerkinTest_dense | gap.note | 造語 | B | limit-passage | rejected | 却下: quote「決定形式の一意性」の「決定形式」は決定移流形式の略称で owner 保護語系列に属するため置換せず維持 |
 | F330 | convFormL2_galerkin_pin | statement_ja | JP-14 | B | limit-passage | superseded-by-#52 |  |
 | F331 | convFormL2_galerkin_pin | proof_ja | JP-13 | B | limit-passage | fixed | PR #58: proof_ja中のリンク表示語「箱への潰し」→「箱上の有限和との一致」。ターゲット(convFormFourier_eq_galerkin)は変更なし。 |
 | F332 | convSummandW | gap.note | JP-13 | M | limit-passage | superseded-by-#52 |  |
 | F333 | convSummandW_norm_summable | statement_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
-| F334 | convSummandW_norm_summable | proof_ja | 造語 | B | limit-passage | fixed | PR #58: convSummandW_norm_summable.yaml proof_ja の「優関数族」2 箇所を「上から抑える非負関数」に修正。あわせて P4 固有指示に基づき「帯域水準 $n$」→「打ち切り次数 $n$」に修正 |
+| F334 | convSummandW_norm_summable | proof_ja | 造語 | B | limit-passage | fixed | PR #58: convSummandW_norm_summable.yaml proof_ja の「優関数族」2 箇所を「上界を与える非負関数」に修正（dom_summable の新表記と統一）。あわせて P4 固有指示に基づき「帯域水準 $n$」→「打ち切り次数 $n$」に修正 |
 | F335 | convSummandW_summable | statement_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
 | F336 | convValW | statement_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
 | F337 | convValW_add_u | statement_ja | JP-17 | B | limit-passage | superseded-by-#52 |  |
@@ -362,7 +362,7 @@
 | F352 | galerkinConvection_level_stable | statement_ja | 造語 | B | limit-passage | fixed | PR #58: galerkinConvection_level_stable.yaml「水準安定性（対称形）」→「打ち切り次数によらないこと（対称形）」、本文の「水準」も「次数」「打ち切り」語へ統一（截断は禁止語のため使用せず） |
 | F353 | galerkinConvection_level_stable | proof_ja | 造語 | B | limit-passage | fixed | PR #58: proof_ja のリンク表示語「単調ステップ」→「打ち切り次数の引き上げ」に変更（リンク先 LeanName は不変） |
 | F354 | galerkinConvection_level_stable | gap.note | JP-14 | M | limit-passage | superseded-by-#52 |  |
-| F355 | galerkinConvection_level_step | statement_ja | 造語 | B | limit-passage | fixed | PR #58: galerkinConvection_level_step.yaml「水準安定性（単調ステップ）」→「打ち切り次数によらないこと（単調ステップ）」に修正（F352 と用語統一） |
+| F355 | galerkinConvection_level_step | statement_ja | 造語 | B | limit-passage | fixed | PR #58: galerkinConvection_level_step.yaml の題を「打ち切り次数を増やしたときの不変性」に修正（水準安定性・単調ステップの両方を除去、owner 指摘反映） |
 | F356 | isGalerkinTest_add | proof_ja | JP-13 | B | limit-passage | fixed | PR #58: P1.5 (PR #54, affb782) の水準→打ち切り次数統一で同時解消済み — 現行 proof_ja に昇格比喩なし（P4 で検証） |
 | F357 | isGalerkinTest_zero | gap.note | JP-13 | M | limit-passage | fixed | PR #58: isGalerkinTest_zero.yaml gap.note「閉性の部品。」→「閉性を示すための補題。」に修正 |
 | F358 | l2coeff | gap.note | 自然さ | M | limit-passage | fixed | P1.5: 参照表示語「水準の昇格」→「打ち切り次数を増やしたときの不変性」（isGalerkinTest_add、Copilot 指摘契機） |
