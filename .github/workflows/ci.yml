@@ -108,11 +108,22 @@ jobs:
           python3 scripts/build_site_data.py
 
       - name: Generate size report
+        # notes#29: hard failure ceiling (20 MiB raw / 6 MiB gzip) is a backstop against a
+        # misconfiguration/regression, not a growth blocker — it sits ~2x above the 10 MiB/
+        # 3 MiB warning thresholds, itself already well above current usage (~3.2 MB raw /
+        # 604 KB gzip at 1,339 decls). `set -o pipefail` so a non-zero exit from the report
+        # script (piped into `tee`) actually fails this step instead of being swallowed by
+        # tee's own exit code.
         run: |
-          python3 scripts/site_data_size_report.py --json site/data/size-report.json | tee size-report.md
+          set -o pipefail
+          python3 scripts/site_data_size_report.py --json site/data/size-report.json \
+            --fail-raw-mib 20 --fail-gzip-mib 6 | tee size-report.md
           cat size-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload site artifact
+        # Upload even if the size report failed (but not if the job was cancelled), so a
+        # hard-ceiling breach is inspectable.
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: site-data

@@ -125,6 +125,16 @@ def project_growth(current_decls: int, current_raw: int, current_gzip: int,
 def main():
     parser = argparse.ArgumentParser(description="Generate size report for site data")
     parser.add_argument("--json", metavar="PATH", help="Write machine-readable JSON report")
+    parser.add_argument(
+        "--fail-raw-mib", type=float, default=None, metavar="MIB",
+        help="Exit non-zero if combined raw size exceeds this many MiB (hard ceiling; "
+             "unset means never fail, matching the warn-only default)",
+    )
+    parser.add_argument(
+        "--fail-gzip-mib", type=float, default=None, metavar="MIB",
+        help="Exit non-zero if combined gzip size exceeds this many MiB (hard ceiling; "
+             "unset means never fail, matching the warn-only default)",
+    )
     args = parser.parse_args()
     
     site_data_dir = Path("site/data")
@@ -251,10 +261,32 @@ def main():
     else:
         print(f"✓ Within budget (raw < {format_bytes(raw_warning)}, gzip < {format_bytes(gzip_warning)})")
         print()
-    
-    # Exit with warning code if over budget (but don't fail)
+
+    # Hard failure ceiling: opt-in via --fail-raw-mib/--fail-gzip-mib, unset by default so
+    # the report stays warn-only unless a caller (e.g. CI) explicitly wires a ceiling.
+    failures = []
+    if args.fail_raw_mib is not None:
+        raw_ceiling = args.fail_raw_mib * 1024 * 1024
+        if total_raw > raw_ceiling:
+            failures.append(
+                f"FAIL: raw size {format_bytes(total_raw)} exceeds hard ceiling {args.fail_raw_mib:g} MiB"
+            )
+    if args.fail_gzip_mib is not None:
+        gzip_ceiling = args.fail_gzip_mib * 1024 * 1024
+        if total_gzip > gzip_ceiling:
+            failures.append(
+                f"FAIL: gzip size {format_bytes(total_gzip)} exceeds hard ceiling {args.fail_gzip_mib:g} MiB"
+            )
+
+    if failures:
+        for failure in failures:
+            print(failure)
+        print()
+        sys.exit(1)
+
+    # Exit 0 even when over the warn-only threshold above (visibility, not blocking).
     if warnings:
-        sys.exit(0)  # Still exit 0 for Phase A
+        sys.exit(0)
 
 
 if __name__ == "__main__":

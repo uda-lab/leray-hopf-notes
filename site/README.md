@@ -100,9 +100,9 @@ of embedded source code.
 `build_site_data.py` shells out to `coverage.py` by default, so a single invocation
 refreshes both data files. Flags: `--no-coverage` (skip coverage refresh),
 `--out <path>` (write nodes.json elsewhere; the paired `sources.json` is written next
-to it unless `--sources-out` is supplied). The committed data is built **with**
-`--lean-root`, so the site can lazy-load verbatim Lean source per declaration without
-embedding source bodies in the initial `nodes.json` payload.
+to it unless `--sources-out` is supplied). A source-enabled build (with `--lean-root`)
+keeps source bodies out of `nodes.json` itself: they live in the separate `sources.json`,
+which the site lazy-loads per declaration only when a source panel is opened.
 
 ## Data flow
 
