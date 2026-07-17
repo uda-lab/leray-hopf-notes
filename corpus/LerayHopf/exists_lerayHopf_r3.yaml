@@ -1,13 +1,13 @@
 name: LerayHopf.exists_lerayHopf_r3
 tier: full
 statement_ja: |
-  発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、$\mathbb{R}^3$ 上の Navier–Stokes 方程式は Leray–Hopf 弱解をもつ。
+  発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、外力なしの $\mathbb{R}^3$ 上の Navier–Stokes 方程式は $[0,T]$ 上に Leray–Hopf 弱解をもつ（$\mathbb{R}^3$ は周期性のない全空間であり、$T$ は入力として与えられる有限時刻区間の右端点である）。
 
   すなわち、$[0,T]$ 上でエネルギー不等式
 
   $$\tfrac12\lVert u(t)\rVert_{L^2}^2+\nu\int_0^t\lVert\nabla u\rVert_{L^2}^2\,ds\ \le\ \tfrac12\lVert u_0\rVert_{L^2}^2$$
 
-  を満たし、かつ任意の発散ゼロテスト関数に対して弱形式を満たす曲線 $u$ が存在する。この解は初期値 $u_0$ を強 $L^2$ で達成し、$u\in L^2(0,T;H^1_\sigma)$ に属する[[完全 Leray–Hopf 解|LerayHopf.LerayHopfSolutionFull_R3]]として得られる。
+  を満たし、かつ分離変数テスト関数 $\psi(t)w(x)$（$w$ は所定の Schwartz 発散ゼロテスト空間を走る）に対して弱形式を満たす曲線 $u$ が存在する。この解は初期値 $u_0$ を $t\to0^+$ の片側極限として強 $L^2$ で達成し、$[0,T]$ でほとんど至る所 $H^1$ に所属し粘性散逸が区間可積分な[[完全 Leray–Hopf 解|LerayHopf.LerayHopfSolutionFull_R3]]として得られる。
 proof_ja: |
   **L1（Galerkin 近似）** 発散ゼロな Schwartz 関数が張る有限次元部分空間の上で Galerkin 常微分方程式を解き、近似列 $u_n$ を構成する。ここでは有限次元の存在定理のみを用い、追加の仮定を要しない[[Galerkin 解の構成|LerayHopf.galerkinSolutionData_unconditional]]がこれを供給する。
 
