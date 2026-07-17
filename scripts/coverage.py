@@ -133,6 +133,16 @@ def main() -> None:
         elif doc.get('tier') == 'gloss':
             chapter_gloss[ch] += 1
 
+    # notes#65: proof_status tally, independent of tier/chapter. Counted over corpus
+    # entries that resolve into the universe (mirrors annotated_keys), so this can never
+    # exceed `annotated` and stays consistent with the site's per-declaration badges.
+    proof_status_counts: dict[str, int] = {}
+    for d in corpus:
+        if record_key(d, name_counts) in universe_keys:
+            status = d.get('proof_status') or 'verified'
+            proof_status_counts[status] = proof_status_counts.get(status, 0) + 1
+    not_verified = sum(c for s, c in proof_status_counts.items() if s != 'verified')
+
     # Build coverage JSON
     coverage = {
         'total_decls': total,
@@ -141,6 +151,8 @@ def main() -> None:
         'gloss': len(gloss_keys),
         'unannotated': total - len(annotated_keys),
         'pct_annotated': round(100 * len(annotated_keys) / total, 1) if total else 0,
+        'proof_status_counts': proof_status_counts,
+        'not_verified': not_verified,
         'chapters': {
             ch: {
                 'label_ja': CHAPTER_LABELS.get(ch, ch),
@@ -165,6 +177,14 @@ def main() -> None:
     print()
     print(f'## Coverage: {len(annotated_keys)}/{total} ({coverage["pct_annotated"]}%) annotated')
     print()
+    print('NOTE: this percentage is *structural annotation coverage* (every declaration has a '
+          'statement_ja / gap entry), not a proof-completion or mathematical-validation metric. '
+          'See `proof_status` below for sorry / scaffold / retired / invalid-statement declarations.')
+    print()
+    if not_verified:
+        print(f'proof_status (of {len(annotated_keys)} annotated): {not_verified} not verified — '
+              + ', '.join(f'{s}: {c}' for s, c in sorted(proof_status_counts.items()) if s != 'verified'))
+        print()
     print(f'| Chapter | Label | Annotated | full | gloss |')
     print(f'|---------|-------|----------:|-----:|------:|')
     for ch in CHAPTERS_ORDER:

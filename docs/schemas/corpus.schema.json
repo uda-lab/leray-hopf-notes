@@ -81,6 +81,11 @@
         "minLength": 1
       },
       "uniqueItems": true
+    },
+    "proof_status": {
+      "type": "string",
+      "description": "Machine-checked proof completion status, independent of `tier` (annotation depth). Absence means 'verified': no known literal `sorry`, no known false/over-general statement, not a historical scaffold or retired declaration. 'verified' may also be written explicitly. 'contains-sorry' = the proof body has a literal `sorry` (directly or via a sorry-dependent private helper). 'scaffold' = an early, intentionally vacuous/placeholder declaration kept for historical record, not part of the current proof route. 'retired' = superseded or removed from the release surface, kept in the corpus for provenance only. 'invalid-statement' = the statement as typed is known to be false or over-general (quarantined pending a source fix); statement_ja/proof_ja or gap.note must explain why.",
+      "enum": ["verified", "contains-sorry", "scaffold", "retired", "invalid-statement"]
     }
   }
 }

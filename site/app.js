@@ -55,14 +55,60 @@ function el(tag, attrs, children) {
   return node;
 }
 
-function badge(cls, label) { return el('span', { class: 'badge ' + cls, text: label }); }
+function badge(cls, label, title) {
+  const b = el('span', { class: 'badge ' + cls, text: label });
+  if (title) b.title = title;
+  return b;
+}
 
 function kindBadge(kind) { return badge('kind-' + kind, kind); }
 function gapBadge(level) {
-  const map = { none: 'gap: なし', mild: 'gap: 小', large: 'gap: 大' };
-  return badge('gap-' + level, map[level] || ('gap: ' + level));
+  // notes#65: labelled "コスト" (formalization overhead), NOT "gap" — a large value here is
+  // orthogonal to proof completion (a fully verified theorem can still have a large
+  // formalization-overhead cost). Proof completion is proofStatusBadge()'s job.
+  const map = { none: 'コスト: なし', mild: 'コスト: 小', large: 'コスト: 大' };
+  return badge('gap-' + level, map[level] || ('コスト: ' + level),
+    '形式化コスト：Lean 証明が自然言語の議論よりどれだけ冗長になるかの目安。証明状態（sorry の有無など）は別の指標。');
 }
-function tierBadge(tier) { return badge('tier-' + tier, tier === 'full' ? 'フル注釈' : 'グロス'); }
+function tierBadge(tier) {
+  return badge('tier-' + tier, tier === 'full' ? 'フル注釈' : 'グロス',
+    '「tier」は解説の詳しさ（annotation depth）を表す。証明が完了・検証済みであることを保証するものではない — 証明状態は別バッジを参照。');
+}
+
+// notes#65: proof_status is independent of tier/gap. Absence (or 'verified') means "no
+// known literal sorry, no known false/over-general statement, not a historical scaffold or
+// retired declaration" — nothing is rendered for that default case so a normal proved
+// theorem keeps its ordinary look. Every other status gets an unmistakable, differently
+// colored badge (proofStatusBadge) PLUS a banner box on the declaration page
+// (proofStatusBanner) so a sorry-carrying or quarantined statement never reads like a
+// proved theorem.
+const PROOF_STATUS_META = {
+  'contains-sorry': { label: 'sorry あり', cls: 'proof-sorry',
+    desc: '証明本文に未証明の `sorry`（または sorry に依存する補題）が残っている。主張は真であることが期待されているが機械的に検証されていない。' },
+  'scaffold': { label: '足場（歴史的）', cls: 'proof-scaffold',
+    desc: '開発初期に置かれたプレースホルダ宣言。現在の証明経路の一部ではなく、歴史的記録として残されている。' },
+  'retired': { label: '廃止', cls: 'proof-retired',
+    desc: '公開版の証明範囲からは除外・置き換え済み。来歴のために本コーパスに残している。' },
+  'invalid-statement': { label: '主張に誤り（隔離中）', cls: 'proof-invalid',
+    desc: '記載されている型のままでは主張が偽、または一般化しすぎている。ソース側の修正待ちで隔離されている。' },
+};
+
+function proofStatusBadge(status) {
+  const meta = PROOF_STATUS_META[status];
+  if (!meta) return null; // 'verified' (or absent) — no badge, looks like an ordinary proved theorem.
+  return badge('proof-status ' + meta.cls, meta.label, meta.desc);
+}
+
+// Prominent banner (not just a small badge) so a sorry-carrying / quarantined / scaffold /
+// retired statement cannot be mistaken for a normal proved theorem at a glance.
+function proofStatusBanner(status) {
+  const meta = PROOF_STATUS_META[status];
+  if (!meta) return null;
+  return el('div', { class: 'proof-status-banner ' + meta.cls, role: 'note' }, [
+    el('strong', { text: meta.label }),
+    el('span', { text: ' — ' + meta.desc }),
+  ]);
+}
 
 function declHref(slug) { return '#/decl/' + encodeURIComponent(slug); }
 function chapterHref(id) { return '#/chapter/' + encodeURIComponent(id); }
@@ -397,6 +443,7 @@ function route() {
     else if (head === 'chapter') renderChapter(app, decodeURIComponent(parts[1] || ''));
     else if (head === 'dag') renderDag(app);
     else if (head === 'coverage') renderCoverage(app);
+    else if (head === 'proof-status') renderProofStatus(app);
     else if (head === 'search') renderSearch(app, decodeURIComponent(parts.slice(1).join('/')));
     else app.appendChild(el('p', { text: 'ページが見つかりません。' }));
   } catch (e) {
@@ -422,7 +469,11 @@ function renderHome(app) {
     const node = state.bySlug.get(slug);
     if (!node) continue;
     const card = el('div', { class: 'card' }, [
-      el('div', { class: 'meta-row' }, [kindBadge(node.kind), gapBadge(node.corpus ? node.corpus.gap.level : 'none')]),
+      el('div', { class: 'meta-row' }, [
+        node.corpus ? proofStatusBadge(node.corpus.proof_status) : null,
+        kindBadge(node.kind),
+        gapBadge(node.corpus ? node.corpus.gap.level : 'none'),
+      ]),
       el('h3', { text: node.chapter === 'capstone-torus' ? '𝕋³ 主定理' : 'ℝ³ 主定理' }),
       el('a', { class: 'mono', href: declHref(slug), text: node.name }),
     ]);
@@ -444,6 +495,16 @@ function renderHome(app) {
       class: 'filemeta',
       text: `${c.annotated} / ${c.total_decls} 注釈済み (${c.pct_annotated}%) · full ${c.full} · gloss ${c.gloss}`,
     }));
+    wrap.appendChild(el('p', { class: 'caveat' }, [
+      el('strong', { text: '注意：' }),
+      el('span', { text: 'この 100% は「構造的注釈網羅率」（statement_ja 等の記入率）であり、証明の完成度や数学的検証を意味しない。' }),
+    ]));
+    const nv = c.not_verified || 0;
+    if (nv) {
+      wrap.appendChild(el('p', { class: 'filemeta' }, [
+        el('a', { href: '#/proof-status', text: `証明状態が verified でない宣言: ${nv} 件 →` }),
+      ]));
+    }
     wrap.appendChild(el('p', {}, [el('a', { href: '#/coverage', text: '章別カバレッジを見る →' })]));
     app.appendChild(wrap);
   }
@@ -522,7 +583,9 @@ function renderDecl(app, slug) {
     gapEl.addEventListener('click', jump);
     gapEl.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); jump(); } });
   }
+  const proofStatus = node.corpus ? node.corpus.proof_status : null;
   const meta = el('div', { class: 'meta-row' }, [
+    proofStatusBadge(proofStatus),
     kindBadge(node.kind),
     gapEl,
     node.corpus ? tierBadge(node.corpus.tier) : badge('tier-gloss', '未注釈'),
@@ -533,6 +596,10 @@ function renderDecl(app, slug) {
   meta.appendChild(el('a', { class: 'badge', href: chapterHref(node.chapter), text: (chMeta && chMeta.label_ja) || node.chapter }));
   app.appendChild(meta);
   app.appendChild(el('p', { class: 'mono filemeta', text: `${node.name}  ·  ${node.file}:${node.startLine}` }));
+  // notes#65: prominent banner right under the header — a sorry-carrying / scaffold /
+  // retired / quarantined declaration must not read like an ordinary proved theorem.
+  const banner = proofStatusBanner(proofStatus);
+  if (banner) app.appendChild(banner);
 
   // Statement band: signature (Lean) ⇄ statement_ja
   app.appendChild(el('div', { class: 'section' }, [el('h3', { text: '主張' })]));
@@ -660,6 +727,7 @@ function renderUses(app, node) {
     const summary = el('summary', {}, [
       kindBadge(dep.kind),
       el('span', { class: 'summary-name', text: dep.shortName }),
+      dep.corpus ? proofStatusBadge(dep.corpus.proof_status) : null,
       dep.corpus ? gapBadge(dep.corpus.gap.level) : badge('tier-gloss', '未注釈'),
     ]);
     det.appendChild(summary);
@@ -749,6 +817,8 @@ function declRow(n) {
     kindBadge(n.kind),
     el('a', { class: 'name', href: declHref(n.slug), text: n.shortName }),
   ]);
+  const psBadge = n.corpus ? proofStatusBadge(n.corpus.proof_status) : null;
+  if (psBadge) row.appendChild(psBadge);
   if (n.corpus) {
     const one = el('span', { class: 'one-line' });
     renderProseInline(one, sentencePreview(n.corpus.statement_ja, ROW_PREVIEW_BUDGET));
@@ -788,6 +858,7 @@ function dagItem(node, ancestors) {
     twist,
     kindBadge(node.kind),
     el('a', { class: 'dag-name', href: declHref(node.slug), text: node.shortName }),
+    node.corpus ? proofStatusBadge(node.corpus.proof_status) : null,
     node.corpus ? gapBadge(node.corpus.gap.level) : null,
     badge('annotated', node.corpus ? '注釈済' : '—'),
   ]);
@@ -826,6 +897,20 @@ function renderCoverage(app) {
   if (!c) { app.appendChild(el('p', { text: 'coverage.json を読み込めませんでした。' })); return; }
   app.appendChild(progressBar(c.pct_annotated));
   app.appendChild(el('p', { class: 'filemeta', text: `全体: ${c.annotated} / ${c.total_decls} (${c.pct_annotated}%) · full ${c.full} · gloss ${c.gloss}` }));
+  app.appendChild(el('p', { class: 'caveat' }, [
+    el('strong', { text: '注意：' }),
+    el('span', {
+      text: 'ここでの割合は「構造的注釈網羅率」（各宣言に statement_ja 等が記入されている割合）である。'
+        + '証明の完成度・数学的な検証状態を意味しない。「tier: full」も解説の詳しさを表すのみで、証明済みの保証ではない。'
+        + '個々の宣言の証明状態（sorry・足場・廃止・隔離中）は下のリンク、または各宣言ページのバッジで確認できる。',
+    }),
+  ]));
+  if (c.proof_status_counts) {
+    const nv = c.not_verified || 0;
+    app.appendChild(el('p', {}, [
+      el('a', { href: '#/proof-status', text: `証明状態の一覧を見る（verified でない宣言: ${nv} 件） →` }),
+    ]));
+  }
 
   const table = el('table', { class: 'coverage' });
   table.appendChild(el('tr', {}, [
@@ -847,6 +932,57 @@ function renderCoverage(app) {
     ]));
   }
   app.appendChild(table);
+}
+
+/* ---------------- proof-status page (notes#65) ----------------
+ * Enumerates every declaration whose corpus.proof_status is not the default 'verified',
+ * grouped by status. Sourced directly from nodes.json (built deterministically by
+ * scripts/build_site_data.py from the corpus at the pinned lean-pde SHA), so this list is
+ * mechanically derived from — and always matches — the site data, not hand-curated prose. */
+
+const PROOF_STATUS_ORDER = ['contains-sorry', 'invalid-statement', 'scaffold', 'retired'];
+
+function renderProofStatus(app) {
+  app.appendChild(el('div', { class: 'breadcrumb' }, [
+    el('a', { href: '#/', text: 'ホーム' }), el('span', { class: 'sep', text: '›' }),
+    el('span', { text: '証明状態' }),
+  ]));
+  app.appendChild(el('h1', { text: '証明状態（proof_status）一覧' }));
+  app.appendChild(el('p', {
+    class: 'prose',
+    text: '`tier`（注釈の詳しさ）とは独立に、各宣言の証明としての完成度を示す。'
+      + '一覧にない宣言はすべて既定値 verified（既知の sorry・虚偽/過度な一般化・歴史的足場・廃止のいずれにも該当しない）である。'
+      + (state.data && state.data.pin ? ` 集計対象: lean-pde @ ${state.data.pin.slice(0, 10)}。` : ''),
+  }));
+
+  const legend = el('div', { class: 'section' }, [el('h3', { text: '凡例' })]);
+  const dl = el('div', { class: 'proof-status-legend' });
+  for (const status of PROOF_STATUS_ORDER) {
+    const meta = PROOF_STATUS_META[status];
+    dl.appendChild(el('div', { class: 'legend-row' }, [proofStatusBadge(status), el('span', { text: meta.desc })]));
+  }
+  legend.appendChild(dl);
+  app.appendChild(legend);
+
+  const byStatus = new Map();
+  for (const n of state.data.nodes) {
+    const status = n.corpus && n.corpus.proof_status;
+    if (status && status !== 'verified') {
+      if (!byStatus.has(status)) byStatus.set(status, []);
+      byStatus.get(status).push(n);
+    }
+  }
+
+  for (const status of PROOF_STATUS_ORDER) {
+    const nodes = (byStatus.get(status) || []).sort(byName);
+    const meta = PROOF_STATUS_META[status];
+    const sec = el('div', { class: 'section' }, [
+      el('h3', {}, [proofStatusBadge(status), el('span', { text: ` — ${nodes.length} 件` })]),
+    ]);
+    if (!nodes.length) sec.appendChild(el('p', { class: 'filemeta', text: '該当なし。' }));
+    for (const n of nodes) sec.appendChild(declRow(n));
+    app.appendChild(sec);
+  }
 }
 
 /* ---------------- search ---------------- */
@@ -913,6 +1049,7 @@ function showHoverCard(refEl, pin) {
   const card = document.getElementById('hovercard');
   card.innerHTML = '';
   card.appendChild(el('div', { class: 'meta-row' }, [
+    node.corpus ? proofStatusBadge(node.corpus.proof_status) : null,
     kindBadge(node.kind),
     node.corpus ? gapBadge(node.corpus.gap.level) : null,
   ]));
@@ -981,5 +1118,6 @@ if (typeof module !== 'undefined' && module.exports) {
     state, splitParagraphs, joinSoftLines, joinGlue, segmentMath, tokenizeInline,
     makeRef, refSlugForRefToken, renderParagraph, renderProse, renderProseInline,
     firstParagraph, sentencePreview, renderDecl, loadSources, loadSourceFor,
+    proofStatusBadge, proofStatusBanner, renderProofStatus, PROOF_STATUS_META,
   };
 }
