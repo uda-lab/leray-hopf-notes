@@ -1,10 +1,10 @@
 name: LerayHopf.fourier_ae_eq_wInv_smul
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  **A3 重み付き Fourier 抽出**。$f$ が Sobolev 空間に属し、重み `wPosC` による乗数作用 `smulLeftCLM` を $\mathcal F f$ に施した像が $f'$ に一致するなら、$\mathcal F f = w^{-1}\cdot f'$（$w^{-1}$ は `wInv`）が a.e. 成り立つ。`RellichBall.memH1_weightedL2_integrable_R` のスカラー版で、`gns_L6_of_memH1_R3`／`memSobolev_of_finite_weightedFourier_R3` の重み付き Fourier 特徴づけの中核ステップ。
 gap:
   level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SobolevEmbedding.lean` の `LerayHopf.fourier_ae_eq_wInv_smul`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第1波（SobolevEmbedding.lean クラスタ）で手書き化。抽出元: `LerayHopf/R3/SobolevEmbedding.lean`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, sobolev-embedding]
