@@ -1,9 +1,9 @@
 name: LerayHopf.exists_lerayHopf_torus3
 tier: full
 statement_ja: |
-  発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{T}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、3 次元トーラス $\mathbb{T}^3$ 上の Navier–Stokes 方程式は Leray–Hopf 弱解をもつ。
+  発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{T}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、外力なしの 3 次元単位トーラス $\mathbb{T}^3=(\mathbb{R}/\mathbb{Z})^3$（Haar 確率測度）上の Navier–Stokes 方程式は $[0,T]$ 上に Leray–Hopf 弱解をもつ（$T$ は入力として与えられる有限時刻区間の右端点である）。
 
-  すなわち、$[0,T]$ 上でエネルギー不等式と弱形式を満たし、初期値を強 $L^2$ で達成し、Leray–Hopf エネルギー類に属する曲線 $u$ が存在する。この解は、それらの性質をすべて備えた[[完全 Leray–Hopf 解|LerayHopf.LerayHopfSolutionFull]]として得られる。
+  すなわち、$[0,T]$ 上でエネルギー不等式と、分離変数テスト関数 $\psi(t)w(x)$（$w$ は所定の発散ゼロテスト空間を走る）に対する弱形式を満たし、初期値を $t\to0^+$ の片側極限として強 $L^2$ で達成し、Leray–Hopf エネルギー類（ほとんど至る所 $H^1$ 所属＋粘性散逸の区間可積分性）に属する曲線 $u$ が存在する。この解は、それらの性質をすべて備えた[[完全 Leray–Hopf 解|LerayHopf.LerayHopfSolutionFull]]として得られる。
 proof_ja: |
   **L1（Galerkin 近似）** 有限次元の[[速度モード空間|LerayHopf.velocitySpan]]の上で Galerkin 常微分方程式を Picard–Lindelöf により解き、近似列 $u_n$ を構成する。追加の仮定を要しない[[トーラス Galerkin 解|LerayHopf.Torus.galerkinSolutionData_torus]]がこれを供給する。
 
