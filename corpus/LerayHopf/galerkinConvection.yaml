@@ -13,6 +13,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    自然言語の「移流形式は当然 $\int(u\cdot\nabla)v\cdot w$」を、Fourier 構造定数の有限和として具体化する。抽象公理では反対称性と三線形性だけだと $b=0$ で満たされて過大主張になるため、この具体化で $b=0$ の自明解を除いた標準形へ同定する。ただし非退化性（$b\neq 0$）自体を独立に証明した目撃者定理は本リポジトリに存在しない（issue #153 のスコープ注記）。
+    自然言語の「移流形式は当然 $\int(u\cdot\nabla)v\cdot w$」を、Fourier 構造定数の有限和として具体化する。抽象公理では反対称性と三線形性だけだと $b=0$ で満たされて過大主張になるため、この具体化で標準形へ同定する。ただし非退化性（$b\neq 0$、すなわち $b=0$ の自明解の排除）自体を独立に証明した目撃者定理は本リポジトリに存在しない（issue #153 のスコープ注記）。
 chapter: limit-passage
 tags: [convection-form, galerkin, fourier-coefficient, non-degeneracy]
