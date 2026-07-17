@@ -23,6 +23,7 @@ const {
   proofStatusBadge, proofStatusBanner, renderDag, renderUsedBy,
   esc, dagItem, progressBar, renderCoverage, route, makeRef,
   bindHoverCards, setupSkipLink,
+  setPageMeta, stripMarkupForMeta, DEFAULT_TITLE, DEFAULT_DESCRIPTION,
 } = app;
 
 let passed = 0;
@@ -48,6 +49,21 @@ addNode({
   name: 'LerayHopf.lerayProjection', shortName: 'lerayProjection', kind: 'def',
   signature: 'def lerayProjection', file: 'Leray.lean', startLine: 1, endLine: 1,
   chapter: 'spaces', uses: [], usedBy: [], private: false, corpus: null,
+});
+// notes#73: fixture with statement_ja/proof_ja/tags/doc for page-metadata + widened-search tests.
+addNode({
+  slug: 'LerayHopf.weakSolutionExists', id: 'LerayHopf.weakSolutionExists',
+  name: 'LerayHopf.weakSolutionExists', shortName: 'weakSolutionExists', kind: 'theorem',
+  signature: 'theorem weakSolutionExists', file: 'Existence.lean', startLine: 10, endLine: 20,
+  chapter: 'existence', uses: [], usedBy: [], private: false,
+  doc: 'Existence of a Leray-Hopf weak solution.',
+  corpus: {
+    statement_ja: '発散ゼロな初期値 $u_0$ に対し **Leray–Hopf 弱解** が存在する。すなわちエネルギー不等式を満たす。',
+    proof_ja: 'Galerkin 近似で構成する。',
+    tags: ['existence-uniqueness'],
+    gap: { level: 'none' },
+    proof_status: 'verified', tier: 'full',
+  },
 });
 
 /* ==== 受け入れ基準 1: home capstone card — untruncated first paragraph ==== */
@@ -584,6 +600,56 @@ check('(q) empty usedBy state does not conflate "no incoming edges" with "leaf" 
   renderUsedBy(appEl, node);
   const text = appEl.textContent;
   assert.ok(!text.includes('葉'), 'a node with outgoing edges must not be described as a leaf just because it has no usedBy');
+});
+
+/* ==== notes#73: route-aware document.title / meta description / canonical ==== */
+check('(r) stripMarkupForMeta removes $…$ math, **bold**, `code`, and [[display|target]] ref markers', () => {
+  const out = stripMarkupForMeta('a $x^2$ b **強調** c `code` d [[表示|LerayHopf.foo]] e');
+  assert.ok(!out.includes('$'), 'math delimiters must be stripped');
+  assert.ok(!out.includes('**'), 'bold markers must be stripped');
+  assert.ok(!out.includes('`'), 'code markers must be stripped');
+  assert.ok(out.includes('表示') && !out.includes('[['), 'ref display text is kept, brackets/target dropped');
+});
+
+check('(r) renderHome sets the default site title/description (no route-specific override)', () => {
+  state.data = { chapters: [], capstones: [] };
+  window.location.hash = '#/';
+  route();
+  assert.strictEqual(document.title, DEFAULT_TITLE);
+  assert.strictEqual(document.querySelector('meta[name="description"]').getAttribute('content'), DEFAULT_DESCRIPTION);
+});
+
+check('(r) route() to a decl page sets document.title to the fully-qualified name and a markup-free description', () => {
+  state.data = { chapters: [], capstones: [] };
+  window.location.hash = '#/decl/' + encodeURIComponent('LerayHopf.weakSolutionExists');
+  route();
+  assert.strictEqual(document.title, 'LerayHopf.weakSolutionExists — leray-hopf-notes');
+  const desc = document.querySelector('meta[name="description"]').getAttribute('content');
+  assert.ok(desc.includes('弱解') && !desc.includes('$') && !desc.includes('**'),
+    'decl description must be derived from statement_ja with math/markdown stripped');
+  const canonical = document.querySelector('link[rel="canonical"]');
+  assert.ok(canonical, 'a <link rel="canonical"> must exist');
+  assert.strictEqual(canonical.getAttribute('href'), location.href, 'canonical href must track the current route');
+  assert.strictEqual(document.querySelector('meta[property="og:title"]').getAttribute('content'), 'LerayHopf.weakSolutionExists');
+});
+
+check('(r) route() to an unknown hash sets a "not found" title instead of leaking the previous page\'s metadata', () => {
+  window.location.hash = '#/decl/' + encodeURIComponent('LerayHopf.weakSolutionExists');
+  route();
+  window.location.hash = '#/does-not-exist';
+  route();
+  assert.strictEqual(document.title, 'ページが見つかりません — leray-hopf-notes');
+});
+
+check('(r) search matches tags/proof_ja/doc in addition to name/statement_ja, and title/description reflect the query', () => {
+  state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.weakSolutionExists')] };
+  window.location.hash = '#/search/' + encodeURIComponent('existence-uniqueness');
+  route();
+  assert.strictEqual(document.title, '検索: existence-uniqueness — leray-hopf-notes');
+  const appEl = document.getElementById('app');
+  assert.ok(appEl.textContent.includes('1 件'), 'a tag-only match must still be counted as a hit');
+  const desc = document.querySelector('meta[name="description"]').getAttribute('content');
+  assert.ok(desc.includes('1 件'), 'search meta description must report the hit count');
 });
 
 Promise.all(pending).then(() => {

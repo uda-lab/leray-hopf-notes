@@ -169,6 +169,7 @@ function fileLineNode(cls, file, startLine, endLine, prefix) {
 
 const HOVER_PREVIEW_BUDGET = 90;   // hovercard sentence-preview budget (code points)
 const ROW_PREVIEW_BUDGET = 78;     // chapter/search one-line preview budget
+const META_DESCRIPTION_BUDGET = 140; // <meta name="description"> sentence-preview budget
 
 function typesetMath(container) {
   if (typeof renderMathInElement !== 'function') return;
@@ -482,6 +483,70 @@ async function loadSourceFor(node) {
 
 /* ---------------- routing ---------------- */
 
+/* ---------------- page metadata (notes#73) ----------------
+ * route() swaps the contents of <main id="app"> but never touched <head> — every hash
+ * route shared the one static <title>/description, so browser tabs, history entries,
+ * and bookmark/share UI could not distinguish a declaration page from the site root or
+ * from each other. Each render* function below now calls setPageMeta() with a
+ * route-specific title/description/canonical.
+ *
+ * This does NOT by itself make declaration pages independently crawlable by search
+ * engines that don't execute JS: the hash fragment is still served by one HTML
+ * document, and a <link rel="canonical">/Open Graph tag that only changes via script
+ * doesn't create a new indexable URL for such crawlers. Real per-declaration
+ * crawlability needs prerendered static routes — tracked as remaining work on #73,
+ * not attempted here. */
+
+const SITE_NAME = 'leray-hopf-notes';
+const DEFAULT_TITLE = SITE_NAME + ' — 証明掘り下げノート';
+const DEFAULT_DESCRIPTION =
+  'uda-lab/leray-hopf の全宣言に Lean コードと日本語の数学解説を並置する純静的ビューア。'
+  + 'capstone から宣言依存グラフを辿り、直接依存宣言をその場で展開できる。';
+
+// Meta descriptions/OG content must be plain text — statement_ja/doc carry $…$ math,
+// **bold**, `code`, and [[display|target]] ref markers meant for renderProseInline's
+// DOM-building pipeline, none of which a <meta content="…"> consumer can render.
+function stripMarkupForMeta(text) {
+  return String(text || '')
+    .replace(/\$\$?[^$]*\$\$?/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\[\[([^\]|]+)(?:\|[^\]]*)?\]\]/g, '$1')
+    .replace(/\s+/g, ' ')
+    .replace(/\s+([、。，．])/g, '$1')  // dropped $…$ often leaves "初期値 、" — close the gap
+    .trim();
+}
+
+function setMetaContent(attr, name, content) {
+  let tag = document.querySelector(`meta[${attr}="${name}"]`);
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute(attr, name);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', content);
+}
+
+function setCanonicalLink(href) {
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', href);
+}
+
+function setPageMeta(title, description) {
+  document.title = title ? `${title} — ${SITE_NAME}` : DEFAULT_TITLE;
+  const desc = description || DEFAULT_DESCRIPTION;
+  setMetaContent('name', 'description', desc);
+  setMetaContent('property', 'og:title', title || DEFAULT_TITLE);
+  setMetaContent('property', 'og:description', desc);
+  setMetaContent('property', 'og:url', location.href);
+  setCanonicalLink(location.href);
+}
+
 function route() {
   const hash = location.hash || '#/';
   const parts = hash.replace(/^#\/?/, '').split('/');
@@ -499,7 +564,10 @@ function route() {
     else if (head === 'proof-status') renderProofStatus(app);
     else if (head === 'about') renderAbout(app, parts[1] ? decodeURIComponent(parts[1]) : null);
     else if (head === 'search') renderSearch(app, decodeURIComponent(parts.slice(1).join('/')));
-    else app.appendChild(el('p', { text: 'ページが見つかりません。' }));
+    else {
+      setPageMeta('ページが見つかりません', 'このページは存在しません。');
+      app.appendChild(el('p', { text: 'ページが見つかりません。' }));
+    }
   } catch (e) {
     app.appendChild(el('pre', { class: 'lean', text: 'レンダリングエラー: ' + (e && e.message) }));
     console.error(e);
@@ -521,6 +589,7 @@ function route() {
 /* ---------------- home ---------------- */
 
 function renderHome(app) {
+  setPageMeta(null, DEFAULT_DESCRIPTION);
   app.appendChild(el('h1', { text: 'Leray–Hopf 形式化 対訳ノート' }));
   app.appendChild(el('p', {
     class: 'prose',
@@ -642,7 +711,13 @@ function breadcrumb(node) {
 
 function renderDecl(app, slug) {
   const node = state.bySlug.get(slug);
-  if (!node) { app.appendChild(el('p', { text: '宣言が見つかりません: ' + slug })); return; }
+  if (!node) {
+    setPageMeta('宣言が見つかりません', `"${slug}" という宣言は見つかりませんでした。`);
+    app.appendChild(el('p', { text: '宣言が見つかりません: ' + slug }));
+    return;
+  }
+  const rawDesc = (node.corpus && node.corpus.statement_ja) ? node.corpus.statement_ja : node.doc;
+  setPageMeta(node.name, rawDesc ? stripMarkupForMeta(sentencePreview(rawDesc, META_DESCRIPTION_BUDGET)) : null);
   updateTrail(slug);
 
   app.appendChild(breadcrumb(node));
@@ -892,6 +967,9 @@ const THM_KINDS = new Set(['theorem', 'lemma']);
 
 function renderChapter(app, chId) {
   const chMeta = state.chapterMeta.get(chId);
+  setPageMeta(
+    (chMeta && chMeta.label_ja) || chId,
+    (chMeta && chMeta.description) ? stripMarkupForMeta(chMeta.description) : null);
   app.appendChild(el('div', { class: 'breadcrumb' }, [
     el('a', { href: '#/', text: 'ホーム' }), el('span', { class: 'sep', text: '›' }),
     el('span', { text: (chMeta && chMeta.label_ja) || chId }),
@@ -957,6 +1035,7 @@ function declRow(n) {
 /* ---------------- DAG page ---------------- */
 
 function renderDag(app) {
+  setPageMeta('宣言依存グラフ', '2 つの capstone を根に、直接依存宣言 (uses) を段階的に展開して辿れる宣言依存グラフ。');
   app.appendChild(el('h1', { text: '宣言依存グラフ (DAG)' }));
   const total = (state.data && state.data.decl_count) || 0;
   app.appendChild(el('p', {
@@ -1033,8 +1112,11 @@ function dagItem(node, ancestors) {
 /* ---------------- coverage page ---------------- */
 
 function renderCoverage(app) {
-  app.appendChild(el('h1', { text: 'カバレッジ' }));
   const c = state.coverage;
+  setPageMeta('カバレッジ', c
+    ? `構造的注釈網羅率 ${c.pct_annotated}%（${c.annotated} / ${c.total_decls} 宣言）の章別カバレッジ一覧。`
+    : null);
+  app.appendChild(el('h1', { text: 'カバレッジ' }));
   if (!c) { app.appendChild(el('p', { text: 'coverage.json を読み込めませんでした。' })); return; }
   app.appendChild(progressBar(c.pct_annotated, `構造的注釈網羅率 ${c.pct_annotated}%`));
   app.appendChild(el('p', { class: 'filemeta', text: `全体: ${c.annotated} / ${c.total_decls} (${c.pct_annotated}%) · full ${c.full} · gloss ${c.gloss}` }));
@@ -1091,6 +1173,7 @@ function renderCoverage(app) {
 const PROOF_STATUS_ORDER = ['contains-sorry', 'invalid-statement', 'scaffold', 'retired'];
 
 function renderProofStatus(app) {
+  setPageMeta('証明状態（proof_status）一覧', 'sorry・足場・撤去済みなど、verified 以外の証明状態をもつ宣言の一覧。');
   app.appendChild(el('div', { class: 'breadcrumb' }, [
     el('a', { href: '#/', text: 'ホーム' }), el('span', { class: 'sep', text: '›' }),
     el('span', { text: '証明状態' }),
@@ -1140,6 +1223,7 @@ function renderAbout(app, highlightId) {
   const pin = state.data.pin;
   const bib = state.data.bibliography || {};
 
+  setPageMeta('このサイトについて', 'author・scope・citation・license・参考文献一覧・disclaimer。');
   app.appendChild(el('h1', { text: 'このサイトについて' }));
 
   const scope = el('div', { class: 'section' }, [
@@ -1226,19 +1310,27 @@ function renderAbout(app, highlightId) {
 /* ---------------- search ---------------- */
 
 function renderSearch(app, q) {
-  app.appendChild(el('h1', { text: '検索' }));
   const input = document.getElementById('search-input');
   if (input && input.value !== q) input.value = q;
   q = (q || '').trim();
+  setPageMeta(q ? `検索: ${q}` : '検索', q ? null : '宣言名・statement・proof・tags を対象に検索する。');
+  app.appendChild(el('h1', { text: '検索' }));
   if (!q) { app.appendChild(el('p', { class: 'filemeta', text: '検索語を入力してください。' })); return; }
 
   const ql = q.toLowerCase();
   const hits = [];
+  // notes#73: previously name + statement_ja only ("Possible work" in #73 called out
+  // proof/tags as under-covered) — widened to also match corpus.tags and proof_ja, plus
+  // the raw Lean docstring, without changing the existing name/statement match rules.
   for (const n of state.data.nodes) {
     const nameHit = n.name.toLowerCase().includes(ql) || n.shortName.toLowerCase().startsWith(ql);
     const stmtHit = n.corpus && n.corpus.statement_ja && n.corpus.statement_ja.includes(q);
-    if (nameHit || stmtHit) hits.push(n);
+    const proofHit = n.corpus && n.corpus.proof_ja && n.corpus.proof_ja.includes(q);
+    const tagHit = n.corpus && Array.isArray(n.corpus.tags) && n.corpus.tags.some(t => t.toLowerCase().includes(ql));
+    const docHit = n.doc && n.doc.toLowerCase().includes(ql);
+    if (nameHit || stmtHit || proofHit || tagHit || docHit) hits.push(n);
   }
+  setMetaContent('name', 'description', `"${q}" の検索結果 ${hits.length} 件。`);
   app.appendChild(el('p', { class: 'filemeta', text: `"${q}" — ${hits.length} 件` }));
 
   const groups = new Map();
@@ -1412,5 +1504,6 @@ if (typeof module !== 'undefined' && module.exports) {
     renderDag, renderUsedBy, renderUses,
     esc, dagItem, progressBar, renderCoverage, route,
     bindHoverCards, setupSkipLink,
+    setPageMeta, stripMarkupForMeta, DEFAULT_TITLE, DEFAULT_DESCRIPTION,
   };
 }

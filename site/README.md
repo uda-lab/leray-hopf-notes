@@ -129,12 +129,26 @@ purely a corpus + rebuild operation — **no site code changes required**.
 - `#/coverage` — per-chapter × per-tier coverage table
 - `#/proof-status` — every declaration whose `proof_status` is not the default `verified`
   (sorry / scaffold / retired / invalid-statement), generated straight from `nodes.json`
-- `#/search/<query>` — name (prefix) + statement_ja (substring) search, grouped by kind
+- `#/search/<query>` — name (prefix) + statement_ja/proof_ja/tags/doc (substring) search,
+  grouped by kind
 
 `slug` is the display name when unique, else the declaration `id` (private-helper name
 collisions; run `scripts/build_site_data.py` — it prints `Collision groups: N (M decls)`
 and lists them in the `collisions` field of the generated `site/data/nodes.json` — for
 the current collision count; corpus join for those keys off name+file, per notes#7).
+
+### Page metadata (notes#73)
+
+`app.js`'s `route()` calls `setPageMeta()` on every route change, which updates
+`document.title`, `<meta name="description">`, `<link rel="canonical">`, and the
+`og:*` meta tags to match the current route (site name / declaration name / chapter
+label / etc.). `index.html` also carries static site-level `description`/`og:*` tags
+for the pre-JS document paint. This improves browser tab titles, bookmarks, and
+share/unfurl previews for tools that execute JS, but does **not** by itself make
+per-declaration routes independently crawlable by search engines that don't execute
+JS — the hash fragment is still one HTML document. See the "page metadata" comment
+block in `app.js` and the remaining-work checklist on notes#73 for the prerendered
+static-route follow-up that would close that gap.
 
 ## Graceful degradation
 

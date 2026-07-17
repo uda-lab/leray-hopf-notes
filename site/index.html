@@ -4,6 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>leray-hopf-notes — 証明掘り下げノート</title>
+  <!-- notes#73: static baseline metadata for the pre-JS document paint (simple link-
+       preview/unfurl bots that fetch HTML without executing script see at least this
+       much). app.js's setPageMeta() overwrites these on every hashchange to reflect the
+       current route once JS runs — see the "page metadata" section in site/app.js for
+       why that alone doesn't make per-declaration routes independently crawlable. No
+       static canonical/og:url here: the eventual Pages base URL is not yet decided
+       (#32 Phase B / #62 rename), and a hardcoded wrong one would be worse than none. -->
+  <meta name="description" content="uda-lab/leray-hopf の全宣言に Lean コードと日本語の数学解説を並置する純静的ビューア。capstone から宣言依存グラフを辿り、直接依存宣言をその場で展開できる。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="leray-hopf-notes">
+  <meta property="og:title" content="leray-hopf-notes — 証明掘り下げノート">
+  <meta property="og:description" content="uda-lab/leray-hopf の全宣言に Lean コードと日本語の数学解説を並置する純静的ビューア。capstone から宣言依存グラフを辿り、直接依存宣言をその場で展開できる。">
   <!-- notes#72: the site is fully self-contained (no CDN, no external fetch/img/font),
        so a strict CSP with no 'unsafe-inline'/'unsafe-eval' is safe. GitHub Pages has no
        server-side header config, so this is a <meta> CSP — note that `frame-ancestors`,

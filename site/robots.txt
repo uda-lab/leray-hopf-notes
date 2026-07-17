@@ -1,0 +1,8 @@
+# notes#73: baseline robots.txt. No `Sitemap:` directive yet — per-declaration URLs are
+# still hash fragments of this single document (see the "page metadata" comment block in
+# app.js), so a sitemap listing them would not give crawlers anything a sitemap is meant
+# to give: independently fetchable, indexable pages. Add `Sitemap:` once prerendered
+# per-declaration static routes exist and the Pages base URL is finalized (#32 Phase B /
+# #62 rename), not before.
+User-agent: *
+Allow: /
