@@ -85,6 +85,23 @@ addNode({
     proof_status: 'verified', tier: 'full',
   },
 });
+// notes#73 (owner review, PR #89, 2nd pass): "Compactness" appears only in the raw Lean
+// docstring here (not in name/shortName/statement_ja/proof_ja/tags) — isolates docHit,
+// which the earlier "tags" test never actually exercised despite its old name claiming to.
+addNode({
+  slug: 'LerayHopf.auxCompactnessHelper', id: 'LerayHopf.auxCompactnessHelper',
+  name: 'LerayHopf.auxCompactnessHelper', shortName: 'auxCompactnessHelper', kind: 'lemma',
+  signature: 'lemma auxCompactnessHelper', file: 'Compactness.lean', startLine: 1, endLine: 1,
+  chapter: 'compactness', uses: [], usedBy: [], private: true,
+  doc: 'Auxiliary compactness lemma used internally by the main argument.',
+  corpus: {
+    statement_ja: '補助的な主張。',
+    proof_ja: '補助的な証明。',
+    tags: ['auxiliary'],
+    gap: { level: 'none' },
+    proof_status: 'verified', tier: 'full',
+  },
+});
 
 /* ==== 受け入れ基準 1: home capstone card — untruncated first paragraph ==== */
 check('(a) capstone first paragraph is untruncated (no すなわち cut-off)', () => {
@@ -661,7 +678,11 @@ check('(r) route() to an unknown hash sets a "not found" title instead of leakin
   assert.strictEqual(document.title, 'ページが見つかりません — leray-hopf-notes');
 });
 
-check('(r) search matches tags/proof_ja/doc in addition to name/statement_ja, and title/description reflect the query', () => {
+// notes#73 (owner review, PR #89, 2nd pass): this test's name previously claimed to cover
+// tags/proof_ja/doc, but 'existence-uniqueness' only actually appears in corpus.tags — the
+// other branches were never exercised by it. Renamed to describe only what it verifies;
+// proof_ja and doc each get their own isolated test below.
+check('(r) search matches corpus.tags (widened field), and title/description/og:description reflect the query', () => {
   state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.weakSolutionExists')] };
   window.location.hash = '#/search/' + encodeURIComponent('existence-uniqueness');
   route();
@@ -714,6 +735,20 @@ check('(s) search matches proof_ja case-insensitively (isolated from name/tags/d
   route();
   assert.ok(document.getElementById('app').textContent.includes('1 件'),
     'an uppercase query must match "Galerkin" inside proof_ja');
+});
+
+/* ==== notes#73 (owner review, PR #89, 2nd pass): the earlier "tags/proof_ja/doc" test
+ * queried 'existence-uniqueness', which only actually appears in corpus.tags — docHit was
+ * never exercised despite the test name claiming otherwise. This fixture's "Compactness"
+ * appears only in the raw Lean docstring (not name/shortName/statement_ja/proof_ja/tags),
+ * isolating docHit specifically, with a mixed-case query to also confirm it's
+ * case-insensitive like every other field. ==== */
+check('(s) search matches the raw Lean docstring (doc) case-insensitively, isolated from name/statement/proof/tags', () => {
+  state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.auxCompactnessHelper')] };
+  window.location.hash = '#/search/' + encodeURIComponent('COMPACTNESS');
+  route();
+  assert.ok(document.getElementById('app').textContent.includes('1 件'),
+    'a mixed-case query must match "Compactness" inside the raw doc string, via docHit alone');
 });
 
 Promise.all(pending).then(() => {
