@@ -43,13 +43,17 @@ EXEMPT_DOCS = {
     REPO_ROOT / 'docs' / 'seed-migration-mapping.md',
 }
 
-# A number (optionally comma-grouped) followed — within up to 2 intervening words, e.g.
-# "1,339 total declarations" — by a declaration/collision-count noun, in either language.
-# Deliberately narrow: this must not fire on unrelated numbers (line numbers, PIN hex, schema
-# draft version, "2 capstones", …) — the comma-grouping requirement on the main alternative
-# means small plain integers never match it at all.
+# A number — comma-grouped ("1,339") or a bare 2+ digit integer ("1339") — followed within
+# up to 2 intervening words (e.g. "1,339 total declarations") by a declaration/collision-
+# count noun, in either language. The bare-integer form matters: generated UI text already
+# renders the live count unseparated (e.g. site/app.js's decl_count), so a future stale-count
+# edit is just as likely to be spelled "1339 declarations" as "1,339 declarations" — codex
+# caught that the comma-grouping-only version let the former slip through undetected.
+# Deliberately narrow otherwise: the noun whitelist keeps this from firing on unrelated
+# numbers (line numbers, PIN hex, schema draft version, "2 capstones", …).
 COUNT_PATTERN = re.compile(
     r'\d{1,3}(?:[,.]\d{3})+(?:\s+\S+){0,2}\s*(?:件|宣言|declarations?|decls?|records?|groups?|entries)'
+    r'|\d{2,}(?:\s+\S+){0,2}\s*(?:件|宣言|declarations?|decls?|records?|groups?|entries)'
     r'|\d+\s*(?:groups?|組)\s*/\s*\d+\s*(?:decls?|records?|宣言)',
     re.IGNORECASE,
 )
