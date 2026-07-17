@@ -109,6 +109,10 @@ tags: [rellich, fourier-tail]
 tier・gap の基準は `docs/schemas/corpus.schema.json` を参照。
 用語は `docs/GLOSSARY.md` に準拠。
 
+`statement_ja` / `proof_ja` / `gap.note` は数学内容に限定する。issue/PR 番号・Codex・campaign・
+gate・round といった開発プロセス語は任意項目 `provenance` へ書く（サイトでは既定で折りたたまれた
+「開発履歴」パネルに表示され、削除はされない）。詳細は notes#69。
+
 ## decls.json が来たら何が変わるか
 
 S0 スパイク完了後に `extracted/decls.json` が追加されると、以下が自動的にアップグレードされる：
