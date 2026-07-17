@@ -206,7 +206,13 @@ def find_corpus_for_record(rec: dict, entries: list[tuple[Path, dict]], is_colli
 
 
 def corpus_payload(doc: dict) -> dict:
-    """Project a corpus YAML into the site-facing shape (sample flag derived from tags)."""
+    """Project a corpus YAML into the site-facing shape (sample flag derived from tags).
+
+    `proof_status` defaults to 'verified' when absent from the corpus YAML (notes#65: no
+    known literal `sorry`, no known false/over-general statement, not a historical scaffold
+    or retired declaration). The payload always carries an explicit value so the UI never
+    has to special-case a missing field.
+    """
     tags = doc.get('tags') or []
     payload = {
         'tier': doc.get('tier'),
@@ -215,6 +221,7 @@ def corpus_payload(doc: dict) -> dict:
         'chapter': doc.get('chapter'),
         'tags': tags,
         'sample': 'sample' in tags,
+        'proof_status': doc.get('proof_status') or 'verified',
     }
     if doc.get('proof_ja'):
         payload['proof_ja'] = doc['proof_ja']
@@ -370,6 +377,16 @@ def main() -> None:
     nodes = [nodes_by_slug[s] for s in sorted(nodes_by_slug)]
     annotated = sum(1 for n in nodes if n['corpus'])
 
+    # notes#65: corpus-wide proof_status tally, independent of `tier`/gap. Annotated-only
+    # (an unannotated declaration has no corpus.proof_status to report); used by the site
+    # to enumerate every non-verified declaration alongside the structural coverage stat,
+    # so "100% annotated" is never conflated with "100% proved".
+    proof_status_counts: dict[str, int] = {}
+    for n in nodes:
+        if n['corpus']:
+            status = n['corpus']['proof_status']
+            proof_status_counts[status] = proof_status_counts.get(status, 0) + 1
+
     out_path = Path(args.out) if args.out else (SITE_DATA_DIR / 'nodes.json')
     sources_out_path = (
         Path(args.sources_out)
@@ -386,6 +403,7 @@ def main() -> None:
         'source_payload': sources_out_path.name,
         'decl_count': len(nodes),
         'annotated_count': annotated,
+        'proof_status_counts': proof_status_counts,
         'capstones': sorted(n['slug'] for n in nodes if n['capstone']),
         'chapters': chapters,
         'collisions': [

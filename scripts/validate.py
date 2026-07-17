@@ -44,6 +44,7 @@ SCHEMA_PATH = REPO_ROOT / 'docs' / 'schemas' / 'corpus.schema.json'
 
 VALID_TIERS = {'full', 'gloss'}
 VALID_GAP_LEVELS = {'none', 'mild', 'large'}
+VALID_PROOF_STATUSES = {'verified', 'contains-sorry', 'scaffold', 'retired', 'invalid-statement'}
 VALID_CHAPTERS = {
     'spaces', 'projections-galerkin', 'ode', 'energy', 'compactness',
     'limit-passage', 'capstone-r3', 'capstone-torus', 'bochner',
@@ -121,6 +122,12 @@ def validate_schema_manual(doc: dict, fpath: Path) -> list[str]:
     chapter = doc.get('chapter')
     if chapter and chapter not in VALID_CHAPTERS:
         errs.append(f'{fpath}: chapter "{chapter}" not in known chapters {sorted(VALID_CHAPTERS)}')
+
+    proof_status = doc.get('proof_status')
+    if proof_status is not None and proof_status not in VALID_PROOF_STATUSES:
+        errs.append(
+            f'{fpath}: proof_status "{proof_status}" must be one of {sorted(VALID_PROOF_STATUSES)}'
+        )
 
     return errs
 

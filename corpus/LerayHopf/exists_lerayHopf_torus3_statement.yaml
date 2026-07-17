@@ -10,3 +10,4 @@ gap:
     lean-pde リポジトリで唯一の恒久 `ALLOW_SORRY`。正典的な説明は lean-pde 本体の `docs/STATUS.md`（"Known scaffold caveats" 節）と本宣言の docstring 自身にある。本 corpus でも「未証明の主張」ではなく「意図的に開けてある歴史的目標文」として読むべきものである。
 chapter: misc
 tags: [legacy, scaffold, sorry]
+proof_status: scaffold

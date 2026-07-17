@@ -8,3 +8,4 @@ gap:
     Wave 4 の private gloss として追加。抽出元は `LerayHopf/Bochner/TimeMollifierInterval.lean` の `LerayHopf.Bochner.timeConv_prod_integrable`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
 chapter: bochner
 tags: [private-helper, generated]
+proof_status: contains-sorry

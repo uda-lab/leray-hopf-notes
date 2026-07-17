@@ -102,6 +102,35 @@ main#app { padding: 1.25rem 1rem 2rem; max-width: 72rem; margin: 0 auto; }
 .badge.sample { background: #fff8dd; color: #7a5c00; border-color: var(--note-line); }
 .badge.annotated { background: #eef4ec; color: #33693a; border-color: #cfe3cb; }
 
+/* proof_status badges (notes#65) — deliberately loud / high-contrast so a sorry-carrying,
+ * scaffold, retired, or quarantined declaration never reads like an ordinary proved
+ * theorem at a glance. No badge is rendered for the default 'verified' status. */
+.badge.proof-status { font-weight: 700; border-width: 1.5px; }
+.badge.proof-sorry { background: #fdeeea; color: #a23c1f; border-color: #f0b39c; }
+.badge.proof-invalid { background: #fbe2e6; color: #9e1c3a; border-color: #f0aebb; }
+.badge.proof-scaffold { background: #efeaf7; color: #5b3f9e; border-color: #d4c5ef; }
+.badge.proof-retired { background: #eee; color: #555; border-color: #ccc; }
+
+.proof-status-banner {
+  border-radius: 8px;
+  border: 1.5px solid;
+  padding: 0.6rem 0.9rem;
+  margin: 0.6rem 0 1rem;
+  font-size: 0.92rem;
+}
+.proof-status-banner strong { margin-right: 0.3em; }
+.proof-status-banner.proof-sorry { background: #fdeeea; border-color: #f0b39c; color: #7a2b12; }
+.proof-status-banner.proof-invalid { background: #fbe2e6; border-color: #f0aebb; color: #7a1329; }
+.proof-status-banner.proof-scaffold { background: #efeaf7; border-color: #d4c5ef; color: #3f2c70; }
+.proof-status-banner.proof-retired { background: #eee; border-color: #ccc; color: #444; }
+
+.proof-status-legend { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+.legend-row { display: flex; align-items: baseline; gap: 0.6rem; }
+.legend-row .badge { flex: 0 0 auto; }
+
+/* Coverage / home caveat: "100% = structural annotation coverage", not proof completion. */
+.caveat { max-width: var(--prose-width); font-size: 0.88rem; color: var(--muted); margin: 0.5rem 0; }
+
 /* ---------- home ---------- */
 .capstone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
 .card {

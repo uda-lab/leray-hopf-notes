@@ -19,6 +19,7 @@ const app = require('../site/app.js');
 const {
   state, splitParagraphs, joinSoftLines, firstParagraph, sentencePreview,
   renderProse, renderProseInline, renderDecl, loadSourceFor,
+  proofStatusBadge, proofStatusBanner,
 } = app;
 
 let passed = 0;
@@ -185,6 +186,82 @@ check('source payload is lazy-loaded from data/sources.json by slug', async () =
     state.sources = null;
     state.sourcesPromise = null;
   }
+});
+
+/* ==== notes#65: proof_status badge / banner — must not look like a proved theorem ==== */
+check('(e) proofStatusBadge renders nothing for the default verified status (absent/verified)', () => {
+  assert.strictEqual(proofStatusBadge(undefined), null, 'no badge when proof_status is absent');
+  assert.strictEqual(proofStatusBadge('verified'), null, 'no badge for explicit verified');
+  assert.strictEqual(proofStatusBanner(undefined), null, 'no banner when proof_status is absent');
+});
+
+check('(e) proofStatusBadge renders a distinct badge for every non-verified status', () => {
+  for (const status of ['contains-sorry', 'scaffold', 'retired', 'invalid-statement']) {
+    const b = proofStatusBadge(status);
+    assert.ok(b, `badge must exist for ${status}`);
+    assert.ok(b.className.includes('proof-status'), `badge must carry the proof-status class for ${status}`);
+    assert.ok(b.textContent.trim().length > 0, `badge must have visible label text for ${status}`);
+  }
+});
+
+check('(f) renderDecl shows a prominent proof-status banner for contains-sorry, positioned right after the header (before 主張)', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  state.trail = [];
+  state.chapterMeta.set('bochner', { id: 'bochner', label_ja: 'Bochner 時間層' });
+  state.data = { nodes: [], chapters: [] };
+  const decl = {
+    slug: 'sorryDecl', id: 'sorryDecl', name: 'LerayHopf.Bochner.sorryDecl', shortName: 'sorryDecl',
+    kind: 'theorem', private: false, signature: 'theorem sorryDecl : True', doc: '', file: 'X.lean',
+    startLine: 1, endLine: 2, chapter: 'bochner', uses: [], usedBy: [],
+    collision: false, capstone: false, has_source: false,
+    corpus: {
+      tier: 'full', statement_ja: '主張の本文。', proof_ja: '証明の本文。',
+      gap: { level: 'large', note: '形式化コストの説明。' }, tags: [], sample: false,
+      proof_status: 'contains-sorry',
+    },
+  };
+  state.bySlug.set('sorryDecl', decl);
+  renderDecl(appEl, 'sorryDecl');
+
+  const banner = appEl.querySelector('.proof-status-banner');
+  assert.ok(banner, 'a .proof-status-banner must be rendered for contains-sorry');
+  assert.ok(banner.classList.contains('proof-sorry'), 'banner must carry the sorry-specific style class');
+  assert.ok(banner.textContent.includes('sorry'), 'banner text must name the sorry status');
+
+  const metaBadge = appEl.querySelector('.meta-row .badge.proof-status');
+  assert.ok(metaBadge, 'the header meta-row must also carry a proof-status badge');
+
+  const kids = Array.from(appEl.children);
+  const bannerIdx = kids.indexOf(banner);
+  const isSection = (h) => (c) => c.classList && c.classList.contains('section')
+    && c.querySelector('h3') && h(c.querySelector('h3').textContent);
+  const stmtIdx = kids.findIndex(isSection((t) => t === '主張'));
+  assert.ok(bannerIdx >= 0 && stmtIdx >= 0 && bannerIdx < stmtIdx,
+    'the banner must appear before the 主張 section, not buried below the fold');
+});
+
+check('(f-regression) renderDecl shows no proof-status banner for an ordinary verified declaration', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  state.trail = [];
+  state.data = { nodes: [], chapters: [] };
+  const decl = {
+    slug: 'plainDecl', id: 'plainDecl', name: 'LerayHopf.plainDecl', shortName: 'plainDecl',
+    kind: 'theorem', private: false, signature: 'theorem plainDecl : True', doc: '', file: 'X.lean',
+    startLine: 1, endLine: 2, chapter: 'bochner', uses: [], usedBy: [],
+    collision: false, capstone: false, has_source: false,
+    corpus: {
+      tier: 'full', statement_ja: '主張の本文。', proof_ja: '証明の本文。',
+      gap: { level: 'none' }, tags: [], sample: false, proof_status: 'verified',
+    },
+  };
+  state.bySlug.set('plainDecl', decl);
+  renderDecl(appEl, 'plainDecl');
+  assert.strictEqual(appEl.querySelector('.proof-status-banner'), null,
+    'a verified declaration must not show any proof-status banner');
+  assert.strictEqual(appEl.querySelector('.meta-row .badge.proof-status'), null,
+    'a verified declaration must not show a proof-status badge');
 });
 
 Promise.all(pending).then(() => {
