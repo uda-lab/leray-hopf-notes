@@ -11,7 +11,7 @@ proof_ja: |
 
   $$\lvert b(u,v,w)\rvert \le C\,\lVert u\rVert\,\lVert v\rVert$$
 
-  を得る。非空性のピンは拡張性と既証の目撃者一致から従う。
+  を得る。標準形へのピンは拡張性と既証の一致（Schwartz クラス上での[[真の移流積分|LerayHopf.convIntegralSchwartz]]との一致）から従う — ただし非自明性（$b\neq 0$）自体を独立に証明した目撃者定理は本リポジトリに存在しない（issue #153 のスコープ注記）。
 gap:
   level: mild
   note: |
