@@ -15,6 +15,10 @@ const dom = new JSDOM(
 global.window = dom.window;
 global.document = dom.window.document;
 global.location = dom.window.location; // route() (notes#72 test (n)) reads bare `location`
+// notes#73 (codex pre-review): jsdom doesn't implement window.scrollTo — route() calls
+// it unconditionally on every navigation, which otherwise logs a noisy (non-fatal)
+// "Not implemented" error on every route()-driven check in this file.
+dom.window.scrollTo = () => {};
 
 const app = require('../site/app.js');
 const {
@@ -23,6 +27,7 @@ const {
   proofStatusBadge, proofStatusBanner, renderDag, renderUsedBy,
   esc, dagItem, progressBar, renderCoverage, route, makeRef,
   bindHoverCards, setupSkipLink,
+  setPageMeta, stripMarkupForMeta, DEFAULT_TITLE, DEFAULT_DESCRIPTION,
 } = app;
 
 let passed = 0;
@@ -48,6 +53,54 @@ addNode({
   name: 'LerayHopf.lerayProjection', shortName: 'lerayProjection', kind: 'def',
   signature: 'def lerayProjection', file: 'Leray.lean', startLine: 1, endLine: 1,
   chapter: 'spaces', uses: [], usedBy: [], private: false, corpus: null,
+});
+// notes#73: fixture with statement_ja/proof_ja/tags/doc for page-metadata + widened-search tests.
+addNode({
+  slug: 'LerayHopf.weakSolutionExists', id: 'LerayHopf.weakSolutionExists',
+  name: 'LerayHopf.weakSolutionExists', shortName: 'weakSolutionExists', kind: 'theorem',
+  signature: 'theorem weakSolutionExists', file: 'Existence.lean', startLine: 10, endLine: 20,
+  chapter: 'existence', uses: [], usedBy: [], private: false,
+  doc: 'Existence of a Leray-Hopf weak solution.',
+  corpus: {
+    statement_ja: '発散ゼロな初期値 $u_0$ に対し **Leray–Hopf 弱解** が存在する。すなわちエネルギー不等式を満たす。',
+    proof_ja: 'Galerkin 近似で構成する。',
+    tags: ['existence-uniqueness'],
+    gap: { level: 'none' },
+    proof_status: 'verified', tier: 'full',
+  },
+});
+// notes#73 (owner review): "Galerkin" appears only in statement_ja here (not in
+// name/shortName/tags/doc/proof_ja) — isolates the statement_ja case-insensitivity fix.
+addNode({
+  slug: 'LerayHopf.finiteDimApprox', id: 'LerayHopf.finiteDimApprox',
+  name: 'LerayHopf.finiteDimApprox', shortName: 'finiteDimApprox', kind: 'def',
+  signature: 'def finiteDimApprox', file: 'Approx.lean', startLine: 1, endLine: 1,
+  chapter: 'projections-galerkin', uses: [], usedBy: [], private: false,
+  doc: 'Finite-dimensional approximation space.',
+  corpus: {
+    statement_ja: 'Galerkin 近似空間を構成する有限次元部分空間。',
+    proof_ja: '有限次元射影で定義する。',
+    tags: ['approximation'],
+    gap: { level: 'none' },
+    proof_status: 'verified', tier: 'full',
+  },
+});
+// notes#73 (owner review, PR #89, 2nd pass): "Compactness" appears only in the raw Lean
+// docstring here (not in name/shortName/statement_ja/proof_ja/tags) — isolates docHit,
+// which the earlier "tags" test never actually exercised despite its old name claiming to.
+addNode({
+  slug: 'LerayHopf.auxCompactnessHelper', id: 'LerayHopf.auxCompactnessHelper',
+  name: 'LerayHopf.auxCompactnessHelper', shortName: 'auxCompactnessHelper', kind: 'lemma',
+  signature: 'lemma auxCompactnessHelper', file: 'Compactness.lean', startLine: 1, endLine: 1,
+  chapter: 'compactness', uses: [], usedBy: [], private: true,
+  doc: 'Auxiliary compactness lemma used internally by the main argument.',
+  corpus: {
+    statement_ja: '補助的な主張。',
+    proof_ja: '補助的な証明。',
+    tags: ['auxiliary'],
+    gap: { level: 'none' },
+    proof_status: 'verified', tier: 'full',
+  },
 });
 
 /* ==== 受け入れ基準 1: home capstone card — untruncated first paragraph ==== */
@@ -584,6 +637,118 @@ check('(q) empty usedBy state does not conflate "no incoming edges" with "leaf" 
   renderUsedBy(appEl, node);
   const text = appEl.textContent;
   assert.ok(!text.includes('葉'), 'a node with outgoing edges must not be described as a leaf just because it has no usedBy');
+});
+
+/* ==== notes#73: route-aware document.title / meta description / canonical ==== */
+check('(r) stripMarkupForMeta removes $…$ math, **bold**, `code`, and [[display|target]] ref markers', () => {
+  const out = stripMarkupForMeta('a $x^2$ b **強調** c `code` d [[表示|LerayHopf.foo]] e');
+  assert.ok(!out.includes('$'), 'math delimiters must be stripped');
+  assert.ok(!out.includes('**'), 'bold markers must be stripped');
+  assert.ok(!out.includes('`'), 'code markers must be stripped');
+  assert.ok(out.includes('表示') && !out.includes('[['), 'ref display text is kept, brackets/target dropped');
+});
+
+check('(r) renderHome sets the default site title/description (no route-specific override)', () => {
+  state.data = { chapters: [], capstones: [] };
+  window.location.hash = '#/';
+  route();
+  assert.strictEqual(document.title, DEFAULT_TITLE);
+  assert.strictEqual(document.querySelector('meta[name="description"]').getAttribute('content'), DEFAULT_DESCRIPTION);
+});
+
+check('(r) route() to a decl page sets document.title to the fully-qualified name and a markup-free description', () => {
+  state.data = { chapters: [], capstones: [] };
+  window.location.hash = '#/decl/' + encodeURIComponent('LerayHopf.weakSolutionExists');
+  route();
+  assert.strictEqual(document.title, 'LerayHopf.weakSolutionExists — leray-hopf-notes');
+  const desc = document.querySelector('meta[name="description"]').getAttribute('content');
+  assert.ok(desc.includes('弱解') && !desc.includes('$') && !desc.includes('**'),
+    'decl description must be derived from statement_ja with math/markdown stripped');
+  const canonical = document.querySelector('link[rel="canonical"]');
+  assert.ok(canonical, 'a <link rel="canonical"> must exist');
+  assert.strictEqual(canonical.getAttribute('href'), location.href, 'canonical href must track the current route');
+  assert.strictEqual(document.querySelector('meta[property="og:title"]').getAttribute('content'), 'LerayHopf.weakSolutionExists');
+});
+
+check('(r) route() to an unknown hash sets a "not found" title instead of leaking the previous page\'s metadata', () => {
+  window.location.hash = '#/decl/' + encodeURIComponent('LerayHopf.weakSolutionExists');
+  route();
+  window.location.hash = '#/does-not-exist';
+  route();
+  assert.strictEqual(document.title, 'ページが見つかりません — leray-hopf-notes');
+});
+
+// notes#73 (owner review, PR #89, 2nd pass): this test's name previously claimed to cover
+// tags/proof_ja/doc, but 'existence-uniqueness' only actually appears in corpus.tags — the
+// other branches were never exercised by it. Renamed to describe only what it verifies;
+// proof_ja and doc each get their own isolated test below.
+check('(r) search matches corpus.tags (widened field), and title/description/og:description reflect the query', () => {
+  state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.weakSolutionExists')] };
+  window.location.hash = '#/search/' + encodeURIComponent('existence-uniqueness');
+  route();
+  assert.strictEqual(document.title, '検索: existence-uniqueness — leray-hopf-notes');
+  const appEl = document.getElementById('app');
+  assert.ok(appEl.textContent.includes('1 件'), 'a tag-only match must still be counted as a hit');
+  const desc = document.querySelector('meta[name="description"]').getAttribute('content');
+  assert.ok(desc.includes('1 件'), 'search meta description must report the hit count');
+  // notes#73 (codex pre-review): setPageMeta() runs before hits are counted and left
+  // og:description at the site default for any non-empty query — renderSearch must
+  // update it again once the hit count is known, not just the plain meta description.
+  const ogDesc = document.querySelector('meta[property="og:description"]').getAttribute('content');
+  assert.ok(ogDesc.includes('1 件'), 'og:description must also report the hit count, not the stale site default');
+});
+
+/* ==== notes#73 (owner review, PR #89): a malformed encoded hash must not leave the
+ * previous route's page metadata in place on the error page. ==== */
+check('(s) route() resets page metadata to an error state when decodeURIComponent throws on a malformed hash', () => {
+  window.location.hash = '#/decl/' + encodeURIComponent('LerayHopf.weakSolutionExists');
+  route();
+  assert.strictEqual(document.title, 'LerayHopf.weakSolutionExists — leray-hopf-notes');
+
+  window.location.hash = '#/search/%'; // decodeURIComponent('%') throws URIError
+  route();
+  assert.strictEqual(document.title, 'レンダリングエラー — leray-hopf-notes',
+    'the error page must carry its own title, not the previous decl page\'s title');
+  const desc = document.querySelector('meta[name="description"]').getAttribute('content');
+  assert.ok(!desc.includes('弱解'), 'the error page description must not be the previous decl page\'s description');
+  const canonical = document.querySelector('link[rel="canonical"]');
+  assert.strictEqual(canonical.getAttribute('href'), location.href,
+    'canonical must still track the (malformed) current URL, not a stale one');
+  assert.ok(document.getElementById('app').textContent.includes('レンダリングエラー'),
+    'the visible error message must still render');
+});
+
+/* ==== notes#73 (owner review, PR #89): statement_ja/proof_ja must match case-insensitively,
+ * like every other searched field — English terms in the Japanese prose (e.g. "Galerkin")
+ * must be findable by a lowercase query regardless of which field they live in. ==== */
+check('(s) search matches statement_ja case-insensitively (isolated from name/tags/doc/proof_ja)', () => {
+  state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.finiteDimApprox')] };
+  window.location.hash = '#/search/' + encodeURIComponent('galerkin');
+  route();
+  assert.ok(document.getElementById('app').textContent.includes('1 件'),
+    'a lowercase query must match "Galerkin" inside statement_ja');
+});
+
+check('(s) search matches proof_ja case-insensitively (isolated from name/tags/doc/statement_ja)', () => {
+  state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.weakSolutionExists')] };
+  window.location.hash = '#/search/' + encodeURIComponent('GALERKIN');
+  route();
+  assert.ok(document.getElementById('app').textContent.includes('1 件'),
+    'an uppercase query must match "Galerkin" inside proof_ja');
+});
+
+/* ==== notes#73 (owner review, PR #89, 2nd pass): the earlier "tags/proof_ja/doc" test
+ * queried 'existence-uniqueness', which only actually appears in corpus.tags — docHit was
+ * never exercised despite the test name claiming otherwise. This fixture's "Compactness"
+ * appears only in the raw Lean docstring (not name/shortName/statement_ja/proof_ja/tags),
+ * isolating docHit specifically, with a mixed-case query to also confirm it's
+ * case-insensitive like every other field. ==== */
+check('(s) search matches the raw Lean docstring (doc) case-insensitively, isolated from name/statement/proof/tags', () => {
+  state.data = { chapters: [], capstones: [], nodes: [state.bySlug.get('LerayHopf.auxCompactnessHelper')] };
+  window.location.hash = '#/search/' + encodeURIComponent('COMPACTNESS');
+  route();
+  assert.ok(document.getElementById('app').textContent.includes('1 件'),
+    'a mixed-case query must match "Compactness" inside the raw doc string, via docHit alone');
 });
 
 Promise.all(pending).then(() => {
