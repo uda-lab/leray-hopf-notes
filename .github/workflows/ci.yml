@@ -113,12 +113,16 @@ jobs:
         # 3 MiB warning thresholds, itself already well above current usage (~3.2 MB raw /
         # 604 KB gzip at 1,339 decls). `set -o pipefail` so a non-zero exit from the report
         # script (piped into `tee`) actually fails this step instead of being swallowed by
-        # tee's own exit code.
+        # tee's own exit code. The report's exit status is captured in `status` rather than
+        # left to fail the script outright, so the step summary still gets the report (most
+        # useful exactly when the ceiling is breached) before the step reports failure.
         run: |
           set -o pipefail
+          status=0
           python3 scripts/site_data_size_report.py --json site/data/size-report.json \
-            --fail-raw-mib 20 --fail-gzip-mib 6 | tee size-report.md
+            --fail-raw-mib 20 --fail-gzip-mib 6 | tee size-report.md || status=$?
           cat size-report.md >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
 
       - name: Upload site artifact
         # Upload even if the size report failed (but not if the job was cancelled), so a
