@@ -1,7 +1,7 @@
 name: LerayHopf.truncated_contDiff
 tier: gloss
 statement_ja: |
-  打ち切り Schwartz 関数 `cutoff R • φ` が $C^1$ 級であり、閉球 $\overline{B(0,2R)}$ にコンパクト台をもつこと。`gns_L6_of_memH1_R3` の Schwartz 近似列構成（A2 段階）の入力。
+  打ち切り Schwartz 関数 `cutoff R • φ` が $C^1$ 級であること（コンパクト台は `truncated_hasCompactSupport` で別途示す）。`gns_L6_of_memH1_R3` の Schwartz 近似列構成（A2 段階）の入力。
 gap:
   level: mild
 provenance: |

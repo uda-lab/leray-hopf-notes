@@ -1,7 +1,7 @@
 name: LerayHopf.scaleCLM
 tier: gloss
 statement_ja: |
-  $\mathrm{Domain3}$ 上のスケーリング作用素 $(1/R)\cdot\mathrm{id}$。`cutoff R = \chi\circ((1/R)\cdot)` を表すために導入する連続線形写像。
+  `Domain3` 上のスケーリング作用素 `(1/R) • id`。`cutoff R = χ ∘ ((1/R) • ·)` の定義に使う連続線形写像。
 gap:
   level: mild
 provenance: |

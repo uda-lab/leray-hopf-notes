@@ -1,9 +1,9 @@
 name: LerayHopf.norm_fderiv_cutoff_le
 tier: gloss
 statement_ja: |
-  $O(1/R)$ 勾配評価。動径打ち切りが $R\to\infty$ で誤差を出さないことを支える：
+  $O(1/R)$ 勾配評価（$c_R$ は `cutoff R`）。動径打ち切りが $R\to\infty$ で誤差を出さないことを支える：
 
-  $$\lVert D(\mathrm{cutoff}\ R)_x\rVert\le K/R$$
+  $$\lVert Dc_R(x)\rVert\le K/R$$
 gap:
   level: mild
 provenance: |

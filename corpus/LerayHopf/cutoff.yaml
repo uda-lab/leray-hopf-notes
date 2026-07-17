@@ -1,7 +1,7 @@
 name: LerayHopf.cutoff
 tier: gloss
 statement_ja: |
-  スケール $R$ の滑らか動径カットオフ：$\mathrm{cutoff}\ R\ x=\chi((1/R)\cdot x)$。`gns_L6_of_memH1_R3` で Schwartz 近似列を作る際の動径打ち切りの中心対象。
+  スケール $R$ の滑らか動径カットオフ `cutoff`：`cutoff R x = χ ((1/R) • x)`。`gns_L6_of_memH1_R3` で Schwartz 近似列を作る際の動径打ち切りの中心対象。
 gap:
   level: mild
 provenance: |

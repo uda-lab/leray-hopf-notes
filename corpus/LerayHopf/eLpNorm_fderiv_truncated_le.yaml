@@ -1,9 +1,9 @@
 name: LerayHopf.eLpNorm_fderiv_truncated_le
 tier: gloss
 statement_ja: |
-  打ち切りの $L^2$ 勾配評価（`norm_fderiv_truncated_le` の eLpNorm 版）。`gns_L6_of_memH1_R3` gap note にある「$O(1/R)$ 動径打ち切り」段階そのもの：
+  打ち切りの $L^2$ 勾配評価（`norm_fderiv_truncated_le` の eLpNorm 版、$c_R$ は `cutoff R`）。`gns_L6_of_memH1_R3` gap note にある「$O(1/R)$ 動径打ち切り」段階そのもの：
 
-  $$\lVert D(\mathrm{cutoff}\ R\cdot\varphi)\rVert_{L^2}\le\lVert D\varphi\rVert_{L^2}+(K/R)\lVert\varphi\rVert_{L^2}$$
+  $$\lVert D(c_R\cdot\varphi)\rVert_{L^2}\le\lVert D\varphi\rVert_{L^2}+(K/R)\lVert\varphi\rVert_{L^2}$$
 gap:
   level: mild
 provenance: |
