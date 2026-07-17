@@ -20,9 +20,9 @@ jobs:
       - name: Install dependencies
         run: pip install pyyaml jsonschema
 
-      - name: Generate fallback name universe (if lean-pde not available)
-        # In CI, lean-pde is not available, so names-fallback.json is committed.
-        # This step is a no-op if the file is already present and lean-pde is absent.
+      - name: Generate fallback name universe (if leray-hopf not available)
+        # In CI, leray-hopf is not available, so names-fallback.json is committed.
+        # This step is a no-op if the file is already present and leray-hopf is absent.
         run: |
           if [ ! -f extracted/names-fallback.json ]; then
             echo "WARNING: extracted/names-fallback.json missing — skipping name universe checks"
@@ -43,7 +43,7 @@ jobs:
         run: python3 scripts/coverage.py
 
       - name: Build site data (structure check only)
-        # Verifies the join runs, but writes to a temp path: CI has no lean-pde checkout,
+        # Verifies the join runs, but writes to a temp path: CI has no leray-hopf checkout,
         # so it cannot embed source. Writing to site/data/nodes.json here would clobber the
         # committed source-embedded artifact (built with --lean-root). Pure Python, seconds.
         run: python3 scripts/build_site_data.py --no-coverage --out /tmp/nodes.check.json

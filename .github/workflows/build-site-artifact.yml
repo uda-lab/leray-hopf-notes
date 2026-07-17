@@ -35,13 +35,13 @@ jobs:
       - name: Validate corpus
         run: python3 scripts/validate.py
 
-      - name: Check for lean-pde checkout
-        id: check-lean-pde
+      - name: Check for leray-hopf checkout
+        id: check-leray-hopf
         run: |
-          # Phase A: lean-pde is private, so we build without source for now.
-          # Phase B will add lean-pde checkout at extracted/PIN.
+          # Phase A: leray-hopf is private, so we build without source for now.
+          # Phase B will add leray-hopf checkout at extracted/PIN.
           echo "lean_available=false" >> $GITHUB_OUTPUT
-          echo "::notice::Building without lean-pde source (Phase A: pre-publication mode)"
+          echo "::notice::Building without leray-hopf source (Phase A: pre-publication mode)"
 
       - name: Build site data
         run: |
