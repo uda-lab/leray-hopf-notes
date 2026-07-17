@@ -1,7 +1,7 @@
 name: LerayHopf.cutoff_tendsto_one
 tier: gloss
 statement_ja: |
-  固定した $x$ に対し、$R=n+1\to\infty$ に沿って `cutoff R x → 1`。動径打ち切りが $\mathbb{R}^3$ 全体を尽くすことを表す極限。
+  固定した $x$ に対し、$R=n+1\to\infty$ に沿って $\chi_R(x)\to1$。動径打ち切りが $\mathbb{R}^3$ 全体を尽くすことを表す極限。
 gap:
   level: mild
 provenance: |

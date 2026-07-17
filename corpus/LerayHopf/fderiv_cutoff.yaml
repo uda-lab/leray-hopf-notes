@@ -1,9 +1,9 @@
 name: LerayHopf.fderiv_cutoff
 tier: gloss
 statement_ja: |
-  連鎖律による `cutoff R` の微分の表示（$c_R$ は `cutoff R`、$S_R$ はスケーリング作用素 `scaleCLM R`）。`norm_fderiv_cutoff_le` の証明の下ごしらえ：
+  連鎖律による動径カットオフの微分の表示：
 
-  $$Dc_R(x) = D\chi_{(1/R)x}\circ S_R$$
+  $$D\chi_R(x) = D\chi_{(1/R)x}\circ S_R$$
 gap:
   level: mild
 provenance: |

@@ -1,7 +1,7 @@
 name: LerayHopf.cutoff_contDiff
 tier: gloss
 statement_ja: |
-  `cutoff R` が $C^\infty$ 級であること。
+  動径カットオフ $\chi_R$ が $C^\infty$ 級であること。
 gap:
   level: mild
 provenance: |

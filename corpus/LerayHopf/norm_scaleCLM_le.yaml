@@ -1,7 +1,7 @@
 name: LerayHopf.norm_scaleCLM_le
 tier: gloss
 statement_ja: |
-  $R>0$ のとき、スケーリング作用素 `scaleCLM R` の作用素ノルムが $1/R$ 以下であること。`norm_fderiv_cutoff_le` の $O(1/R)$ 評価の入力。
+  $R>0$ のとき、スケーリング作用素の作用素ノルムが $\lVert S_R\rVert\le1/R$ であること。
 gap:
   level: mild
 provenance: |

@@ -1,7 +1,7 @@
 name: LerayHopf.wPos
 tier: gloss
 statement_ja: |
-  Bessel 型の重み `wPos`：$\xi\mapsto(1+\lVert\xi\rVert^2)^{1/2}$（次数 $1$）。重み付き Fourier 特徴づけ（A3/A4 段階）で $H^1$ ノルムを Fourier 側の重み付き $L^2$ ノルムへ変換するために使う。
+  Bessel 型の重み $w_+$：$\xi\mapsto(1+\lVert\xi\rVert^2)^{1/2}$（次数 $1$）。重み付き Fourier 変換により $H^1$ ノルムを特徴づけるために使う。
 gap:
   level: mild
 provenance: |

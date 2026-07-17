@@ -1,7 +1,7 @@
 name: LerayHopf.memLp_top_ofReal_mLD
 tier: gloss
 statement_ja: |
-  複素化した `mLD m` が $L^\infty$ に属すること。`abs_mLD_le` の可測性込みの言い換え。
+  複素化した $\sigma_m$ が本質的に有界であること（$L^\infty$ 所属）。
 gap:
   level: mild
 provenance: |

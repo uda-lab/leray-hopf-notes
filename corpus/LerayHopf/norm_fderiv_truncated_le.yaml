@@ -1,9 +1,9 @@
 name: LerayHopf.norm_fderiv_truncated_le
 tier: gloss
 statement_ja: |
-  打ち切りの各点勾配評価（$c_R$ は `cutoff R`）。Leibniz 則と `norm_fderiv_cutoff_le` の組み合わせ：
+  打ち切りの各点勾配評価。Leibniz 則とカットオフの勾配評価を組み合わせる：
 
-  $$\lVert D(c_R\cdot\varphi)_x\rVert\le\lVert D\varphi_x\rVert+(K/R)\lVert\varphi_x\rVert$$
+  $$\lVert D(\chi_R\varphi)_x\rVert\le\lVert D\varphi_x\rVert+(K/R)\lVert\varphi_x\rVert$$
 gap:
   level: mild
 provenance: |

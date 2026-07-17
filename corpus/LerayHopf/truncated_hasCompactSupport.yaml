@@ -1,7 +1,7 @@
 name: LerayHopf.truncated_hasCompactSupport
 tier: gloss
 statement_ja: |
-  $R>0$ のとき、打ち切り Schwartz 関数 `cutoff R • φ` が閉球 $\overline{B(0,2R)}$ にコンパクト台をもつこと。`truncated_contDiff` の $C^1$ 性と合わせて `gns_L6_of_memH1_R3` の Schwartz 近似列（A2 段階）を与える。
+  $R>0$ のとき、打ち切り Schwartz 関数 $\chi_R\varphi$ が閉球 $\overline{B(0,2R)}$ にコンパクト台をもつこと。
 gap:
   level: mild
 provenance: |

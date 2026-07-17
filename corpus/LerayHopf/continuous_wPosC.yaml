@@ -1,7 +1,7 @@
 name: LerayHopf.continuous_wPosC
 tier: gloss
 statement_ja: |
-  `wPosC` が連続であること。局所可積分性（`locallyIntegrable_wPosC_smul`）などの下ごしらえ。
+  $w_+^{\mathbb C}$ が連続であること。局所可積分性を示すための前提。
 gap:
   level: mild
 provenance: |

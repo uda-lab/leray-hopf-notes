@@ -1,7 +1,7 @@
 name: LerayHopf.abs_cutoff_le_one
 tier: gloss
 statement_ja: |
-  `cutoff_nonneg` と `cutoff_le_one` を合わせた `cutoff R x` の絶対値が $1$ 以下であること。打ち切り後の関数の一様有界性を導く際に使う。
+  動径カットオフの絶対値が $1$ 以下であること：$|\chi_R(x)|\le1$（非負性と上界の帰結）。打ち切り後の関数の一様有界性を導く際に使う。
 gap:
   level: mild
 provenance: |

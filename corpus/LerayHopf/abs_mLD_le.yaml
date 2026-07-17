@@ -1,9 +1,9 @@
 name: LerayHopf.abs_mLD_le
 tier: gloss
 statement_ja: |
-  `mLD` の絶対値が $2\pi\lVert m\rVert$ 以下であること（Cauchy–Schwarz 不等式と、`wInv`（$w^{-1}$）について成り立つ次の評価から。`abs_wInv_le_one` の $|w^{-1}|\le1$ だけでは足りず、この $\lVert\xi\rVert$ 倍の強い形を使う）：
+  $\sigma_m$ の絶対値が $2\pi\lVert m\rVert$ 以下であること（Cauchy–Schwarz 不等式と、次の評価から。これは $|w_-|\le1$ だけでは足りない、より強い評価である）：
 
-  $$\lVert\xi\rVert\cdot w^{-1}(\xi)\le1$$
+  $$\lVert\xi\rVert\, w_-(\xi)\le1$$
 gap:
   level: mild
 provenance: |

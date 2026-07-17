@@ -1,7 +1,7 @@
 name: LerayHopf.cutoffBump_contDiff
 tier: gloss
 statement_ja: |
-  バンプ $\chi$ が $C^\infty$ 級であること。`cutoff` の滑らかさ（`cutoff_contDiff`）の基礎。
+  バンプ関数 $\chi$ が $C^\infty$ 級であること。
 gap:
   level: mild
 provenance: |

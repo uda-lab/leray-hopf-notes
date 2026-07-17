@@ -1,7 +1,7 @@
 name: LerayHopf.cutoffBump_differentiable
 tier: gloss
 statement_ja: |
-  バンプ $\chi$ が微分可能であること。`cutoffBump_contDiff` から従う弱い形で、勾配評価の前提として使う。
+  バンプ関数 $\chi$ が微分可能であること。
 gap:
   level: mild
 provenance: |

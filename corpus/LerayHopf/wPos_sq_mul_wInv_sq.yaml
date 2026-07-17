@@ -1,7 +1,7 @@
 name: LerayHopf.wPos_sq_mul_wInv_sq
 tier: gloss
 statement_ja: |
-  `wPos` と `wInv` の二乗の積が $1$ に等しいこと。両重みが互いに逆数であることの二乗版。
+  $w_+$ と $w_-$ の二乗の積が $1$ に等しいこと。両重みが互いに逆数であることの二乗版。
 gap:
   level: mild
 provenance: |

@@ -1,7 +1,7 @@
 name: LerayHopf.hasTemperateGrowth_wPosC
 tier: gloss
 statement_ja: |
-  `wPosC` が緩増加であること。緩増加超関数への乗数作用を定義するための前提（`wInv` 版の対）。
+  $w_+^{\mathbb C}$ が緩増加であること。緩増加超関数への乗数作用を定義するための前提。
 gap:
   level: mild
 provenance: |

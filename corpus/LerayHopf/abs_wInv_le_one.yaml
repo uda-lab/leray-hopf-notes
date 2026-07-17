@@ -1,7 +1,7 @@
 name: LerayHopf.abs_wInv_le_one
 tier: gloss
 statement_ja: |
-  `wInv` の絶対値が $1$ 以下であること（`wPos` が $\ge1$ であることから）。`wInv` を有界乗数として使うための一様評価。
+  $w_-$ の絶対値が $1$ 以下であること（$w_+\ge1$ であることから）。
 gap:
   level: mild
 provenance: |

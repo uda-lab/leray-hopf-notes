@@ -1,7 +1,7 @@
 name: LerayHopf.cutoff_nonneg
 tier: gloss
 statement_ja: |
-  `cutoff R x ≥ 0`。
+  動径カットオフの非負性：$\chi_R(x)\ge0$。
 gap:
   level: mild
 provenance: |

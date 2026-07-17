@@ -1,7 +1,7 @@
 name: LerayHopf.wPosC_eq_smulLeftCLM_weight
 tier: gloss
 statement_ja: |
-  `wPosC` が `smulLeftCLM` で使う重み関数と一致することの確認。定義の書き換えを橋渡しする補題。
+  複素版 Bessel 重み $w_+^{\mathbb C}$ が、その定義式 $\xi\mapsto(1+\lVert\xi\rVert^2)^{1/2}$ に一致することの確認。
 gap:
   level: mild
 provenance: |

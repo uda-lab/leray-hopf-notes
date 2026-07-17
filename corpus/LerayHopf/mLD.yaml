@@ -1,9 +1,11 @@
 name: LerayHopf.mLD
 tier: gloss
 statement_ja: |
-  **Brick-1 補題**。方向 $m$ の弱方向微分に対応する有界 Fourier 乗数 `mLD`（$w^{-1}$ は `wInv`）。`schwartz_h1_gradConv` で方向微分を Fourier 乗数として実現するために使う：
+  方向 $m$ の弱方向微分に対応する有界 Fourier 乗数 $\sigma_m$：
 
-  $$\xi\mapsto2\pi\langle\xi,m\rangle\cdot w^{-1}(\xi)$$
+  $$\sigma_m(\xi):=2\pi\langle\xi,m\rangle\, w_-(\xi)$$
+
+  [[Schwartz 勾配収束|LerayHopf.schwartz_h1_gradConv]] で方向微分を Fourier 乗数として実現するために使う。
 gap:
   level: mild
 provenance: |

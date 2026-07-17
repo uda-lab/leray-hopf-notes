@@ -1,7 +1,7 @@
 name: LerayHopf.schwartz_h1_gradConv_aux
 tier: gloss
 statement_ja: |
-  組み立て補題：値の収束ステップで得た Schwartz 近似列を、すべての方向 $m$ に対する勾配収束ステップへ供給する。公開定理 `schwartz_h1_gradConv` の証明本体。
+  値の収束から得られる Schwartz 近似列が、すべての方向 $m$ に対する勾配の収束も同時に与えること。[[Schwartz 勾配収束|LerayHopf.schwartz_h1_gradConv]] の証明に用いる。
 gap:
   level: mild
 provenance: |

@@ -1,9 +1,9 @@
 name: LerayHopf.wPosC
 tier: gloss
 statement_ja: |
-  複素版 Bessel 重み `wPosC`。`wPos` を複素数値の乗数作用（`smulLeftCLM`）に載せるための版：
+  複素版 Bessel 重み。$w_+$ を複素数値の乗数作用に載せるための版：
 
-  $$\xi\mapsto(1+\lVert\xi\rVert^2)^{1/2}\in\mathbb{C}$$
+  $$w_+^{\mathbb C}(\xi):=(1+\lVert\xi\rVert^2)^{1/2}\in\mathbb{C}$$
 gap:
   level: mild
 provenance: |

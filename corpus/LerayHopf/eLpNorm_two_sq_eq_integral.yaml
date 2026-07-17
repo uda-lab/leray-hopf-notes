@@ -1,9 +1,7 @@
 name: LerayHopf.eLpNorm_two_sq_eq_integral
 tier: gloss
 statement_ja: |
-  `MemLp v 2` のときの eLpNorm と通常の積分を行き来する変換補題：
-
-  $$(\lVert v\rVert_{L^2})^2=\int\lVert v\rVert^2$$
+  二乗可積分な関数 $v$ に対し、拡大実数値（$[0,\infty]$ 値）$L^2$ ノルムの二乗が、通常の実数値積分 $\int\lVert v\rVert^2$ を非負拡大実数へ埋め込んだ値に等しいこと。
 gap:
   level: mild
 provenance: |

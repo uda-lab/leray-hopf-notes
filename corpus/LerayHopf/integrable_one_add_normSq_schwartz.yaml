@@ -1,7 +1,7 @@
 name: LerayHopf.integrable_one_add_normSq_schwartz
 tier: gloss
 statement_ja: |
-  Schwartz 関数 $g$ に対し、次の被積分関数が可積分であること（急減少性が多項式重みを支配する）。$H^1$ ノルムと重み付き Fourier 積分の同一視を支える可積分性の根拠：
+  Schwartz 関数 $g$ に対し、次の被積分関数が可積分であること（急減少性が多項式重みを支配する）：
 
   $$(1+\lVert\xi\rVert^2)\lVert g(\xi)\rVert^2$$
 gap:

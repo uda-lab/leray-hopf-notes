@@ -1,7 +1,7 @@
 name: LerayHopf.scaleCLM
 tier: gloss
 statement_ja: |
-  `Domain3` 上のスケーリング作用素 `(1/R) • id`。`cutoff R = χ ∘ ((1/R) • ·)` の定義に使う連続線形写像。
+  $\mathbb{R}^3$ 上のスケーリング作用素 $S_R$：恒等写像の $1/R$ 倍。動径カットオフを $\chi\circ S_R$ の形に表すために導入する連続線形写像。
 gap:
   level: mild
 provenance: |

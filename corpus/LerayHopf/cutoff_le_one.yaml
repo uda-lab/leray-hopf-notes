@@ -1,7 +1,7 @@
 name: LerayHopf.cutoff_le_one
 tier: gloss
 statement_ja: |
-  `cutoff R x ≤ 1`。
+  動径カットオフの上界：$\chi_R(x)\le1$。
 gap:
   level: mild
 provenance: |

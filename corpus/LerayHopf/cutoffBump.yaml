@@ -1,7 +1,7 @@
 name: LerayHopf.cutoffBump
 tier: gloss
 statement_ja: |
-  $\mathbb{R}^3$ 上の固定された滑らかバンプ関数 $\chi$（中心 $0$、内半径 $1$、外半径 $2$）。スケール版の動径カットオフ `cutoff` の元になる基礎データで、`gns_L6_of_memH1_R3` の $O(1/R)$ 動径打ち切りで使う。
+  $\mathbb{R}^3$ 上の固定された滑らかバンプ関数 $\chi$（中心 $0$、内半径 $1$、外半径 $2$）。これをスケール変換して動径カットオフ（[[動径カットオフ|LerayHopf.cutoff]]）を作る。
 gap:
   level: mild
 provenance: |

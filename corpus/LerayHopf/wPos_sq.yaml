@@ -1,7 +1,7 @@
 name: LerayHopf.wPos_sq
 tier: gloss
 statement_ja: |
-  `wPos` の二乗が $1+\lVert\xi\rVert^2$ に等しいこと。定義の展開。
+  $w_+$ の二乗が $1+\lVert\xi\rVert^2$ に等しいこと。
 gap:
   level: mild
 provenance: |

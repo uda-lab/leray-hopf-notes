@@ -1,7 +1,7 @@
 name: LerayHopf.memSobolev_of_eq_schwartz_toLp
 tier: gloss
 statement_ja: |
-  **A4 補題**。$L^2$ 類 $g$ が Schwartz 関数 $\varphi$ の `toLp` に一致するなら、$g$ は緩増加超関数として Sobolev 空間 $H^1$ に属する（Schwartz $\subset H^1$ の橋渡し）。`memH1VF_R3_of_schwartz_components` などで Schwartz 成分表示から $H^1$ 所属を得る際に使う。
+  $L^2$ 類 $g$ が Schwartz 関数 $\varphi$ の像に一致するなら、$g$ は緩増加超関数として Sobolev 空間 $H^1$ に属すること。[[Schwartz 成分表示からの $H^1$ 所属|LerayHopf.memH1VF_R3_of_schwartz_components]] で Schwartz 成分表示から $H^1$ 所属を得る際に使う。
 gap:
   level: mild
 provenance: |

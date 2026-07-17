@@ -1,7 +1,7 @@
 name: LerayHopf.hasTemperateGrowth_mLD
 tier: gloss
 statement_ja: |
-  `mLD m` が緩増加であること（多項式増大の内積因子と緩増加な `wInv` の積）。
+  $\sigma_m$ が緩増加であること（多項式増大の内積因子と緩増加な $w_-$ の積）。
 gap:
   level: mild
 provenance: |

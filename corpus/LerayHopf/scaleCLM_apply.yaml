@@ -1,7 +1,7 @@
 name: LerayHopf.scaleCLM_apply
 tier: gloss
 statement_ja: |
-  `scaleCLM R x = (1/R)\cdot x` という定義の展開。
+  スケーリング作用素の定義の展開：$S_R(x)=(1/R)x$。
 gap:
   level: mild
 provenance: |

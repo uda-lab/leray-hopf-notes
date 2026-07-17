@@ -1,7 +1,7 @@
 name: LerayHopf.cutoff_eq_one_of_norm_le
 tier: gloss
 statement_ja: |
-  $\lVert x\rVert\le R$ なら `cutoff R x = 1`。カットオフが半径 $R$ の球の内側で恒等的に $1$ となること（台の外側だけを削る性質）。
+  $R>0$ で $\lVert x\rVert\le R$ なら $\chi_R(x)=1$。カットオフが半径 $R$ の球の内側で恒等的に $1$ となること。
 gap:
   level: mild
 provenance: |

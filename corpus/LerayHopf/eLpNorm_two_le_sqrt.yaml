@@ -1,7 +1,7 @@
 name: LerayHopf.eLpNorm_two_le_sqrt
 tier: gloss
 statement_ja: |
-  `MemLp v 2` かつ $\int\lVert v\rVert^2\le A$（$A\ge0$）なら $\lVert v\rVert_{L^2}\le\sqrt{A}$。積分の一様上界を $L^2$ ノルムの一様上界へ変換する。`gns_L6_of_memH1_R3` の最終段の一様有界性ステップで使う。
+  二乗可積分な関数 $v$ について、実数値積分が $\int\lVert v\rVert^2\le A$（$A\ge0$）を満たすなら、拡大実数値 $L^2$ ノルムも $\sqrt A$ の埋め込み以下であること。積分の一様上界を $L^2$ ノルムの一様上界へ変換する。[[Sobolev 埋め込み定理|LerayHopf.gns_L6_of_memH1_R3]] の一様有界性の仕上げに使う。
 gap:
   level: mild
 provenance: |

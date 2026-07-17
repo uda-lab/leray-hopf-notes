@@ -1,7 +1,7 @@
 name: LerayHopf.cutoffBump_fderiv_bounded
 tier: gloss
 statement_ja: |
-  $\chi$ の勾配ノルムの上限 $K:=\lVert\nabla\chi\rVert_\infty$ が有限であること（$\nabla\chi$ が連続かつコンパクト台をもつことから従う）。`norm_fderiv_cutoff_le` でスケール後の $O(1/R)$ 勾配評価の定数として使う。
+  バンプ関数 $\chi$ の勾配ノルムを一様に抑える有限な定数 $K\ge0$ が存在すること（$\nabla\chi$ が連続かつコンパクト台をもつことから従う）。
 gap:
   level: mild
 provenance: |

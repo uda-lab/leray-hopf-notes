@@ -1,7 +1,7 @@
 name: LerayHopf.locallyIntegrable_wPosC_smul
 tier: gloss
 statement_ja: |
-  $g\in L^2_{\mathbb C}$ に対し、重み `wPosC` と $g$ の積が局所可積分であること。緩増加超関数として意味を持たせるための前提。
+  $g\in L^2_{\mathbb C}$ に対し、重み $w_+^{\mathbb C}$ と $g$ の積が局所可積分であること。緩増加超関数として意味を持たせるための前提。
 gap:
   level: mild
 provenance: |

@@ -1,7 +1,7 @@
 name: LerayHopf.hasTemperateGrowth_wInv
 tier: gloss
 statement_ja: |
-  `wInv` が緩増加であること。緩増加超関数への乗数作用（`smulLeftCLM`）を定義するための前提。
+  $w_-$ が緩増加であること。緩増加超関数への乗数作用を定義するための前提。
 gap:
   level: mild
 provenance: |

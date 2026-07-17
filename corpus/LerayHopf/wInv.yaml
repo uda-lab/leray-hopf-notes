@@ -1,7 +1,7 @@
 name: LerayHopf.wInv
 tier: gloss
 statement_ja: |
-  逆 Bessel 重み `wInv`：$\xi\mapsto(1+\lVert\xi\rVert^2)^{-1/2}$。`wPos` の逆数で、有界な Fourier 乗数として `fourier_ae_eq_wInv_smul` などで使う。
+  逆 Bessel 重み $w_-$：$\xi\mapsto(1+\lVert\xi\rVert^2)^{-1/2}$（$w_+$ の逆数）。有界な Fourier 乗数として重み付き Fourier 特徴づけに使う。
 gap:
   level: mild
 provenance: |
