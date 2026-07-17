@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-check_docs.py — cheap doc-staleness guard for lean-pde-notes (notes#71).
+check_docs.py — cheap doc-staleness guard for leray-hopf-notes (notes#71).
 
-lean-pde-notes went stale before: root README claimed "1,413 declarations" and site/README
+leray-hopf-notes went stale before: root README claimed "1,413 declarations" and site/README
 claimed "1,412" while the actual extracted universe had already moved to 1,349, then 1,339;
 a collision count of "8 groups / 16 decls" lingered long after cleanup left only 2/4. Those
 numbers are *generated facts* (from extracted/decls.json), not editorial content, so hand-

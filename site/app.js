@@ -1,4 +1,4 @@
-/* lean-pde-notes — vanilla static viewer.
+/* leray-hopf-notes — vanilla static viewer.
  * No framework, no bundler, no runtime deps except vendored KaTeX (global `katex`
  * and `renderMathInElement`). Data: data/nodes.json and lazy data/sources.json
  * (built by scripts/build_site_data.py), plus data/coverage.json (scripts/coverage.py).
@@ -30,8 +30,24 @@ const LEAN_KEYWORDS = new Set([
 
 /* ---------------- utilities ---------------- */
 
+// notes#72: also escape quotes, not just &<>. highlightLean() interpolates
+// esc(slug) directly into a quoted HTML attribute (`data-slug="' + esc(slug) + '"'`),
+// not just element text content — escaping only &<> there is brittle attribute
+// interpolation, even though the current Lean identifier grammar (extracted/decls.json
+// names) cannot produce a `"` or `'` today, so it isn't currently exploitable.
 function esc(s) {
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// notes#72: prefers-reduced-motion-aware scrollIntoView wrapper, used by every
+// scroll-link in the app (gap-note jump, /about bibliography highlight) so users who
+// have asked the OS for reduced motion never get a forced smooth-scroll animation.
+function scrollIntoViewSafe(el) {
+  if (!el || typeof el.scrollIntoView !== 'function') return;
+  const reduceMotion = typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
 }
 
 function el(tag, attrs, children) {
@@ -112,6 +128,31 @@ function proofStatusBanner(status) {
 
 function declHref(slug) { return '#/decl/' + encodeURIComponent(slug); }
 function chapterHref(id) { return '#/chapter/' + encodeURIComponent(id); }
+
+// notes#68: exact-PIN GitHub blob permalink for a Lean source location, so "where does
+// this come from" resolves to the literal pinned commit, not a moving `main` branch.
+// Returns null when the source repository or PIN isn't known (e.g. fallback universe).
+function sourceBlobHref(file, startLine, endLine) {
+  const repo = state.data.citation && state.data.citation.source_repository;
+  const pin = state.data.pin;
+  if (!repo || !pin || !file) return null;
+  if (!(Number.isInteger(startLine) && startLine > 0)) return null;
+  const hasEnd = Number.isInteger(endLine) && endLine >= startLine && endLine !== startLine;
+  const frag = hasEnd ? `#L${startLine}-L${endLine}` : `#L${startLine}`;
+  return `${repo}/blob/${pin}/${file}${frag}`;
+}
+
+// Renders `file:startLine[–endLine]` as a link to the exact-PIN GitHub blob when
+// possible, falling back to plain text (same visual style either way).
+function fileLineNode(cls, file, startLine, endLine, prefix) {
+  const rangeText = (endLine && endLine !== startLine) ? `${startLine}–${endLine}` : `${startLine}`;
+  const text = `${prefix || ''}${file}:${rangeText}`;
+  const href = sourceBlobHref(file, startLine, endLine);
+  if (href) {
+    return el('a', { class: cls, href, target: '_blank', rel: 'noopener', text });
+  }
+  return el('span', { class: cls, text });
+}
 
 /* ---------------- prose rendering (D1 paragraphs + D5 inline tokenizer) ----------------
  *
@@ -230,10 +271,22 @@ function makeRef(inner, maths) {
   const display = restorePlaceholders((pipe >= 0 ? inner.slice(0, pipe) : inner).trim(), maths);
   const target = (pipe >= 0 ? inner.slice(pipe + 1) : inner).trim();
   const slug = refSlugForRefToken(target);
+  if (slug) {
+    // notes#72: a real <a href> — not a <span> — so it's natively keyboard-focusable
+    // (Tab) and reads as a link to screen readers. bindHoverCards() still intercepts
+    // the click to show the preview card instead of navigating immediately; Enter on
+    // a focused link fires the same click event, so keyboard and mouse behave alike.
+    const a = document.createElement('a');
+    a.textContent = display;
+    a.href = declHref(slug);
+    a.className = 'ref';
+    a.setAttribute('data-slug', slug);
+    return a;
+  }
   const span = document.createElement('span');
   span.textContent = display;
-  if (slug) { span.className = 'ref'; span.setAttribute('data-slug', slug); }
-  else { span.className = 'ref ref-missing'; span.title = '未解決の参照: ' + target; }
+  span.className = 'ref ref-missing';
+  span.title = '未解決の参照: ' + target;
   return span;
 }
 
@@ -399,7 +452,7 @@ async function loadData() {
 
   const meta = document.getElementById('footer-meta');
   meta.textContent = `${nodesRes.decl_count} 宣言 / ${nodesRes.annotated_count} 注釈済み`
-    + (nodesRes.pin ? ` · lean-pde @ ${nodesRes.pin.slice(0, 10)}` : '')
+    + (nodesRes.pin ? ` · leray-hopf @ ${nodesRes.pin.slice(0, 10)}` : '')
     + (nodesRes.has_full_metadata ? '' : ' · (fallback universe: シグネチャ・依存辺なし)');
 }
 
@@ -444,6 +497,7 @@ function route() {
     else if (head === 'dag') renderDag(app);
     else if (head === 'coverage') renderCoverage(app);
     else if (head === 'proof-status') renderProofStatus(app);
+    else if (head === 'about') renderAbout(app, parts[1] ? decodeURIComponent(parts[1]) : null);
     else if (head === 'search') renderSearch(app, decodeURIComponent(parts.slice(1).join('/')));
     else app.appendChild(el('p', { text: 'ページが見つかりません。' }));
   } catch (e) {
@@ -451,6 +505,17 @@ function route() {
     console.error(e);
   }
   window.scrollTo(0, 0);
+  // notes#72: <main id="app"> no longer carries a blanket aria-live="polite" (a full
+  // page-content swap on every navigation over-announces the entire new DOM to screen
+  // readers). Instead, move focus to the new page's own <h1> — the standard SPA a11y
+  // pattern — so assistive tech announces just the heading, the same concise signal a
+  // sighted user gets from the page visually changing. tabindex="-1" makes an element
+  // a valid focus() target without adding it to the normal Tab order.
+  const heading = app.querySelector('h1');
+  if (heading) {
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({ preventScroll: true });
+  }
 }
 
 /* ---------------- home ---------------- */
@@ -459,7 +524,7 @@ function renderHome(app) {
   app.appendChild(el('h1', { text: 'Leray–Hopf 形式化 対訳ノート' }));
   app.appendChild(el('p', {
     class: 'prose',
-    text: 'uda-lab/lean-pde の全宣言に Lean コードと日本語の数学解説を並置する純静的ビューア。'
+    text: 'uda-lab/leray-hopf の全宣言に Lean コードと日本語の数学解説を並置する純静的ビューア。'
       + 'capstone から宣言依存グラフを辿り、直接依存宣言をその場で展開できる。',
   }));
 
@@ -490,7 +555,7 @@ function renderHome(app) {
   if (state.coverage) {
     const c = state.coverage;
     const wrap = el('div', { class: 'section' }, [el('h3', { text: 'カバレッジ' })]);
-    wrap.appendChild(progressBar(c.pct_annotated));
+    wrap.appendChild(progressBar(c.pct_annotated, `構造的注釈網羅率 ${c.pct_annotated}%`));
     wrap.appendChild(el('p', {
       class: 'filemeta',
       text: `${c.annotated} / ${c.total_decls} 注釈済み (${c.pct_annotated}%) · full ${c.full} · gloss ${c.gloss}`,
@@ -523,9 +588,22 @@ function renderHome(app) {
   app.appendChild(sec);
 }
 
-function progressBar(pct) {
-  const bar = el('div', { class: 'progress' });
-  bar.appendChild(el('span', { style: `width:${Math.max(0, Math.min(100, pct))}%` }));
+function progressBar(pct, label) {
+  const clamped = Math.max(0, Math.min(100, pct));
+  // notes#72: role="progressbar" + aria-value* so screen readers announce the actual
+  // percentage, not just an unlabeled colored bar. The fill width is set as a JS
+  // CSSOM property (el.style.width = …), not via an HTML style="" attribute — the
+  // el() helper's `style:` key would setAttribute('style', …), which a CSP
+  // `style-src 'self'` (no 'unsafe-inline') would block; property assignment is not
+  // restricted by CSP.
+  const bar = el('div', {
+    class: 'progress', role: 'progressbar',
+    'aria-valuenow': String(clamped), 'aria-valuemin': '0', 'aria-valuemax': '100',
+    'aria-label': label || `${clamped}%`,
+  });
+  const fill = el('span');
+  fill.style.width = clamped + '%';
+  bar.appendChild(fill);
   return bar;
 }
 
@@ -579,7 +657,7 @@ function renderDecl(app, slug) {
     gapEl.classList.add('gap-link');
     gapEl.setAttribute('role', 'link');
     gapEl.setAttribute('tabindex', '0');
-    const jump = () => { const t = document.getElementById('gap-note'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+    const jump = () => scrollIntoViewSafe(document.getElementById('gap-note'));
     gapEl.addEventListener('click', jump);
     gapEl.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); jump(); } });
   }
@@ -595,7 +673,10 @@ function renderDecl(app, slug) {
   const chMeta = state.chapterMeta.get(node.chapter);
   meta.appendChild(el('a', { class: 'badge', href: chapterHref(node.chapter), text: (chMeta && chMeta.label_ja) || node.chapter }));
   app.appendChild(meta);
-  app.appendChild(el('p', { class: 'mono filemeta', text: `${node.name}  ·  ${node.file}:${node.startLine}` }));
+  app.appendChild(el('p', { class: 'mono filemeta' }, [
+    node.name + '  ·  ',
+    fileLineNode('filemeta', node.file, node.startLine, node.startLine),
+  ]));
   // notes#65: prominent banner right under the header — a sorry-carrying / scaffold /
   // retired / quarantined declaration must not read like an ordinary proved theorem.
   const banner = proofStatusBanner(proofStatus);
@@ -618,9 +699,11 @@ function renderDecl(app, slug) {
     const det = el('details', { class: 'use' });
     const inner = el('div', { class: 'use-body' });
     if (node.has_source) {
+      const srcLink = fileLineNode('filemeta', node.file, node.startLine, node.endLine);
+      if (srcLink.tagName === 'A') srcLink.addEventListener('click', ev => ev.stopPropagation());
       det.appendChild(el('summary', {}, [
         el('span', { class: 'summary-name', text: 'ソースを表示' }),
-        el('span', { class: 'filemeta', text: `${node.file}:${node.startLine}–${node.endLine}` }),
+        srcLink,
       ]));
       const wrap = el('div', { class: 'codewrap' });
       const placeholder = el('p', { class: 'filemeta', text: 'ソース本文を取得しています。' });
@@ -687,6 +770,27 @@ function renderDecl(app, slug) {
     app.appendChild(np);
   }
 
+  // notes#68: bibliographic citations backing this declaration's statement/proof/naming
+  // choices, resolved from state.data.bibliography (built from docs/bibliography.md).
+  const refs = node.corpus && node.corpus.references;
+  if (refs && refs.length) {
+    const rp = el('div', { class: 'note-panel refs-panel' }, [
+      el('h4', { text: '参考文献' }),
+    ]);
+    const list = el('ul', { class: 'refs-list' });
+    for (const ref of refs) {
+      const citation = (state.data.bibliography || {})[ref.id];
+      const li = el('li', {}, [
+        el('a', { href: '#/about/' + encodeURIComponent(ref.id), class: 'mono', text: ref.id }),
+        ref.locator ? el('span', { class: 'filemeta', text: ' ' + ref.locator }) : null,
+        el('span', { class: 'ref-citation', text: citation ? '  ' + citation : '  (未解決の citation id)' }),
+      ]);
+      list.appendChild(li);
+    }
+    rp.appendChild(list);
+    app.appendChild(rp);
+  }
+
   // uses (direct deps) — depth-1 accordion
   renderUses(app, node);
   // used-by (links only)
@@ -700,7 +804,7 @@ function leanPane(label, code, node) {
   const pre = el('pre', { class: 'lean', html: highlightLean(code) });
   wrap.appendChild(pre);
   pane.appendChild(wrap);
-  if (node) pane.appendChild(el('div', { class: 'filemeta', text: `${node.file}:${node.startLine}` }));
+  if (node) pane.appendChild(el('div', { class: 'filemeta-block' }, [fileLineNode('filemeta', node.file, node.startLine, node.startLine)]));
   return pane;
 }
 
@@ -857,7 +961,17 @@ function renderDag(app) {
 function dagItem(node, ancestors) {
   const li = el('li');
   const hasChildren = node.uses.length > 0;
-  const twist = el('span', { class: 'twist' + (hasChildren ? '' : ' leaf'), text: hasChildren ? '▸' : '·' });
+  // notes#72: the expand/collapse control must be a real keyboard-operable control
+  // (Tab to focus, Enter/Space to activate — native <button> behavior) with
+  // aria-expanded reflecting state, not a clickable <span>. The leaf marker has no
+  // interaction, so it stays a decorative <span aria-hidden>.
+  const twist = hasChildren
+    ? el('button', {
+        type: 'button', class: 'twist', text: '▸',
+        'aria-expanded': 'false',
+        'aria-label': `${node.shortName} の依存を展開`,
+      })
+    : el('span', { class: 'twist leaf', text: '·', 'aria-hidden': 'true' });
   const row = el('div', { class: 'node-row' }, [
     twist,
     kindBadge(node.kind),
@@ -871,14 +985,20 @@ function dagItem(node, ancestors) {
   if (hasChildren) {
     let childUl = null;
     twist.addEventListener('click', () => {
-      if (childUl) { const open = childUl.style.display !== 'none'; childUl.style.display = open ? 'none' : ''; twist.textContent = open ? '▸' : '▾'; return; }
+      if (childUl) {
+        const open = childUl.style.display !== 'none';
+        childUl.style.display = open ? 'none' : '';
+        twist.textContent = open ? '▸' : '▾';
+        twist.setAttribute('aria-expanded', open ? 'false' : 'true');
+        return;
+      }
       childUl = el('ul');
       for (const slug of node.uses) {
         const child = state.bySlug.get(slug);
         if (!child) continue;
         if (ancestors.has(slug)) { // avoid cycle re-expansion in this branch
           childUl.appendChild(el('li', {}, [el('div', { class: 'node-row' }, [
-            el('span', { class: 'twist leaf', text: '↻' }),
+            el('span', { class: 'twist leaf', text: '↻', 'aria-hidden': 'true' }),
             el('a', { class: 'dag-name', href: declHref(slug), text: child.shortName }),
           ])]));
           continue;
@@ -888,6 +1008,7 @@ function dagItem(node, ancestors) {
       }
       li.appendChild(childUl);
       twist.textContent = '▾';
+      twist.setAttribute('aria-expanded', 'true');
     });
   }
   return li;
@@ -899,7 +1020,7 @@ function renderCoverage(app) {
   app.appendChild(el('h1', { text: 'カバレッジ' }));
   const c = state.coverage;
   if (!c) { app.appendChild(el('p', { text: 'coverage.json を読み込めませんでした。' })); return; }
-  app.appendChild(progressBar(c.pct_annotated));
+  app.appendChild(progressBar(c.pct_annotated, `構造的注釈網羅率 ${c.pct_annotated}%`));
   app.appendChild(el('p', { class: 'filemeta', text: `全体: ${c.annotated} / ${c.total_decls} (${c.pct_annotated}%) · full ${c.full} · gloss ${c.gloss}` }));
   app.appendChild(el('p', { class: 'caveat' }, [
     el('strong', { text: '注意：' }),
@@ -916,18 +1037,24 @@ function renderCoverage(app) {
     ]));
   }
 
+  // notes#72: <caption>/<thead>/<tbody> + scope so the table structure is announced
+  // correctly by screen readers, not just visually implied by row order.
   const table = el('table', { class: 'coverage' });
-  table.appendChild(el('tr', {}, [
-    el('th', { text: '章' }), el('th', { class: 'num', text: '総数' }),
-    el('th', { class: 'num', text: '注釈済' }), el('th', { class: 'num', text: 'full' }),
-    el('th', { class: 'num', text: 'gloss' }), el('th', { class: 'num', text: '%' }),
+  table.appendChild(el('caption', { text: '章別の構造的注釈網羅率' }));
+  const thead = el('thead');
+  thead.appendChild(el('tr', {}, [
+    el('th', { scope: 'col', text: '章' }), el('th', { scope: 'col', class: 'num', text: '総数' }),
+    el('th', { scope: 'col', class: 'num', text: '注釈済' }), el('th', { scope: 'col', class: 'num', text: 'full' }),
+    el('th', { scope: 'col', class: 'num', text: 'gloss' }), el('th', { scope: 'col', class: 'num', text: '%' }),
   ]));
+  table.appendChild(thead);
+  const tbody = el('tbody');
   for (const ch of (state.data.chapters || [])) {
     const stat = (c.chapters && c.chapters[ch.id]) || { annotated: 0, full: 0, gloss: 0 };
     const total = state.chapterTotals.get(ch.id) || 0;
     const pct = total ? Math.round(1000 * stat.annotated / total) / 10 : 0;
-    table.appendChild(el('tr', {}, [
-      el('td', {}, [el('a', { href: chapterHref(ch.id), text: ch.label_ja || ch.id })]),
+    tbody.appendChild(el('tr', {}, [
+      el('th', { scope: 'row' }, [el('a', { href: chapterHref(ch.id), text: ch.label_ja || ch.id })]),
       el('td', { class: 'num', text: String(total) }),
       el('td', { class: 'num', text: String(stat.annotated) }),
       el('td', { class: 'num', text: String(stat.full) }),
@@ -935,13 +1062,14 @@ function renderCoverage(app) {
       el('td', { class: 'num', text: pct + '%' }),
     ]));
   }
+  table.appendChild(tbody);
   app.appendChild(table);
 }
 
 /* ---------------- proof-status page (notes#65) ----------------
  * Enumerates every declaration whose corpus.proof_status is not the default 'verified',
  * grouped by status. Sourced directly from nodes.json (built deterministically by
- * scripts/build_site_data.py from the corpus at the pinned lean-pde SHA), so this list is
+ * scripts/build_site_data.py from the corpus at the pinned leray-hopf SHA), so this list is
  * mechanically derived from — and always matches — the site data, not hand-curated prose. */
 
 const PROOF_STATUS_ORDER = ['contains-sorry', 'invalid-statement', 'scaffold', 'retired'];
@@ -956,7 +1084,7 @@ function renderProofStatus(app) {
     class: 'prose',
     text: '`tier`（注釈の詳しさ）とは独立に、各宣言の証明としての完成度を示す。'
       + '一覧にない宣言はすべて既定値 verified（既知の sorry・虚偽/過度な一般化・歴史的足場・廃止のいずれにも該当しない）である。'
-      + (state.data && state.data.pin ? ` 集計対象: lean-pde @ ${state.data.pin.slice(0, 10)}。` : ''),
+      + (state.data && state.data.pin ? ` 集計対象: leray-hopf @ ${state.data.pin.slice(0, 10)}。` : ''),
   }));
 
   const legend = el('div', { class: 'section' }, [el('h3', { text: '凡例' })]);
@@ -986,6 +1114,96 @@ function renderProofStatus(app) {
     if (!nodes.length) sec.appendChild(el('p', { class: 'filemeta', text: '該当なし。' }));
     for (const n of nodes) sec.appendChild(declRow(n));
     app.appendChild(sec);
+  }
+}
+
+/* ---------------- about / citation / bibliography (notes#68) ---------------- */
+
+function renderAbout(app, highlightId) {
+  const citation = state.data.citation || {};
+  const pin = state.data.pin;
+  const bib = state.data.bibliography || {};
+
+  app.appendChild(el('h1', { text: 'このサイトについて' }));
+
+  const scope = el('div', { class: 'section' }, [
+    el('h3', { text: 'author・scope' }),
+    el('p', { class: 'prose' }, [
+      (citation.authors && citation.authors.length ? citation.authors.join(', ') : '(author 未設定)')
+        + ' による、',
+      el('a', { href: 'https://github.com/uda-lab/leray-hopf', text: 'uda-lab/leray-hopf' }),
+      ' （Leray–Hopf 弱解存在の Lean 4 + mathlib 形式化）の全宣言対訳解説サイト。'
+        + 'corpus/**/*.yaml のprose と Lean 宣言メタデータを結合した純静的ビューア。',
+    ]),
+  ]);
+  app.appendChild(scope);
+
+  const disclaimer = el('div', { class: 'section' }, [
+    el('h3', { text: '注意（disclaimer）' }),
+    el('p', { class: 'caveat' }, [
+      el('strong', { text: '注意：' }),
+      el('span', {
+        text: 'このサイトが示す「注釈網羅率」「proof_status: verified」は、宣言に'
+          + ' statement_ja 等が記入され Lean 側に既知の sorry・虚偽/過度に一般化された主張・'
+          + '撤去済み宣言としてのマークがないことを意味するのみであり、対訳注釈そのものが'
+          + '数学的に正しいことを証明・認証するものではない（semantic proof certification'
+          + ' ではない）。証明の真の正しさの根拠は Lean 側の型検査そのものであり、この'
+          + 'サイトの日本語注釈は理解のための補助である。',
+      }),
+    ]),
+    el('p', {}, [el('a', { href: '#/proof-status', text: '証明状態の内訳を見る →' })]),
+  ]);
+  app.appendChild(disclaimer);
+
+  const citeSec = el('div', { class: 'section' }, [el('h3', { text: 'citation・license' })]);
+  const citeList = el('ul', { class: 'about-list' });
+  if (citation.repository_code) {
+    citeList.appendChild(el('li', {}, [
+      'このリポジトリ: ',
+      el('a', { href: citation.repository_code, text: citation.repository_code }),
+      ' — ',
+      el('a', { href: citation.repository_code + '/blob/main/CITATION.cff', text: 'CITATION.cff' }),
+    ]));
+  }
+  if (citation.source_repository) {
+    const commitHref = pin ? `${citation.source_repository}/tree/${pin}` : citation.source_repository;
+    citeList.appendChild(el('li', {}, [
+      '形式化ソース: ',
+      el('a', { href: citation.source_repository, text: citation.source_repository }),
+      pin ? el('span', {}, [' — pinned commit ', el('a', { class: 'mono', href: commitHref, text: pin })]) : null,
+    ]));
+  }
+  if (citation.license) {
+    citeList.appendChild(el('li', { text: 'license: ' + [].concat(citation.license).join(', ')
+      + '（ファイル別の適用範囲は LICENSE.md を参照。vendored KaTeX は MIT）' }));
+    if (citation.license_url) {
+      citeList.appendChild(el('li', {}, [el('a', { href: citation.license_url, text: 'LICENSE.md' })]));
+    }
+  }
+  if (state.data.built_at) {
+    citeList.appendChild(el('li', { text: `このサイトデータのビルド日時: ${state.data.built_at}` }));
+  }
+  citeSec.appendChild(citeList);
+  app.appendChild(citeSec);
+
+  const bibSec = el('div', { class: 'section' }, [
+    el('h3', { text: '参考文献 (bibliography)' }),
+    el('p', { class: 'filemeta', text: 'corpus の宣言注釈が略記で引く一次・標準文献。個々の宣言からのリンクは各宣言ページの「参考文献」欄を参照。' }),
+  ]);
+  const bibList = el('ul', { class: 'refs-list' });
+  for (const cid of Object.keys(bib).sort()) {
+    const li = el('li', { id: 'ref-' + cid }, [
+      el('span', { class: 'mono', text: cid }),
+      el('span', { class: 'ref-citation', text: '  ' + bib[cid] }),
+    ]);
+    if (cid === highlightId) li.classList.add('ref-highlight');
+    bibList.appendChild(li);
+  }
+  bibSec.appendChild(bibList);
+  app.appendChild(bibSec);
+
+  if (highlightId) {
+    setTimeout(() => scrollIntoViewSafe(document.getElementById('ref-' + highlightId)), 0);
   }
 }
 
@@ -1021,6 +1239,7 @@ function renderSearch(app, q) {
 
 let hoverTimer = null;
 let hoverBound = false;
+let activeRefEl = null;   // notes#72: last ref that opened the card, for Escape-to-return-focus
 
 /* Bind hover/tap on `.ref` spans once, on the document, via event delegation. Refs now
  * appear both in Lean code (highlightLean) and in Japanese prose ([[…]] tokens, D5), on
@@ -1040,8 +1259,41 @@ function bindHoverCards() {
   document.addEventListener('click', ev => {
     const t = ev.target.closest && ev.target.closest('.ref[data-slug]');
     if (!t) return;
+    // notes#72: a real mouse/touch click (MouseEvent.detail >= 1) shows the pinned
+    // preview instead of jumping, as before. But Enter on a focused <a> also fires a
+    // synthetic click with detail === 0 — and the pinned card's own "open" link isn't
+    // reliably the next Tab stop (the card lives at the end of <body>, not next to the
+    // ref, in DOM/tab order), so intercepting that click too left keyboard users with
+    // no way to actually follow the reference (caught in codex review). Let
+    // keyboard-triggered activation navigate normally instead.
+    if (ev.detail === 0) return;
     ev.preventDefault();          // touch / tap: show the card instead of jumping
     showHoverCard(t, true);
+  });
+  // notes#72: keyboard equivalent of hover — focusin shows the same preview Tab-ing
+  // through prose that mouseover shows while pointing at it; Enter then navigates
+  // directly (see the click handler's ev.detail check above), matching plain <a>
+  // behavior rather than requiring an extra step to reach the card's own link.
+  document.addEventListener('focusin', ev => {
+    const t = ev.target.closest && ev.target.closest('.ref[data-slug]');
+    if (t) showHoverCard(t, true);
+  });
+  document.addEventListener('focusout', ev => {
+    const t = ev.target.closest && ev.target.closest('.ref[data-slug]');
+    if (!t) return;
+    const next = ev.relatedTarget;
+    const card = document.getElementById('hovercard');
+    if (next && card && card.contains(next)) return; // focus moved into the card itself
+    hoverTimer = setTimeout(hideHoverCard, 180);
+  });
+  // Escape dismisses the card and returns focus to whatever ref opened it, so keyboard
+  // users are never left with a visible popover and no way to close it without a mouse.
+  document.addEventListener('keydown', ev => {
+    if (ev.key !== 'Escape') return;
+    const card = document.getElementById('hovercard');
+    if (!card || card.hidden) return;
+    hideHoverCard();
+    if (activeRefEl) activeRefEl.focus();
   });
 }
 
@@ -1050,6 +1302,7 @@ function showHoverCard(refEl, pin) {
   const slug = refEl.getAttribute('data-slug');
   const node = state.bySlug.get(slug);
   if (!node) return;
+  activeRefEl = refEl;
   const card = document.getElementById('hovercard');
   card.innerHTML = '';
   card.appendChild(el('div', { class: 'meta-row' }, [
@@ -1093,8 +1346,25 @@ function setupSearch() {
   });
 }
 
+// notes#72: the skip link's `href="#app"` must NOT be left to native fragment
+// navigation — every hash change fires the `hashchange` listener below, and route()
+// treats any hash that isn't one of its known routes (all of which start with `#/`) as
+// "page not found". #app matches nothing, so without this handler, activating the skip
+// link would replace the current page with a not-found view instead of just moving
+// focus past the header. preventDefault() keeps location.hash untouched entirely.
+function setupSkipLink() {
+  const link = document.querySelector('.skip-link');
+  const app = document.getElementById('app');
+  if (!link || !app) return;
+  link.addEventListener('click', ev => {
+    ev.preventDefault();
+    app.focus();
+  });
+}
+
 async function boot() {
   setupSearch();
+  setupSkipLink();
   bindHoverCards();
   try {
     await loadData();
@@ -1121,8 +1391,10 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     state, splitParagraphs, joinSoftLines, joinGlue, segmentMath, tokenizeInline,
     makeRef, refSlugForRefToken, renderParagraph, renderProse, renderProseInline,
-    firstParagraph, sentencePreview, renderDecl, loadSources, loadSourceFor,
+    firstParagraph, sentencePreview, renderDecl, renderAbout, loadSources, loadSourceFor,
     proofStatusBadge, proofStatusBanner, renderProofStatus, PROOF_STATUS_META,
     renderDag, renderUsedBy, renderUses,
+    esc, dagItem, progressBar, renderCoverage, route,
+    bindHoverCards, setupSkipLink,
   };
 }

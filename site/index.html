@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>lean-pde-notes — 証明掘り下げノート</title>
+  <title>leray-hopf-notes — 証明掘り下げノート</title>
+  <!-- notes#72: the site is fully self-contained (no CDN, no external fetch/img/font),
+       so a strict CSP with no 'unsafe-inline'/'unsafe-eval' is safe. GitHub Pages has no
+       server-side header config, so this is a <meta> CSP — note that `frame-ancestors`,
+       `sandbox`, and `report-uri`/`report-to` are silently ignored when delivered via
+       <meta> (CSP spec) and are therefore omitted rather than included as false comfort. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <link rel="stylesheet" href="vendor/katex/katex.min.css">
   <link rel="stylesheet" href="styles.css">
   <!-- KaTeX is vendored (site/vendor/katex); no CDN, no bundler, no framework. -->
@@ -12,13 +18,20 @@
   <script defer src="app.js"></script>
 </head>
 <body>
+  <!-- setupSkipLink() in app.js intercepts this click: the app's hashchange handler
+       treats every hash as a route, and #app matches none of them, so without JS
+       interception this would render "ページが見つかりません" instead of just moving
+       focus past the header. href="#app" is kept as-is for the (JS-unavailable) case
+       where app.js itself failed to load — native fragment navigation still works then. -->
+  <a class="skip-link" href="#app">本文へスキップ</a>
   <header class="site-header">
-    <a class="brand" href="#/">lean-pde-notes</a>
-    <nav class="top-nav">
+    <a class="brand" href="#/">leray-hopf-notes</a>
+    <nav class="top-nav" aria-label="メインナビゲーション">
       <a href="#/">ホーム</a>
       <a href="#/dag">宣言依存グラフ</a>
       <a href="#/coverage">カバレッジ</a>
       <a href="#/proof-status">証明状態</a>
+      <a href="#/about">このサイトについて</a>
     </nav>
     <form class="search" id="search-form" role="search" autocomplete="off">
       <input id="search-input" type="search" placeholder="宣言名・日本語で検索…"
@@ -26,26 +39,27 @@
     </form>
   </header>
 
-  <main id="app" aria-live="polite">
+  <!-- notes#72: no blanket aria-live on the whole region — route() moves focus to each
+       page's own <h1> instead (see app.js), which is the more targeted SPA a11y pattern.
+       tabindex="-1" makes #app itself a valid skip-link focus target. -->
+  <main id="app" tabindex="-1">
     <p class="loading">読み込み中…</p>
   </main>
 
   <div id="hovercard" class="hovercard" hidden></div>
 
-  <!-- TODO(#62): repository URLs below (lean-pde-notes, lean-pde) will move to
-       leray-hopf-notes / leray-hopf once the rename lands; update together with
-       CITATION.cff and LICENSE.md. -->
   <footer class="site-footer">
     <span id="footer-meta"></span>
     <span class="footer-attribution">
       Viewer code &amp; scripts:
-      <a href="https://github.com/uda-lab/lean-pde-notes/blob/main/LICENSE.md">Apache-2.0</a>
+      <a href="https://github.com/uda-lab/leray-hopf-notes/blob/main/LICENSE.md">Apache-2.0</a>
       · Annotations/prose:
-      <a href="https://github.com/uda-lab/lean-pde-notes/blob/main/LICENSE.md">CC BY 4.0</a>
+      <a href="https://github.com/uda-lab/leray-hopf-notes/blob/main/LICENSE.md">CC BY 4.0</a>
       · Embedded Lean source from
-      <a href="https://github.com/uda-lab/lean-pde">lean-pde</a>: Apache-2.0
+      <a href="https://github.com/uda-lab/leray-hopf">leray-hopf</a>: Apache-2.0
       · Math rendering by <a href="https://katex.org/">KaTeX</a> (MIT)
-      · <a href="https://github.com/uda-lab/lean-pde-notes/blob/main/CITATION.cff">Cite this</a>
+      · <a href="https://github.com/uda-lab/leray-hopf-notes/blob/main/CITATION.cff">Cite this</a>
+      · <a href="#/about">author・citation・文献一覧・disclaimer</a>
     </span>
   </footer>
 </body>

@@ -14,12 +14,15 @@ const dom = new JSDOM(
   { url: 'http://localhost/' });
 global.window = dom.window;
 global.document = dom.window.document;
+global.location = dom.window.location; // route() (notes#72 test (n)) reads bare `location`
 
 const app = require('../site/app.js');
 const {
   state, splitParagraphs, joinSoftLines, firstParagraph, sentencePreview,
-  renderProse, renderProseInline, renderDecl, loadSourceFor,
+  renderProse, renderProseInline, renderDecl, renderAbout, loadSourceFor,
   proofStatusBadge, proofStatusBanner, renderDag, renderUsedBy,
+  esc, dagItem, progressBar, renderCoverage, route, makeRef,
+  bindHoverCards, setupSkipLink,
 } = app;
 
 let passed = 0;
@@ -264,8 +267,255 @@ check('(f-regression) renderDecl shows no proof-status banner for an ordinary ve
     'a verified declaration must not show a proof-status badge');
 });
 
+check('(g) renderDecl shows a 参考文献 panel with resolved citation text when corpus.references is set', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  state.trail = [];
+  state.data = {
+    nodes: [], chapters: [],
+    bibliography: { temam2001: 'Temam, R. (2001). Navier-Stokes Equations...' },
+  };
+  const decl = {
+    slug: 'refDecl', id: 'refDecl', name: 'LerayHopf.refDecl', shortName: 'refDecl',
+    kind: 'theorem', private: false, signature: 'theorem refDecl : True', doc: '', file: 'X.lean',
+    startLine: 1, endLine: 2, chapter: 'bochner', uses: [], usedBy: [],
+    collision: false, capstone: false, has_source: false,
+    corpus: {
+      tier: 'full', statement_ja: '主張の本文。', proof_ja: '証明の本文。',
+      gap: { level: 'none' }, tags: [], sample: false, proof_status: 'verified',
+      references: [{ id: 'temam2001', locator: 'III.3' }],
+    },
+  };
+  state.bySlug.set('refDecl', decl);
+  renderDecl(appEl, 'refDecl');
+  const panel = appEl.querySelector('.refs-panel');
+  assert.ok(panel, 'a declaration with corpus.references must render a 参考文献 panel');
+  assert.ok(panel.textContent.includes('III.3'), 'the locator must be shown');
+  assert.ok(panel.textContent.includes('Temam, R. (2001)'),
+    'the resolved bibliography citation text must be shown, not just the bare id');
+  const link = panel.querySelector('a');
+  assert.ok(link && link.getAttribute('href') === '#/about/temam2001',
+    'the citation id must link to its /about entry');
+});
+
+check('(g-regression) renderDecl shows no 参考文献 panel when corpus.references is absent', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  state.trail = [];
+  state.data = { nodes: [], chapters: [], bibliography: {} };
+  const decl = {
+    slug: 'noRefDecl', id: 'noRefDecl', name: 'LerayHopf.noRefDecl', shortName: 'noRefDecl',
+    kind: 'theorem', private: false, signature: 'theorem noRefDecl : True', doc: '', file: 'X.lean',
+    startLine: 1, endLine: 2, chapter: 'bochner', uses: [], usedBy: [],
+    collision: false, capstone: false, has_source: false,
+    corpus: {
+      tier: 'full', statement_ja: '主張の本文。', proof_ja: '証明の本文。',
+      gap: { level: 'none' }, tags: [], sample: false, proof_status: 'verified',
+    },
+  };
+  state.bySlug.set('noRefDecl', decl);
+  renderDecl(appEl, 'noRefDecl');
+  assert.strictEqual(appEl.querySelector('.refs-panel'), null,
+    'a declaration without corpus.references must not render a 参考文献 panel');
+});
+
+check('(h) renderAbout lists bibliography entries, shows citation/license metadata, and highlights the requested id', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  state.data = {
+    nodes: [], chapters: [],
+    pin: 'abc123deadbeef',
+    built_at: '2026-07-17T00:00:00Z',
+    citation: {
+      authors: ['Tomoki Uda'],
+      repository_code: 'https://github.com/uda-lab/leray-hopf-notes',
+      source_repository: 'https://github.com/uda-lab/leray-hopf',
+      source_commit: 'abc123deadbeef',
+      license: ['Apache-2.0', 'CC-BY-4.0'],
+      license_url: 'https://github.com/uda-lab/leray-hopf-notes/blob/main/LICENSE.md',
+    },
+    bibliography: {
+      temam2001: 'Temam, R. (2001). Navier-Stokes Equations...',
+      rrs2016: 'Robinson, J.C., Rodrigo, J.L., Sadowski, W. (2016). The Three-Dimensional...',
+    },
+  };
+  renderAbout(appEl, 'rrs2016');
+  assert.ok(appEl.textContent.includes('semantic proof certification')
+    || appEl.textContent.includes('数学的に正しいことを証明・認証するものではない'),
+    'the /about page must state the non-certification disclaimer');
+  assert.ok(appEl.textContent.includes('Tomoki Uda'), 'author must be shown');
+  assert.ok(appEl.textContent.includes('Apache-2.0') && appEl.textContent.includes('CC-BY-4.0'),
+    'the split license must be shown');
+  assert.ok(appEl.textContent.includes('abc123deadbeef'), 'the exact source pin must be shown');
+  const pinLink = Array.from(appEl.querySelectorAll('a')).find(a => a.textContent === 'abc123deadbeef');
+  assert.ok(pinLink && pinLink.getAttribute('href').includes('abc123deadbeef'),
+    'the pin must be a clickable link to the exact-commit source tree');
+  assert.ok(appEl.querySelector('#ref-temam2001') && appEl.querySelector('#ref-rrs2016'),
+    'every bibliography entry must be listed');
+  const highlighted = appEl.querySelector('.ref-highlight');
+  assert.ok(highlighted && highlighted.id === 'ref-rrs2016',
+    'the id passed to renderAbout must be highlighted');
+});
+
+/* ==== notes#72: accessibility — DAG toggle is a real, keyboard-operable control ==== */
+check('(i) dagItem renders the expand toggle as a real <button> with aria-expanded, toggling on click', () => {
+  addNode({
+    slug: 'X.dagChild', id: 'X.dagChild', name: 'X.dagChild', shortName: 'dagChild', kind: 'def',
+    signature: 'def dagChild', file: 'X.lean', startLine: 1, endLine: 1,
+    chapter: 'spaces', uses: [], usedBy: [], private: false, corpus: null,
+  });
+  const parent = {
+    slug: 'X.dagParent', name: 'X.dagParent', shortName: 'dagParent', kind: 'theorem',
+    uses: ['X.dagChild'], usedBy: [], private: false, corpus: null,
+  };
+  const li = dagItem(parent, new Set(['X.dagParent']));
+  const twist = li.querySelector('.twist');
+  assert.strictEqual(twist.tagName, 'BUTTON', 'the expand toggle must be a real <button>, not a clickable <span>');
+  assert.strictEqual(twist.getAttribute('aria-expanded'), 'false', 'starts collapsed');
+  twist.dispatchEvent(new window.Event('click', { bubbles: true }));
+  assert.strictEqual(twist.getAttribute('aria-expanded'), 'true', 'aria-expanded must flip to true on expand');
+  assert.ok(li.querySelector('ul'), 'expanding must render the children <ul>');
+});
+
+check('(i-regression) a leaf dagItem (no uses) renders a decorative, non-interactive <span>', () => {
+  const leaf = {
+    slug: 'X.dagLeaf', name: 'X.dagLeaf', shortName: 'dagLeaf', kind: 'def',
+    uses: [], usedBy: [], private: false, corpus: null,
+  };
+  const li = dagItem(leaf, new Set(['X.dagLeaf']));
+  const twist = li.querySelector('.twist');
+  assert.strictEqual(twist.tagName, 'SPAN', 'a leaf has no expand action — it must stay a non-interactive <span>');
+  assert.strictEqual(twist.getAttribute('aria-hidden'), 'true');
+});
+
+/* ==== notes#72: [[…]] refs are real <a> links, reachable by Tab ==== */
+check('(j) makeRef renders a resolved reference as a real <a href>, not a plain <span>', () => {
+  const ref = makeRef('lerayProjection|LerayHopf.lerayProjection', []);
+  assert.strictEqual(ref.tagName, 'A', 'a resolved ref must be a real <a> so keyboard Tab reaches it');
+  assert.ok(ref.getAttribute('href'), 'the <a> must carry an href');
+  assert.strictEqual(ref.className, 'ref');
+});
+
+check('(j-regression) an unresolved reference stays a non-interactive <span>', () => {
+  const ref = makeRef('nonexistent thing', []);
+  assert.strictEqual(ref.tagName, 'SPAN', 'an unresolved ref has no navigation target');
+  assert.ok(ref.className.includes('ref-missing'));
+});
+
+/* ==== notes#72: progress bar carries ARIA progressbar semantics ==== */
+check('(k) progressBar renders role=progressbar with aria-value* and sets fill width as a JS style property', () => {
+  const bar = progressBar(42, 'テストラベル 42%');
+  assert.strictEqual(bar.getAttribute('role'), 'progressbar');
+  assert.strictEqual(bar.getAttribute('aria-valuenow'), '42');
+  assert.strictEqual(bar.getAttribute('aria-valuemin'), '0');
+  assert.strictEqual(bar.getAttribute('aria-valuemax'), '100');
+  assert.strictEqual(bar.getAttribute('aria-label'), 'テストラベル 42%');
+  const fill = bar.querySelector('span');
+  // Width is set via the .style CSSOM property (not el()'s style: attrs path, which
+  // uses setAttribute('style', …)) so a CSP `style-src 'self'` with no 'unsafe-inline'
+  // does not block it — see the comment on progressBar() for the CSP distinction.
+  assert.strictEqual(fill.style.width, '42%');
+});
+
+check('(k-regression) progressBar clamps out-of-range percentages into [0, 100]', () => {
+  assert.strictEqual(progressBar(150).getAttribute('aria-valuenow'), '100');
+  assert.strictEqual(progressBar(-5).getAttribute('aria-valuenow'), '0');
+});
+
+/* ==== notes#72: coverage table has caption/thead/tbody/scope ==== */
+check('(l) renderCoverage emits a table with caption, thead, tbody, and scoped headers', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  state.coverage = {
+    pct_annotated: 80, annotated: 8, total_decls: 10, full: 5, gloss: 3,
+    chapters: { spaces: { annotated: 8, full: 5, gloss: 3 } },
+  };
+  state.data = { chapters: [{ id: 'spaces', label_ja: '空間' }] };
+  state.chapterTotals.set('spaces', 10);
+  renderCoverage(appEl);
+  const table = appEl.querySelector('table.coverage');
+  assert.ok(table, 'a table.coverage must be rendered');
+  assert.ok(table.querySelector('caption'), 'the table must have a <caption>');
+  assert.ok(table.querySelector('thead'), 'the header row must be inside <thead>');
+  assert.ok(table.querySelector('tbody'), 'the data rows must be inside <tbody>');
+  const colHeaders = table.querySelectorAll('thead th');
+  assert.ok(colHeaders.length > 0 && Array.from(colHeaders).every(th => th.getAttribute('scope') === 'col'),
+    'every column header must carry scope="col"');
+  const rowHeader = table.querySelector('tbody th');
+  assert.ok(rowHeader && rowHeader.getAttribute('scope') === 'row',
+    'the chapter-name cell must be a <th scope="row">, not a <td>');
+});
+
+/* ==== notes#72: esc() also escapes quotes (attribute-interpolation safety) ==== */
+check('(m) esc() escapes quotes as well as &<>, since highlightLean() interpolates it into a quoted attribute', () => {
+  assert.strictEqual(esc('a"b\'c&d<e>f'), 'a&quot;b&#39;c&amp;d&lt;e&gt;f');
+});
+
+/* ==== notes#72: route() moves focus to the new page's own <h1> instead of a blanket
+ * aria-live region, so screen readers announce just the new page heading. ==== */
+check('(n) route() moves focus to the rendered page\'s <h1> with tabindex="-1"', () => {
+  state.data = { chapters: [], capstones: [] };
+  window.location.hash = '#/dag';
+  route();
+  const h1 = document.getElementById('app').querySelector('h1');
+  assert.ok(h1, 'the DAG page must render an <h1>');
+  assert.strictEqual(h1.getAttribute('tabindex'), '-1', 'the heading must be a valid focus() target');
+  assert.strictEqual(document.activeElement, h1, 'focus must move to the new page heading after routing');
+});
+
+/* ==== notes#72 (codex review): the skip link must not be swallowed by the hash router.
+ * route() treats every hash as a route (see test (n)'s fixture); href="#app" matches no
+ * route, so without interception it renders "ページが見つかりません" instead of just
+ * moving focus past the header. ==== */
+check('(o) setupSkipLink prevents the skip link\'s href="#app" from being treated as a route change', () => {
+  // The real site/index.html gives #app tabindex="-1" so it's a valid focus() target;
+  // replicate that here since the minimal jsdom fixture doesn't otherwise carry it.
+  document.getElementById('app').setAttribute('tabindex', '-1');
+  const skipLink = document.createElement('a');
+  skipLink.className = 'skip-link';
+  skipLink.href = '#app';
+  document.body.insertBefore(skipLink, document.body.firstChild);
+  setupSkipLink();
+  const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+  const notCancelled = skipLink.dispatchEvent(ev);
+  assert.strictEqual(notCancelled, false,
+    'the click must be preventDefault()ed so location.hash never actually becomes "#app"');
+  assert.strictEqual(document.activeElement, document.getElementById('app'),
+    'focus must move directly to #app, bypassing hash navigation entirely');
+  skipLink.remove();
+});
+
+/* ==== notes#72 (codex review): keyboard activation of a resolved ref must navigate,
+ * not just show the pinned preview card — the card's own "open" link isn't reliably
+ * reachable by a further Tab press (it lives at the end of <body>, not next to the ref
+ * in DOM/tab order), so intercepting keyboard Enter the same as a mouse click left
+ * keyboard users with no way to actually follow the reference. ==== */
+check('(p) a keyboard-triggered activation (MouseEvent.detail === 0) on a resolved ref navigates instead of pinning the preview', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  const ref = makeRef('lerayProjection|LerayHopf.lerayProjection', []);
+  appEl.appendChild(ref);
+  bindHoverCards();
+  const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true, detail: 0 });
+  const notCancelled = ref.dispatchEvent(ev);
+  assert.strictEqual(notCancelled, true,
+    'a keyboard-triggered activation (Enter on a focused link fires a click with detail 0) must not be prevented');
+});
+
+check('(p-regression) a real mouse click (MouseEvent.detail >= 1) on a resolved ref still pins the preview card', () => {
+  const appEl = document.getElementById('app');
+  appEl.innerHTML = '';
+  const ref = makeRef('lerayProjection|LerayHopf.lerayProjection', []);
+  appEl.appendChild(ref);
+  bindHoverCards();
+  const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 });
+  const notCancelled = ref.dispatchEvent(ev);
+  assert.strictEqual(notCancelled, false, 'a real mouse click must still be intercepted to show the pinned preview');
+  assert.strictEqual(document.getElementById('hovercard').hidden, false, 'the preview card must be shown');
+});
+
 /* ==== notes#71: graph terminology + no hard-coded declaration counts in UI prose ==== */
-check('(g) DAG page uses accurate graph terminology (宣言依存グラフ, not 証明ツリー) and a dynamic node count', () => {
+check('(q) DAG page uses accurate graph terminology (宣言依存グラフ, not 証明ツリー) and a dynamic node count', () => {
   const appEl = document.getElementById('app');
   appEl.innerHTML = '';
   state.data = { capstones: [], decl_count: 1339, chapters: [] };
@@ -276,7 +526,7 @@ check('(g) DAG page uses accurate graph terminology (宣言依存グラフ, not 
   assert.ok(text.includes('1,339'), 'the "does not render everything" note must reflect the live decl_count, not a hard-coded literal');
 });
 
-check('(g) empty usedBy state does not conflate "no incoming edges" with "leaf" (no outgoing edges)', () => {
+check('(q) empty usedBy state does not conflate "no incoming edges" with "leaf" (no outgoing edges)', () => {
   const appEl = document.getElementById('app');
   appEl.innerHTML = '';
   const node = { usedBy: [], uses: ['something'] }; // has outgoing edges -> not a leaf, but still no usedBy

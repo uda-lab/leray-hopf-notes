@@ -7,7 +7,7 @@ Inputs
   extracted/decls.json          (preferred) full metadata: id, name, kind, private,
                                 signature, doc, file, startLine, endLine, deps[id-refs]
   extracted/names-fallback.json (fallback)  name, kind, file, line   — skeleton only
-  extracted/PIN                 40-char lean-pde SHA (recorded into the output)
+  extracted/PIN                 40-char leray-hopf SHA (recorded into the output)
   corpus/**/*.yaml              per-declaration annotations (joined by display name;
                                 colliding names require file metadata)
   docs/schemas/chapters.yaml    chapter taxonomy (ids + Japanese labels)
@@ -27,7 +27,7 @@ Join model
     name -> file -> stable declaration id.
 
 Source embedding
-  With --lean-root <path> (a checkout of lean-pde at the PIN commit), each record's
+  With --lean-root <path> (a checkout of leray-hopf at the PIN commit), each record's
   verbatim declaration text (startLine..endLine, exactly as scripts/workpacket.py reads
   it) is written to sources.json keyed by node slug, while nodes.json carries only
   `has_source: true`. Without --lean-root, sources.json is empty and nodes carry
@@ -37,7 +37,7 @@ Determinism: nodes are sorted by slug, edge lists are sorted, and json.dump uses
 sort_keys=True so the committed output diffs cleanly.
 
 Usage:
-    python3 scripts/build_site_data.py --lean-root /workspaces/lean-pde
+    python3 scripts/build_site_data.py --lean-root /workspaces/leray-hopf
     python3 scripts/build_site_data.py --no-coverage   # skip coverage.py refresh
     python3 scripts/build_site_data.py --out /tmp/x.json --no-coverage  # also writes /tmp/sources.json
 """
@@ -47,6 +47,7 @@ import json
 import subprocess
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 try:
@@ -54,10 +55,14 @@ try:
 except ImportError:
     sys.exit('ERROR: PyYAML required. pip install pyyaml')
 
+sys.path.insert(0, str(Path(__file__).parent))
+from bibliography import parse_bibliography  # noqa: E402
+
 REPO_ROOT = Path(__file__).parent.parent
 EXTRACTED_DIR = REPO_ROOT / 'extracted'
 CORPUS_DIR = REPO_ROOT / 'corpus'
 SITE_DATA_DIR = REPO_ROOT / 'site' / 'data'
+CITATION_PATH = REPO_ROOT / 'CITATION.cff'
 CHAPTERS_PATH = REPO_ROOT / 'docs' / 'schemas' / 'chapters.yaml'
 
 # ---------------------------------------------------------------------------
@@ -225,6 +230,8 @@ def corpus_payload(doc: dict) -> dict:
     }
     if doc.get('proof_ja'):
         payload['proof_ja'] = doc['proof_ja']
+    if doc.get('references'):
+        payload['references'] = doc['references']
     return payload
 
 
@@ -235,8 +242,46 @@ def read_pin() -> str:
     return ''
 
 
+def read_citation_meta(pin: str, warnings: list) -> dict:
+    """Project CITATION.cff into the site-facing "release metadata" shape (notes#68):
+    author, citation/license targets, and the source repository this corpus/site is
+    pinned to. CITATION.cff is the single source of truth; this avoids hand-duplicating
+    author/license/source-repo strings into the site build.
+
+    Cross-checks CITATION.cff's `references[0].commit` against `extracted/PIN` and
+    appends a build warning on mismatch — the exact class of bug (a manually-maintained
+    pin silently drifting from the real source) that notes#66 caught by hand once.
+    """
+    if not CITATION_PATH.exists():
+        return {}
+    with open(CITATION_PATH, encoding='utf-8') as f:
+        cff = yaml.safe_load(f)
+    if not isinstance(cff, dict):
+        return {}
+    authors = [
+        ' '.join(filter(None, [a.get('given-names'), a.get('family-names')]))
+        for a in (cff.get('authors') or []) if isinstance(a, dict)
+    ]
+    refs = cff.get('references')
+    source = refs[0] if isinstance(refs, list) and refs and isinstance(refs[0], dict) else {}
+    source_commit = source.get('commit', '')
+    if pin and source_commit and pin != source_commit:
+        warnings.append(
+            f'WARNING: CITATION.cff references[0].commit ({source_commit}) does not '
+            f'match extracted/PIN ({pin}) — the next repin PR must update CITATION.cff too'
+        )
+    return {
+        'authors': authors,
+        'repository_code': cff.get('repository-code', ''),
+        'license': cff.get('license'),
+        'license_url': cff.get('license-url', ''),
+        'source_repository': source.get('repository-code', ''),
+        'source_commit': source_commit,
+    }
+
+
 class SourceReader:
-    """Read verbatim declaration text from a lean-pde checkout (workpacket.py style:
+    """Read verbatim declaration text from a leray-hopf checkout (workpacket.py style:
     1-based startLine..endLine inclusive). Caches each file's lines. No-op when the
     lean-root is not provided or a file/range is missing."""
 
@@ -272,7 +317,7 @@ def main() -> None:
     parser.add_argument('--no-coverage', action='store_true',
                         help='Do not shell out to coverage.py')
     parser.add_argument('--lean-root', default=None,
-                        help='Path to a lean-pde checkout at the PIN commit; embed verbatim source')
+                        help='Path to a leray-hopf checkout at the PIN commit; embed verbatim source')
     parser.add_argument('--out', default=None,
                         help='Output path for nodes.json (default site/data/nodes.json)')
     parser.add_argument('--sources-out', default=None,
@@ -394,8 +439,13 @@ def main() -> None:
         else out_path.with_name('sources.json')
     )
 
+    pin = read_pin()
+    bibliography = {cid: info['citation'] for cid, info in parse_bibliography().items()}
     payload = {
-        'pin': read_pin(),
+        'pin': pin,
+        'built_at': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'citation': read_citation_meta(pin, warnings),
+        'bibliography': bibliography,
         'universe_source': universe_source,
         'has_full_metadata': has_decls,
         'has_source': reader.hits > 0,
@@ -422,7 +472,7 @@ def main() -> None:
         json.dump(payload, f, ensure_ascii=False, indent=2, sort_keys=True)
         f.write('\n')
     sources_payload = {
-        'pin': read_pin(),
+        'pin': pin,
         'source_count': len(sources_by_slug),
         'sources': {slug: sources_by_slug[slug] for slug in sorted(sources_by_slug)},
     }
