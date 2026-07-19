@@ -5,6 +5,6 @@ statement_ja: |
 gap:
   level: mild
   note: |
-    継ぎ足しは if-then-else による区分定義で行い、継ぎ目の一点では `HasDerivWithinAt` の左右結合（`Iic`/`Ici` の合併）で微分可能性を回復する。[[前向き大域存在|LerayHopf.Galerkin.forwardGlobalSolution_exists]]の下請け補題。
+    継ぎ足しは if-then-else による区分定義で行い、継ぎ目の一点では `HasDerivWithinAt` の左右結合（`Iic`/`Ici` の合併）で微分可能性を回復する。[[前向き大域存在|LerayHopf.Galerkin.forwardGlobalSolution_exists]]を支える補助補題。
 chapter: galerkin-generic
 tags: [dissipative-ode, private-helper]

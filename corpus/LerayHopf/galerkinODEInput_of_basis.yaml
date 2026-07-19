@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    これは弱形式とベクトル場の対応を有限次元 Riesz 場を経由して公理を用いず片付けたもので、大域存在の穴だけが辺境として分離されたまま残る。データを運ぶため `noncomputable def` である。
+    これは弱形式とベクトル場の対応を有限次元 Riesz 場を経由して公理を用いず片付けたもので、大域存在の穴だけが辺境として分離されたまま残る。データを保持する構造体を返すため `noncomputable def` である。
 chapter: ode
 tags: [galerkin-approximation, ode]

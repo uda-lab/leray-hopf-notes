@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.stokesOut_apply
 tier: gloss
 statement_ja: |
-  粘性外段写像の値の展開規則（定義的等式）。
+  粘性項の外側写像の値の展開規則（定義的等式）。
 gap:
   level: none
   note: |

@@ -13,11 +13,11 @@ proof_ja: |
 
   $$L^2(0,T;V)\cap W^{1,q}(0,T;V')\hookrightarrow\hookrightarrow L^2(0,T;H)$$
 
-  の、$\mathbb{R}^3$ における誠実な局所的代替物である。大域的な収束ではなく球ごとの局所収束のみを主張し、tightness を要さない。
+  の、$\mathbb{R}^3$ における誠実な局所的代替物である。大域的な収束ではなく球ごとの局所収束のみを主張し、tightness（無限遠での質量の逃散を抑える仮定）を要さない。
 gap:
   level: large
   note: |
-    mathlib は Bochner 値の Fréchet–Kolmogorov／Aubin–Lions 定理（$L^2(0,T;X)$ でのコンパクト性）を欠くため、抽出は局所版に限られる。この抽出はかつて二つのより薄い公理 `galerkin_spacetime_precompact_R3` と `galerkin_weakLimit_R3` として分離されていたが、その後証明され、本命題は `u_lim_aestronglyMeasurable` を通じてカーネルのみで閉じる。大域 $L^2$ 主張を一切含まないため `aubin_lions_R3` より真に弱い。
+    mathlib は Bochner 値の Fréchet–Kolmogorov／Aubin–Lions 定理（$L^2(0,T;X)$ でのコンパクト性）を欠くため、抽出は局所版に限られる。この抽出はかつて二つのより弱い公理 `galerkin_spacetime_precompact_R3` と `galerkin_weakLimit_R3` として分離されていたが、その後証明され、本命題は `u_lim_aestronglyMeasurable` を通じてカーネルのみで閉じる。大域 $L^2$ 主張を一切含まないため `aubin_lions_R3` より真に弱い。
 provenance: |
   issue #44。
 chapter: compactness

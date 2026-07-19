@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.intervalIntegrable_smul_of_integrableOn_Icc
 tier: full
 statement_ja: |
-  スカラー倍の区間可積分性：$[0,T]$ 上可積分な Bochner 曲線に有界可測なスカラー関数を掛けても区間可積分性が保たれる。時間軟化の計算の下請け。
+  スカラー倍の区間可積分性：$[0,T]$ 上可積分な Bochner 曲線に有界可測なスカラー関数を掛けても区間可積分性が保たれる。時間軟化の計算を支える補助事実。
 proof_ja: |
   各点でのノルム評価でスカラー倍の可積分性を優関数論法に帰着する。
 gap:

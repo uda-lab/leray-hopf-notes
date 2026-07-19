@@ -1,7 +1,7 @@
 name: LerayHopf.BoundedMultiplier.normSq_eq_integral_normSq
 tier: gloss
 statement_ja: |
-  複素 $L^2$ 元のノルム二乗の、各点でのノルムの二乗による積分表示（Fourier 変換に依らない Parseval 抜きの核事実）。乗算作用素のノルム計算の下請け。
+  複素 $L^2$ 元のノルム二乗の、各点でのノルムの二乗による積分表示（Fourier 変換に依らない Parseval 抜きの核事実）。乗算作用素のノルム計算を支える補助事実。
 gap:
   level: none
   note: |

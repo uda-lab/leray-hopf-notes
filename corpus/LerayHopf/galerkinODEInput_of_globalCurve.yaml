@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    ここで弱形式とベクトル場の対応が弱形式へ流し込まれる。データを運ぶ構造体を返すため `noncomputable def` である。
+    ここで弱形式とベクトル場の対応が弱形式へ流し込まれる。データを保持する構造体を返すため `noncomputable def` である。
 chapter: ode
 tags: [galerkin-approximation, weak-formulation]

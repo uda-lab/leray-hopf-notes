@@ -1,7 +1,7 @@
 name: LerayHopf.steklovAvgBack_approx
 tier: gloss
 statement_ja: |
-  後退 Steklov 平均も元の曲線の右端点における値を近似する。窓 $[t-\delta,t]$ 上で曲線の変動が終端値 $u_n(t)$ から $L^2$ で $\varepsilon$ 未満に収まるならば、$$\|u_n(t)-(\text{後退平均})\|\le\varepsilon$$ が成り立つ。窓 $[t-\delta,t]$ は $\delta\le t$ の範囲で常に非負の時刻域に収まるため、前進平均の近似評価の境界域を補う相方にあたる。
+  後退 Steklov 平均も元の曲線の右端点における値を近似する。窓 $[t-\delta,t]$ 上で曲線の変動が終端値 $u_n(t)$ から $L^2$ で $\varepsilon$ 未満に収まるならば、$$\|u_n(t)-(\text{後退平均})\|\le\varepsilon$$ が成り立つ。窓 $[t-\delta,t]$ は $\delta\le t$ の範囲で常に非負の時刻域に収まるため、前進平均の近似評価の境界域を補う対応物にあたる。
 gap:
   level: mild
 provenance: |

@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    具体スキーム上で作業することが本質的で、近似部分空間 $V_n$ の有限次元性が Riesz 構成と自動連続性を可能にする。抽象スキームのインターフェースは有限次元性を露わにしないため、この橋は具体スキームでしか成立しない。データを運ぶ構造体を返すため `noncomputable def` である。
+    具体スキーム上で作業することが本質的で、近似部分空間 $V_n$ の有限次元性が Riesz 構成と自動連続性を可能にする。抽象スキームのインターフェースは有限次元性を露わにしないため、この橋は具体スキームでしか成立しない。データを保持する構造体を返すため `noncomputable def` である。
 chapter: ode
 tags: [galerkin-approximation, riesz-representation]

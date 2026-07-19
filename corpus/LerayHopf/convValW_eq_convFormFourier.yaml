@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\operatorname{val}(u, v, w) = b_{\mathrm{Fourier}}(u, v, w)$$
 
-  （右辺は energy 章の [[全 Fourier 移流形式|LerayHopf.convFormFourier]]）。
+  （右辺はエネルギー章の [[全 Fourier 移流形式|LerayHopf.convFormFourier]]）。
 proof_ja: |
   両辺の被和項の差を格子点対ごとに比較する。成分 $a$ について足すと、差は共通因子と
 
@@ -15,6 +15,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    「部分積分で微分をテストへ移しても発散ゼロなら値が変わらない」の Fourier 級数版。energy 章の反対称性と同じ相殺の構造（発散和の消滅）が、こちらでは二つの定式化の同値性として現れる。
+    「部分積分で微分をテストへ移しても発散ゼロなら値が変わらない」の Fourier 級数版。エネルギー章の反対称性と同じ相殺の構造（発散和の消滅）が、こちらでは二つの定式化の同値性として現れる。
 chapter: limit-passage
 tags: [convection, determined-form, torus]

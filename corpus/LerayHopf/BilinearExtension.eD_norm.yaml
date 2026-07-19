@@ -1,7 +1,7 @@
 name: LerayHopf.BilinearExtension.eD_norm
 tier: gloss
 statement_ja: |
-  包含がノルムを保つこと。拡張のノルム評価の下請け。
+  包含がノルムを保つこと。拡張のノルム評価を支える補助事実。
 gap:
   level: none
 provenance: |

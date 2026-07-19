@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    無限和の定式化（energy 章）と有限和の定式化（ODE 層）の一致を与える補題。
+    無限和の定式化（エネルギー章）と有限和の定式化（ODE 層）の一致を与える補題。
 chapter: limit-passage
 tags: [convection, galerkin, torus]

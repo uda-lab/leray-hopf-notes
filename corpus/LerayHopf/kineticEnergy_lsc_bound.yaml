@@ -17,6 +17,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    このパッケージは良い代表元（点ごと・全時刻）の内容を密輸しない。強時間可測性は点ごとの代表元ではないため、ここで導けるのはほとんど至る所の評価だけであり、全 $t$ への格上げは良い代表元の層（弱時間連続性・トレース）を要する。極限の弱可測性 `u_aestronglyMeasurable` は、$t\mapsto\lVert u(t)\rVert$ の可測性を通じて `TendstoInMeasure.exists_seq_tendsto_ae` に必要となる。
+    このパッケージは良い代表元（点ごと・全時刻）の内容を混入させない。強時間可測性は点ごとの代表元ではないため、ここで導けるのはほとんど至る所の評価だけであり、全 $t$ への格上げは良い代表元の層（弱時間連続性・トレース）を要する。極限の弱可測性 `u_aestronglyMeasurable` は、$t\mapsto\lVert u(t)\rVert$ の可測性を通じて `TendstoInMeasure.exists_seq_tendsto_ae` に必要となる。
 chapter: energy
 tags: [kinetic-energy, lower-semicontinuity, uniform-bound]

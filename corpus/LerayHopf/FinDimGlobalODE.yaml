@@ -1,12 +1,12 @@
 name: LerayHopf.FinDimGlobalODE
 tier: full
 statement_ja: |
-  残された分離された辺境を束ねる構造である。自励的な有限次元 Galerkin ODE $c'=G_n(c)$ の、部分空間 $V_n$ 上の大域解を運ぶ。ベクトル場は [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] $G_n$ である。
+  残された分離された辺境を束ねる構造である。自励的な有限次元 Galerkin ODE $c'=G_n(c)$ の、部分空間 $V_n$ 上の大域解を保持する。ベクトル場は [[Galerkin ベクトル場|LerayHopf.galerkinODE_vectorField]] $G_n$ である。
 
   含むのは大域解曲線 $c\colon[0,\infty)\to V_n$、初期条件 $c(0)=P_n u_0$、前進時刻での微分可能性、および自励場方程式 $c'(t)=G_n(c(t))$（前進時刻 $t\ge 0$）である。
 gap:
   level: mild
   note: |
-    束ねるのは唯一の還元不能な mathlib の穴、すなわちベクトル空間における先験評価からの大域存在／継続定理の欠如だけである。場 $G_n$ は二次で局所 Lipschitz にとどまり、全空間版の存在補題が適用できない。運ぶのは自励場方程式であって弱形式ではない。弱形式・部分空間閉じ込め・エネルギー評価・正則性はすべて導出される。とくに弱形式とベクトル場の対応は Riesz 特徴づけ [[ベクトル場の特徴づけ|LerayHopf.galerkinODE_vectorField_spec]] で証明済みなので、この束は入力構造 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] より真に弱い。前進時刻に制限されているのは、二次場が後進時刻で有限時間爆発しうるための健全性配慮である。
+    束ねるのは唯一の還元不能な mathlib の穴、すなわちベクトル空間における先験評価からの大域存在／継続定理の欠如だけである。場 $G_n$ は二次で局所 Lipschitz にとどまり、全空間版の存在補題が適用できない。保持するのは自励場方程式であって弱形式ではない。弱形式・部分空間閉じ込め・エネルギー評価・正則性はすべて導出される。とくに弱形式とベクトル場の対応は Riesz 特徴づけ [[ベクトル場の特徴づけ|LerayHopf.galerkinODE_vectorField_spec]] で証明済みなので、この束は入力構造 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] より真に弱い。前進時刻に制限されているのは、二次場が後進時刻で有限時間爆発しうるための健全性配慮である。
 chapter: ode
 tags: [galerkin-approximation, ode, isolated-hypothesis]

@@ -1,12 +1,12 @@
 name: LerayHopf.build_galerkin_package_R3_of_basis
 tier: full
 statement_ja: |
-  具体スキーム [[基底からのスキーム|LerayHopf.schemeOfBasis]] 上で、証明を運ぶ完全 Galerkin コンパクト性パッケージ [[完全パッケージ|LerayHopf.GalerkinCompactnessPackageFull_R3]] を組み立てる。$H^1$ グラフノルムでのテスト近似性を仮定として受け取る。
+  具体スキーム [[基底からのスキーム|LerayHopf.schemeOfBasis]] 上で、証明を保持する完全 Galerkin コンパクト性パッケージ [[完全パッケージ|LerayHopf.GalerkinCompactnessPackageFull_R3]] を組み立てる。$H^1$ グラフノルムでのテスト近似性を仮定として受け取る。
 proof_ja: |
   公理を用いない Galerkin 列 [[基底からの Galerkin 列|LerayHopf.galSeq_R3_of_basis]] を、公理を用いない中核のパッケージ組み立て器 [[パッケージ組み立て器|LerayHopf.build_galerkin_package_R3_of_galSeq]] に、テスト近似性の仮説とともに渡す。
 gap:
   level: none
   note: |
-    Galerkin ODE の公理には一切依存しない。Aubin–Lions パッケージから極限移行への鎖を通じて、弱形式・エネルギー不等式・初期トレース・エネルギー類・時間可測性を運ぶ極限曲線を得る。データを運ぶため `noncomputable def` である。
+    Galerkin ODE の公理には一切依存しない。Aubin–Lions パッケージから極限移行への鎖を通じて、弱形式・エネルギー不等式・初期トレース・エネルギー類・時間可測性を保持する極限曲線を得る。データを保持する構造体を返すため `noncomputable def` である。
 chapter: capstone-r3
 tags: [galerkin-approximation, compactness, kernel-only]

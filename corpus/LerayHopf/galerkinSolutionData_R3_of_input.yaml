@@ -23,6 +23,6 @@ gap:
   note: |
     エネルギー恒等式の核は、弱 ODE を $w=u(t)$ でテストすると反対称性から非線形項 $b(u,u,u)=0$ が消え、内積の項と粘性散逸の和がゼロになる点にある（[[エネルギー恒等式|LerayHopf.galerkin_energy_identity]]）。エネルギー・散逸・正則性は前進時刻でのみ保証され、二次 ODE の後退時刻発散を避けるための $0\le t$ 制限と整合する。
 
-    これはデータを運ぶ構造体（`Prop` ではなく `Type`）を返すため定理ではなく `noncomputable def` として与えられる。真の残余フロンティア（有限次元 ODE の大域存在と弱形式表現）は入力構造の側に隔離されている。
+    これはデータを保持する構造体（`Prop` ではなく `Type`）を返すため定理ではなく `noncomputable def` として与えられる。真の残余フロンティア（有限次元 ODE の大域存在と弱形式表現）は入力構造の側に隔離されている。
 chapter: ode
 tags: [galerkin-approximation, energy-inequality, energy-identity]

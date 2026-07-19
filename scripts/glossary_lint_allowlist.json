@@ -1,0 +1,4 @@
+{
+  "_comment": "Explicit per-file, per-term overrides for scripts/glossary_lint.py's forbidden-translation check (notes#105). Empty by default. Prefer backtick-quoting a term inside corpus prose over adding an entry here — backticked spans are already exempt from the check (see glossary_lint.py's module docstring, escape hatch 1). Only add an entry here when even that isn't enough, and justify it in the PR description.",
+  "allow": {}
+}
