@@ -1,10 +1,10 @@
 name: LerayHopf.re_ofReal_mul
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  実数 $c$ と複素数 $z$ の積の実部は、実部のスカラー倍に等しい：$\mathrm{Re}(c\,z)=c\,\mathrm{Re}(z)$。[[Galerkin 移流形式|LerayHopf.galerkinConvection]]の定義（有限和の実部）を通して実スカラーを外に出すための純代数的補題。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusConvectionForm.lean` の `LerayHopf.re_ofReal_mul`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第5波（`ConvectionForm.lean` クラスタ）で手書き化。抽出元: `LerayHopf/Torus/ConvectionForm.lean`（旧 gap.note の抽出元記述 `LerayHopf/TorusConvectionForm.lean` は誤り。decls.json の `file` フィールドで訂正）の `LerayHopf.re_ofReal_mul`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, convection-form, torus]
