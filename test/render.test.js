@@ -751,6 +751,36 @@ check('(s) search matches the raw Lean docstring (doc) case-insensitively, isola
     'a mixed-case query must match "Compactness" inside the raw doc string, via docHit alone');
 });
 
+/* ==== notes#73 slice 2: search widened to docs/GLOSSARY.md terms and
+ * docs/bibliography.md citations (previously loaded for other purposes but not
+ * searchable). ==== */
+check('(t) search matches a glossary term (english/japanese/note), isolated from declaration hits', () => {
+  state.data = {
+    chapters: [], capstones: [], nodes: [],
+    glossary: [{ english: 'mollifier', japanese: '軟化子', note: 'C^∞ コンパクト台の近似恒等核', forbidden: [] }],
+  };
+  window.location.hash = '#/search/' + encodeURIComponent('mollifier');
+  route();
+  const text = document.getElementById('app').textContent;
+  assert.ok(text.includes('1 件'), 'a glossary-only hit must still be counted');
+  assert.ok(text.includes('用語集'), 'a glossary hit must render under a 用語集 section');
+  assert.ok(text.includes('軟化子'), 'the glossary entry\'s Japanese translation must be shown');
+});
+
+check('(t) search matches a bibliography citation by id or citation text, linking to its /about entry', () => {
+  state.data = {
+    chapters: [], capstones: [], nodes: [],
+    bibliography: { temam2001: 'Temam, R. (2001). Navier-Stokes Equations...' },
+  };
+  window.location.hash = '#/search/' + encodeURIComponent('temam');
+  route();
+  const appEl = document.getElementById('app');
+  assert.ok(appEl.textContent.includes('1 件'), 'a citation-only hit must still be counted');
+  assert.ok(appEl.textContent.includes('参考文献'), 'a citation hit must render under a 参考文献 section');
+  const link = appEl.querySelector('a[href="#/about/temam2001"]');
+  assert.ok(link, 'the citation hit must link to its /about entry, like the per-declaration 参考文献 panel does');
+});
+
 Promise.all(pending).then(() => {
   console.log(`\nAll ${passed} render checks passed.`);
 }).catch((err) => {
