@@ -25,9 +25,12 @@
 
 ## 3. 意味レビュー・チェックリスト
 
-statement 対訳・proof_ja・gap 判定・用語集準拠の正典チェックリストは
+statement 対訳・proof_ja・gap 判定・用語集準拠の PR ごとの記入欄（チェックボックス）は
 `.github/pull_request_template.md` に置く（PR ごとに実施し埋める）。本書では複製せず、
-このテンプレートを唯一の正とする。
+この記入欄を PR ごとのチェック項目としての唯一の正とする。
+
+batch size・review 分離・adversarial checks の運用方針そのものは §9 を正とする。
+template 側には §9 の実施有無を確認するチェック項目のみを置き、方針本文は複製しない。
 
 ## 4. `sorry` / scaffold / proof-status の扱い
 
