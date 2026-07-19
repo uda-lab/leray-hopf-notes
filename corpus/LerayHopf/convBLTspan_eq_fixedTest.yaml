@@ -1,7 +1,7 @@
 name: LerayHopf.R3.ConvectionExtension.convBLTspan_eq_fixedTest
 tier: gloss
 statement_ja: |
-  単一の Schwartz な $w$ については、[[スパン双線形拡張|LerayHopf.R3.ConvectionExtension.convBLTspan]]は[[固定テスト双線形形式|LerayHopf.R3.ConvectionExtension.convBLT_fixedTest]]に一致する。スパンを使う構成と単一テストを使う構成が、同じ対象への異なる入り口であることを橋渡しする。
+  単一の Schwartz な $w$ については、[[スパン双線形拡張|LerayHopf.R3.ConvectionExtension.convBLTspan]]は[[固定テスト双線形形式|LerayHopf.R3.ConvectionExtension.convBLT_fixedTest]]に一致する。この一致は、スパンを用いる構成と単一テストを用いる構成の整合性を保証するものである。
 gap:
   level: mild
 chapter: limit-passage
