@@ -1,7 +1,7 @@
 name: LerayHopf.R3.ConvectionExtension.innerLin
 tier: gloss
 statement_ja: |
-  固定した $H^1$ 元 $u$ と Schwartz テスト $w$ に対し、$v\mapsto b(u,v,w)$ を[[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]上の線形汎関数として束ねたもの。
+  固定した $H^1$ 正則なテスト場 $w$ と $H^1_\sigma$ の元 $u$ に対し、$v\mapsto b(u,v,w)$ を[[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]上の線形汎関数として束ねたもの。
 gap:
   level: none
 chapter: limit-passage
