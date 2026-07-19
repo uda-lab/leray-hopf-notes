@@ -1,7 +1,7 @@
 name: LerayHopf.weakLimit_of_allDirections_cauchySeq
 tier: gloss
 statement_ja: |
-  弱極限構成のステップ（Riesz 組み立て）：固定時刻で、すべての方向に対するスカラー Cauchy 性から、閉部分空間（発散ゼロ空間）内の弱極限の存在を得る。一般補題への薄い委譲。
+  弱極限構成のステップ（Riesz 組み立て）：固定時刻で、すべての方向に対するスカラー Cauchy 性から、閉部分空間（発散ゼロ空間）内の弱極限の存在を得る。一般補題をそのまま呼び出すだけの委譲。
 gap:
   level: none
   note: |

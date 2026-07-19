@@ -7,8 +7,8 @@ statement_ja: |
 gap:
   level: large
   note: |
-    真に欠けているのは、弱い $(u\cdot\nabla)v$ 作用素、すなわち部分積分・発散定理を通じた総体的拡張である。箱打ち切りの形式（`galerkinConvection`）は Galerkin 部分空間上でのみ反対称・有界で、非制限の主張が frontier に相当する。$\mathbb{R}^3$ 側の `ConvectionGap` を鏡映する。
+    真に欠けているのは、弱い $(u\cdot\nabla)v$ 作用素、すなわち部分積分・発散定理を通じた総体的拡張である。箱打ち切りの形式（`galerkinConvection`）は Galerkin 部分空間上でのみ反対称・有界で、非制限の主張がフロンティアに相当する。$\mathbb{R}^3$ 側の `ConvectionGap` に対応する構成である。
 
-    密輸防止監査: この構造は形式束フィールドも非空性フィールドも抱えず、三重線形の加法・斉次・非制限有界性を出来合いでは持たない。それらは[[ギャップからの構成|LerayHopf.Torus3NSForms_of_gap]]で導出される。稠密性は `velocityProjection_n_tendsto` により真に成り立ち、フィールドとして持ち回される。
+    過大な内容の混入防止監査：この構造は形式束フィールドも非空性フィールドも抱えず、三重線形の加法・斉次・非制限有界性を出来合いでは持たない。それらは[[ギャップからの構成|LerayHopf.Torus3NSForms_of_gap]]で導出される。稠密性は `velocityProjection_n_tendsto` により真に成り立ち、フィールドとして持ち回される。
 chapter: limit-passage
 tags: [convection-form, gap, torus, frontier]

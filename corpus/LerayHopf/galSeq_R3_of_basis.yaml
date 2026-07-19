@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    これはかつて各段の解データを公理から取っていた列の、公理を用いない差し替えである。型は同じで、パッケージ組み立てにそのまま渡せる。データを運ぶため `noncomputable def` である。
+    これはかつて各段の解データを公理から取っていた列の、公理を用いない差し替えである。型は同じで、パッケージ組み立てにそのまま渡せる。データを保持する構造体を返すため `noncomputable def` である。
 chapter: capstone-r3
 tags: [galerkin-approximation, kernel-only]

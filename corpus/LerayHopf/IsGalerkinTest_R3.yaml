@@ -5,6 +5,6 @@ statement_ja: |
 gap:
   level: none
   note: |
-    各近似射影の像の元はこの性質を満たす。このテスト類は発散ゼロ部分空間で稠密であり（強収束フィールドによる）、弱 NS 定式化で用いる標準的な Faedo–Galerkin テスト類である。T³ 側の同名述語を鏡映したものである。
+    各近似射影の像の元はこの性質を満たす。このテスト類は発散ゼロ部分空間で稠密であり（強収束フィールドによる）、弱 NS 定式化で用いる標準的な Faedo–Galerkin テスト類である。T³ 側の同名述語に対応する $\mathbb{R}^3$ 版である。
 chapter: projections-galerkin
 tags: [galerkin-test, weak-formulation]

@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    勾配エネルギーの有限性の成分別の言い換え。加法・スカラー倍で閉じること（[[加法閉性|LerayHopf.memH1VF_add]] など）は energy 章の補題群が与える。
+    勾配エネルギーの有限性の成分別の言い換え。加法・スカラー倍で閉じること（[[加法閉性|LerayHopf.memH1VF_add]] など）はエネルギー章の補題群が与える。
 chapter: spaces
 tags: [sobolev, torus]

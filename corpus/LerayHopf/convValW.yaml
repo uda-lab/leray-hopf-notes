@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    発散ゼロの $u$ に対しては energy 章の全 Fourier 移流形式と一致する（[[両形式の一致|LerayHopf.TorusConvectionExtension.convValW_eq_convFormFourier]]）。$(u, v)$ の変数では任意の $L^2$ で定義され、連続双線形化（[[連続双線形化|LerayHopf.TorusConvectionExtension.convBLTw]]）の素材になる。
+    発散ゼロの $u$ に対してはエネルギー章の全 Fourier 移流形式と一致する（[[両形式の一致|LerayHopf.TorusConvectionExtension.convValW_eq_convFormFourier]]）。$(u, v)$ の変数では任意の $L^2$ で定義され、連続双線形化（[[連続双線形化|LerayHopf.TorusConvectionExtension.convBLTw]]）の素材になる。
 chapter: limit-passage
 tags: [convection, determined-form, torus]

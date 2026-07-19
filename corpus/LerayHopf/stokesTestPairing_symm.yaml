@@ -11,6 +11,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    項別一致（`tsum_congr`）による証明なので、総和可能性にも tsum のジャンク値規約にも依存しない。
+    項別一致（`tsum_congr`）による証明なので、総和可能性にも tsum 規約にも依存しない。
 chapter: ode
 tags: [stokes, torus]

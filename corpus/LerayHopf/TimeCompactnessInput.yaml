@@ -9,6 +9,6 @@ statement_ja: |
 gap:
   level: mild
   note: |
-    honesty（密輸なし）: この束が語るのは与えられた Galerkin 列の時間方向の自己等連続性のみで、部分列も極限も時空収束も空間コンパクト性も供給しない。それらのうち空間コンパクト性は局所 Rellich 入力の役目である。mathlib は $W^{1,p}(0,T;X)$・弱時間微分・Aubin–Lions 補題を欠くため、通常の Bochner 型パッケージが組めず、時間方向は一様モジュラスとして切り出される。最終的な `AubinLionsPackage_R3` の組み立てでは、この別建てのモジュラス仮定は `galerkinSpaceTimeExtraction_R3` に吸収されるため不要になる。
+    誠実性（過大な内容を混入させない設計）：この束が語るのは与えられた Galerkin 列の時間方向の自己等連続性のみで、部分列も極限も時空収束も空間コンパクト性も供給しない。それらのうち空間コンパクト性は局所 Rellich 入力の役目である。mathlib は $W^{1,p}(0,T;X)$・弱時間微分・Aubin–Lions 補題を欠くため、通常の Bochner 型パッケージが組めず、時間方向は一様モジュラスとして切り出される。最終的な `AubinLionsPackage_R3` の組み立てでは、この別建てのモジュラス仮定は `galerkinSpaceTimeExtraction_R3` に吸収されるため不要になる。
 chapter: compactness
 tags: [time-modulus, equicontinuity, aubin-lions]

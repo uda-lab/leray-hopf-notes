@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    エネルギー恒等式で、弱形式を対角テスト $w=u(t)$ に適用したときに粘性項を散逸へ潰すために使われる。
+    エネルギー恒等式で、弱形式を対角テスト $w=u(t)$ に適用したときに粘性項を散逸へ帰着させるために使われる。
 chapter: ode
 tags: [viscous-form, stokes-pairing]

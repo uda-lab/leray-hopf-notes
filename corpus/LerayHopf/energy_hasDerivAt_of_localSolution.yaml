@@ -11,7 +11,7 @@ proof_ja: |
 
   $$\langle c(t),G_n(c(t))\rangle=-\nu\,V_1(c(t))$$
 
-  （[[各点散逸|LerayHopf.galerkinField_inner_self_nonpos]]）を用いて $-\nu\,V_1(c(t))$ に潰す。
+  （[[各点散逸|LerayHopf.galerkinField_inner_self_nonpos]]）を用いて $-\nu\,V_1(c(t))$ へ帰着させる。
 gap:
   level: none
   note: |

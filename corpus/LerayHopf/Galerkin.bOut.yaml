@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.bOut
 tier: gloss
 statement_ja: |
-  移流形式の第一引数を連続線形化する、場の分解の最外段：三重線形形式全体を連続三重線形写像として実現する。
+  移流形式の第一引数を連続線形化する、場の分解で最も外側にあたる写像：三重線形形式全体を連続三重線形写像として実現する。
 gap:
   level: none
   note: |

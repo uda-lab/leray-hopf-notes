@@ -1,7 +1,7 @@
 name: LerayHopf.GalerkinCompactnessPackageFull_R3
 tier: full
 statement_ja: |
-  ℝ³ の完全 Galerkin コンパクト性パッケージ。証明を運ぶフィールドを備え、極限曲線とその性質を保持する。
+  ℝ³ の完全 Galerkin コンパクト性パッケージ。証明を保持するフィールドを備え、極限曲線とその性質を保持する。
 
   含むのは極限曲線 $\mathrm{limit}\colon[0,T]\to L^2_\sigma$、極限に対する弱 NS 方程式、$[0,T]$ 上のエネルギー不等式
 

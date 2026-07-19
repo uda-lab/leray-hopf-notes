@@ -1,7 +1,7 @@
 name: LerayHopf.Torus3NSForms_of_gap
 tier: full
 statement_ja: |
-  単離された[[トーラス対流ギャップ|LerayHopf.TorusConvectionGap]]が与えられれば、本物の[[トーラス Navier–Stokes 形式束|LerayHopf.Torus3NSForms]]が存在する。ギャップが最小限に抱える解析的核から、形式束の全性質が導出できる。
+  単離された[[トーラス対流ギャップ|LerayHopf.TorusConvectionGap]]が与えられれば、真正な[[トーラス Navier–Stokes 形式束|LerayHopf.Torus3NSForms]]が存在する。ギャップが最小限に抱える解析的核から、形式束の全性質が導出できる。
 proof_ja: |
   ギャップは対流形式が真に三重線形写像の塔で実現されることを主張する。そこから各引数についての加法性と斉次性は、線形写像の加法・スカラー則を書き下すだけで、任意の $L^2_\sigma$ 上で連続性も稠密性も使わずに従う。反対称性はギャップが持つ反対称性そのものである。
 

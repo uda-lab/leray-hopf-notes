@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    tsum の加法性は総和可能性を要するため、この補題は無条件では述べられず、帯域制限の仮定がジャンク値規約の落とし穴を塞いでいる。台の評価は `coeff_zero_outside_box` による。
+    tsum の加法性は総和可能性を要するため、この補題は無条件では述べられず、帯域制限の仮定が tsum 規約（総和可能でない場合に既定値 $0$ を返す）の落とし穴を塞いでいる。台の評価は `coeff_zero_outside_box` による。
 chapter: ode
 tags: [stokes, torus]

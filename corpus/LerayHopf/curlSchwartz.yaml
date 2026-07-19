@@ -9,6 +9,6 @@ statement_ja: |
 gap:
   level: none
   note: |
-    各成分は Schwartz 関数の方向微分の組合せであり、方向微分は Schwartz 性を保つので、curl は真正な Schwartz 関数のままである。これは Schwartz を保たない Leray 射影とは対照的で、非 Schwartz な場を密輸しない点が本質的である。Lean では方向微分を `lineDerivOpCLM` で表す。
+    各成分は Schwartz 関数の方向微分の組合せであり、方向微分は Schwartz 性を保つので、curl は真正な Schwartz 関数のままである。これは Schwartz を保たない Leray 射影とは対照的で、非 Schwartz な場を混入させない点が本質的である。Lean では方向微分を `lineDerivOpCLM` で表す。
 chapter: projections-galerkin
 tags: [curl, schwartz, divergence-free]
