@@ -1,10 +1,10 @@
 name: LerayHopf.coeFn_translate_L2VF
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  ベクトル場の[[$L^2$ 平行移動|LerayHopf.translate_L2VF]]の値は、ほとんど至る所で通常の点ごとの平行移動 $x\mapsto g(x+h)$ に一致する。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.coeFn_translate_L2VF`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第6波（`FrechetKolmogorov.lean`＋`RellichBall.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.coeFn_translate_L2VF`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, frechet-kolmogorov, translation]
