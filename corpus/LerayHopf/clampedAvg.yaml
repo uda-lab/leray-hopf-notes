@@ -1,7 +1,7 @@
 name: LerayHopf.clampedAvg
 tier: gloss
 statement_ja: |
-  刻み幅 $\delta$、時間区間の長さ $T$、時刻 $t$ に対し、$$t\le T-\delta\ \text{では前進平均}\ \delta^{-1}\int_t^{t+\delta}u_n(s)\,ds,\qquad t> T-\delta\ \text{では後退平均}\ \delta^{-1}\int_{t-\delta}^{t}u_n(s)\,ds$$ を機械的に選ぶ場合分けとして定める（$t,T,\delta$ 自体には何の制約も課さない、純粋な場合分けの定義）。$0\le t\le T$・$0<\delta$・$2\delta\le T$ が成り立つ範囲で使うときに限り、選ばれた平均窓は常に $[0,T]$ の内部に収まり、区間 $[0,T]$ 全体をつなぎ合わせた Steklov 平均になる。この適用範囲の外（例えば $t<0$ や $t>T$）では窓が $[0,T]$ をはみ出しうる。
+  刻み幅 $\delta$、時間区間の長さ $T$、時刻 $t$ に対し、$$t\le T-\delta\ \text{では前進平均}\ \delta^{-1}\int_t^{t+\delta}u_n(s)\,ds,\qquad t> T-\delta\ \text{では後退平均}\ \delta^{-1}\int_{t-\delta}^{t}u_n(s)\,ds$$ を機械的に選ぶ場合分けとして定める（$t,T,\delta$ 自体には何の制約も課さない、純粋な場合分けの定義）。$0\le t\le T$・$0<\delta$・$2\delta\le T$ が成り立つ範囲で使うときに限り、選ばれた平均窓は常に $[0,T]$ の範囲内に収まり、区間 $[0,T]$ 全体をつなぎ合わせた Steklov 平均になる。この適用範囲の外（例えば $t<0$ や $t>T$）では窓が $[0,T]$ をはみ出しうる。
 gap:
   level: mild
 provenance: |
