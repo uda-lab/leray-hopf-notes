@@ -1,7 +1,7 @@
 name: LerayHopf.R3.ConvectionExtension.innerLin_add_1
 tier: gloss
 statement_ja: |
-  [[内側の線形汎関数|LerayHopf.R3.ConvectionExtension.innerLin]]は、固定する元 $u$ について加法的である：$u+u'$ に対する汎関数は、$u$ に対する汎関数と $u'$ に対する汎関数の和に一致する。
+  [[内側の線形汎関数|LerayHopf.R3.ConvectionExtension.innerLin]]は、第一引数として入る $u$ について加法的である：$u+u'$ に対する汎関数は、$u$ に対する汎関数と $u'$ に対する汎関数の和に一致する。
 gap:
   level: none
 chapter: limit-passage
