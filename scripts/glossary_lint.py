@@ -144,7 +144,13 @@ def main() -> None:
                         help='Lint only this subdirectory (default: entire corpus/)')
     args = parser.parse_args()
 
-    corpus_root = Path(args.corpus) if args.corpus else CORPUS_DIR
+    # codex (rev on PR #108): resolve to absolute *before* rglob, so `fpath` and
+    # REPO_ROOT are both absolute for the relative_to() call below — a relative
+    # --corpus (e.g. the documented `--corpus corpus/LerayHopf/`) previously raised
+    # ValueError because rglob() on a relative Path yields relative children, and
+    # the default (no --corpus) path never exercised this since CORPUS_DIR is
+    # already absolute.
+    corpus_root = (Path(args.corpus) if args.corpus else CORPUS_DIR).resolve()
     if not corpus_root.is_dir():
         sys.exit(f'ERROR: corpus directory not found: {corpus_root}')
 

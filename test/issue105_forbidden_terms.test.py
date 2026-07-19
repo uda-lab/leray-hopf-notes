@@ -10,6 +10,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -207,6 +208,30 @@ def test_witness_fusion_allowlist_entry_exempts() -> None:
         assert code == 0, output
 
 
+def test_relative_corpus_path_does_not_crash() -> None:
+    """codex (PR #108 review on scripts/glossary_lint.py:168): a relative --corpus
+    path (the exact form documented in the script's own usage examples,
+    `--corpus corpus/LerayHopf/`) previously crashed with ValueError from
+    Path.relative_to(), because rglob() on a relative corpus_root yields relative
+    `fpath`s while REPO_ROOT is absolute. The default (no --corpus) invocation never
+    exercised this, since CORPUS_DIR is already absolute -- hence it was invisible
+    in CI, which always uses the default."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        write_glossary(root / "docs" / "GLOSSARY.md")
+        write_corpus(root / "corpus" / "a.yaml", statement="正常な文。")
+        mod = load_module(root)
+
+        old_cwd = Path.cwd()
+        try:
+            os.chdir(root)
+            code, output = run_main(mod, ["--corpus", "corpus"])
+        finally:
+            os.chdir(old_cwd)
+        assert code == 0, output
+        assert "no glossary violations" in output
+
+
 def test_clean_corpus_passes() -> None:
     with tempfile.TemporaryDirectory() as td:
         root = Path(td)
@@ -230,6 +255,7 @@ def main() -> None:
         test_witness_fused_to_japanese_noun_is_caught,
         test_witness_fusion_check_does_not_flag_wikilink_target_identifiers,
         test_witness_fusion_allowlist_entry_exempts,
+        test_relative_corpus_path_does_not_crash,
         test_clean_corpus_passes,
     ]
     for test in tests:
