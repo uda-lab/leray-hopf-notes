@@ -1,10 +1,10 @@
 name: LerayHopf.viscousFormSq_steklovAvg_uniform_bound
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Steklov 平均に対する近似段数一様な $H^1$ 評価。粘性係数 $\nu>0$、$T>0$、前進窓 $[t,t+\delta]\subseteq[0,T]$（$0\le t$、$t+\delta\le T$）に対し、平均後の状態の粘性形式は $$V\!\left(\delta^{-1}\int_t^{t+\delta}u_n(s)\,ds\right) \le \delta^{-1}\nu^{-1}\cdot\tfrac12\|u_0\|^2$$ で抑えられる（$V$ は粘性形式）。この上界は有限で、かつ近似段数 $n$ に依らない。粘性版 Jensen 評価と、積分済みの一様エネルギー評価を組み合わせて得る。
 gap:
   level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.viscousFormSq_steklovAvg_uniform_bound`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波（AubinLionsLimitPassage.lean クラスタ）で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, aubin-lions]
