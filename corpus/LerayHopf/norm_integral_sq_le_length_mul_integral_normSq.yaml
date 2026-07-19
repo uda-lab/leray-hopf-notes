@@ -1,10 +1,10 @@
 name: LerayHopf.norm_integral_sq_le_length_mul_integral_normSq
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  完備な実内積空間 $H$ に値をとる曲線 $f:\mathbb R\to H$ が $a\le b$ を満たす閉区間 $[a,b]$ 上で連続であるとき、Bochner 積分の自乗ノルムは区間の長さと自乗ノルムの積分との積で抑えられる：$$\left\|\int_a^b f(s)\,ds\right\|^2 \le (b-a)\int_a^b \|f(s)\|^2\,ds.$$ 台形則の Cauchy–Schwarz 版であり、区間平均の自乗ノルム評価（Jensen 型不等式）の基礎となり、[[Steklov 平均の自乗ノルム評価|LerayHopf.steklovAvg_normSq_le_average]] などで用いられる。
 gap:
   level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.norm_integral_sq_le_length_mul_integral_normSq`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/SteklovAverages.lean`。旧 gap.note は `LerayHopf/R3/AubinLionsLimitPassage.lean` を抽出元と誤記していた（issue #114 Tier 1 のファイル分割前の記録が repin 後も更新されていなかったもの；decls.json の `file` フィールドは正しく現在地を指す）。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, aubin-lions]

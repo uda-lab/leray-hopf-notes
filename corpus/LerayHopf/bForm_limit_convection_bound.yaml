@@ -1,10 +1,10 @@
 name: LerayHopf.bForm_limit_convection_bound
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  極限曲線に対する移流汎関数の可積分性と一様評価。粘性係数 $\nu>0$、$T>0$ のもとで得られる極限曲線 $u$ について、$z$ に依らない定数 $K\ge0$ が存在して、任意の Schwartz かつ発散ゼロなテスト元 $z$ に対し写像 $t\mapsto b(u(t),u(t),z)$ は $[0,T]$ 上可積分であり、$$\int_0^T |b(u(t),u(t),z)|\,dt \le K\sqrt{V(z)}$$ をみたす（$V$ は粘性形式）。[[Aubin–Lions パッケージの構成|LerayHopf.aubinLionsPackage_R3_of_timeCompactness]] が与える極限曲線に対して、移流項の弱形式極限移行に必要な評価を与える。
 gap:
   level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.bForm_limit_convection_bound`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`（宣言はこのファイル分割以前から一貫してここにある）。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, aubin-lions]

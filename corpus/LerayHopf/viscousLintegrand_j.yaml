@@ -1,10 +1,10 @@
 name: LerayHopf.viscousLintegrand_j
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $j$ 番目の粘性スペクトル項の、可積分性を仮定しない ℝ≥0∞ 値版。実数値（Bochner 積分）版は可積分でない被積分関数に対しても無条件に定義され、その場合は $0$ を返す（[[粘性形式|LerayHopf.viscousFormSq_R3]] と同じ Bochner 積分の規約）。この $0$ は被積分関数が実際に可積分であることを何も保証しない見かけ上の値であり、$H^1$ から外れた場（重み付きスペクトルエネルギーが真に発散しうる場）では実数値版は真のエネルギーを表さない。ℝ≥0∞ 値の下側 Lebesgue 積分として定め直すことで、可積分性に関わらず常に真の（有限または無限の）スペクトルエネルギーを値として保つ。
 gap:
   level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.viscousLintegrand_j`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/EnergyWeakLsc.lean`。旧 gap.note は `LerayHopf/R3/AubinLionsLimitPassage.lean` を抽出元と誤記していた（issue #114 Tier 1 のファイル分割前の記録が repin 後も更新されていなかったもの；decls.json の `file` フィールドは正しく現在地を指す）。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, aubin-lions]
