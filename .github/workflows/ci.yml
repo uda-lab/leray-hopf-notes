@@ -47,6 +47,9 @@ jobs:
       - name: Glossary lint
         run: python3 scripts/glossary_lint.py
 
+      - name: Forbidden-term regression lint tests (notes#105)
+        run: python3 test/issue105_forbidden_terms.test.py
+
       - name: Prose lint (D1/D2/D5)
         run: python3 scripts/prose_lint.py
 
