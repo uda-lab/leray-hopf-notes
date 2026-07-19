@@ -1,10 +1,10 @@
 name: LerayHopf.mulBdd_steklov_normSq_le_average
 tier: gloss
 statement_ja: |
-  有界重み $m$（$|m|\le C$）と区間 $[t,t+\delta]$ 上連続な曲線 $G$ に対する重み付き Jensen 評価。Steklov 平均化した曲線に重み $m$ を掛けたもののノルムの自乗は、時間平均のノルムの自乗の平均で抑えられる：$$\left\|m\cdot\left(\delta^{-1}\int_t^{t+\delta}G(s)\,ds\right)\right\|^2 \le \delta^{-1}\int_t^{t+\delta}\|m\cdot G(s)\|^2\,ds.$$ 完備な実内積空間に対する Bochner 平均の Jensen 不等式を曲線 $s\mapsto m\cdot G(s)$ に適用して得る。
+  有界重み $m$（$|m|\le C$）と前向き時刻 $[0,\infty)$ 上で連続な曲線 $G$ に対する重み付き Jensen 評価。刻み幅 $\delta>0$、時刻 $t\ge0$ のとき、Steklov 平均化した曲線に重み $m$ を掛けたもののノルムの自乗は、時間平均のノルムの自乗の平均で抑えられる：$$\left\|m\cdot\left(\delta^{-1}\int_t^{t+\delta}G(s)\,ds\right)\right\|^2 \le \delta^{-1}\int_t^{t+\delta}\|m\cdot G(s)\|^2\,ds.$$ 完備な実内積空間に対する Bochner 平均の Jensen 不等式を曲線 $s\mapsto m\cdot G(s)$ に適用して得る。
 gap:
   level: mild
 provenance: |
-  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波（AubinLionsLimitPassage.lean クラスタ）で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`。
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/SteklovAverages.lean`。旧 gap.note は `LerayHopf/R3/AubinLionsLimitPassage.lean` を抽出元と誤記していた（issue #114 Tier 1 のファイル分割前の記録が repin 後も更新されていなかったもの；decls.json の `file` フィールドは正しく現在地を指す）。
 chapter: limit-passage
 tags: [private-helper, aubin-lions]

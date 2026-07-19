@@ -1,10 +1,10 @@
 name: LerayHopf.liminf_viscousFormSq_lt_top_ae
 tier: gloss
 statement_ja: |
-  粘性係数 $\nu>0$、$T>0$ のもとで Aubin–Lions パッケージ（[[Aubin–Lions パッケージの構成|LerayHopf.aubinLionsPackage_R3_of_timeCompactness]] が与える対角部分列 $\varphi:\mathbb N\to\mathbb N$ を伴う）が与えられているとき、区間 $[0,T]$ 上ほとんどすべての時刻 $t$ で、対角部分列に沿った近似解の粘性形式 $V(u_{\varphi(n)}(t))$（$V$ は粘性形式）の下極限は有限である。時間方向の一様エネルギー評価 $$\int_0^T V(u_n(s))\,ds\le\frac12\|u_0\|^2$$（$\nu$ 倍込み）と Fatou の補題を時間積分に適用して得る。極限そのものの正則性は用いず、連続（したがって可測）な近似曲線のみに依拠する。
+  粘性係数 $\nu>0$、$T>0$ のもとで Aubin–Lions パッケージ（[[Aubin–Lions パッケージの構成|LerayHopf.aubinLionsPackage_R3_of_timeCompactness]] が与える対角部分列 $\varphi:\mathbb N\to\mathbb N$ を伴う）が与えられているとき、区間 $[0,T]$ 上ほとんどすべての時刻 $t$ で、対角部分列に沿った近似解の粘性形式 $V(u_{\varphi(n)}(t))$（$V$ は粘性形式）の下極限は有限である。粘性係数込みの時間方向の一様エネルギー評価 $$\int_0^T \nu\, V(u_n(s))\,ds\le\frac12\|u_0\|^2,\qquad \text{すなわち}\quad \int_0^T V(u_n(s))\,ds\le\nu^{-1}\cdot\frac12\|u_0\|^2$$ と Fatou の補題を時間積分に適用して得る。極限そのものの正則性は用いず、連続（したがって可測）な近似曲線のみに依拠する。
 gap:
   level: mild
 provenance: |
-  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波（AubinLionsLimitPassage.lean クラスタ）で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`。
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/EnergyWeakLsc.lean`。旧 gap.note は `LerayHopf/R3/AubinLionsLimitPassage.lean` を抽出元と誤記していた（issue #114 Tier 1 のファイル分割前の記録が repin 後も更新されていなかったもの；decls.json の `file` フィールドは正しく現在地を指す）。
 chapter: limit-passage
 tags: [private-helper, aubin-lions]

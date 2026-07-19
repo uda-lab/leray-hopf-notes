@@ -1,10 +1,10 @@
 name: LerayHopf.add_liminf_le_liminf_add
 tier: gloss
 statement_ja: |
-  拡張非負実数値列 $(u_n),(v_n)$ に対する下極限の劣加法性：$$\varliminf_n u_n+\varliminf_n v_n\le\varliminf_n (u_n+v_n).$$
+  拡張非負実数値列 $(u_n),(v_n)$ に対する下極限の超加法性：$$\varliminf_n u_n+\varliminf_n v_n\le\varliminf_n (u_n+v_n).$$
 gap:
   level: mild
 provenance: |
-  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波（AubinLionsLimitPassage.lean クラスタ）で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`。
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/EnergyWeakLsc.lean`。旧 gap.note は `LerayHopf/R3/AubinLionsLimitPassage.lean` を抽出元と誤記していた（issue #114 Tier 1 のファイル分割前の記録が repin 後も更新されていなかったもの；decls.json の `file` フィールドは正しく現在地を指す）。
 chapter: limit-passage
 tags: [private-helper, aubin-lions]

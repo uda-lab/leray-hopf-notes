@@ -5,6 +5,6 @@ statement_ja: |
 gap:
   level: mild
 provenance: |
-  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波（AubinLionsLimitPassage.lean クラスタ）で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`。
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第2波で手書き化。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean`（宣言はこのファイル分割以前から一貫してここにある）。
 chapter: limit-passage
 tags: [private-helper, aubin-lions]
