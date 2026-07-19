@@ -1,10 +1,12 @@
 name: LerayHopf.mulBddR
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  実数値の本質的有界（$L^\infty$）関数 $h$ による実 $L^2$ 元の点ごとの掛け算 $a\mapsto h\cdot a$ を、再び $L^2$ の元として定める乗算子。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.mulBddR`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    有界性の仮定 `MemLp h ⊤` は定義の明示的な引数として要求される（Hölder 対 $(\top,2,2)$ を成立させるための入力であり、$h$ 自体から自動的に導出されるわけではない）。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第5波（`ConvectionForm.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.mulBddR`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, convection-form, l2-multiplier]

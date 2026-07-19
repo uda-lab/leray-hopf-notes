@@ -1,10 +1,14 @@
 name: LerayHopf.antisymmIntegral
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  固定した Schwartz 発散ゼロテスト場 $w$（成分表示 $\psi_w$）に対して、微分をテスト側に載せた反対称形式を、有限個の $L^2$ 内積の和として定める。
+
+  $$\Psi_w(f,g)=-\sum_{i,a}\bigl\langle f_a,\ (\partial_a\psi_{w,i})\cdot g_i\bigr\rangle_{L^2}.$$
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.antisymmIntegral`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    この段階では真の Lebesgue 積分ではなく、[[点ごとの有界乗算|LerayHopf.mulBddR]]を介した $L^2$ 内積の有限和として書かれている。両者が実際に等しいことは公開定理 `fb_eq_antisymmIntegral_schwartz` 側で示される。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第5波（`ConvectionForm.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.antisymmIntegral`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, convection-form, integration-by-parts]

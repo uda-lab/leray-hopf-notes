@@ -1,10 +1,12 @@
 name: LerayHopf.mulBddR_projComp_norm_tendsto_CF
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  球上での消失から大域的な重み付き消失を得る鍵となる評価。$L^2$ ノルムが一様有界な列が、各半径の球への制限として $0$ に収束するならば、固定した Schwartz 関数を掛けた成分ごとの列（[[点ごとの有界乗算|LerayHopf.mulBddR]]を経由）も $L^2$ ノルムで $0$ に収束する。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.mulBddR_projComp_norm_tendsto_CF`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    球内部分の寄与を仮定の球上消失で、球外部分の寄与を Schwartz 関数の裾の減衰（[[Schwartz の裾減衰|LerayHopf.schwartz_ball_tail_decay]]）と一様ノルム上界でそれぞれ抑え、両者を合わせて全体の消失を示す。極限移行の層でボール分割評価を行う際の中核補題。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第5波（`ConvectionForm.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.mulBddR_projComp_norm_tendsto_CF`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, convection-form, l2-multiplier, limit-passage]
