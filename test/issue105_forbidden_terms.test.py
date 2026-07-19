@@ -160,6 +160,53 @@ def test_explicit_allowlist_entry_exempts_specific_file_and_term() -> None:
         assert "corpus/b.yaml" in output2 and "corpus/a.yaml" not in output2
 
 
+def test_witness_fused_to_japanese_noun_is_caught() -> None:
+    """rev-108 finding: raw English "witness" fused directly onto a Japanese noun
+    (e.g. "witness 一致計算則", "component-witness 形") is the same hybrid-coinage
+    problem as well-定義性, just with a different English root -- must be a hard
+    error, not silently passed through by the term-substitution table."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        write_glossary(root / "docs" / "GLOSSARY.md")
+        write_corpus(root / "corpus" / "a.yaml", statement="文。",
+                     proof="三つの汎関数を[[witness 一致計算則|LerayHopf.foo_eq_witness]]で書き換える。")
+        mod = load_module(root)
+        code, output = run_main(mod, [])
+        assert code == 1, output
+        assert "witness" in output.lower()
+
+
+def test_witness_fusion_check_does_not_flag_wikilink_target_identifiers() -> None:
+    """A [[display|LerayHopf.foo_witness]] wikilink *target* is a Lean identifier,
+    not translated prose -- it must not trip the fusion check just because the
+    identifier itself contains "witness" (e.g. convFormSchwartz_eq_witness)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        write_glossary(root / "docs" / "GLOSSARY.md")
+        write_corpus(root / "corpus" / "a.yaml", statement="文。",
+                     proof="これを[[表示一致計算則|LerayHopf.convFormSchwartz_eq_witness]]で書き換える。")
+        mod = load_module(root)
+        code, output = run_main(mod, [])
+        assert code == 0, output
+
+
+def test_witness_fusion_allowlist_entry_exempts() -> None:
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        write_glossary(root / "docs" / "GLOSSARY.md")
+        write_corpus(root / "corpus" / "a.yaml", statement="文。",
+                     proof="[[witness 形|LerayHopf.foo]]で書き換える。")
+        allowlist_path = root / "scripts" / "glossary_lint_allowlist.json"
+        allowlist_path.parent.mkdir(parents=True, exist_ok=True)
+        allowlist_path.write_text(
+            json.dumps({"allow": {"corpus/a.yaml": ["witness-fusion"]}}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        mod = load_module(root)
+        code, output = run_main(mod, [])
+        assert code == 0, output
+
+
 def test_clean_corpus_passes() -> None:
     with tempfile.TemporaryDirectory() as td:
         root = Path(td)
@@ -180,6 +227,9 @@ def main() -> None:
         test_forbidden_term_in_provenance_and_tags_is_caught,
         test_backtick_quoted_forbidden_term_is_exempt,
         test_explicit_allowlist_entry_exempts_specific_file_and_term,
+        test_witness_fused_to_japanese_noun_is_caught,
+        test_witness_fusion_check_does_not_flag_wikilink_target_identifiers,
+        test_witness_fusion_allowlist_entry_exempts,
         test_clean_corpus_passes,
     ]
     for test in tests:

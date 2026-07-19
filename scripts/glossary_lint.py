@@ -29,8 +29,20 @@ must name the old wrong translation to explain a fix). Two escape hatches:
      per-term override for cases backticking doesn't cover. Empty by default — every
      entry must justify itself in code review.
 
-Exit code: 1 if any forbidden-translation finding remains after backtick/allowlist
-exemption. Otherwise 0.
+Witness-fusion check (notes#105 rev-108 finding): raw English "witness" must never
+be translated to Japanese (証人/目撃者 stay permanently forbidden, per owner
+directive), but it must also never be fused directly onto a Japanese noun without a
+gloss (e.g. "witness 一致計算則", "component-witness 形") — that is the same
+hybrid-coinage problem as well-定義性, just with a different English root. This is a
+structural regex check (witness immediately followed by a CJK character, optionally
+across one space), independent of the glossary table, because it flags a *pattern*
+rather than a fixed bad string. It does not fire on `[[display|LerayHopf.foo_witness]]`
+wikilink *targets* (those are Lean identifiers, always followed by `]]`, not CJK) —
+only on witness fused into the *display* text or plain prose. Same two escape hatches
+apply (backtick spans, allowlist).
+
+Exit code: 1 if any forbidden-translation or witness-fusion finding remains after
+backtick/allowlist exemption. Otherwise 0.
 
 Usage:
     python3 scripts/glossary_lint.py
@@ -59,6 +71,11 @@ CORPUS_DIR = REPO_ROOT / 'corpus'
 ALLOWLIST_PATH = REPO_ROOT / 'scripts' / 'glossary_lint_allowlist.json'
 
 BACKTICK_SPAN_RE = re.compile(r'`[^`]*`')
+
+# CJK ranges covering hiragana/katakana/common+extended kanji — enough to catch
+# "witness" immediately fused to a Japanese noun (with or without one space between).
+_CJK = '぀-ヿ㐀-䶿一-鿿豈-﫿'
+WITNESS_FUSION_RE = re.compile(rf'witness\s?[{_CJK}]', re.IGNORECASE)
 
 
 def load_allowlist(path: Path | None = None) -> dict[str, set[str]]:
@@ -166,6 +183,16 @@ def main() -> None:
                         f'forbidden translation "{bad}" for "{english}" '
                         f'(use: {japanese})'
                     )
+
+        if 'witness-fusion' not in allowed_here:
+            for m in WITNESS_FUSION_RE.finditer(text):
+                snippet = text[max(0, m.start() - 8):m.start() + 16]
+                findings.append(
+                    f'ERROR [{rel}]: '
+                    f'raw "witness" fused directly onto Japanese text without a '
+                    f'gloss (near "{snippet}") — describe directly or gloss it, '
+                    f'do not fuse (see GLOSSARY.md witness entry)'
+                )
 
     # Summary
     if findings:
