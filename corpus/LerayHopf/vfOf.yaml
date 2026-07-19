@@ -1,7 +1,7 @@
 name: LerayHopf.R3.ConvectionExtension.vfOf
 tier: gloss
 statement_ja: |
-  [[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]の元を、二重の包含を経てベクトル場として取り出す係数写像。
+  [[再型付けした $H^1_\sigma$|LerayHopf.R3.ConvectionExtension.H1Sigma']]の元を、二重の包含を経て基礎のベクトル場として取り出す写像。
 gap:
   level: none
 chapter: limit-passage
