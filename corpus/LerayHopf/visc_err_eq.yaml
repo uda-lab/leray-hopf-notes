@@ -1,7 +1,7 @@
 name: LerayHopf.visc_err_eq
 tier: gloss
 statement_ja: |
-  正則化された渦度と目標場 $w$ の差の粘性半ノルムが、Fourier 側の積分表示
+  正則化された渦度と目標場 $w$ の差の粘性半ノルムの二乗（粘性形式の自己評価）が、Fourier 側の積分表示
 
   $$\sum_j\int\Bigl(\frac{a^2}{a^2+\lVert\xi\rVert^2}\Bigr)^{2}(2\pi)^2\lVert\xi\rVert^2\bigl\lvert\widehat w_j(\xi)\bigr\rvert^2\,d\xi$$
 

@@ -1,7 +1,7 @@
 name: LerayHopf.symbolMul
 tier: gloss
 statement_ja: |
-  複素数値の記号乗数を定める。[[湯川型乗数|LerayHopf.yukawaMul]]に、渦度から発散への逆変換で生じる定数因子をかけたものである。
+  複素数値の記号乗数を定める。[[湯川型乗数|LerayHopf.yukawaMul]]に、渦度からベクトルポテンシャルを再構成する際の定数因子をかけたものである。
 
   $$\xi\mapsto -\frac{1}{2\pi i}\,(a^2+\lVert\xi\rVert^2)^{-1}$$
 gap:
