@@ -152,8 +152,8 @@ owner 裁定（issue #32、2026-07-19T15:49:25Z）による source release candi
 境界の triage・maxHeartbeats 注釈・Temam/Sobolev 記法修正・rename sync・release-cone guard 強化）
 を含む 23 commits。
 
-`lake exe extract_notes` 再実行（フレッシュビルド、実際にコンパイルされたのは 9 モジュールの
-み・残り 3187 ジョブはキャッシュ再利用）: 抽出宣言数 1,339 → 1,339（増減なし）。
+`lake exe extract_notes` 再実行（PIN 更新後の warm cache 上の増分 build、実際にコンパイル
+されたのは 9 モジュールのみ・残り 3187 ジョブはキャッシュ再利用）: 抽出宣言数 1,339 → 1,339（増減なし）。
 `decl_diff.py` による分類:
 
 | 区分 | 件数 | 内容 | corpus 側対応 |
