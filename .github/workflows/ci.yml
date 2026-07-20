@@ -127,12 +127,16 @@ jobs:
           ref: ${{ steps.read-pin.outputs.pin }}
           # No `token:` override: actions/checkout requires a non-empty token (an
           # explicit token: '' fails with "Input required and not supplied: token" —
-          # empty string is not treated as "use the default"), so this falls back to
-          # the default `${{ github.token }}`. That default token is scoped to this
-          # (notes) repo for API calls, but `leray-hopf` is public, and workflow
-          # `permissions:` only restricts what the token can do via the GitHub API on
-          # *this* repo — it does not block a plain git-over-HTTPS read of a different
-          # public repo, which is all a checkout does.
+          # empty string is not treated as "use the default"), so this checkout uses
+          # the default `${{ github.token }}` — it is NOT an unauthenticated clone. That
+          # default token is scoped to this (notes) repo for API calls, but `leray-hopf`
+          # is public, and workflow `permissions:` only restricts what the token can do
+          # via the GitHub API on *this* repo — it does not block a plain git-over-HTTPS
+          # read of a different public repo, which is all a checkout does.
+          # persist-credentials: false — this checkout only reads leray-hopf to embed
+          # source text; nothing in this job needs to push to it or git-authenticate
+          # again, so there is no reason to leave the token in .git/config afterward.
+          persist-credentials: false
           path: leray-hopf
 
       - name: Build site data (source-enabled)
@@ -181,10 +185,11 @@ jobs:
           retention-days: 30
 
       - name: Upload GitHub Pages artifact
-        # Deployment itself (deploy-pages job below) is gated to push-to-main; this
-        # upload step is gated the same way so PR runs don't spend storage on an
-        # artifact that will never be deployed.
-        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        # Deployment itself (deploy-pages job below) is gated to push-to-main AND the
+        # vars.PAGES_DEPLOY_ENABLED repository variable (see that job's comment); this
+        # upload step uses the identical condition so nothing pages-shaped is even
+        # prepared, let alone deployed, until the owner has explicitly flipped the gate.
+        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PAGES_DEPLOY_ENABLED == 'true' }}
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site/
@@ -197,17 +202,34 @@ jobs:
     # pull_request or a workflow_dispatch on another ref — so a PR-time source-enabled
     # build is validated, not published.
     #
-    # This step requires GitHub Pages to be enabled in repository Settings with source
-    # "GitHub Actions" — that is an owner/admin action outside this workflow's scope
-    # (notes#32 non-goals: "Do not make repository visibility changes implicitly from
-    # this issue"). Until that is done, this job fails at the deploy-pages action with a
-    # "Pages site failed" / "not configured" error; the rest of CI is unaffected.
+    # vars.PAGES_DEPLOY_ENABLED (owner-controlled repository Actions variable, default
+    # unset/false) is a second, independent, explicit gate on top of the branch check.
+    # #32 lists 11 audit-mandated provenance/readiness items; this PR implements 5 of
+    # them (see PR body). "Pages isn't configured yet" being an implicit blocker is not
+    # the same as an explicit publish gate — it fails for the wrong reason (owner hasn't
+    # gotten to Settings yet) and would silently start deploying real content the moment
+    # Pages is turned on for unrelated reasons, before the remaining #32 items are done.
+    # Requiring the owner to affirmatively set this variable (Settings → Secrets and
+    # variables → Actions → Variables) after verifying the remaining gate items is the
+    # explicit publish decision notes#32's acceptance criteria call for.
+    #
+    # Once both gates pass, this step still requires GitHub Pages to be enabled in
+    # repository Settings with source "GitHub Actions" — that is a separate owner/admin
+    # action outside this workflow's scope (notes#32 non-goals: "Do not make repository
+    # visibility changes implicitly from this issue").
     needs: [build-artifact]
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PAGES_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
+    # Official GitHub Pages guidance: serialize deployments to this environment so two
+    # overlapping main-branch runs can't race each other; queue rather than cancel a
+    # deploy that's already in flight, since a cancelled-mid-upload Pages deploy can
+    # leave the site in a half-updated state.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

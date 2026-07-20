@@ -27,7 +27,12 @@ Checks (see notes#32 issue body, "Audit-mandated provenance additions"):
      declarations for which `SourceReader.source_for()` actually found the
      verbatim text; when a `--lean-root` build attempted extraction for every
      declaration in the universe (`decl_count`), equality of the two implies
-     zero misses (hits + misses == decl_count).
+     zero misses (hits + misses == decl_count). This is cross-checked against
+     `sources.json`'s own declared `source_count`, the actual size of its
+     `sources` object (which must be present and a JSON object, not merely
+     absent-and-therefore-skipped), and the exact set of node slugs marked
+     `has_source: true` in `nodes.json` — every sub-check is mandatory, not
+     conditional on the payload already having the expected shape.
   4. `nodes.json`'s embedded `pin` field equals `sources.json`'s embedded
      `pin` field, so the two payloads the frontend joins at runtime cannot
      silently drift apart.
@@ -102,13 +107,29 @@ def check_clean_detached(lean_root: Path, failures: list[str], passes: list[str]
 
 def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passes: list[str]) -> None:
     """source_count == decl_count (zero misses), cross-checked against sources.json's own
-    declared count and its actual entry count — so a stale sources.json paired with a
-    fresh nodes.json (or vice versa) is caught here rather than only in pin_consistency."""
+    declared count, its actual "sources" object, and the has_source:true node slugs — so a
+    stale or malformed sources.json paired with a fresh nodes.json (or vice versa) is caught
+    here rather than only in pin_consistency.
+
+    Every sub-check below is mandatory (not conditional on the payload happening to have the
+    expected shape): a missing or wrong-typed field is itself a failure, not something to skip
+    past. notes#32 owner review (PR #114): an earlier version only cross-checked the "sources"
+    object's size when it happened to already be a dict, so a missing or non-object "sources"
+    field passed as long as the declared counts matched — fail-open exactly where this gate is
+    supposed to be fail-closed.
+    """
     source_count = nodes.get('source_count')
     decl_count = nodes.get('decl_count')
     if source_count is None or decl_count is None:
         failures.append(
             'source_coverage: nodes.json is missing source_count and/or decl_count'
+        )
+        return
+    if source_count > decl_count:
+        failures.append(
+            f'source_coverage: source_count ({source_count}) exceeds decl_count '
+            f'({decl_count}) — impossible for a valid build; nodes.json is internally '
+            f'inconsistent'
         )
         return
     if source_count != decl_count:
@@ -118,6 +139,17 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
             f'({decl_count}) — {misses} declaration(s) had no readable source range; '
             f're-run build_site_data.py --lean-root and inspect its '
             f'"records had no readable source range" warning'
+        )
+        return
+
+    node_list = nodes.get('nodes')
+    if not isinstance(node_list, list):
+        failures.append('source_coverage: nodes.json "nodes" field is missing or not a list')
+        return
+    if len(node_list) != decl_count:
+        failures.append(
+            f'source_coverage: nodes.json declares decl_count={decl_count} but its '
+            f'"nodes" array has {len(node_list)} entries'
         )
         return
 
@@ -134,16 +166,34 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
         return
 
     sources_map = sources.get('sources')
-    if isinstance(sources_map, dict) and len(sources_map) != sources_source_count:
+    if not isinstance(sources_map, dict):
+        failures.append(
+            'source_coverage: sources.json "sources" field is missing or not a JSON object'
+        )
+        return
+    if len(sources_map) != sources_source_count:
         failures.append(
             f'source_coverage: sources.json declares source_count={sources_source_count} '
             f'but its "sources" object has {len(sources_map)} entries'
         )
         return
 
+    has_source_slugs = {n.get('slug') for n in node_list if n.get('has_source')}
+    sources_slugs = set(sources_map.keys())
+    if has_source_slugs != sources_slugs:
+        missing = sorted(has_source_slugs - sources_slugs)[:5]
+        extra = sorted(sources_slugs - has_source_slugs)[:5]
+        failures.append(
+            f'source_coverage: the set of node slugs with has_source:true does not match '
+            f'the "sources" object\'s keys (missing from sources.json: {missing}; present '
+            f'in sources.json but not marked has_source:true in nodes.json: {extra})'
+        )
+        return
+
     passes.append(
         f'source_coverage: source_count == decl_count == sources.json source_count == '
-        f'{decl_count} (zero misses, cross-checked against sources.json)'
+        f'len(sources.json "sources") == len(has_source:true slugs) == {decl_count} '
+        f'(zero misses, cross-checked against sources.json)'
     )
 
 
@@ -180,10 +230,17 @@ def load_json(path: Path, label: str, failures: list[str]) -> dict | None:
         return None
     try:
         with open(path, encoding='utf-8') as f:
-            return json.load(f)
+            data = json.load(f)
     except json.JSONDecodeError as exc:
         failures.append(f'{label}: invalid JSON in {path}: {exc}')
         return None
+    if not isinstance(data, dict):
+        failures.append(
+            f'{label}: expected a JSON object at the top level of {path}, got '
+            f'{type(data).__name__}'
+        )
+        return None
+    return data
 
 
 def main() -> int:

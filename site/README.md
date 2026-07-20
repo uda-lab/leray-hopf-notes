@@ -22,8 +22,9 @@ site/
 **Note:** `site/data/*.json` files are generated artifacts, not source-reviewed files.
 They are produced locally via `build_site_data.py` and in CI via `.github/workflows/ci.yml`.
 CI builds a source-enabled payload (leray-hopf checked out at `extracted/PIN`) on every
-pull request and every push to `main`, and deploys it to GitHub Pages on push to `main`
-(notes#32 Phase B).
+pull request and every push to `main`, and deploys it to GitHub Pages on `main` once the
+owner has explicitly enabled the `vars.PAGES_DEPLOY_ENABLED` repository variable
+(notes#32 Phase B — see "CI build workflow" below).
 ```
 
 ## License scope
@@ -72,17 +73,30 @@ gated on the first two passing, via `needs:`, rather than re-running their check
    regression tests
 2. `render-tests` — `npm test` (jsdom render harness)
 3. `build-artifact` — reads `extracted/PIN`, checks out `uda-lab/leray-hopf` at that
-   exact commit (public repo, unauthenticated), builds site data **with**
-   `--lean-root` (source-enabled), runs `scripts/verify_source_provenance.py` as a
-   fail-closed gate (see below), generates a size report, and uploads the entire
-   `site/` directory as a workflow artifact (every push and PR — for inspection) plus
-   a `github-pages` deployment artifact (push to `main` or `workflow_dispatch` on
-   `main` only)
-4. `deploy-pages` — `needs: [build-artifact]`, gated to `main`; deploys the
-   `github-pages` artifact via `actions/deploy-pages`
+   exact commit using the workflow's default `github.token` (`leray-hopf` is public, so
+   this is a plain read — not an unauthenticated clone, but not a privileged one
+   either; workflow `permissions:` only restricts API calls against *this* repo), builds
+   site data **with** `--lean-root` (source-enabled), runs
+   `scripts/verify_source_provenance.py` as a fail-closed gate (see below), generates a
+   size report, and uploads the entire `site/` directory as a workflow artifact (every
+   push and PR — for inspection) plus a `github-pages` deployment artifact (only on
+   `main`, and only once `vars.PAGES_DEPLOY_ENABLED == 'true'` — see below)
+4. `deploy-pages` — `needs: [build-artifact]`; deploys the `github-pages` artifact via
+   `actions/deploy-pages`, gated identically to the artifact upload above
 
-PR runs build and validate the source-enabled payload but never deploy it — only a
-push (or manual `workflow_dispatch`) on `main` reaches `deploy-pages`.
+PRs build and validate the source-enabled payload but never deploy it — only a push
+(or manual `workflow_dispatch`) on `main`, with the deploy gate variable set, reaches
+`deploy-pages`.
+
+**Explicit deploy gate: `vars.PAGES_DEPLOY_ENABLED`.** #32 lists 11 audit-mandated
+provenance/readiness items; this PR implements 5 of them (see the PR body for which).
+Rather than let "Pages isn't configured in Settings yet" stand in as an implicit block
+on publishing, the workflow requires an owner-controlled repository Actions variable
+(`Settings → Secrets and variables → Actions → Variables → PAGES_DEPLOY_ENABLED`,
+unset/false by default) to be explicitly set to `true` before the `github-pages`
+artifact is even built, let alone deployed. This makes "ready to publish" an
+affirmative decision the owner makes after verifying the remaining #32 items, not a
+side effect of enabling Pages for unrelated reasons.
 
 **Fail-closed provenance gate (notes#32).** `scripts/verify_source_provenance.py`
 independently re-derives, rather than trusts, the following before any deployment can
@@ -92,8 +106,13 @@ proceed:
 - the checkout is clean (`git status --porcelain` empty) and HEAD is detached (not
   tracking a movable branch)
 - `nodes.json`'s `source_count` equals `decl_count` (every declaration got embedded
-  source; zero extraction misses)
-- `nodes.json`'s `pin` field equals `sources.json`'s `pin` field
+  source; zero extraction misses), cross-checked against `sources.json`'s own declared
+  `source_count`, the actual size of its `sources` object (required to be present and a
+  JSON object — a missing/wrong-typed field is itself a failure, not skipped), and that
+  the exact set of node slugs marked `has_source: true` matches `sources.json`'s keys
+- **both** `nodes.json`'s and `sources.json`'s `pin` fields equal `extracted/PIN` — not
+  merely each other, which a stale-but-mutually-consistent pair from an earlier run
+  could also satisfy
 
 Any violation exits non-zero and fails the `build-artifact` job, which blocks
 `deploy-pages` via `needs:`. Run it locally as
@@ -101,10 +120,11 @@ Any violation exits non-zero and fails the `build-artifact` job, which blocks
 module docstring for the full rationale and `test/verify_source_provenance.test.py`
 for the regression coverage.
 
-**GitHub Pages must be enabled by an admin.** Repository visibility and Pages source
-configuration ("Settings → Pages → Source: GitHub Actions") are owner/admin actions
-outside this workflow's scope (notes#32 non-goals). Until Pages is enabled this way,
-the `deploy-pages` job fails at the `actions/deploy-pages` step; `build-artifact` and
+**GitHub Pages must also be enabled by an admin.** Repository visibility and Pages
+source configuration ("Settings → Pages → Source: GitHub Actions") are a separate
+owner/admin action outside this workflow's scope (notes#32 non-goals). Even after
+`vars.PAGES_DEPLOY_ENABLED` is set, the `deploy-pages` job fails at the
+`actions/deploy-pages` step until Pages is enabled this way; `build-artifact` and
 the rest of CI are unaffected.
 
 ### Source-enabled builds
