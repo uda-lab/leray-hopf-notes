@@ -125,9 +125,14 @@ jobs:
         with:
           repository: uda-lab/leray-hopf
           ref: ${{ steps.read-pin.outputs.pin }}
-          # Public repo; leave token blank so checkout falls back to an unauthenticated
-          # clone instead of trying (and failing) to use this workflow's repo-scoped token.
-          token: ''
+          # No `token:` override: actions/checkout requires a non-empty token (an
+          # explicit token: '' fails with "Input required and not supplied: token" —
+          # empty string is not treated as "use the default"), so this falls back to
+          # the default `${{ github.token }}`. That default token is scoped to this
+          # (notes) repo for API calls, but `leray-hopf` is public, and workflow
+          # `permissions:` only restricts what the token can do via the GitHub API on
+          # *this* repo — it does not block a plain git-over-HTTPS read of a different
+          # public repo, which is all a checkout does.
           path: leray-hopf
 
       - name: Build site data (source-enabled)
