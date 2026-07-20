@@ -1,10 +1,12 @@
 name: LerayHopf.memH1_weightedL2_integrable_R
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  速度場 $w$ が $H^1$ に属するとき、その第 $j$ 複素成分の Fourier 変換に対し、重み $1+\lVert\xi\rVert^2$ を掛けた二乗ノルムはルベーグ可積分である。$H^1$ 所属を Fourier 側の具体的な可積分性として言い換えたもの。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/RellichBall.lean` の `LerayHopf.memH1_weightedL2_integrable_R`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    同内容の道具立ては下流の `FrechetKolmogorov.lean` にもかつて存在したが、本ファイルはその上流にあり、下流の定義をここで再利用することはできない。そのため本ファイル内で自己完結した Bessel 重み一式として独立に用意されている（下流側の重複コピーは issue #113 で不要コードとして削除済み）。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第6波（`FrechetKolmogorov.lean`＋`RellichBall.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/RellichBall.lean` の `LerayHopf.memH1_weightedL2_integrable_R`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, rellich-ball, bessel-weight]

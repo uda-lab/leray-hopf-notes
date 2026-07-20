@@ -1,10 +1,12 @@
 name: LerayHopf.convL2_coeFn_ae
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  核重み付き平行移動の Bochner 積分としての畳み込み（[[核重み付き平行移動の Bochner 積分|LerayHopf.convL2]]）は、ほとんど至る所で、点ごとの畳み込み表示である[[軟化子による畳み込み代表元|LerayHopf.mollifyRep]]に一致する。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.convL2_coeFn_ae`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    素朴な $\mathbb R^3\times\mathbb R^3$ 上の二重積分は絶対収束しないため、任意の有限測度集合上への制限で両辺の集合積分が一致することを示す形に帰着させる（`ae_eq_of_forall_setIntegral_eq_of_sigmaFinite`）。その集合積分の一致は、定数ベクトルとの内積による双対化と、有限測度集合上での Fubini の入れ替えによって得る。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第6波（`FrechetKolmogorov.lean`＋`RellichBall.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.convL2_coeFn_ae`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, frechet-kolmogorov, mollifier, bochner-integral]
