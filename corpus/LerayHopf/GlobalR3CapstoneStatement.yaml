@@ -1,0 +1,18 @@
+name: LerayHopf.GlobalR3CapstoneStatement
+tier: full
+statement_ja: |
+  **凍結された時間大域主張（$\mathbb{R}^3$）。** 任意の発散ゼロな初期値 $u_0$ と $\nu>0$ に対し、あるスキーム $\mathfrak{G}$ と形式束 $F$、および**ただ一本の**曲線 $u$ が存在して、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、という命題。
+
+  量化子の並びは次のとおりである。
+
+  $$\exists\,\mathfrak{G},\ \exists\,F,\ \exists\,u,\ \forall\,T>0$$
+
+  トーラスと違ってスキームも存在量化されるのは、$\mathbb{R}^3$ では Galerkin 基底の取り方が構成の一部だからである。
+proof_ja: |
+  目標を命題として固定することで、証明の側が量化子を入れ替えたり時刻ごとに曲線やスキームを取り替えたりしていないことを型検査で確かめられる。実際にこの命題を証明しているのが[[凍結目標の証明|LerayHopf.globalR3Capstone]]である。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: capstone-r3
+tags: [leray-hopf, capstone, r3, time-global]

@@ -1,0 +1,16 @@
+name: LerayHopf.Galerkin.truncation_agrees_with_additivity
+tier: full
+statement_ja: |
+  **可積分な場合の古典的経路。** $0\le b\le c$ とし、$f$ が $(0,c]$ 上で可積分、かつ $(b,c]$ 上で恒等的に零であるとする。このとき次の二つが同時に成り立つ。
+
+  第一に $(0,c]$ 上の積分は $(0,b]$ 上の積分と $(b,c]$ 上の積分の和に等しく、第二に $(b,c]$ 上の積分は零である。
+proof_ja: |
+  第一の主張は区間の分割 $(0,c]=(0,b]\cup(b,c]$ が交わりを持たないことと、各断片上の可積分性から、測度論の区間加法性そのものとして得られる。ここでは定義関数を経由する議論を使っておらず、**加法性そのもの**を使っている点が重要である。
+
+  第二の主張は、$f$ が $(b,c]$ で零関数と各点で一致することから、積分値が零関数の積分に等しいことによる。
+gap:
+  level: none
+provenance: |
+  [[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]の定義関数経路が古典的な議論と食い違っていないことを確かめるために、可積分な分岐を独立に組み立てたもの。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation]

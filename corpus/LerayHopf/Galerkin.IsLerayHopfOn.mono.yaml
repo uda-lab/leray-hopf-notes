@@ -1,0 +1,14 @@
+name: LerayHopf.Galerkin.IsLerayHopfOn.mono
+tier: full
+statement_ja: |
+  **契約は短い区間へ制限できる。** $0<T'\le T$ とする。曲線 $u$ が $[0,T]$ 上で[[有限区間 Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たせば、$[0,T']$ 上でも満たす。
+proof_ja: |
+  五つの連言を順に落とす。弱形式は[[区間制限|LerayHopf.Galerkin.WeakFormNS.mono]]による。エネルギー不等式は $t\le T'\le T$ を経由してそのまま適用できる。初期トレースは区間に依存しない。
+
+  エネルギー類のうち、ほとんど至る所の正則性所属は測度の制限を狭めるだけであり、散逸の可積分性は区間を狭める向きの制限で保たれる。時間可測性も同様に制限で保たれる。
+gap:
+  level: mild
+  note: |
+    可積分性は**制限されるだけ**で新たに仮定されない点が要である。区間を狭める向きに `mono_set` を使っており、逆向きの延長ではないため主張が強まってはいない。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global]

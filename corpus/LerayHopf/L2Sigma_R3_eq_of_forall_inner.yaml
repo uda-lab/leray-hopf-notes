@@ -1,0 +1,16 @@
+name: LerayHopf.L2Sigma_R3_eq_of_forall_inner
+tier: full
+statement_ja: |
+  **部分空間の分離性（$\mathbb{R}^3$）。** [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]]の二元 $p,q$ が、同じ部分空間を走るすべてのテスト元 $z$ に対して $\langle p,z\rangle=\langle q,z\rangle$ を満たすならば、$p=q$ である。
+proof_ja: |
+  発散ゼロ部分空間は線形部分空間なので、差 $p-q$ 自身が正当なテスト元である。これを仮定に代入すると $\langle p-q,\,p-q\rangle=0$ を得る。
+
+  内積空間では自己内積が零になるのは零元に限るから $p-q=0$、すなわち $p=q$ である。
+gap:
+  level: none
+  note: |
+    [[トーラス側の対応物|LerayHopf.L2Sigma_eq_of_forall_inner]]と同じ議論である。テスト空間が部分空間で閉じていることだけを使い、非有界領域に固有の困難は現れない。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: spaces
+tags: [r3, hilbert-space]

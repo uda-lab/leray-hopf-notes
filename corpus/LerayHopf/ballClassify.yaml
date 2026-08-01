@@ -1,0 +1,10 @@
+name: LerayHopf.ballClassify
+tier: gloss
+statement_ja: |
+  原点からの距離を天井関数で丸めた動径分類 $x\mapsto\lceil\lvert x\rvert\rceil$。空間を同心の環状領域へ分割し、球ごとの極限から単一の大域代表元を組み立てるために使う。
+gap:
+  level: none
+provenance: |
+  球ごとの極限から単一の大域代表元を組み立てる段（D3a）の私的補助。抽出元: `LerayHopf/R3/SpatialCompactness.lean`。
+chapter: compactness
+tags: [private-helper, spatial-compactness]

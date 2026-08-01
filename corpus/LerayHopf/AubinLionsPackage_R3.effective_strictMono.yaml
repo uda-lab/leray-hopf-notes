@@ -1,0 +1,14 @@
+name: LerayHopf.AubinLionsPackage_R3.effective_strictMono
+tier: full
+statement_ja: |
+  **有効添字の狭義単調性。** 再添字 $\kappa$ が狭義単調ならば、[[Aubin–Lions パッケージ|LerayHopf.AubinLionsPackage_R3]]の抽出 $\varphi$ との合成 $\kappa\circ\varphi$ も狭義単調である。
+proof_ja: |
+  狭義単調写像どうしの合成は狭義単調である。
+gap:
+  level: none
+  note: |
+    数学的には自明だが、役割は書式の統一にある。κ 一般化したパッケージでは「近似列の何番目を見ているか」を表すのは素の抽出 $\varphi$ ではなく合成 $\kappa\circ\varphi$ であり、添字選択に関する事実はすべてこの合成について述べる規約になっている。素の $\varphi$ の単調性を直接使うと、再添字を通す前の列についての主張になってしまう。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: compactness
+tags: [kappa-chain, time-global, r3]

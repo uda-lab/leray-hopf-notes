@@ -1,0 +1,10 @@
+name: LerayHopf.ballLimit_ae_eq_of_le
+tier: gloss
+statement_ja: |
+  球ごとの極限は関数のレベルで整合する：$j\le k$ のとき、半径 $j$ の球上で二つの極限はほとんど至る所一致する。[[制限の一致|LerayHopf.ballLimit_furtherRestrict_eq]]を代表元の等式へ翻訳したもの。
+gap:
+  level: mild
+provenance: |
+  球ごとの極限から単一の大域代表元を組み立てる段（D3a）の私的補助。抽出元: `LerayHopf/R3/SpatialCompactness.lean`。
+chapter: compactness
+tags: [private-helper, spatial-compactness]

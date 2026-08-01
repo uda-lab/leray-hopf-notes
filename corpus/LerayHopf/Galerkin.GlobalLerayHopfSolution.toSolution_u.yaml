@@ -1,0 +1,10 @@
+name: LerayHopf.Galerkin.GlobalLerayHopfSolution.toSolution_u
+tier: full
+statement_ja: |
+  **曲線が重複していないことの証拠。** どの区間へ[[切り出し|LerayHopf.Galerkin.GlobalLerayHopfSolution.toSolution]]ても、得られる解の曲線はもとの時間大域解の曲線そのものである。
+proof_ja: |
+  切り出しの定義がそのまま曲線を移しているので、定義的に等しい。
+gap:
+  level: none
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, leray-hopf]

@@ -1,0 +1,16 @@
+name: LerayHopf.extendReindexedFamily_R3
+tier: full
+statement_ja: |
+  **再添字された族の埋め込み（$\mathbb{R}^3$）。** 添字を $\varphi_1$ で読み替えた Galerkin 近似の族を、全添字にわたる族へ延長する。$\varphi_1(k)$ の形の添字では与えられた族の値を使い、それ以外では**引数として与えられた**埋め草の族を使う。
+
+  埋め草を引数に取る点が[[トーラス側の対応物|LerayHopf.extendReindexedFamily]]との違いである。$\mathbb{R}^3$ では常時使える Galerkin 解の層が抽象的なスキームに対しては存在せず、具体的な基底から作ったスキームの上でしか取れないため、標準の埋め草を固定できない。
+proof_ja: |
+  主定理の組み立てでは、埋め草として基底族そのものを渡す。基底族は一度だけ固定されるので、埋め草を引数にしたことで一般性が失われることはない。
+gap:
+  level: mild
+  note: |
+    添字が像に入るかどうかの判定に排中律を使い、原像の取り出しに選択を使う。$\varphi_1$ が単射なら原像は一意なので結果は選択に依存しない。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: limit-passage
+tags: [kappa-chain, time-global, r3]

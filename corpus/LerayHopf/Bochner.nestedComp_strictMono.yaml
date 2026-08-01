@@ -1,0 +1,10 @@
+name: LerayHopf.Bochner.nestedComp_strictMono
+tier: full
+statement_ja: |
+  各段の相対抽出がすべて狭義単調ならば、どの段の[[絶対抽出|LerayHopf.Bochner.nestedComp]]も狭義単調である。
+proof_ja: |
+  段数についての帰納法による。第 $0$ 段は仮定そのもの、帰納段は狭義単調写像どうしの合成が狭義単調であることによる。
+gap:
+  level: none
+chapter: bochner
+tags: [diagonal-subsequence, time-global]

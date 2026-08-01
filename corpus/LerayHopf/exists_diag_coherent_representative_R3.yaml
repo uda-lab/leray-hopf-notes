@@ -1,0 +1,20 @@
+name: LerayHopf.exists_diag_coherent_representative_R3
+tier: full
+statement_ja: |
+  **対角極限と整合する代表元（$\mathbb{R}^3$）。** 任意の Galerkin 近似族に対し、狭義単調な対角部分列 $\delta$ と曲線 $W$ が存在して、次が成り立つ。
+
+  すなわち、どの区間 $[0,m+1]$ についても、$\delta$ の任意の部分抽出 $\sigma$ に沿って全空間テストに対する弱収束の極限になっている曲線 $v$ は、その区間上で $W$ と各点一致する。
+
+  $\delta$ と $W$ は区間 $m$ にも代表元 $v$ にも依存しない。区間ごとに現れる代表元を、ただ一本の曲線 $W$ へ同定するための道具である。
+proof_ja: |
+  [[対角部分列と大域弱極限|LerayHopf.exists_diagonal_weakly_convergent_galSeq_R3]]から $\delta$ と $W$ を取る。この定理が与える不変量は全空間テストで述べられているので、発散ゼロ部分空間を走るテストに制限すればそのまま[[整合性の核|LerayHopf.r3_representative_diag_coherence]]の第一の仮定になる。
+
+  第二の仮定は主張の前提として与えられているので、核をそのまま適用すればよい。
+gap:
+  level: mild
+  note: |
+    「区間ごとに得られる別々の代表元が、実は一本の曲線と各点で一致する」という主張であり、時間大域化の中核である。区間を延ばすたびに解を取り直して零集合を除いて貼り合わせる、という素朴な構成とは異なる。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 主定理の組み立て側へ渡す形にまとめた段。
+chapter: limit-passage
+tags: [diagonal-subsequence, time-global, r3, good-representative]

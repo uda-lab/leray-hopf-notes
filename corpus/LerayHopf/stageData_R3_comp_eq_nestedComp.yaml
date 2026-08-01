@@ -1,0 +1,12 @@
+name: LerayHopf.stageData_R3_comp_eq_nestedComp
+tier: full
+statement_ja: |
+  **結合不変量（$\mathbb{R}^3$）。** [[段の再帰|LerayHopf.stageData_R3]]が保持する絶対抽出は、各段の相対抽出を抽象的に合成した[[絶対抽出|LerayHopf.Bochner.nestedComp]]と一致する。
+proof_ja: |
+  段数についての帰納法による。第 $0$ 段は両者とも第 $0$ 段の抽出そのもの、帰納段は再帰の定義と合成の定義がともに右から合成する形をしていることによる。
+gap:
+  level: none
+  note: |
+    具体的な段の再帰と偏微分方程式に依存しない[[対角化機構|LerayHopf.Bochner.exists_diagonal_extraction]]との唯一の接点であり、トーラス系統と同一の役割を持つ。
+chapter: compactness
+tags: [diagonal-subsequence, time-global, r3]

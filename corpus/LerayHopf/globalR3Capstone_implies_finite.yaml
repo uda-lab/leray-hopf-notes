@@ -1,0 +1,12 @@
+name: LerayHopf.globalR3Capstone_implies_finite
+tier: full
+statement_ja: |
+  **健全性の確認（$\mathbb{R}^3$）。** [[凍結された時間大域主張|LerayHopf.GlobalR3CapstoneStatement]]が成り立てば、既存の有限区間主定理の形（任意の $T>0$ で完全 Leray–Hopf 解が存在する）も成り立つ。
+proof_ja: |
+  時間大域の主張からスキーム・形式束・曲線と全区間での契約を取り出し、指定された $T$ における契約に[[契約からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]を施せばよい。
+gap:
+  level: none
+  note: |
+    容易な向き（時間大域から有限区間へ）だけの確認であり、逆向きの証拠にはならない。時間大域の主張が[[既存の有限区間主定理|LerayHopf.exists_lerayHopf_r3]]の強化であることを機械検査するために置かれている。
+chapter: capstone-r3
+tags: [leray-hopf, capstone, r3, time-global]

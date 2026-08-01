@@ -1,0 +1,14 @@
+name: LerayHopf.extendReindexedFamily_apply
+tier: full
+statement_ja: |
+  **部分列上での復元（トーラス）。** $\varphi_1$ が単射ならば、[[埋め込み|LerayHopf.extendReindexedFamily]]は添字 $\varphi_1(k)$ において、もとの族の第 $k$ 項をそのまま返す。
+proof_ja: |
+  添字 $\varphi_1(k)$ は明らかに $\varphi_1$ の像に入るので、場合分けは像に入る側の分岐に落ちる。
+
+  この分岐で選ばれる原像を $k'$ とすると $\varphi_1(k')=\varphi_1(k)$ であり、単射性から $k'=k$ を得る。よって返る値はもとの族の第 $k$ 項である。
+gap:
+  level: mild
+  note: |
+    近似族は添字ごとに型が変わる従属型の族なので、$k'=k$ を代入して両者を比較する際に型の書き換えが挟まる。この書き換えを潰す作業が形式化の分量の大半で、数学的な内容ではない。
+chapter: limit-passage
+tags: [kappa-chain, time-global, torus]

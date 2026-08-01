@@ -1,0 +1,18 @@
+name: LerayHopf.stageData
+tier: full
+statement_ja: |
+  **段の再帰（トーラス）。** 第 $m$ 段の[[段の状態|LerayHopf.StageData]]を、区間 $[0,m+1]$ における弱極限曲線の取り出しを繰り返して構成する。
+
+  第 $0$ 段では再添字を恒等写像として取り出しを行い、第 $m+1$ 段では前段の絶対抽出を再添字として渡す。新たに得られた抽出は相対抽出として記録し、前段の絶対抽出に右から合成して新しい絶対抽出とする。
+proof_ja: |
+  各段の取り出しは、κ 一般化された弱極限曲線の存在（[[極限曲線の取り出し|LerayHopf.exists_limit_curve_of_galSeq]]）を区間 $[0,m+1]$ に適用したものである。
+
+  前段の絶対抽出を再添字として渡すことにより、第 $m+1$ 段は「第 $m$ 段までで既に細くした列」からさらに細くしていることになる。この入れ子構造こそが後段の対角化の前提である。
+gap:
+  level: mild
+  note: |
+    各段の抽出は存在定理の証言から選択で取り出しており、段の状態は一意ではない。以降の議論はどの選択でも通るように書かれている。相対抽出と絶対抽出の対応が定義どおりであることは[[合成の一致|LerayHopf.stageData_comp_eq_nestedComp]]で機械検査される。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: compactness
+tags: [diagonal-subsequence, time-global, torus]

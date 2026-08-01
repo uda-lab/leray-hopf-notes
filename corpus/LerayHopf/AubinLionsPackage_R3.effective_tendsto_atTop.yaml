@@ -1,0 +1,10 @@
+name: LerayHopf.AubinLionsPackage_R3.effective_tendsto_atTop
+tier: full
+statement_ja: |
+  **有効添字の共終性。** 再添字 $\kappa$ が狭義単調ならば、合成 $\kappa\circ\varphi$ は正の無限大へ発散する。すなわち有効添字は近似列を汲み尽くす。
+proof_ja: |
+  [[有効添字の狭義単調性|LerayHopf.AubinLionsPackage_R3.effective_strictMono]]から従う。狭義単調な自然数列は正の無限大へ発散する。
+gap:
+  level: none
+chapter: compactness
+tags: [kappa-chain, time-global, r3]

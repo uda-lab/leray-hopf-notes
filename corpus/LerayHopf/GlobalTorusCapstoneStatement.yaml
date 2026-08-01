@@ -1,0 +1,14 @@
+name: LerayHopf.GlobalTorusCapstoneStatement
+tier: full
+statement_ja: |
+  **凍結された時間大域主張（$\mathbb{T}^3$）。** 命題として書き下した主定理の目標である。内容は、任意の発散ゼロな初期値 $u_0$ と $\nu>0$ に対し、ある形式束 $F$ と**ただ一本の**曲線 $u$ が存在して、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、というものである。
+
+  量化子の並びが $\exists F,\ \exists u,\ \forall T$ であることが本質で、$\forall T,\ \exists u$ ではない。
+proof_ja: |
+  目標を命題として固定しておくと、証明の側が量化子を入れ替えたり曲線を時刻ごとに取り替えたりしていないことを型検査で確かめられる。実際にこの命題を証明しているのが[[凍結目標の証明|LerayHopf.globalTorusCapstone]]である。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: capstone-torus
+tags: [leray-hopf, capstone, torus, time-global]

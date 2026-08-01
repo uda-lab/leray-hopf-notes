@@ -1,0 +1,10 @@
+name: LerayHopf.ballLimit_furtherRestrict_eq
+tier: gloss
+statement_ja: |
+  半径 $k$ の球で得た極限をさらに半径 $j\le k$ の球へ制限したものは、半径 $j$ の球で得た極限に一致する。制限作用素が連続で、両者が同じ部分列の像の極限であることによる。
+gap:
+  level: mild
+provenance: |
+  球ごとの極限から単一の大域代表元を組み立てる段（D3a）の私的補助。抽出元: `LerayHopf/R3/SpatialCompactness.lean`。
+chapter: compactness
+tags: [private-helper, spatial-compactness]

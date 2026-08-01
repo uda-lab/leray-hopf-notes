@@ -1,0 +1,10 @@
+name: LerayHopf.Bochner.nestedComp_succ
+tier: full
+statement_ja: |
+  第 $m+1$ 段の[[絶対抽出|LerayHopf.Bochner.nestedComp]]は、第 $m$ 段の絶対抽出と第 $m+1$ 段の相対抽出との合成に等しい。
+proof_ja: |
+  再帰の帰納段そのものであり、定義から直ちに従う。
+gap:
+  level: none
+chapter: bochner
+tags: [diagonal-subsequence, time-global]

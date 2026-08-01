@@ -1,0 +1,10 @@
+name: LerayHopf.Bochner.nestedComp_add
+tier: full
+statement_ja: |
+  **段の分解。** 第 $m+j$ 段の[[絶対抽出|LerayHopf.Bochner.nestedComp]]は、第 $m$ 段の絶対抽出と[[段間の相対抽出|LerayHopf.Bochner.tailComp]]との合成に分解される。
+proof_ja: |
+  段差 $j$ についての帰納法による。$j=0$ では相対抽出が恒等写像なので両辺は一致し、帰納段では合成の結合律により、右端に付く第 $m+j+1$ 段の写像を絶対抽出側から相対抽出側へ移せる。
+gap:
+  level: none
+chapter: bochner
+tags: [diagonal-subsequence, time-global]

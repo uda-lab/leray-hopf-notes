@@ -1,0 +1,16 @@
+name: LerayHopf.Galerkin.WeakFormNS.mono
+tier: full
+statement_ja: |
+  **弱形式は短い区間へ制限できる。** $0<T'\le T$ とする。$[0,T]$ 上で[[弱形式|LerayHopf.WeakFormNS]]が成り立てば、$[0,T']$ 上でも成り立つ。可積分性の仮定は一切追加しない。
+proof_ja: |
+  $[0,T']$ 上のテスト関数は台が $(0,T')$ に含まれるので、そのまま $[0,T]$ 上のテスト関数でもある。よって仮定を適用して $[0,T]$ 上の等式が得られる。
+
+  弱形式の被積分関数は各項がテスト関数の値かその導関数を因子に持つ。テスト関数の台は $(0,T')$ に含まれるので、$T'<t\le T$ では被積分関数が恒等的に零になる。
+
+  あとは[[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]で $T$ までの積分を $T'$ までの積分に置き換えればよい。ここで可積分性が不要なことが効く。
+gap:
+  level: mild
+  note: |
+    素朴には区間加法性で済むように見えるが、それは被積分関数の可積分性を要求する。弱解の被積分関数にその可積分性は仮定されていないため、定義関数の各点一致に基づく[[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]を経由する必要がある。台の外での消滅は `image_eq_zero_of_notMem_tsupport` と `deriv_of_notMem_tsupport` が与える。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation]

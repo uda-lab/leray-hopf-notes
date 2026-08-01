@@ -1,0 +1,12 @@
+name: LerayHopf.Galerkin.WeakFormNS.congr_Icc
+tier: full
+statement_ja: |
+  **弱形式は区間上の値しか見ない。** $T>0$ とし、二本の曲線が $[0,T]$ 上で各点一致するとする。一方が $[0,T]$ 上で[[弱形式|LerayHopf.WeakFormNS]]を満たせば、他方も満たす。
+proof_ja: |
+  弱形式の被積分関数は各時刻での曲線の値だけから決まるので、$[0,T]$ 上で曲線が一致していれば被積分関数も $[0,T]$ 上で一致する。積分区間はこの区間に収まっているので、積分値も等しい。
+gap:
+  level: none
+  note: |
+    仮定は各点一致であってほとんど至る所の一致ではない。対角部分列の整合性はまさに各点一致を与えるので、ここを弱める必要がない。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global]

@@ -1,0 +1,12 @@
+name: LerayHopf.Galerkin.nonempty_lerayHopfSolution_iff_exists_isOn
+tier: full
+statement_ja: |
+  **往復同値。** [[Leray–Hopf 弱解の束|LerayHopf.Galerkin.LerayHopfSolution]]が存在することと、[[有限区間 Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす曲線が存在することは同値である。すなわち契約への言い換えは各時刻区間において主張を弱めていない。
+proof_ja: |
+  一方向は[[束から契約へ|LerayHopf.Galerkin.LerayHopfSolution.isLerayHopfOn]]、他方向は[[契約からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]であり、いずれも曲線を取り替えない。
+gap:
+  level: none
+provenance: |
+  時間大域の主張が有限区間の主張を弱めた上での一般化になっていないことを確かめるために置かれた同値。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, leray-hopf]

@@ -1,0 +1,10 @@
+name: LerayHopf.measurable_ballClassify
+tier: gloss
+statement_ja: |
+  [[動径分類|LerayHopf.ballClassify]]は可測である。値 $k$ をとる集合が、半径 $k$ の閉球からそれより小さい半径の閉球の合併を除いた可測な環状領域に一致することによる。
+gap:
+  level: none
+provenance: |
+  球ごとの極限から単一の大域代表元を組み立てる段（D3a）の私的補助。抽出元: `LerayHopf/R3/SpatialCompactness.lean`。
+chapter: compactness
+tags: [private-helper, spatial-compactness]

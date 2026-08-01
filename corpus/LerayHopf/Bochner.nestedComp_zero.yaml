@@ -1,0 +1,10 @@
+name: LerayHopf.Bochner.nestedComp_zero
+tier: full
+statement_ja: |
+  第 $0$ 段の[[絶対抽出|LerayHopf.Bochner.nestedComp]]は第 $0$ 段の抽出写像そのものである。
+proof_ja: |
+  再帰の基底そのものであり、定義から直ちに従う。
+gap:
+  level: none
+chapter: bochner
+tags: [diagonal-subsequence, time-global]

@@ -1,0 +1,18 @@
+name: LerayHopf.exists_weakLimitCurve_R3_kappa
+tier: full
+statement_ja: |
+  **段の取り出し（$\mathbb{R}^3$）。** $\nu>0$、$T>0$、再添字族 $\kappa$ が狭義単調であるとする。このとき狭義単調な抽出 $\varphi$ と曲線 $U$ が存在して、$[0,T]$ のすべての時刻 $t$ と**周囲の $L^2$ ベクトル場全体**を走るすべてのテスト元 $z$ について、$\kappa\circ\varphi$ に沿った Galerkin 近似との内積が $\langle U(t),z\rangle$ へ収束する。
+
+  テスト元が発散ゼロ部分空間ではなく周囲の空間全体を走る点で、トーラス系統の対応物より強い形の収束を与える。
+proof_ja: |
+  $\mathbb{R}^3$ の κ 一般化された[[Aubin–Lions パッケージ|LerayHopf.aubinLionsPackage_R3_of_timeCompactness]]を、Fréchet–Kolmogorov から得られる具体的な局所 Rellich 入力とともに適用する。この入力は無条件に構成できるので、外から仮定を持ち込む必要がない。
+
+  得られたパッケージに[[良い代表元の取り出し|LerayHopf.exists_weak_representative_R3]]を施すと、パッケージの抽出に沿って各時刻で全空間テストに対する弱収束をもつ曲線が得られる。返す抽出はパッケージの抽出そのものであり、再添字 $\kappa$ は内積の側に残したままにする。
+gap:
+  level: mild
+  note: |
+    非有界領域では大域 Rellich が破綻するため、コンパクト性は球ごとに局所化した形でしか使えない。ここで消費する局所 Rellich 入力はその局所化されたコンパクト性であり、追加の tightness（無限遠での質量の逃散を抑える仮定）を要さない。テスト関数の側で弱形式を扱わないので、テスト空間の近似性は本段では不要である。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: compactness
+tags: [diagonal-subsequence, time-global, r3]

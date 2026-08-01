@@ -1,0 +1,12 @@
+name: LerayHopf.globalTorusCapstone_implies_finite
+tier: full
+statement_ja: |
+  **健全性の確認（$\mathbb{T}^3$）。** [[凍結された時間大域主張|LerayHopf.GlobalTorusCapstoneStatement]]が成り立てば、既存の有限区間主定理の形（任意の $T>0$ で完全 Leray–Hopf 解が存在する）も成り立つ。
+proof_ja: |
+  時間大域の主張から曲線と全区間での契約を取り出し、指定された $T$ における契約に[[契約からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]を施せばよい。
+gap:
+  level: none
+  note: |
+    量化子の入れ替えのうち容易な向きだけを確認したもので、逆向き（有限区間から時間大域へ）の証拠にはならない。時間大域の主張が既存の主定理の**強化**であって別物への横滑りではないことを機械検査するために置かれている。
+chapter: capstone-torus
+tags: [leray-hopf, capstone, torus, time-global]

@@ -1,0 +1,10 @@
+name: LerayHopf.Galerkin.LerayHopfSolution.ofIsOn
+tier: full
+statement_ja: |
+  逆向きの対応：曲線 $u$ が[[有限区間 Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たすなら、**その $u$ を曲線として**[[Leray–Hopf 弱解の束|LerayHopf.Galerkin.LerayHopfSolution]]を組み立てる。
+
+  曲線は取り替えられず、選択公理も使われない。契約の五つの連言をそのまま束の各条項に充てるだけである。
+gap:
+  level: none
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, leray-hopf]

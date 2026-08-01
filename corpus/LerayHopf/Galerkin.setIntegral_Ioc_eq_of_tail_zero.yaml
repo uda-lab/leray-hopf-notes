@@ -1,0 +1,16 @@
+name: LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero
+tier: full
+statement_ja: |
+  **可積分性を仮定しない裾の切り落とし。** $b\le c$ とし、被積分関数 $f$ が半開区間 $(b,c]$ 上で恒等的に零であるとする。このとき $(a,c]$ 上の積分と $(a,b]$ 上の積分は一致する。
+
+  $f$ がどちらの区間でも可積分でなくてよい点が要である。
+proof_ja: |
+  二つの区間に対する $f$ の定義関数どうしが**各点で**等しいことを直接示す。$(a,c]$ に属し $(a,b]$ に属さない点では $b<t\le c$ となるから仮定より $f$ の値が零であり、両者の定義関数の値はともに零になる。それ以外の点では所属関係が一致するので値も一致する。
+
+  積分は定義関数を通して書けるので、被積分関数が各点で等しければ積分値も等しい。可積分でない場合は両辺とも同じ既定値になるだけであり、等式は保たれる。
+gap:
+  level: mild
+  note: |
+    区間加法性 `setIntegral_union` は可積分性を要求するため使えない。ここでは定義関数の各点一致に落とすことでその要求を回避しており、非可積分な場合には両辺がともに `integral_undef` の既定値 $0$ になるという規約に依存する。この規約依存が空虚な等式を生んでいないことは[[非可積分な裾での検証|LerayHopf.Galerkin.badTail_truncation]]と[[加法性経路との一致|LerayHopf.Galerkin.truncation_routes_agree]]が機械検査で裏付ける。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation]

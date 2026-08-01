@@ -1,0 +1,20 @@
+name: LerayHopf.Galerkin.IsLerayHopfOn
+tier: full
+statement_ja: |
+  **領域中立な有限区間 Leray–Hopf 契約。** [[Galerkin 領域|LerayHopf.Galerkin.Domain]]・[[移流形式核|LerayHopf.Galerkin.NSFormCore]]・粘性係数 $\nu$・時刻 $T$・初期値 $u_0$ と曲線 $u$ に対し、$u$ が $[0,T]$ 上の Leray–Hopf 弱解であることを述べる命題である。内容は次の五つの連言である。
+
+  第一に[[弱形式|LerayHopf.WeakFormNS]]を満たすこと、第二にすべての $t\in[0,T]$ でエネルギー不等式
+
+  $$\tfrac12\lVert u(t)\rVert^2+\int_0^t \mathrm{diss}_\nu\bigl(u(s)\bigr)\,ds\ \le\ \tfrac12\lVert u_0\rVert^2$$
+
+  が成り立つこと、第三に $t\to0^+$ の片側極限で初期値へ強収束すること、第四にエネルギー類（ほとんど至る所の正則性所属と散逸の区間可積分性）に属すること、第五に時間可測性をもつことである。
+
+  [[Leray–Hopf 弱解の束|LerayHopf.Galerkin.LerayHopfSolution]]と条項は一対一に対応するが、曲線 $u$ をデータとして抱え込まず引数として外に出している点が異なる。この差が時間大域化の鍵で、「一本の曲線を固定したまま $T$ を動かす」という主張が書けるようになる。
+gap:
+  level: mild
+  note: |
+    エネルギー不等式が「ほとんどすべての $t$」ではなく**すべての** $t\in[0,T]$ で要求される点、初期トレースが `nhdsWithin 0 (Set.Ici 0)` に沿う片側極限である点は束の側と同一である。時間可測性は `AEStronglyMeasurable` で持ち、周囲の $L^2$ 空間へ値を取るため、エネルギー類と合わせても文字通りの Bochner 空間所属には格上げされない。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 時間大域の主張を「一本の曲線 $u$ に対する $T$ ごとの命題」として書くための層。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, leray-hopf]
