@@ -15,6 +15,6 @@ gap:
   note: |
     「区間ごとに得られる別々の代表元が、実は一本の曲線と各点で一致する」という主張であり、時間大域化の中核である。区間を延ばすたびに解を取り直して零集合を除いて貼り合わせる、という素朴な構成とは異なる。
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 主定理の組み立て側へ渡す形にまとめた段。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。主定理の組み立て側へ渡す形にまとめた段。
 chapter: limit-passage
 tags: [diagonal-subsequence, time-global, r3, good-representative]

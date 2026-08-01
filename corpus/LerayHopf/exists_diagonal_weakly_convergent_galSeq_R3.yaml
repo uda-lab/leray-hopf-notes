@@ -13,6 +13,6 @@ gap:
   note: |
     得られるのは各時刻での弱収束のみで、弱解であることはこの段階では何も言えていない。
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 時間大域キャンペーンの P3′ 段に相当する。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域キャンペーンの P3′ 段に相当する。
 chapter: compactness
 tags: [diagonal-subsequence, time-global, r3]

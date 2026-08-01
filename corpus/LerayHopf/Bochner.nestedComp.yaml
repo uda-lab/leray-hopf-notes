@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: none
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 順序論のみに依存し、偏微分方程式側の仮定を一切含まない。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。順序論のみに依存し、偏微分方程式側の仮定を一切含まない。
 chapter: bochner
 tags: [diagonal-subsequence, time-global]

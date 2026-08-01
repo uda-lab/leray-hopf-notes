@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: none
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 極限移行の結論を強化した際に、強化部分の形を凍結するために置かれた。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。極限移行の結論を強化した際に、強化部分の形を凍結するために置かれた。
 chapter: limit-passage
 tags: [kappa-chain, time-global, r3]

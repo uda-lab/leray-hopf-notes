@@ -27,6 +27,6 @@ gap:
 
     この $\mathbb{T}^3$ 時間大域主定理はカーネルのみで閉じている（追加公理ゼロ）。
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 トーラス系統（issue #195）の最終段。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。トーラス系統（issue #195）の最終段。
 chapter: capstone-torus
 tags: [leray-hopf, capstone, torus, time-global]

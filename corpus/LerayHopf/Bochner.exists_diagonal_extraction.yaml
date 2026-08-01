@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: none
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 時間大域化では区間 $[0,m+1]$ を段とする無限個の抽出が現れるため、この形の対角化が要になる。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域化では区間 $[0,m+1]$ を段とする無限個の抽出が現れるため、この形の対角化が要になる。
 chapter: bochner
 tags: [diagonal-subsequence, time-global]

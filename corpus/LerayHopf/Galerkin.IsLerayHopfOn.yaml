@@ -15,6 +15,6 @@ gap:
   note: |
     エネルギー不等式が「ほとんどすべての $t$」ではなく**すべての** $t\in[0,T]$ で要求される点、初期トレースが `nhdsWithin 0 (Set.Ici 0)` に沿う片側極限である点は束の側と同一である。時間可測性は `AEStronglyMeasurable` で持ち、周囲の $L^2$ 空間へ値を取るため、エネルギー類と合わせても文字通りの Bochner 空間所属には格上げされない。
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 時間大域の主張を「一本の曲線 $u$ に対する $T$ ごとの命題」として書くための層。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域の主張を「一本の曲線 $u$ に対する $T$ ごとの命題」として書くための層。
 chapter: galerkin-generic
 tags: [galerkin-domain, time-global, leray-hopf]

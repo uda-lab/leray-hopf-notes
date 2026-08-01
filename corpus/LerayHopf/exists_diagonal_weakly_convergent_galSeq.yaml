@@ -15,6 +15,6 @@ gap:
   note: |
     得られるのは各時刻での弱収束のみで、時間方向の一様性も強収束も主張していない。弱解であることはこの段階では何も言えておらず、以後の段で有限区間ごとに契約を回収する。
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。 時間大域キャンペーンの P3 段に相当する。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域キャンペーンの P3 段に相当する。
 chapter: compactness
 tags: [diagonal-subsequence, time-global, torus]
