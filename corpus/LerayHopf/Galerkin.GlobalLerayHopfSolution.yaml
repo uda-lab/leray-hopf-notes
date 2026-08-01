@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.GlobalLerayHopfSolution
 tier: full
 statement_ja: |
-  **時間大域 Leray–Hopf 解の束。** ただ一本の曲線 $u$ と、その**同じ** $u$ が任意の $T>0$ について[[有限区間 Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たすという証明を保持する。
+  **時間大域 Leray–Hopf 解の束。** 曲線 $u$ を一本だけ保持し、その**同じ** $u$ が任意の $T>0$ について[[有限区間 Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たすという証明を保持する。
 
   論理的な内容は文字どおり「$u$ が存在して、すべての $T>0$ で契約が成り立つ」であり、「各 $T$ ごとに解 $u_T$ が存在する」を詰め替えたものではない。曲線が一本であることは束の構成そのものが強制している。
 proof_ja: |

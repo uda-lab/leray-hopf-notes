@@ -1,7 +1,7 @@
 name: LerayHopf.GlobalR3CapstoneStatement
 tier: full
 statement_ja: |
-  **凍結された時間大域主張（$\mathbb{R}^3$）。** 任意の発散ゼロな初期値 $u_0$ と $\nu>0$ に対し、あるスキーム $\mathfrak{G}$ と形式束 $F$、および**ただ一本の**曲線 $u$ が存在して、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、という命題。
+  **凍結された時間大域主張（$\mathbb{R}^3$）。** 任意の発散ゼロな初期値 $u_0$ と $\nu>0$ に対し、あるスキーム $\mathfrak{G}$ と形式束 $F$、および曲線 $u$ が存在して、**その同じ** $u$ について、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、という命題。
 
   量化子の並びは次のとおりである。
 

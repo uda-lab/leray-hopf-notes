@@ -1,7 +1,7 @@
 name: LerayHopf.exists_global_lerayHopf_r3
 tier: full
 statement_ja: |
-  **時間大域 Leray–Hopf 弱解の存在（$\mathbb{R}^3$）。** 発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$ と粘性係数 $\nu>0$ に対して、あるスキーム $\mathfrak{G}$ と形式束 $F$、および**ただ一本の**曲線 $u$ が存在し、**すべての** $T>0$ について $u$ が $[0,T]$ 上の[[Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす。
+  **時間大域 Leray–Hopf 弱解の存在（$\mathbb{R}^3$）。** 発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$ と粘性係数 $\nu>0$ に対して、あるスキーム $\mathfrak{G}$ と形式束 $F$、および曲線 $u$ が存在して、**その同じ** $u$ が**すべての** $T>0$ について $[0,T]$ 上の[[Leray–Hopf 契約|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす。
 
   スキーム・形式束・曲線のいずれも $T$ に依存しない。一本の曲線がどの有限区間に制限しても Leray–Hopf 弱解になっており、区間ごとの解を零集合を除いて貼り合わせたものではない。一致は各点で成り立つ。
 

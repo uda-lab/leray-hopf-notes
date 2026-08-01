@@ -1,7 +1,7 @@
 name: LerayHopf.exists_diagonal_weakly_convergent_galSeq_R3
 tier: full
 statement_ja: |
-  **対角部分列と大域弱極限（$\mathbb{R}^3$）。** 任意の Galerkin 近似族に対し、ただ一つの狭義単調な対角部分列 $\delta$ とただ一本の曲線 $W$ が存在して、すべての前向き時刻 $t$ と、周囲の $L^2$ ベクトル場全体を走るすべてのテスト元 $z$ について、$\delta$ に沿った Galerkin 近似との内積が $\langle W(t),z\rangle$ へ収束する。
+  **対角部分列と大域弱極限（$\mathbb{R}^3$）。** 任意の Galerkin 近似族に対し、狭義単調な対角部分列 $\delta$ と曲線 $W$ がとれて、すべての前向き時刻 $t$ と、周囲の $L^2$ ベクトル場全体を走るすべてのテスト元 $z$ について、$\delta$ に沿った Galerkin 近似との内積が $\langle W(t),z\rangle$ へ収束する。
 
   部分列も曲線も時刻の範囲に依存しない。テスト空間が全空間である点が[[トーラス側の対応物|LerayHopf.exists_diagonal_weakly_convergent_galSeq]]より強い。
 proof_ja: |
