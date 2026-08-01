@@ -1,0 +1,12 @@
+name: LerayHopf.mem_closedBall_add_supportRadius_of_kernel_ne_zero
+tier: gloss
+statement_ja: |
+  **核の到達範囲。** $\lVert p\rVert\le R$ とし、[[軟化子核|LerayHopf.MollifierKernel]]の切片 $z\mapsto\eta(p-z)$ が $z$ で零でないとする。このとき $z$ は原点中心・半径 $R+r$ の閉球に属する（$r$ は核の台半径）。
+
+  「球 $B_R$ 上で軟化した場が見ているのは $B_{R+r}$ 上の値だけである」という到達範囲の幾何を述べたもの。核は台半径の外で消えるので、切片が零でないことから $\lVert p-z\rVert\le r$ が従い、三角不等式が $\lVert z\rVert\le R+r$ を与える。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 2（PR #226）で `FrechetKolmogorov.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.mem_closedBall_add_supportRadius_of_kernel_ne_zero`。
+chapter: compactness
+tags: [private-helper, frechet-kolmogorov, mollifier]

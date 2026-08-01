@@ -1,0 +1,12 @@
+name: LerayHopf.coeFn_translate_kernelL2R_sub
+tier: gloss
+statement_ja: |
+  **平行移動した核の差の点ごと表示。** [[核の $L^2$ 類|LerayHopf.kernelL2R]]を $v$ だけ[[平行移動|LerayHopf.translate_L2R]]したものから元の類を引いた差は、ほとんど至る所で点ごとの差 $w\mapsto\eta(w+v)-\eta(w)$ に一致する。
+gap:
+  level: mild
+  note: |
+    平行移動は測度を保つ写像 $w\mapsto w+v$ による合成として、核の $L^2$ 類は `toLp` として定義されているので、それぞれの `coeFn` 同値をほどいたうえで、測度を保つずらしに沿って核の同値を輸送する。
+provenance: |
+  leray-hopf issue #154 Wave 2（PR #226）で `FrechetKolmogorov.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.coeFn_translate_kernelL2R_sub`。
+chapter: compactness
+tags: [private-helper, frechet-kolmogorov, translation, mollifier]

@@ -1,0 +1,18 @@
+name: LerayHopf.mul_div_two_mul_add_one_lt
+tier: gloss
+statement_ja: |
+  **上限評価から $L^2$ 評価への許容量。** $V\ge0$ と $\varepsilon>0$ に対して次が成り立つ。
+
+  $$V\cdot\frac{\varepsilon}{2(V+1)}<\varepsilon$$
+
+  質量 $V$ を固定したうえで上限レベルの許容量を $\varepsilon/(2(V+1))$ と取れば、質量因子 $V$ を掛けても目標の $\varepsilon$ を超えない、という形で使う。許容量は $V$ に依存するので、球の質量を押さえてから選ぶ。
+
+  分母の $+1$ は二つの役割をもつ。$V=0$ でも分母が消えないことと、$V/(V+1)<1$ が成り立つことである。後者から左辺は次のように評価でき、主張の $\varepsilon$ よりさらに強い。
+
+  $$V\cdot\frac{\varepsilon}{2(V+1)}=\frac{\varepsilon}{2}\cdot\frac{V}{V+1}<\frac{\varepsilon}{2}$$
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 2（PR #226）で `FrechetKolmogorov.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.mul_div_two_mul_add_one_lt`。
+chapter: compactness
+tags: [private-helper, frechet-kolmogorov, arzela-ascoli]
