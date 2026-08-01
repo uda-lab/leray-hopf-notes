@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.tendsto_diag_of_tendsto_stage
 tier: full
 statement_ja: |
-  **極限の対角列への移送。** 各段の段間の添字写像が狭義単調であるとする。ある段 $m$ の部分列に沿って収束する量は、[[対角添字写像|LerayHopf.Bochner.diagExtraction]]に沿っても同じ極限に収束する。
+  **極限の対角列への移送。** 各段の添字写像が狭義単調であるとする。ある段 $m$ の部分列に沿って収束する量は、[[対角添字写像|LerayHopf.Bochner.diagExtraction]]に沿っても同じ極限に収束する。
 
   極限は任意のフィルターに関するもので、収束先の空間にも仮定を置かない。
 proof_ja: |

@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.nestedComp_strictMono
 tier: full
 statement_ja: |
-  各段の段間の添字写像がすべて狭義単調ならば、どの段の[[合成添字写像|LerayHopf.Bochner.nestedComp]]も狭義単調である。
+  各段の添字写像がすべて狭義単調ならば、どの段の[[累積添字写像|LerayHopf.Bochner.nestedComp]]も狭義単調である。
 proof_ja: |
   段数についての帰納法による。第 $0$ 段は仮定そのもの、帰納段は狭義単調写像どうしの合成が狭義単調であることによる。
 gap:

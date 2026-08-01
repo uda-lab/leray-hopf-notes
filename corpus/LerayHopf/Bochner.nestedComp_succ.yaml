@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.nestedComp_succ
 tier: full
 statement_ja: |
-  第 $m+1$ 段の[[合成添字写像|LerayHopf.Bochner.nestedComp]]は、第 $m$ 段の合成添字写像と第 $m+1$ 段の段間の添字写像との合成に等しい。
+  第 $m+1$ 段の[[累積添字写像|LerayHopf.Bochner.nestedComp]]は、第 $m$ 段の累積添字写像と第 $m+1$ 段の添字写像との合成に等しい。
 proof_ja: |
   再帰の帰納段そのものであり、定義から直ちに従う。
 gap:

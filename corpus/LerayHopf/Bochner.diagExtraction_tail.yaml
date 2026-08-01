@@ -1,13 +1,13 @@
 name: LerayHopf.Bochner.diagExtraction_tail
 tier: full
 statement_ja: |
-  **対角列の裾はすべての段を細分する。** 各段の段間の添字写像が狭義単調ならば、どの段 $m$ に対しても狭義単調な写像 $\psi$ が存在して、$m$ だけずらした[[対角添字写像|LerayHopf.Bochner.diagExtraction]]の第 $j$ 項が、第 $m$ 段の[[合成添字写像|LerayHopf.Bochner.nestedComp]]の第 $\psi(j)$ 項に一致する。
+  **対角列の裾はすべての段を細分する。** 各段の添字写像が狭義単調ならば、どの段 $m$ に対しても狭義単調な写像 $\psi$ が存在して、$m$ だけずらした[[対角添字写像|LerayHopf.Bochner.diagExtraction]]の第 $j$ 項が、第 $m$ 段の[[累積添字写像|LerayHopf.Bochner.nestedComp]]の第 $\psi(j)$ 項に一致する。
 
   すなわち対角列は先頭の有限個を除いて第 $m$ 段の部分列であり、これがすべての $m$ について同時に成り立つ。
 proof_ja: |
-  $\psi(j)$ として、[[段間の段間の添字写像|LerayHopf.Bochner.tailComp]]の第 $m+j$ 項をとる。
+  $\psi(j)$ として、[[段間の合成添字写像|LerayHopf.Bochner.tailComp]]の第 $m+j$ 項をとる。
 
-  $\psi$ の狭義単調性は、[[段の分解|LerayHopf.Bochner.nestedComp_add]]の証明と同じ二段構えで得られる。段間の添字写像の単調性で $m+j$ を $m+j+1$ に上げ、次に狭義単調な自然数列が各点で恒等写像以上であることから $m+j+1\le e_{m+j+1}(m+j+1)$ を使って、第 $j+1$ 項の定義形に到達する。
+  $\psi$ の狭義単調性は、[[段の分解|LerayHopf.Bochner.nestedComp_add]]の証明と同じ二段構えで得られる。段間の合成添字写像の単調性で $m+j$ を $m+j+1$ に上げ、次に狭義単調な自然数列が各点で恒等写像以上であることから $m+j+1\le e_{m+j+1}(m+j+1)$ を使って、第 $j+1$ 項の定義形に到達する。
 
   主張の等式は[[段の分解|LerayHopf.Bochner.nestedComp_add]]をそのまま第 $m+j$ 項に適用したものである。
 gap:
