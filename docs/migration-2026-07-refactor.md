@@ -1,4 +1,12 @@
-# 2026-07 リファクタリング波 追随 — 宣言 universe 移行記録（PIN 013c4a0 → a33de86）
+# 宣言 universe 移行記録 — repin ledger（2026-07 リファクタリング波以降、継続追記）
+
+本書は repin のたびに追記される**生きた ledger**（`CONTRIBUTING.md` §5 手順 5）。
+冒頭から「将来の変動要因」節までは初回の 2026-07 リファクタリング波（PIN
+`013c4a0` → `a33de86`）を扱い、以降の repin はそれぞれ「追記 N」節として末尾に
+積まれる。**現行 PIN は本書ではなく `extracted/PIN`（および同期が必須の
+`CITATION.cff` の `references[0].commit`）が正典**であり、本書の各節は当時点の
+スナップショットとして読むこと。追記が止まり後続 ledger に引き継がれた時点で
+`docs/archive/`（規約は `docs/archive/README.md`）へ移す。
 
 `uda-lab/lean-pde` の pre-publication リファクタリング波（issue #108/#110/#111/#112/#113/#114/#131
 = PR #116–#138、2026-07-09〜07-11）に伴う corpus・宣言マッピングの追随記録。
@@ -7,9 +15,6 @@ corpus 側への適用結果（何をどう機械的に変更したか）を記�
 
 対応は新 PIN `a33de86522a13d05d7cee67fbc27b1b9106822f8` 時点の `extracted/decls.json`
 （正典の名前 universe）で全行検証済み。
-
-本書は repin のたびに追記される生きた ledger であり、追記が止まり後続に引き継がれた
-時点で `docs/archive/`（規約は `docs/archive/README.md` 参照）へ移す。
 
 ## 規模
 
@@ -165,4 +170,68 @@ owner 裁定（issue #32、2026-07-19T15:49:25Z）による source release candi
 display-name 衝突は 2 組 4 宣言のまま不変。`validate.py` / `coverage.py` はともに green
 （1339/1339 coverage、tier 不整合は非致命 — `validate.py` は `tier ∈ {full, gloss}` のみ検査
 し public/private との整合は検査対象外）。`extracted/names-fallback.json` は引き続き休眠・
+非更新。
+
+## 追記 4: 時間大域キャンペーン repin（PIN 7c15710a → 4d65c05、notes#116）
+
+`uda-lab/leray-hopf` の時間大域（global-in-time）キャンペーン 2 レーン — 𝕋³ 側 issue #195
+（PR #205–#211、sub-issue #200–#204）と ℝ³ 側 issue #212（PR #218–#222、sub-issue #213–#217）
+— および先行する保守 2 件（#196 pre-push env 衛生 = PR #197、#184 linter 警告一掃 = PR #198）
+を含む 14 commits への追随。pin 先は `dev/v0.2.0` tip
+`4d65c0570dc82495bddca873ea1344b5817a2b3c`。`main` からは fast-forward 可能（+14 −0）で
+コミットハッシュは merge 後も保存されるため、main マージを待たずに pin できる。
+
+このキャンペーンで両レーンに時間大域 capstone `exists_global_lerayHopf_torus3` /
+`exists_global_lerayHopf_r3` が入った。いずれも `∃ u, ∀ T > 0, IsLerayHopfOn … T u₀ u` の形、
+すなわち**ただ一本の曲線**が任意の有限区間 $[0,T]$ 上で Leray–Hopf 契約を満たす主張であり、
+`∀ T, ∃ u_T` の詰め替えではない（`globalLerayHopfSolution_nonempty_iff` が literal 同値を
+機械検査する）。訳語は `docs/GLOSSARY.md` の `time-global` 行で「時間大域」に固定した。
+
+`lake exe extract_notes` 再実行（donor `.lake` を `cp -al` 共有した 4d65c05 の worktree 上、
+リビルドなし）: 抽出宣言数 1,339 → 1,420。`decl_diff.py` による分類:
+
+| 区分 | 件数 | 内容 | corpus 側対応 |
+|---|---|---|---|
+| 新設 | +81 | 下表の新規 9 モジュール + 既存 3 モジュールへの追加 | 全件に対訳を執筆（後続 PR、100% coverage 回復） |
+| 削除 | 0 | — | — |
+| ファイル移動・改名 | 0 | — | — |
+| 可視性変更 | 0 | — | — |
+| signature text 変更 | 38 | κ 再添字族の配線 35 件（下記）＋ `[FiniteDimensional ℝ V]` 仮定の削除 3 件 | 後続 PR で該当エントリの記述を点検 |
+
+新設 81 件のモジュール別内訳:
+
+| モジュール | 件数 | 役割 |
+|---|---|---|
+| `LerayHopf/Galerkin/GlobalContract.lean` | 21 | 領域非依存の `IsLerayHopfOn` 契約層・`GlobalLerayHopfSolution`・区間制限と曲線合同の転送補題 |
+| `LerayHopf/Bochner/DiagonalExtraction.lean` | 12 | 段階部分列の入れ子合成と対角抽出 |
+| `LerayHopf/R3/DiagonalGalerkin.lean` | 11 | ℝ³ 段階再帰と対角弱極限 |
+| `LerayHopf/Torus/DiagonalGalerkin.lean` | 8 | 𝕋³ 同上 |
+| `LerayHopf/R3/GlobalCapstone.lean` | 6 | ℝ³ 時間大域 capstone と凍結ターゲット |
+| `LerayHopf/Torus/GlobalCapstone.lean` | 6 | 𝕋³ 同上 |
+| `LerayHopf/R3/KappaChainExit.lean` | 4 | ℝ³ κ 鎖の型付き exit gate |
+| `LerayHopf/Torus/KappaChainExit.lean` | 4 | 𝕋³ 同上 |
+| `LerayHopf/R3/SpatialCompactness.lean` | 5 | 球分類の private 補助（既存モジュールへの追加） |
+| `LerayHopf/R3/LimitPassage.lean` | 2 | pin 連言・強化結論の `def`（既存モジュールへの追加） |
+| `LerayHopf/R3/SolutionInterfaces.lean` | 2 | κ 有効添字の単調性・発散（既存モジュールへの追加） |
+
+signature 変更 38 件の内訳: 35 件は両レーンの Aubin–Lions 連鎖に再添字族 `κ : ℕ → ℕ`（と
+`StrictMono κ`）を通した配線（`AubinLionsPackage` / `AubinLionsPackage_R3` の型引数追加を
+含む）。時間大域 capstone は per-horizon の exit witness を対角部分列 `δ` に固定して走らせる
+必要があり、そのために既存の有限区間連鎖を κ で一般化したもの。残り 3 件は
+`LerayHopf/Galerkin/DissipativeODE.lean` の `energy_hasDerivAt_of_solution` /
+`norm_le_of_forwardSolution_of_dissipative` / `solve_exists_on_step` から
+`[FiniteDimensional ℝ V]` 仮定が外れたもの（仮定の削除であり主張は強化）。
+
+### `LerayHopf/Scratch/**` の扱い
+
+本波で Lean 側に scratch モジュールが 8 件（`GateFixture`, `KappaReindex`, `KappaShapeGate`,
+`P2ExitContract`, `R3KappaSeed`, `R3ProductionCoupling`, `R3ShapeGate`, `R3StageCoherence`）
+追加されたが、**抽出 universe には 1 件も入らない**。`ExtractNotes` は root の `LerayHopf` と
+`LerayHopf.Experimental` の 2 モジュールのみを import して環境を反射するところ、
+`LerayHopf.Scratch.*` はどちらの import 錐にも属さないためである（実際 `decls.json` の
+新旧いずれにも `LerayHopf/Scratch/` 由来のレコードは 0 件）。したがって corpus 側の対応は
+不要で、既存 repin と同じ扱いが自動的に維持される。抽出除外は release cone membership の
+帰結であり、notes 側の設定項目ではない。
+
+display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は引き続き休眠・
 非更新。

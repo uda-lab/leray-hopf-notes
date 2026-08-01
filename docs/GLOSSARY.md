@@ -68,7 +68,8 @@ Leray–Hopf 形式化（`uda-lab/leray-hopf`）の注釈コーパスで使う�
 | Fourier multiplier | Fourier 乗数 | `viscousFormSq`, `stokesTestPairing_R3` | Fourier 空間での乗算として表現される作用素 | |
 | tsum convention | tsum 規約 | `tsum` | mathlib では非可算和は +∞ でなく 0 を返す（本形式化の主要罠） | |
 | dissipative field | 散逸的（な）場 / 散逸的ベクトル場 | `norm_le_of_forwardSolution_of_dissipative` | すべての $v$ で ⟪v, g(v)⟫ ≤ 0 を満たすベクトル場 | 「消散的」 |
-| forward-global solution | 前向き大域解 | `forwardGlobalSolution_exists` | 前向き時刻 t ≥ 0 全体で定義された解。二次場は後ろ向きに爆発しうるため前向きに限る | 「前方大域解」 |
+| forward-global solution | 前向き大域解 | `forwardGlobalSolution_exists` | 前向き時刻 t ≥ 0 全体で定義された解。二次場は後ろ向きに爆発しうるため前向きに限る。有限次元 Galerkin ODE の可解性についての語であり、Leray–Hopf 弱解の「時間大域」（次行）とは別概念 | 「前方大域解」 |
+| time-global (global-in-time) | 時間大域 | `exists_global_lerayHopf_r3`, `exists_global_lerayHopf_torus3`, `Galerkin.GlobalLerayHopfSolution` | ただ一本の曲線 u が任意の T > 0 について [0, T] 上の Leray–Hopf 契約を満たすこと（`∃ u, ∀ T > 0, IsLerayHopfOn … T u₀ u`）。本コーパスの「大域」は三義あるので必ず限定語を付けて区別する。(1) 本行の**時間大域** = Leray–Hopf 弱解が単一曲線として全時刻に伸びること。(2) **前向き大域**（前行）= 有限次元 Galerkin ODE が前向き時刻全体で解けること。(3) 空間の意味の**大域**（「大域 L² ノルム上界」「大域極限」など）= 球への局所制限に対する ℝ³ 全体。時間大域は弱解の存在のみを主張し、一意性・正則性・エネルギー等式は含まない | 「グローバル解」、「時間全域解」 |
 | a priori estimate | アプリオリ評価 | `energy_bound` | 解の存在論に先立って（解であることだけから）導く評価 | 「先験的評価」⚠要確認 |
 | Riesz representation | Riesz 表現 | `InnerProductSpace.toDual` | 連続線形汎関数をベクトルとの内積として表す対応。表現するベクトル = Riesz 表現元 | 「リース表現」（カナ単独は非推奨） |
 | Galerkin domain | Galerkin 領域 | `Galerkin.Domain` | 幾何に依らず Galerkin 構成を述べるための領域データの束（lean-pde issue #112） | |
