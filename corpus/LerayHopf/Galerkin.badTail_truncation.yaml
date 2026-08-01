@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.badTail_truncation
 tier: full
 statement_ja: |
-  [[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]が非可積分な場合にも成り立つことの具体的検証：[[非可積分な見本|LerayHopf.Galerkin.badTail]]について $(0,2]$ 上の積分と $(0,1]$ 上の積分は一致する。
+  [[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]が非可積分な場合にも成り立つことの具体的検証：[[非可積分な例|LerayHopf.Galerkin.badTail]]について $(0,2]$ 上の積分と $(0,1]$ 上の積分は一致する。
 proof_ja: |
   [[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]に、$1\le 2$ と[[裾の消滅|LerayHopf.Galerkin.badTail_tail_zero]]を代入すればよい。
 gap:

@@ -1,13 +1,15 @@
 name: LerayHopf.R3StrengthenedLimitPassageConclusion
 tier: full
 statement_ja: |
-  **強化された極限移行の結論の凍結された形。** 良い代表元の存在に関する五つの条項（パッケージ曲線とのほとんど至る所の一致、弱形式、エネルギー不等式、初期トレース、エネルギー類）に、[[弱収束の固定条項|LerayHopf.R3LimitPassagePinConjunct]]を第六の条項として付け加えた命題である。
+  **強化された極限移行の結論の定義として固定した形。** 良い代表元の存在に関する五つの条項（パッケージ曲線とのほとんど至る所の一致、弱形式、エネルギー不等式、初期トレース、エネルギー類）に、[[弱収束先の同定条項|LerayHopf.R3LimitPassagePinConjunct]]を第六の条項として付け加えた命題である。
 
-  [[極限移行|LerayHopf.galerkin_limit_passage_R3]]の結論はこの命題と定義的に等しい。
+  [[極限移行|LerayHopf.galerkin_limit_passage_R3]]の結論はこの命題そのものである。
 proof_ja: |
-  結論の形を定義として固定することで、強化が既存の五条項を弱めずに第六条項を追加しただけであることを機械検査できる。条項の順序や内容が変われば定義的な一致が壊れるので、意図しない書き換えは型検査で捕まる。
+  この形に書き下すことで、強化が既存の五つの条項を弱めずに第六の条項を付け加えただけであることが読み取れる。既存の条項はいずれも文言が変わっていない。
 gap:
   level: none
+  note: |
+    結論の形を独立した `def : Prop` として固定してあり、`galerkin_limit_passage_R3` の結論はこれと定義的に等しい。条項の順序や内容を変えるとこの一致が壊れるため、意図しない書き換えは型検査で捕まる。
 provenance: |
   leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
 chapter: limit-passage

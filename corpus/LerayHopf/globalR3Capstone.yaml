@@ -1,12 +1,12 @@
 name: LerayHopf.globalR3Capstone
 tier: full
 statement_ja: |
-  **凍結目標の証明（$\mathbb{R}^3$）。** [[凍結された時間大域主張|LerayHopf.GlobalR3CapstoneStatement]]が成り立つ。
+  **固定した目標の証明（$\mathbb{R}^3$）。** [[定義として固定した時間大域主張|LerayHopf.GlobalR3CapstoneStatement]]が成り立つ。
 proof_ja: |
-  凍結された主張は[[時間大域主定理|LerayHopf.exists_global_lerayHopf_r3]]と定義的に同じ命題なので、主定理をそのまま当てはめればよい。
+  固定した主張は[[時間大域主定理|LerayHopf.exists_global_lerayHopf_r3]]と同じ命題そのものなので、主定理をそのまま当てはめればよい。
 gap:
   level: none
   note: |
-    凍結した目標と実際に証明した定理とが文字どおり同じ命題であることの機械検査。
+    固定した目標と実際に証明した定理とが文字どおり同じ命題であることの機械検査。
 chapter: capstone-r3
 tags: [leray-hopf, capstone, r3, time-global]

@@ -1,15 +1,15 @@
 name: LerayHopf.torus_kappaChain_exit
 tier: full
 statement_ja: |
-  **κ 連鎖の出口（トーラス）。** $\nu>0$、$T>0$、狭義単調な $\varphi_1$ とそれに沿った従属族が与えられれば、[[出口証明書|LerayHopf.P2ExitWitness]]が存在する。
+  **κ 連鎖の出口（トーラス）。** $\nu>0$、$T>0$、狭義単調な $\varphi_1$ とそれに沿った従属族が与えられれば、[[κ 連鎖の出力データ|LerayHopf.P2ExitWitness]]が存在する。
 proof_ja: |
   与えられた従属族を[[埋め込み|LerayHopf.extendReindexedFamily]]で全添字の族へ延長する。[[部分列上での復元|LerayHopf.extendReindexedFamily_apply]]が移送等式を与える。
 
   延長した族に対して、有効モード写像を $\varphi_1$ として[[Aubin–Lions パッケージ|LerayHopf.torusAubinLionsPackage_of_galSeq]]を構成する。空間コンパクト性は証明済みの[[Rellich コンパクト性|LerayHopf.rellich_L2Sigma]]が供給する。
 
-  続いて[[エネルギー類の回収|LerayHopf.torus_energyClass_of_aubinLions]]、[[極限移行|LerayHopf.torus_galerkin_limit_passage_of_energyClass]]と進み、良い代表元と弱形式・エネルギー不等式・初期トレース・弱収束の固定を得る。
+  続いて[[エネルギー類の回収|LerayHopf.torus_energyClass_of_aubinLions]]、[[極限移行|LerayHopf.torus_galerkin_limit_passage_of_energyClass]]と進み、良い代表元と弱形式・エネルギー不等式・初期トレース・弱収束先の同定を得る。
 
-  最後に、極限移行が返す弱収束の固定は延長した族について述べられているので、移送等式で書き換えて与えられた族についての主張に直し、証明書の各条項へ充てる。
+  最後に、極限移行が返す弱収束先の同定は延長した族について述べられているので、移送等式で書き換えて与えられた族についての主張に直し、出力データの各条項へ充てる。
 gap:
   level: mild
   note: |

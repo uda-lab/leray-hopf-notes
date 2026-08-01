@@ -1,14 +1,14 @@
 name: LerayHopf.Galerkin.badTail_not_integrableOn
 tier: full
 statement_ja: |
-  [[非可積分な見本|LerayHopf.Galerkin.badTail]]は $(0,2]$ 上で可積分でない。
+  [[非可積分な例|LerayHopf.Galerkin.badTail]]は $(0,2]$ 上で可積分でない。
 proof_ja: |
-  仮に可積分とすると、部分集合 $(0,1]$ 上でも可積分になる。この区間では見本は $1/t$ に一致するので、$1/t$ が $(0,1]$ 上で可積分になってしまう。
+  仮に可積分とすると、部分集合 $(0,1]$ 上でも可積分になる。この区間では例は $1/t$ に一致するので、$1/t$ が $(0,1]$ 上で可積分になってしまう。
 
   しかし $1/t$ は原点を端点に含む区間上では可積分でない（原点で対数的に発散する）ので矛盾する。
 gap:
   level: mild
   note: |
-    原点での非可積分性は mathlib の `intervalIntegrable_inv_iff` が与える。この補題は「区間が原点を含まない」か「端点が一致する」かのいずれかを要求する形なので、両分岐をそれぞれ潰す必要がある。
+    原点での非可積分性は mathlib の `intervalIntegrable_inv_iff` が与える。この補題は「区間が原点を含まない」か「端点が一致する」かのいずれかを要求する形なので、両方の場合をそれぞれ排除する必要がある。
 chapter: galerkin-generic
 tags: [galerkin-domain, time-global, truncation, counterexample]

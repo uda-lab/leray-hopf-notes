@@ -1,9 +1,9 @@
 name: LerayHopf.Galerkin.LerayHopfSolution.ofIsOn_u
 tier: full
 statement_ja: |
-  [[契約からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]が持つ曲線は、もとの曲線そのものである。
+  [[条件からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]が持つ曲線は、もとの曲線そのものである。
 proof_ja: |
-  組み立ての定義がそのまま曲線を移しているので、定義的に等しい。
+  組み立ての定義がそのまま曲線を移しているので、定義から直ちに従う。
 gap:
   level: none
   note: |

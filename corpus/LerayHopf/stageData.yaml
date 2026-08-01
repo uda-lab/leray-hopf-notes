@@ -11,7 +11,7 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    各段の抽出は存在定理の証言から選択で取り出しており、段の状態は一意ではない。以降の議論はどの選択でも通るように書かれている。相対抽出と絶対抽出の対応が定義どおりであることは[[合成の一致|LerayHopf.stageData_comp_eq_nestedComp]]で機械検査される。
+    各段の抽出は存在証明から選択によって取り出しており、段の状態は一意ではない。以降の議論はどの選択でも通るように書かれている。相対抽出と絶対抽出の対応が定義どおりであることは[[合成の一致|LerayHopf.stageData_comp_eq_nestedComp]]で機械検査される。
 provenance: |
   leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
 chapter: compactness

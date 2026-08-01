@@ -1,7 +1,7 @@
 name: LerayHopf.stageData_R3_diag_tendsto
 tier: full
 statement_ja: |
-  **段から対角列への収束の移送（$\mathbb{R}^3$）。** 第 $m$ 段の窓 $[0,m+1]$ に属する任意の時刻 $t$ と、周囲の $L^2$ ベクトル場全体を走る任意のテスト元 $z$ について、[[対角抽出|LerayHopf.Bochner.diagExtraction]]に沿った Galerkin 近似との内積は、第 $m$ 段の弱極限 $U_m(t)$ との内積へ収束する。
+  **段から対角列への収束の移送（$\mathbb{R}^3$）。** 第 $m$ 段の区間 $[0,m+1]$ に属する任意の時刻 $t$ と、周囲の $L^2$ ベクトル場全体を走る任意のテスト元 $z$ について、[[対角抽出|LerayHopf.Bochner.diagExtraction]]に沿った Galerkin 近似との内積は、第 $m$ 段の弱極限 $U_m(t)$ との内積へ収束する。
 proof_ja: |
   段の状態が保持する収束不変量は絶対抽出に沿う収束であり、[[結合不変量|LerayHopf.stageData_R3_comp_eq_nestedComp]]によりこれは抽象的な絶対抽出に沿う収束と同じものである。
 

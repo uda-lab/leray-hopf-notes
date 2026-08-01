@@ -1,19 +1,19 @@
 name: LerayHopf.exists_diagonal_weakly_convergent_galSeq
 tier: full
 statement_ja: |
-  **対角部分列と大域弱極限（トーラス）。** 任意の Galerkin 近似族に対し、狭義単調な対角部分列 $\delta$ と曲線 $W$ がとれて、**すべての**前向き時刻 $t$ と[[発散ゼロ部分空間|LerayHopf.L2Sigma]]のすべてのテスト元 $z$ について、$\delta$ に沿った Galerkin 近似との内積が $\langle W(t),z\rangle$ へ収束する。
+  **対角部分列と大域弱極限（トーラス）。** 任意の Galerkin 近似族に対し、狭義単調な対角部分列 $\delta$ と曲線 $W$ がとれて、**すべての**非負の時刻 $t$ と[[発散ゼロ部分空間|LerayHopf.L2Sigma]]のすべてのテスト元 $z$ について、$\delta$ に沿った Galerkin 近似との内積が $\langle W(t),z\rangle$ へ収束する。
 
-  「すべての前向き時刻」は、区間 $[0,m+1]$ を $m$ について汲み尽くす形で述べられる。部分列も曲線も $m$ に依存しない点が要点である。
+  「すべての非負の時刻」は、区間 $[0,m+1]$ を $m$ について汲み尽くす形で述べられる。部分列も曲線も $m$ に依存しない点が要点である。
 proof_ja: |
   対角部分列として[[対角抽出|LerayHopf.Bochner.diagExtraction]]を、曲線として[[対角弱極限曲線|LerayHopf.diagWeakLimit]]をとる。狭義単調性は抽象側の[[対角抽出の単調性|LerayHopf.Bochner.diagExtraction_strictMono]]がそのまま与える。
 
-  時刻 $t$ と段 $m$ を固定する。曲線の定義で使う段は $\lfloor\max(t,0)\rfloor$ であり、$t$ はその段の窓にも属するので、[[段の整合性|LerayHopf.stageData_U_coherent]]により第 $m$ 段の極限と曲線の値は一致する。
+  時刻 $t$ と段 $m$ を固定する。曲線の定義で使う段は $\lfloor\max(t,0)\rfloor$ であり、$t$ はその段の区間にも属するので、[[段の整合性|LerayHopf.stageData_U_coherent]]により第 $m$ 段の極限と曲線の値は一致する。
 
   あとは[[移送|LerayHopf.stageData_diag_tendsto]]が与える第 $m$ 段への収束を、いま示した一致で書き換えればよい。
 gap:
   level: mild
   note: |
-    得られるのは各時刻での弱収束のみで、時間方向の一様性も強収束も主張していない。弱解であることはこの段階では何も言えておらず、以後の段で有限区間ごとに契約を回収する。
+    得られるのは各時刻での弱収束のみで、時間方向の一様性も強収束も主張していない。弱解であることはこの段階では何も言えておらず、以後の段で有限区間ごとに条件を回収する。
 provenance: |
   leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域キャンペーンの P3 段に相当する。
 chapter: compactness

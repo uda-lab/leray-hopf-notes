@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    具体的な段の再帰と偏微分方程式に依存しない[[対角化機構|LerayHopf.Bochner.exists_diagonal_extraction]]との唯一の接点であり、トーラス系統と同一の役割を持つ。
+    具体的な段の再帰と偏微分方程式に依存しない[[抽象的な対角部分列補題|LerayHopf.Bochner.exists_diagonal_extraction]]との唯一の接点であり、トーラス系統と同一の役割を持つ。
 chapter: compactness
 tags: [diagonal-subsequence, time-global, r3]

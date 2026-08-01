@@ -1,7 +1,7 @@
 name: LerayHopf.exists_lerayHopf_r3
 tier: full
 statement_ja: |
-  発散ゼロな初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、外力なしの $\mathbb{R}^3$ 上の Navier–Stokes 方程式は $[0,T]$ 上に Leray–Hopf 弱解をもつ（$\mathbb{R}^3$ は周期性のない全空間である）。
+  発散が零の初期値 $u_0\in L^2_\sigma(\mathbb{R}^3)$、粘性係数 $\nu>0$、時刻 $T>0$ に対して、外力なしの $\mathbb{R}^3$ 上の Navier–Stokes 方程式は $[0,T]$ 上に Leray–Hopf 弱解をもつ（$\mathbb{R}^3$ は周期性のない全空間である）。
 
   $T$ は入力として与えられる有限時刻区間の右端点であり、得られる解は $T$ ごとに取り直されうる。すなわち本定理は各 $T$ について解の存在を主張するもので、単一の曲線が全時刻に伸びることまでは述べていない。後者は[[時間大域版|LerayHopf.exists_global_lerayHopf_r3]]が与える。
 
@@ -11,7 +11,7 @@ statement_ja: |
 
   を満たし、かつ分離変数テスト関数 $\psi(t)w(x)$（$w$ は所定の Schwartz 発散ゼロテスト空間を走る）に対して弱形式を満たす曲線 $u$ が存在する。この解は初期値 $u_0$ を $t\to0^+$ の片側極限として強 $L^2$ で達成し、$[0,T]$ でほとんど至る所 $H^1$ に所属し粘性散逸が区間可積分な[[完全 Leray–Hopf 解|LerayHopf.LerayHopfSolutionFull_R3]]として得られる。
 proof_ja: |
-  **L1（Galerkin 近似）** 発散ゼロな Schwartz 関数が張る有限次元部分空間の上で Galerkin 常微分方程式を解き、近似列 $u_n$ を構成する。ここでは有限次元の存在定理のみを用い、追加の仮定を要しない[[Galerkin 解の構成|LerayHopf.galerkinSolutionData_unconditional]]がこれを供給する。
+  **L1（Galerkin 近似）** 発散が零の Schwartz 関数が張る有限次元部分空間の上で Galerkin 常微分方程式を解き、近似列 $u_n$ を構成する。ここでは有限次元の存在定理のみを用い、追加の仮定を要しない[[Galerkin 解の構成|LerayHopf.galerkinSolutionData_unconditional]]がこれを供給する。
 
   **L2（一様評価）** エネルギー恒等式から、近似列 $u_n$ が $L^\infty_t L^2_x\cap L^2_t H^1_x$ で一様に有界であることを導く。
 

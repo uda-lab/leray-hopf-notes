@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    この等式が、具体的な段の再帰と偏微分方程式に依存しない[[対角化機構|LerayHopf.Bochner.exists_diagonal_extraction]]とを接続する唯一の接点である。ここが破れると対角列が段の列の細分になっている保証が失われる。
+    この等式が、具体的な段の再帰と偏微分方程式に依存しない[[抽象的な対角部分列補題|LerayHopf.Bochner.exists_diagonal_extraction]]とを接続する唯一の接点である。ここが破れると対角列が段の列の細分になっている保証が失われる。
 chapter: compactness
 tags: [diagonal-subsequence, time-global, torus]

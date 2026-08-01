@@ -1,7 +1,7 @@
 name: LerayHopf.L2Sigma_R3_eq_of_forall_inner
 tier: full
 statement_ja: |
-  **部分空間の分離性（$\mathbb{R}^3$）。** [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]]の二元 $p,q$ が、同じ部分空間を走るすべてのテスト元 $z$ に対して $\langle p,z\rangle=\langle q,z\rangle$ を満たすならば、$p=q$ である。
+  **部分空間の分離性（$\mathbb{R}^3$）。** [[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]]の二つの元 $p,q$ が、同じ部分空間を走るすべてのテスト元 $z$ に対して $\langle p,z\rangle=\langle q,z\rangle$ を満たすならば、$p=q$ である。
 proof_ja: |
   発散ゼロ部分空間は線形部分空間なので、差 $p-q$ 自身が正当なテスト元である。これを仮定に代入すると $\langle p-q,\,p-q\rangle=0$ を得る。
 
