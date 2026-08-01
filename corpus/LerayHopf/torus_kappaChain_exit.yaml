@@ -5,7 +5,7 @@ statement_ja: |
 proof_ja: |
   与えられた従属族を[[埋め込み|LerayHopf.extendReindexedFamily]]で全添字の族へ延長する。[[部分列上での復元|LerayHopf.extendReindexedFamily_apply]]が移送等式を与える。
 
-  延長した族に対して、有効モード写像を $\varphi_1$ として[[Aubin–Lions パッケージ|LerayHopf.torusAubinLionsPackage_of_galSeq]]を構成する。空間コンパクト性は証明済みの[[Rellich コンパクト性|LerayHopf.rellich_L2Sigma]]が供給する。
+  延長した族に対して、添字写像 $\kappa$ を $\varphi_1$ として[[Aubin–Lions パッケージ|LerayHopf.torusAubinLionsPackage_of_galSeq]]を構成する。空間コンパクト性は証明済みの[[Rellich コンパクト性|LerayHopf.rellich_L2Sigma]]が供給する。
 
   続いて[[エネルギー類の回収|LerayHopf.torus_energyClass_of_aubinLions]]、[[極限移行|LerayHopf.torus_galerkin_limit_passage_of_energyClass]]と進み、良い代表元と弱形式・エネルギー不等式・初期トレース・弱収束先の同定を得る。
 
@@ -13,7 +13,7 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    連鎖の各段はいずれも既存の有限区間の結果であり、本定理が新たに加えるのは「添字写像 $\varphi_1$ を有効モード写像として通す」ことと「結論を与えられた族の言葉に戻す」ことの二点である。
+    連鎖の各段はいずれも既存の有限区間の結果であり、本定理が新たに加えるのは「$\kappa=\varphi_1$ として連鎖に通す」ことと「結論を与えられた族の言葉に戻す」ことの二点である。
 provenance: |
   leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域キャンペーンの P2 出口ゲートに相当する。
 chapter: limit-passage
