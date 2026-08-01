@@ -45,7 +45,7 @@ large gap がある場合、`gap.note` に形式化膨張の理由を記載済�
       Lean 固有の注意は `gap.note` に置いた
 - [ ] D5: インライン記法は `` `code` `` / `**強調**` / `[[表示語|宣言名]]` と KaTeX のみ。
       `[[…]]` の参照先は実在する宣言名
-- [ ] `python3 scripts/prose_lint.py` がハードエラーなし
+- [ ] `python3 scripts/prose_lint.py --strict` が指摘なし（ハードエラー・警告とも）
 
 **proof_ja チェック（tier: full + theorem/lemma の場合）**
 - [ ] proof_ja が実際の証明経路と一致する（Lean の主要タクティクステップを反映）
@@ -67,6 +67,6 @@ large gap がある場合、`gap.note` に形式化膨張の理由を記載済�
 ## CI 確認
 
 - [ ] `python3 scripts/validate.py` 通過
-- [ ] `python3 scripts/prose_lint.py` 通過（ハードエラーなし）
+- [ ] `python3 scripts/prose_lint.py --strict` 通過（ハードエラー・警告とも指摘なし）
 - [ ] `npm test`（jsdom レンダーハーネス）通過
 - [ ] GitHub Actions ワークフロー (`ci.yml`) グリーン

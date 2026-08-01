@@ -50,8 +50,17 @@ jobs:
       - name: Forbidden-term regression lint tests (notes#105)
         run: python3 test/issue105_forbidden_terms.test.py
 
-      - name: Prose lint (D1/D2/D5)
-        run: python3 scripts/prose_lint.py
+      - name: Prose lint (D1/D2/D5, strict)
+        # notes#124: previously this ran plain `prose_lint.py`, which gates only on hard
+        # errors and merely *prints* soft warnings (overlong/heavy inline math -> prefer
+        # display). Because nothing enforced `--strict`, a soft warning sat on main
+        # undetected until notes#122 tripped over it. `--strict` makes soft warnings gate
+        # too, so the two failure classes can no longer diverge.
+        #
+        # No pipe here on purpose: a piped `... | tail` would report the pipe's exit status
+        # rather than the linter's, which is exactly how the same warning was missed twice
+        # while working on notes#122/#125. Keep this as a bare command.
+        run: python3 scripts/prose_lint.py --strict
 
       - name: Coverage report
         run: python3 scripts/coverage.py
