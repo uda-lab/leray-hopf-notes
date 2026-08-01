@@ -9,6 +9,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    形式束の `b_bound` フィールドの供給源。
+    形式データの `b_bound` フィールドの供給源。
 chapter: limit-passage
 tags: [determined-form, tensor, torus]

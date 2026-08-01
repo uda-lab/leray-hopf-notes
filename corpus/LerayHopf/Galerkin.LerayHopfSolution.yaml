@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.LerayHopfSolution
 tier: full
 statement_ja: |
-  領域中立な **Leray–Hopf 弱解**の束。発散ゼロ部分空間に値を取る曲線 $u$ と、それが粘性 $\nu$・時間範囲 $[0,T]$・初期値 $u_0$ の Leray–Hopf 弱解であることを表す証明群 — 弱 NS 方程式、区間上の**すべての**時刻 $t\in[0,T]$ で成り立つエネルギー不等式
+  領域中立な **Leray–Hopf 弱解**のデータ。発散ゼロ部分空間に値を取る曲線 $u$ と、それが粘性 $\nu$・時間範囲 $[0,T]$・初期値 $u_0$ の Leray–Hopf 弱解であることを表す証明群 — 弱 NS 方程式、区間上の**すべての**時刻 $t\in[0,T]$ で成り立つエネルギー不等式
 
   $$\tfrac12\lVert u(t)\rVert^2 + \int_0^t \mathrm{diss}_\nu\bigl(u(s)\bigr)\,ds \le \tfrac12\lVert u_0\rVert^2,$$
 
@@ -9,7 +9,7 @@ statement_ja: |
 proof_ja: |
   エネルギー不等式が「ほとんどすべての $t$」ではなく**すべての** $t\in[0,T]$ で成り立つこと、初期トレースが右極限として初期値へ収束することの二点が、単なる弱解を Leray–Hopf 弱解たらしめる規格である。エネルギー類の条項は、エネルギー不等式が空虚に成立していないこと（散逸積分が定義できること）を保証する。
 
-  この束は各系統の主定理の結論の型であり、$\mathbb{T}^3$・$\mathbb{R}^3$ の旧構造はいずれも本データの略記になった。
+  このデータは各系統の主定理の結論の型であり、$\mathbb{T}^3$・$\mathbb{R}^3$ の旧構造はいずれも本データの略記になった。
 gap:
   level: mild
   note: |

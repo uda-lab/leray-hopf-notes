@@ -1,7 +1,7 @@
 name: LerayHopf.GlobalR3CapstoneStatement
 tier: full
 statement_ja: |
-  **定義として固定した時間大域主張（$\mathbb{R}^3$）。** 任意の発散が零の初期値 $u_0$ と $\nu>0$ に対し、あるスキーム $\mathfrak{G}$ と形式束 $F$、および曲線 $u$ が存在して、**その同じ** $u$ について、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、という命題。
+  **定義として固定した時間大域主張（$\mathbb{R}^3$）。** 任意の発散が零の初期値 $u_0$ と $\nu>0$ に対し、あるスキーム $\mathfrak{G}$ と形式データ $F$、および曲線 $u$ が存在して、**その同じ** $u$ について、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、という命題。
 
   量化子の並びは次のとおりである。
 

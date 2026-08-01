@@ -15,6 +15,6 @@ gap:
 provenance: |
   これはかつて公理 `galerkin_weakLimit_R3` であり、issue #47 で証明済み定理へ反転された（公理→定理）。
 
-  lean-pde issue #135 の restate により、Galerkin 解の族は R3 固有の束ではなく汎用束 `Galerkin.SolutionData (r3Domain 𝔊) F.core` で受け取る（主張の内容は不変）。
+  lean-pde issue #135 の restate により、Galerkin 解の族は R3 固有のデータではなく汎用の解データ `Galerkin.SolutionData (r3Domain 𝔊) F.core` で受け取る（主張の内容は不変）。
 chapter: compactness
 tags: [aubin-lions, weak-convergence, divergence-free, frontier-resolved]

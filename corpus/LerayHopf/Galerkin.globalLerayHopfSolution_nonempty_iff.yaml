@@ -1,12 +1,12 @@
 name: LerayHopf.Galerkin.globalLerayHopfSolution_nonempty_iff
 tier: full
 statement_ja: |
-  [[時間大域 Leray–Hopf 解の束|LerayHopf.Galerkin.GlobalLerayHopfSolution]]が存在することは、「ある曲線 $u$ が存在して、すべての $T>0$ で[[有限区間 Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ」という命題と同値である。
+  [[時間大域 Leray–Hopf 解データ|LerayHopf.Galerkin.GlobalLerayHopfSolution]]が存在することは、「ある曲線 $u$ が存在して、すべての $T>0$ で[[有限区間 Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ」という命題と同値である。
 proof_ja: |
-  束を分解すれば曲線とその全区間での条件が取り出せ、逆にその二つを組めば束になる。どちらの向きでも曲線は変わらない。
+  データを分解すれば曲線とその全区間での条件が取り出せ、逆にその二つを組めばデータになる。どちらの向きでも曲線は変わらない。
 gap:
   level: none
   note: |
-    この同値が成り立つこと自体が、束の定義に曲線の重複や量化子の入れ替えが紛れ込んでいないことの機械検査になっている。
+    この同値が成り立つこと自体が、データの定義に曲線の重複や量化子の入れ替えが紛れ込んでいないことの機械検査になっている。
 chapter: galerkin-generic
 tags: [galerkin-domain, time-global, leray-hopf]

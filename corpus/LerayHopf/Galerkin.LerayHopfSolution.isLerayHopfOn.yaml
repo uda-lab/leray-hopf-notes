@@ -1,9 +1,9 @@
 name: LerayHopf.Galerkin.LerayHopfSolution.isLerayHopfOn
 tier: full
 statement_ja: |
-  [[Leray–Hopf 弱解の束|LerayHopf.Galerkin.LerayHopfSolution]]が与えられれば、その曲線は[[有限区間 Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす。
+  [[Leray–Hopf 弱解データ|LerayHopf.Galerkin.LerayHopfSolution]]が与えられれば、その曲線は[[有限区間 Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす。
 proof_ja: |
-  束が保持する五つの証明をそのまま条件の五つの条件に並べ替えるだけである。
+  解データが保持する五つの証明をそのまま条件の五つの条件に並べ替えるだけである。
 gap:
   level: none
 chapter: galerkin-generic

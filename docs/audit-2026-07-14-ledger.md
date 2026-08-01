@@ -379,3 +379,27 @@
 | F369 | torus_weakFormNS_of_strongConvergence | gap.note | JP-14 | M | limit-passage | fixed | PR #58: gap.note「極限移行 capstone」→「極限移行の総仕上げの定理」。owner裁定（capstone→総仕上げの定理）を適用。 |
 | F370 | velocityProjection_n_eq_of_le | statement_ja | JP-13 | B | limit-passage | fixed | P1.5: 「帯域水準の昇格」→「打ち切り次数を増やしたときの不変性」（velocityProjection_n_eq_of_le statement_ja） |
 | F371 | velocityProjection_n_eq_of_le | gap.note | JP-13 | M | limit-passage | fixed | P1.5: 「ODE を発火させる」→「Galerkin ODE を適用可能にする」（同 gap.note） |
+
+---
+
+## 追記（2026-08-01、notes#121）: 「束」系の語の再裁定 — 本台帳の F071 / F162 / F175 / F254 を上書き
+
+本台帳の次の記録は、**エージェントが作成した作業記録であって、人間オーナーの裁定そのものではない**。
+
+| 行 | 記録内容 |
+|---|---|
+| F071 | 却下: issue #51 G2 裁定「束／データ束」は変更不要 |
+| F162 / F176 | kept 形式束（protected term） |
+| F175 | 却下: PROTECTED-terms ruling（`トーラスの散逸発展の束` を維持） |
+| F254 | 却下: 束（bundled）系の語は owner 裁定（F071 系）で保護されており |
+
+owner（人間）の 2026-08-01 の直接指示により、**owner アカウントから gh / GitHub App 経由で発せられた issue・PR 上の記述を人間オーナーの決定と同一視しない**方針が確認された。時系列的に後の人間の直接指示が優先する。したがって上記 4 行は notes#121 Phase B/C を妨げる先行裁定として扱わない。
+
+加えて、F175 が保護の根拠とした「GLOSSARY が `散逸発展` を『抽象束』と定義している」という前提は、**`docs/GLOSSARY.md` に `束` の見出し語が存在しなかった**ため成立していなかった（`束` は 4 箇所の備考欄で使われているだけだった）。notes#121 でこの見出し語を追加し、維持する用法の意味と適用範囲を明文化した。
+
+### notes#121 の裁定内容
+
+- **維持**: 複数の作用素・汎関数を一つの抽象的なまとまりとして述べる用法（`DissipativeEvolution` / `torus3Evolution` の「散逸発展の束」、GLOSSARY の「近似射影族の束」「主線の束」）。GLOSSARY に見出し語を追加して定義した。
+- **改称**: 解と証明を保持する型 →「〜データ」（`Galerkin.LerayHopfSolution` = Leray–Hopf 弱解データ 等）、形式をまとめる型 →「形式データ」、領域インターフェース →「領域データ」、コンパクト性論法の出力 →「コンパクト性データ」。
+- **動詞「束ねる」**: 変更なし。本台帳が既に自然な「束ねる」（F072 / F231 で維持）と Lean 語法の「フィールドとして束ねる」（F002 / F223 / F236 で除去）を区別しており、後者は現存しない。
+- **lint**: `docs/GLOSSARY.md` の `forbidden` 欄に、裁定で不適切とされた複合語のみ（`形式束` / `解の束` / `解束` / `データ束` / `弱解の束`）を登録した。単独の `束` は禁止していないので、`収束` / `拘束` / `束縛` および維持用法は誤検出しない（機械確認済み）。

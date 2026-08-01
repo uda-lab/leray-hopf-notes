@@ -1,7 +1,7 @@
 name: LerayHopf.Torus3NSForms.b_self_zero
 tier: full
 statement_ja: |
-  トーラス Navier–Stokes 形式束の対流形式は対角上で消える。すなわち任意の $u$ に対して
+  トーラス Navier–Stokes 形式データの対流形式は対角上で消える。すなわち任意の $u$ に対して
 
   $$b(u,u,u) = 0 .$$
 proof_ja: |
