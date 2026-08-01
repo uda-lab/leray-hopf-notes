@@ -58,7 +58,7 @@ Leray–Hopf 形式化（`uda-lab/leray-hopf`）の注釈コーパスで使う�
 | diagonal subsequence | 対角部分列 | `StrictMono.comp` | 多段入れ子の収束部分列を一本に合成したもの | |
 | energy class | エネルギー類 | `energy_class`, `memH1VF` | `[0,T]` 上で a.e. の $H^1_\sigma$ 所属＋粘性散逸の区間可積分性という正則性クラス。時間可測性フィールドは周囲の $L^2$ 空間へ値を取るため、文字通りの Bochner 空間所属を主張しない（issue #64 / lean-pde issue #146） | 「u ∈ L²(0,T;H¹_σ) という正則性クラス」（文字通りの Bochner 空間所属としての言い換え） |
 | proof-carrying type | 証明保持型 | `LerayHopfSolutionFull`, `GalerkinSolutionData` | 数学的性質を型のフィールドとして保持する構造体 | |
-| bundle (of operators/functionals) | 束 | `DissipativeEvolution`, `torus3Evolution` | **複数の作用素・汎関数を一つの抽象的なまとまりとして述べるとき**にのみ使う（本行の「散逸発展」「Galerkin スキーム」「Gelfand 三つ組」の各行が該当）。Lean の structure を一般に「束」と呼ばないこと — 数学のベクトル束・ファイバー束との混同を招く。解と証明を保持する型は「〜データ」（例: `Galerkin.LerayHopfSolution` = Leray–Hopf 弱解データ）、形式をまとめる型は「形式データ」、領域インターフェースは「領域データ」、コンパクト性論法の出力は「コンパクト性データ」を使う（notes#121 裁定） | 「形式束」、「解の束」、「解束」、「データ束」、「弱解の束」 |
+| bundle (of mathematical components) | 束 | `DissipativeEvolution`, `torus3Evolution` | **複数の数学的構成要素（空間・埋め込み・作用素・汎関数・形式など）を一つの抽象的なまとまりとして述べるとき**にのみ使う。該当するのは「散逸発展」（空間 $H$ ＋正則性汎関数＋粘性形式＋移流形式＋テストクラス）、「Galerkin スキーム」（近似射影の族）、「Gelfand 三つ組」（空間 $V$, $H$ ＋埋め込み $\iota$ とその性質）の各行。Lean の structure を一般に「束」と呼ばないこと — 数学のベクトル束・ファイバー束との混同を招く。解と証明を保持する型は「〜データ」（例: `Galerkin.LerayHopfSolution` = Leray–Hopf 弱解データ）、形式をまとめる型は「形式データ」、領域インターフェースは「領域データ」、コンパクト性論法の出力は「コンパクト性データ」を使う（notes#121 裁定） | 「形式束」、「解の束」、「解束」、「データ束」、「弱解の束」 |
 | abstract axiom | 抽象公理 | `-- ALLOW_AXIOM:` | 形式化で未証明のまま仮定する命題（`axiom` キーワード） | |
 | weak NS equation | 弱 NS 方程式 | `WeakFormNS` | Navier–Stokes の弱形式版（テスト関数との内積形式） | |
 | kernel-only | kernel-only | `#print axioms` | `propext/Classical.choice/Quot.sound` のみ公理に依存する状態 | |
