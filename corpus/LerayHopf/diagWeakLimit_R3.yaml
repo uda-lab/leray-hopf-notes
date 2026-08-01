@@ -1,7 +1,7 @@
 name: LerayHopf.diagWeakLimit_R3
 tier: full
 statement_ja: |
-  **対角弱極限曲線（$\mathbb{R}^3$）。** 時刻 $t$ における値を、$t$ を区間に含む最初の段の弱極限の値として定める。段番号は $\lfloor\max(t,0)\rfloor$ をとる。
+  **対角弱極限曲線（$\mathbb{R}^3$）。** 時刻 $t$ における値を、段番号 $m_t:=\lfloor\max(t,0)\rfloor$ の段の弱極限の $t$ での値として定める。第 $m$ 段の区間は $[0,m+1]$ で、$t\le m_t+1$ が常に成り立つので、この段の区間は必ず $t$ を含む。
 
   どの段を選んでも値が変わらないことは[[段の整合性|LerayHopf.stageData_R3_U_coherent]]が保証するので、この定義は段の選び方に依存しない。
 gap:
