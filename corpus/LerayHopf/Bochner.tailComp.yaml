@@ -1,11 +1,11 @@
 name: LerayHopf.Bochner.tailComp
 tier: full
 statement_ja: |
-  第 $m$ 段から第 $m+j$ 段への**相対抽出**、すなわち次の合成を与える（$j=0$ のときは恒等写像）。
+  第 $m$ 段から第 $m+j$ 段への**段間の添字写像**、すなわち次の合成を与える（$j=0$ のときは恒等写像）。
 
   $$e_{m+1}\circ e_{m+2}\circ\cdots\circ e_{m+j}$$
 
-  [[絶対抽出|LerayHopf.Bochner.nestedComp]]が第 $0$ 段からの合成であるのに対し、こちらは基準を第 $m$ 段に置いた合成である。
+  [[合成添字写像|LerayHopf.Bochner.nestedComp]]が第 $0$ 段からの合成であるのに対し、こちらは基準を第 $m$ 段に置いた合成である。
 gap:
   level: none
 chapter: bochner

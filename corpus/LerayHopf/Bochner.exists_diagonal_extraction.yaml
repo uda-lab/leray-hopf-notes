@@ -1,14 +1,14 @@
 name: LerayHopf.Bochner.exists_diagonal_extraction
 tier: full
 statement_ja: |
-  **抽象的な対角部分列補題。** 段ごとに狭義単調な抽出写像の族が与えられたとき、狭義単調な対角抽出 $\delta$ がとれて、**その同じ** $\delta$ について、どの段 $m$ でも $\delta$ の $m$ ずらしの裾が第 $m$ 段の部分列になる。
+  **抽象的な対角部分列補題。** 段ごとに狭義単調な添字写像の族が与えられたとき、狭義単調な対角添字写像 $\delta$ がとれて、**その同じ** $\delta$ について、どの段 $m$ でも $\delta$ の $m$ ずらしの裾が第 $m$ 段の部分列になる。
 
-  入れ子になった無限個の抽出を一本の列に束ねる働きをし、偏微分方程式には依存しない。
+  入れ子になった無限個の添字写像を一本の列に束ねる働きをし、偏微分方程式には依存しない。
 proof_ja: |
-  [[対角抽出|LerayHopf.Bochner.diagExtraction]]をその $\delta$ として取り、狭義単調性は[[対角抽出の単調性|LerayHopf.Bochner.diagExtraction_strictMono]]、裾の性質は[[裾の細分性|LerayHopf.Bochner.diagExtraction_tail]]をそのまま束ねればよい。
+  [[対角添字写像|LerayHopf.Bochner.diagExtraction]]をその $\delta$ として取り、狭義単調性は[[対角添字写像の単調性|LerayHopf.Bochner.diagExtraction_strictMono]]、裾の性質は[[裾の細分性|LerayHopf.Bochner.diagExtraction_tail]]をそのまま束ねればよい。
 gap:
   level: none
 provenance: |
-  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域化では区間 $[0,m+1]$ を段とする無限個の抽出が現れるため、この形の対角化が要になる。
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域化では区間 $[0,m+1]$ を段とする無限個の添字写像が現れるため、この形の対角化が要になる。
 chapter: bochner
 tags: [diagonal-subsequence, time-global]

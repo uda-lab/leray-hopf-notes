@@ -1,9 +1,9 @@
 name: LerayHopf.stageData_R3_comp_eq_nestedComp
 tier: full
 statement_ja: |
-  **結合不変量（$\mathbb{R}^3$）。** [[段の再帰|LerayHopf.stageData_R3]]が保持する絶対抽出は、各段の相対抽出を抽象的に合成した[[絶対抽出|LerayHopf.Bochner.nestedComp]]と一致する。
+  **結合不変量（$\mathbb{R}^3$）。** [[段の再帰|LerayHopf.stageData_R3]]が保持する合成添字写像は、各段の段間の添字写像を抽象的に合成した[[合成添字写像|LerayHopf.Bochner.nestedComp]]と一致する。
 proof_ja: |
-  段数についての帰納法による。第 $0$ 段は両者とも第 $0$ 段の抽出そのもの、帰納段は再帰の定義と合成の定義がともに右から合成する形をしていることによる。
+  段数についての帰納法による。第 $0$ 段は両者とも第 $0$ 段の添字写像そのもの、帰納段は再帰の定義と合成の定義がともに右から合成する形をしていることによる。
 gap:
   level: none
   note: |

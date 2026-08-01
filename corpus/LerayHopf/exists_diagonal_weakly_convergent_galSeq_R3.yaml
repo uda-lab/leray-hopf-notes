@@ -5,7 +5,7 @@ statement_ja: |
 
   部分列も曲線も時刻の範囲に依存しない。テスト空間が全空間である点が[[トーラス側の対応物|LerayHopf.exists_diagonal_weakly_convergent_galSeq]]より強い。
 proof_ja: |
-  対角部分列として[[対角抽出|LerayHopf.Bochner.diagExtraction]]を、曲線として[[対角弱極限曲線|LerayHopf.diagWeakLimit_R3]]をとる。
+  対角部分列として[[対角添字写像|LerayHopf.Bochner.diagExtraction]]を、曲線として[[対角弱極限曲線|LerayHopf.diagWeakLimit_R3]]をとる。
 
   時刻 $t$ と段 $m$ を固定すると、曲線の定義で使う段の区間にも $t$ は属するので、[[段の整合性|LerayHopf.stageData_R3_U_coherent]]により第 $m$ 段の極限と曲線の値は一致する。あとは[[移送|LerayHopf.stageData_R3_diag_tendsto]]の収束をその一致で書き換えればよい。
 gap:

@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.tailComp_strictMono
 tier: full
 statement_ja: |
-  各段の相対抽出がすべて狭義単調ならば、[[段間の相対抽出|LerayHopf.Bochner.tailComp]]も狭義単調である。
+  各段の段間の添字写像がすべて狭義単調ならば、[[段間の段間の添字写像|LerayHopf.Bochner.tailComp]]も狭義単調である。
 proof_ja: |
   段差 $j$ についての帰納法による。$j=0$ は恒等写像、帰納段は狭義単調写像どうしの合成が狭義単調であることによる。
 gap:

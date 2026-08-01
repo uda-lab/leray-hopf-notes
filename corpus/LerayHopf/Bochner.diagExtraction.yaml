@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.diagExtraction
 tier: full
 statement_ja: |
-  **対角抽出**：第 $k$ 項を、第 $k$ 段の[[絶対抽出|LerayHopf.Bochner.nestedComp]]の第 $k$ 項として定める。すなわち $\delta(k)=(e_0\circ\cdots\circ e_k)(k)$。
+  **対角添字写像**：第 $k$ 項を、第 $k$ 段の[[合成添字写像|LerayHopf.Bochner.nestedComp]]の第 $k$ 項として定める。すなわち $\delta(k)=(e_0\circ\cdots\circ e_k)(k)$。
 
   各段の部分列を無限に細くし続けても一本の列が残らない、という古典的な困難を回避する標準の対角線論法の添字である。
 gap:

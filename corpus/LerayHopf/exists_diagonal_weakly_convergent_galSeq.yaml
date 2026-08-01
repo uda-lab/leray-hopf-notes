@@ -5,7 +5,7 @@ statement_ja: |
 
   「すべての非負の時刻」は、区間 $[0,m+1]$ を $m$ について汲み尽くす形で述べられる。部分列も曲線も $m$ に依存しない点が要点である。
 proof_ja: |
-  対角部分列として[[対角抽出|LerayHopf.Bochner.diagExtraction]]を、曲線として[[対角弱極限曲線|LerayHopf.diagWeakLimit]]をとる。狭義単調性は抽象側の[[対角抽出の単調性|LerayHopf.Bochner.diagExtraction_strictMono]]がそのまま与える。
+  対角部分列として[[対角添字写像|LerayHopf.Bochner.diagExtraction]]を、曲線として[[対角弱極限曲線|LerayHopf.diagWeakLimit]]をとる。狭義単調性は抽象側の[[対角添字写像の単調性|LerayHopf.Bochner.diagExtraction_strictMono]]がそのまま与える。
 
   時刻 $t$ と段 $m$ を固定する。曲線の定義で使う段は $\lfloor\max(t,0)\rfloor$ であり、$t$ はその段の区間にも属するので、[[段の整合性|LerayHopf.stageData_U_coherent]]により第 $m$ 段の極限と曲線の値は一致する。
 

@@ -1,7 +1,7 @@
 name: LerayHopf.extendReindexedFamily
 tier: full
 statement_ja: |
-  **再添字された族の埋め込み（トーラス）。** 添字を $\varphi_1$ で読み替えた Galerkin 近似の族が与えられたとき、それを全添字にわたる族へ延長する。$\varphi_1(k)$ の形の添字では与えられた族の値をそのまま使い、それ以外の添字では[[トーラスの標準 Galerkin 解|LerayHopf.galSeq_of_torus]]で埋める。
+  **添字を読み替えた族の埋め込み（トーラス）。** 添字を $\varphi_1$ で読み替えた Galerkin 近似の族が与えられたとき、それを全添字にわたる族へ延長する。$\varphi_1(k)$ の形の添字では与えられた族の値をそのまま使い、それ以外の添字では[[トーラスの標準 Galerkin 解|LerayHopf.galSeq_of_torus]]で埋める。
 
   標準解は追加の仮定なしに常に構成できるので、補助族の存在に条件は要らない。
 proof_ja: |
