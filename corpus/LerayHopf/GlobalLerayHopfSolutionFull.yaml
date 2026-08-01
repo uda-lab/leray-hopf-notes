@@ -1,0 +1,8 @@
+name: LerayHopf.GlobalLerayHopfSolutionFull
+tier: full
+statement_ja: |
+  [[時間大域 Leray–Hopf 解の束|LerayHopf.Galerkin.GlobalLerayHopfSolution]]をトーラスの領域と形式核に特殊化した略記。
+gap:
+  level: none
+chapter: capstone-torus
+tags: [leray-hopf, capstone, torus, time-global]

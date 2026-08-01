@@ -1,0 +1,8 @@
+name: LerayHopf.Galerkin.badTail
+tier: full
+statement_ja: |
+  時刻 $1$ までは $1/t$、それ以降は $0$ とおいた実数値関数。原点近傍で非可積分な具体例として用意されている。
+gap:
+  level: none
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation, counterexample]

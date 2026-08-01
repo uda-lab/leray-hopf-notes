@@ -1,0 +1,8 @@
+name: LerayHopf.GlobalLerayHopfSolutionFull_R3
+tier: full
+statement_ja: |
+  [[時間大域 Leray–Hopf 解の束|LerayHopf.Galerkin.GlobalLerayHopfSolution]]を $\mathbb{R}^3$ の領域と形式核に特殊化した略記。
+gap:
+  level: none
+chapter: capstone-r3
+tags: [leray-hopf, capstone, r3, time-global]

@@ -1,0 +1,10 @@
+name: LerayHopf.AubinLionsPackage_R3.effective_tendsto_atTop
+tier: full
+statement_ja: |
+  **合成された添字写像の共終性。** 部分列を定める添字写像 $\kappa$ が狭義単調ならば、合成 $\kappa\circ\varphi$ は正の無限大へ発散する。すなわち、元の列における添字 $(\kappa\circ\varphi)(n)$ は任意に大きくなる。
+proof_ja: |
+  [[添字写像の合成の狭義単調性|LerayHopf.AubinLionsPackage_R3.effective_strictMono]]から従う。狭義単調な自然数列は正の無限大へ発散する。
+gap:
+  level: none
+chapter: compactness
+tags: [kappa-chain, time-global, r3]

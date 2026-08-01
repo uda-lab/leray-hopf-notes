@@ -1,0 +1,16 @@
+name: LerayHopf.R3KappaChainExitWitness
+tier: full
+statement_ja: |
+  **κ 連鎖のκ 連鎖の出力データ（$\mathbb{R}^3$）。** 添字写像 $\varphi_1$ に沿った従属族に対し、κ 一般化された $\mathbb{R}^3$ のコンパクト性の連鎖が最後まで適用できたことを保持する。
+
+  内容は全添字の基底族、$\varphi_1$ に沿って与えられた族に一致するという移送等式、有効モード写像を $\varphi_1$ とする[[Aubin–Lions パッケージ|LerayHopf.AubinLionsPackage_R3]]、パッケージ曲線のエネルギー類、良い代表元 $v$ とその a.e. の対応、$v$ についての弱形式・エネルギー不等式・初期トレース・エネルギー類、および各時刻での弱収束先の同定である。
+
+  [[トーラス側の出力データ|LerayHopf.P2ExitWitness]]と異なり、部分列を定める添字写像を別に持たない。$\mathbb{R}^3$ の極限移行はパッケージの添字写像に沿って直接、弱収束先の同定を返すため、追加の部分列を定める添字写像が要らないからである。
+gap:
+  level: mild
+  note: |
+    弱収束先の同定は周囲の $L^2$ ベクトル場全体を走るテスト元について述べられており、発散ゼロ部分空間に限った形より強い。この強さが後段で対角極限との各点一致を導く際にそのまま使われる。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: limit-passage
+tags: [kappa-chain, time-global, r3]

@@ -1,0 +1,10 @@
+name: LerayHopf.diagWeakLimit_R3
+tier: full
+statement_ja: |
+  **対角弱極限曲線（$\mathbb{R}^3$）。** 時刻 $t$ における値を、段番号 $m_t:=\lfloor\max(t,0)\rfloor$ の段の弱極限の $t$ での値として定める。第 $m$ 段の区間は $[0,m+1]$ であり、$t\ge0$ のときは $t\le m_t+1$ が成り立つので、この段の区間は $t$ を含む。$t<0$ でも値は定まるが、以降の主張で用いるのは非負の時刻に限る。
+
+  [[段の整合性|LerayHopf.stageData_R3_U_coherent]]は、**$t$ を区間に含む**二つの段の弱極限が $t$ で一致することを保証する。したがってこの定義は、$t$ を区間に含む段のうちどれを取るかには依存しない。区間が $t$ を含まない段については一致は主張されておらず、必要でもない。
+gap:
+  level: none
+chapter: compactness
+tags: [diagonal-subsequence, time-global, r3]

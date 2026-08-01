@@ -1,0 +1,14 @@
+name: LerayHopf.Galerkin.badTail_truncation
+tier: full
+statement_ja: |
+  [[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]が非可積分な場合にも成り立つことの具体的検証：[[非可積分な例|LerayHopf.Galerkin.badTail]]について $(0,2]$ 上の積分と $(0,1]$ 上の積分は一致する。
+
+  この例は両区間で非可積分なので、両辺はともに既定値であり、等式そのものに解析的な内容はない。確かめているのは、可積分性を仮定しない主張が非可積分な入力に対しても破綻せずに適用できることである。
+proof_ja: |
+  [[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]に、$1\le 2$ と[[裾の消滅|LerayHopf.Galerkin.badTail_tail_zero]]を代入すればよい。
+gap:
+  level: none
+provenance: |
+  codex レビューが提起した「非可積分な前半をもつ場合に裾の切り落としは正当か」という論点に対する、機械検査された回答として追加された。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation, counterexample]

@@ -1,0 +1,10 @@
+name: LerayHopf.Galerkin.badTail_tail_zero
+tier: full
+statement_ja: |
+  [[非可積分な例|LerayHopf.Galerkin.badTail]]は $1<t\le 2$ で零である。
+proof_ja: |
+  定義の場合分けで $t\le 1$ が偽になる側そのものであり、計算で直ちに従う。
+gap:
+  level: none
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation]

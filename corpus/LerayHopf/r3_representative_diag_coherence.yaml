@@ -1,0 +1,20 @@
+name: LerayHopf.r3_representative_diag_coherence
+tier: full
+statement_ja: |
+  **代表元と対角極限の一致（整合性の核）。** 区間 $[0,T]$ 上で次の二つを仮定する。第一に、対角列 $\delta$ に沿った Galerkin 近似との内積が、発散ゼロ部分空間を走るすべてのテスト元について $\langle W(t),z\rangle$ へ収束すること。第二に、曲線 $v$ が $\delta$ の部分列を定める添字写像 $\sigma$ に沿って、周囲の $L^2$ ベクトル場全体を走るすべてのテスト元について弱収束の極限になっていること。
+
+  このとき $v$ と $W$ は $[0,T]$ 上で**各点**一致する。ほとんど至る所への弱め方はどこにも入らない。
+proof_ja: |
+  時刻 $t$ を固定する。第一の仮定の収束列を部分列を定める添字写像 $\sigma$ で細めると、部分列の極限は変わらないので、$\sigma$ に沿っても $\langle W(t),z\rangle$ へ収束する。
+
+  第二の仮定は同じ $\sigma$ に沿って $\langle v(t),z\rangle$ への収束を与える。二つは同じ列の極限なので、極限の一意性から発散ゼロ部分空間を走る任意のテスト元との内積が一致する。
+
+  [[部分空間の分離性|LerayHopf.L2Sigma_R3_eq_of_forall_inner]]により $v(t)=W(t)$ を得る。
+gap:
+  level: mild
+  note: |
+    二つの収束が**同じ**部分列に沿っていることが議論の全体である。$\sigma$ が $\delta$ の部分列を定める添字写像でなければ極限の一意性は使えず、別々の部分列の極限どうしは一般に一致しない。時間大域の組み立てでは、区間ごとの取り出しをすべて同じ対角列の上で適用することでこの条件を満たしている。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: limit-passage
+tags: [diagonal-subsequence, time-global, r3, good-representative]

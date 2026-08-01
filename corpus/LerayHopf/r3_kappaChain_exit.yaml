@@ -1,0 +1,20 @@
+name: LerayHopf.r3_kappaChain_exit
+tier: full
+statement_ja: |
+  **κ 連鎖の出口（$\mathbb{R}^3$）。** $\nu>0$、$T>0$、補助族の族、テスト空間の近似性、狭義単調な $\varphi_1$ とそれに沿った従属族が与えられれば、[[κ 連鎖の出力データ|LerayHopf.R3KappaChainExitWitness]]が存在する。
+proof_ja: |
+  与えられた従属族を[[埋め込み|LerayHopf.extendReindexedFamily_R3]]で全添字の族へ延長し、[[部分列上での復元|LerayHopf.extendReindexedFamily_R3_apply]]で移送等式を得る。
+
+  延長した族に対し、有効モード写像を $\varphi_1$ として[[Aubin–Lions パッケージ|LerayHopf.aubinLionsPackage_R3_of_timeCompactness]]を構成する。局所コンパクト性は Fréchet–Kolmogorov から得られる無条件の入力が供給する。
+
+  [[粘性項の弱下半連続性|LerayHopf.viscous_lsc_under_strongL2]]からパッケージ曲線のエネルギー類を取り出し、[[極限移行|LerayHopf.galerkin_limit_passage_R3]]で良い代表元と弱形式・エネルギー不等式・初期トレース・弱収束先の同定を得る。ここでテスト空間の近似性が消費される。
+
+  最後に弱収束先の同定を移送等式で書き換え、与えられた族についての主張へ直して出力データの各条項へ充てる。
+gap:
+  level: mild
+  note: |
+    非有界領域では大域 Rellich が破綻するため、連鎖の空間側は球ごとに局所化された形をとる。テスト関数の急減少性が球外の裾を一様に抑えることで非線形項の極限移行が成立する点は有限区間の議論と同じで、本定理が加えるのは添字写像を通すことと結論を与えられた族の言葉へ戻すことの二点である。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。時間大域キャンペーンの P2′ 出口ゲートに相当する。
+chapter: limit-passage
+tags: [kappa-chain, time-global, r3]

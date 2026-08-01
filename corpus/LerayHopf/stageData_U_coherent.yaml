@@ -1,0 +1,14 @@
+name: LerayHopf.stageData_U_coherent
+tier: full
+statement_ja: |
+  **段の極限どうしの整合性（トーラス）。** 時刻 $t$ が第 $a$ 段の区間と第 $b$ 段の区間の両方に属するならば、二つの段の弱極限はその時刻で一致する。
+proof_ja: |
+  どちらの段の極限も、[[移送|LerayHopf.stageData_diag_tendsto]]により**同じ**対角列に沿った内積列の極限である。極限の一意性から、任意のテスト元との内積が一致する。
+
+  [[部分空間の分離性|LerayHopf.L2Sigma_eq_of_forall_inner]]により、内積がすべて一致すれば元そのものが一致する。
+gap:
+  level: none
+  note: |
+    一致は各点であってほとんど至る所ではない。区間ごとの解を後から零集合を除いて貼り合わせるのではなく、対角列を一度取ることで各点の一致が直接得られる点が、時間大域化が可能になっている理由である。
+chapter: compactness
+tags: [diagonal-subsequence, time-global, torus]

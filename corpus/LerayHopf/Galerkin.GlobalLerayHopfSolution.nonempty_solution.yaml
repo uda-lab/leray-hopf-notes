@@ -1,0 +1,12 @@
+name: LerayHopf.Galerkin.GlobalLerayHopfSolution.nonempty_solution
+tier: full
+statement_ja: |
+  [[時間大域解の束|LerayHopf.Galerkin.GlobalLerayHopfSolution]]が与えられれば、任意の $T>0$ で有限区間の Leray–Hopf 弱解が存在する。
+proof_ja: |
+  [[切り出し|LerayHopf.Galerkin.GlobalLerayHopfSolution.toSolution]]をその $T$ に適用すればよい。
+gap:
+  level: none
+  note: |
+    量化子の入れ替えのうち容易な向き（大域から有限区間へ）である。逆向きは一般には成り立たず、対角化を要する。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, leray-hopf]

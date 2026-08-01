@@ -1,0 +1,16 @@
+name: LerayHopf.Bochner.tendsto_diag_of_tendsto_stage
+tier: full
+statement_ja: |
+  **極限の対角列への移送。** 各段の添字写像が狭義単調であるとする。ある段 $m$ の部分列に沿って収束する量は、[[対角添字写像|LerayHopf.Bochner.diagExtraction]]に沿っても同じ極限に収束する。
+
+  極限は任意のフィルターに関するもので、収束先の空間にも仮定を置かない。
+proof_ja: |
+  [[裾の細分性|LerayHopf.Bochner.diagExtraction_tail]]から狭義単調な $\psi$ を取ると、$m$ ずらした対角列は第 $m$ 段の列を $\psi$ で部分列をとったものに一致する。狭義単調な自然数列は正の無限大へ発散するので、仮定の収束は $\psi$ による部分列の取り出しでも保たれ、$m$ ずらした対角列に沿う収束が得られる。
+
+  ずらし幅は有限なので、有限個ずらした列の収束と元の列の収束は同値であり、対角列そのものに沿う収束に戻る。
+gap:
+  level: mild
+  note: |
+    自然言語では「対角列は各段の部分列だから極限を引き継ぐ」の一行だが、形式化では裾の細分・部分列に沿う収束・有限ずらしの吸収の三段に分かれる。最後の段は `tendsto_add_atTop_iff_nat` が担う。
+chapter: bochner
+tags: [diagonal-subsequence, time-global]

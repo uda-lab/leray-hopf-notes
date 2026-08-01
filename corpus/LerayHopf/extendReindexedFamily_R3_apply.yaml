@@ -1,0 +1,12 @@
+name: LerayHopf.extendReindexedFamily_R3_apply
+tier: full
+statement_ja: |
+  **部分列上での復元（$\mathbb{R}^3$）。** $\varphi_1$ が単射ならば、[[埋め込み|LerayHopf.extendReindexedFamily_R3]]は添字 $\varphi_1(k)$ において、もとの族の第 $k$ 項をそのまま返す。補助族が何であっても結論は変わらない。
+proof_ja: |
+  添字 $\varphi_1(k)$ は像に入るので場合分けは像側の分岐に落ち、そこで選ばれる原像は単射性から $k$ に一致する。
+gap:
+  level: mild
+  note: |
+    従属型の族どうしの比較なので従属型の読み替えを解消する手続きが入る。数学的な内容は単射性だけである。
+chapter: limit-passage
+tags: [kappa-chain, time-global, r3]

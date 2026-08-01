@@ -1,0 +1,12 @@
+name: LerayHopf.Galerkin.truncation_routes_agree
+tier: full
+statement_ja: |
+  **二つの経路は一致する。** 可積分性を仮定できる場合、古典的な区間加法性から導かれる等式は、可積分性を一切仮定しない[[裾の切り落とし|LerayHopf.Galerkin.setIntegral_Ioc_eq_of_tail_zero]]が与える等式とまったく同じものになる。すなわち定義関数経路は古典的議論に対して保守的である。
+proof_ja: |
+  [[加法性による分解|LerayHopf.Galerkin.truncation_agrees_with_additivity]]の二つの結論を組み合わせ、裾の積分が零であることを代入して和を消せばよい。
+gap:
+  level: none
+provenance: |
+  「可積分性を落としたのは主張を弱めたからではないか」という疑いを、散文の主張ではなく定理として閉じたもの。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, truncation]

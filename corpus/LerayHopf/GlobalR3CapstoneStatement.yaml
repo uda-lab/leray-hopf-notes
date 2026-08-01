@@ -1,0 +1,20 @@
+name: LerayHopf.GlobalR3CapstoneStatement
+tier: full
+statement_ja: |
+  **定義として固定した時間大域主張（$\mathbb{R}^3$）。** 任意の発散が零の初期値 $u_0$ と $\nu>0$ に対し、あるスキーム $\mathfrak{G}$ と形式束 $F$、および曲線 $u$ が存在して、**その同じ** $u$ について、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、という命題。
+
+  量化子の並びは次のとおりである。
+
+  $$\exists\,\mathfrak{G},\ \exists\,F,\ \exists\,u,\ \forall\,T>0$$
+
+  トーラスと違ってスキームも存在量化されるのは、$\mathbb{R}^3$ では Galerkin 基底の取り方が構成の一部だからである。
+proof_ja: |
+  主張そのものを命題として書き下しておくと、以後の議論はこの一つの命題を示すことに帰着する。実際にこの命題を証明しているのが[[固定した目標の証明|LerayHopf.globalR3Capstone]]である。
+gap:
+  level: none
+  note: |
+    目標を独立した `def : Prop` として固定してあるため、証明の側が量化子の順序を入れ替えたり時刻ごとに曲線やスキームを取り替えたりしていないことは、この命題との一致が型検査を通ることで確かめられる。
+provenance: |
+  leray-hopf issue #195（𝕋³ 系統）/ #212（ℝ³ 系統）の時間大域キャンペーンで導入。
+chapter: capstone-r3
+tags: [leray-hopf, capstone, r3, time-global]

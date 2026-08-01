@@ -1,0 +1,12 @@
+name: LerayHopf.Galerkin.LerayHopfSolution.ofIsOn_u
+tier: full
+statement_ja: |
+  [[条件からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]が持つ曲線は、もとの曲線そのものである。
+proof_ja: |
+  組み立ての定義がそのまま曲線を移しているので、定義から直ちに従う。
+gap:
+  level: none
+  note: |
+    曲線が途中で差し替わっていないことを機械検査するための等式で、「時間大域の主張が実は $T$ ごとに別の曲線を返しているのではないか」という疑いを閉じる役割を持つ。
+chapter: galerkin-generic
+tags: [galerkin-domain, time-global, leray-hopf]
