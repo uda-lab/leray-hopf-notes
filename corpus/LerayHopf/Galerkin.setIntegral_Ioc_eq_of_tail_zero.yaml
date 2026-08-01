@@ -11,6 +11,6 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    区間加法性 `setIntegral_union` は可積分性を要求するため使えない。ここでは定義関数の各点一致に落とすことでその要求を回避しており、非可積分な場合には両辺がともに `integral_undef` の既定値 $0$ になるという規約に依存する。この規約依存が空虚な等式を生んでいないことは[[非可積分な裾での検証|LerayHopf.Galerkin.badTail_truncation]]と[[加法性経路との一致|LerayHopf.Galerkin.truncation_routes_agree]]が機械検査で裏付ける。
+    区間加法性 `setIntegral_union` は可積分性を要求するため使えない。ここでは定義関数の各点一致に落とすことでその要求を回避しており、非可積分な場合には両辺がともに `integral_undef` の既定値 $0$ になるという規約に依存する。ただし非可積分な分岐で本定理が述べているのは、両辺がともに既定値になることによる**既定値どうしの等式**であって、そこに解析的な内容はない。[[非可積分な例での検証|LerayHopf.Galerkin.badTail_truncation]]の `badTail` は $(0,2]$ でも $(0,1]$ でも非可積分なので、この例はまさにその分岐が通ることを確かめるものである。定理が実質的な内容を持つのは可積分な分岐で、そこでの結論が古典的な区間加法性による導出と一致することを[[加法性経路との一致|LerayHopf.Galerkin.truncation_routes_agree]]が示す。
 chapter: galerkin-generic
 tags: [galerkin-domain, time-global, truncation]
