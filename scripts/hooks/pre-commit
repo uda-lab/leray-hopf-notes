@@ -7,7 +7,9 @@
 # Checks:
 #   1. validate.py     — YAML schema + corpus ⊆ universe
 #   2. glossary_lint.py — forbidden translation detection
-#   3. prose_lint.py    — D1/D2/D5 prose typography (notes#12); hard errors gate
+#   3. prose_lint.py --strict — D1/D2/D5 prose typography (notes#12). --strict so the
+#      local gate matches CI (notes#124); soft warnings gate here too, otherwise a commit
+#      that passes the hook can still fail CI.
 
 set -euo pipefail
 
@@ -24,8 +26,8 @@ echo "==> leray-hopf-notes pre-commit: glossary lint..."
 "$PYTHON" scripts/glossary_lint.py
 echo ""
 
-echo "==> leray-hopf-notes pre-commit: prose lint (D1/D2/D5)..."
-"$PYTHON" scripts/prose_lint.py
+echo "==> leray-hopf-notes pre-commit: prose lint (D1/D2/D5, strict)..."
+"$PYTHON" scripts/prose_lint.py --strict
 echo ""
 
 echo "==> pre-commit checks passed."

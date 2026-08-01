@@ -18,8 +18,10 @@
    `docs/schemas/corpus.schema.json` を、執筆規約（段落・数式・レジスタ・インライン
    記法）は `corpus/README.md` を、訳語は `docs/GLOSSARY.md` を参照。
 3. `python3 scripts/validate.py`（schema + corpus ⊆ universe）、
-   `python3 scripts/glossary_lint.py`（訳語）、`python3 scripts/prose_lint.py`
-   （組版・レジスタ、ハードエラーあり）を通す。
+   `python3 scripts/glossary_lint.py`（訳語）、`python3 scripts/prose_lint.py --strict`
+   （組版・レジスタ）を通す。`--strict` はハードエラーに加えて警告（長すぎるインライン
+   数式など）も失敗扱いにする。CI と pre-commit フックも `--strict` で走るので、
+   手元でも同じ形で確認すること（notes#124）。
 4. `python3 scripts/coverage.py` でカバレッジ確認、`python3 scripts/build_site_data.py`
    でサイトデータを生成し `site/` をローカルプレビューする（`site/README.md` 参照）。
 

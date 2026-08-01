@@ -37,9 +37,10 @@ The fully-qualified name is stored in the `name` field for join against `extract
 
 ## 執筆規約（notes#12 v1.1 — 組版・レジスタ）
 
-owner の v1 実見レビューを反映した凍結規約。`scripts/prose_lint.py` が pre-commit /
-CI で機械チェックする（D1・D2 の Lean 名・D5 は**ハードエラー**、長すぎるインライン
-数式は警告）。
+owner の v1 実見レビューを反映した凍結規約。`scripts/prose_lint.py --strict` が
+pre-commit / CI で機械チェックする。D1・D2 の Lean 名・D5 は**ハードエラー**、長すぎる
+インライン数式は警告だが、`--strict` では警告も失敗扱いになるため、いずれも通す必要が
+ある（notes#124）。
 
 ### D1. 段落と物理改行
 
