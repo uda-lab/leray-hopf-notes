@@ -1,0 +1,16 @@
+name: LerayHopf.norm_toLp_kernel_slice_sub_eq_translate_modulus
+tier: gloss
+statement_ja: |
+  **核の平行移動モジュラス。** 核の切片の差 $z\mapsto\lvert\eta(x-z)-\eta(y-z)\rvert$ の $L^2$ ノルムは、ずれ $x-y$ における核自身の平行移動モジュラス、すなわち $x-y$ だけ[[平行移動|LerayHopf.translate_L2R]]した[[核の類|LerayHopf.kernelL2R]]と元の類との差のノルムに等しい。
+gap:
+  level: mild
+  note: |
+    測度を保つ変数変換 $z\mapsto y-z$ により、切片の差は次へ移る。
+
+    $$w\mapsto\lvert\eta(w+(x-y))-\eta(w)\rvert$$
+
+    [[平行移動差の点ごと表示|LerayHopf.coeFn_translate_kernelL2R_sub]]によって、これが平行移動差の類のモジュラスに一致する。
+provenance: |
+  leray-hopf issue #154 Wave 2（PR #226）で `FrechetKolmogorov.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.norm_toLp_kernel_slice_sub_eq_translate_modulus`。
+chapter: compactness
+tags: [private-helper, frechet-kolmogorov, translation, mollifier]

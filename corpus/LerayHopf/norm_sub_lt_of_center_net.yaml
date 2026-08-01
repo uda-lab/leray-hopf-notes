@@ -1,0 +1,12 @@
+name: LerayHopf.norm_sub_lt_of_center_net
+tier: gloss
+statement_ja: |
+  **網の中心を経由した評価。** ノルム空間の元 $p,q$ がそれぞれ $p',q'$ から $\eta$ 未満の距離にあり、$p'$ と $q'$ がともに共通の値 $w$ から $\gamma$ 未満の距離にあるならば、$\lVert p-q\rVert<\eta+2\gamma+\eta$ が成り立つ。
+
+  Arzelà–Ascoli の網構成における分類ステップを、それ自体として取り出したもの。Fréchet–Kolmogorov 固有の内容を含まず、任意のノルム空間で成り立つ一般の補題である。適用時には同程度連続性が二つの $\eta$ 評価を、同じ類に属することが二つの $\gamma$ 評価を与える。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 2（PR #226）で `FrechetKolmogorov.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/FrechetKolmogorov.lean` の `LerayHopf.norm_sub_lt_of_center_net`。
+chapter: compactness
+tags: [private-helper, frechet-kolmogorov, arzela-ascoli]

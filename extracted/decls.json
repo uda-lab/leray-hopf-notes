@@ -94,9 +94,9 @@
   "kind": "theorem",
   "id": "LerayHopf.AubinLionsPackage_R3.effective_strictMono",
   "file": "LerayHopf/R3/SolutionInterfaces.lean",
-  "endLine": 614,
+  "endLine": 615,
   "doc":
-  "Effective absolute mode map is strictly monotone (§4.1 primary-protection surface 1):\nthe composition of the κ-shift with the extraction `φ`.  Category-(iii) index-selection\nfacts are derived from this lemma at the composed index, never from bare `φ_mono`. ",
+  "The composed index map `κ ∘ φ` — the effective index into the original Galerkin family —\nis strictly monotone (§4.1 primary-protection surface 1): the composition of the outer index\nmap `κ` with the package's own extraction `φ`.  Category-(iii) index-selection\nfacts are derived from this lemma at the composed index, never from bare `φ_mono`. ",
   "deps":
   ["LerayHopf.AubinLionsPackage_R3",
    "LerayHopf.Domain3",
@@ -105,7 +105,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.R3GalerkinScheme",
    "LerayHopf.R3NSForms"]},
- {"startLine": 616,
+ {"startLine": 617,
   "signature":
   "∀ {𝔊 : LerayHopf.R3GalerkinScheme} {F : LerayHopf.R3NSForms 𝔊} {ν T : ℝ} {u₀ : ↥LerayHopf.L2Sigma_R3}\n  {galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData_R3 𝔊 F ν u₀ n} {κ : ℕ → ℕ}\n  (p : LerayHopf.AubinLionsPackage_R3 𝔊 F ν T u₀ galSeq κ),\n  StrictMono κ → Filter.Tendsto (fun n => κ (p.φ n)) Filter.atTop Filter.atTop",
   "private": false,
@@ -113,9 +113,9 @@
   "kind": "theorem",
   "id": "LerayHopf.AubinLionsPackage_R3.effective_tendsto_atTop",
   "file": "LerayHopf/R3/SolutionInterfaces.lean",
-  "endLine": 622,
+  "endLine": 623,
   "doc":
-  "Effective absolute mode map is cofinal (companion export, torus parity). ",
+  "The composed index map `κ ∘ φ` is cofinal (companion export, torus parity). ",
   "deps":
   ["LerayHopf.AubinLionsPackage_R3",
    "LerayHopf.Domain3",
@@ -1964,7 +1964,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain"]},
- {"startLine": 667,
+ {"startLine": 668,
   "signature":
   "(𝔊 : LerayHopf.R3GalerkinScheme) → LerayHopf.R3NSForms 𝔊 → ℝ → ℝ → ↥LerayHopf.L2Sigma_R3 → Type",
   "private": false,
@@ -1972,7 +1972,7 @@
   "kind": "abbrev",
   "id": "LerayHopf.GalerkinCompactnessPackageFull_R3",
   "file": "LerayHopf/R3/SolutionInterfaces.lean",
-  "endLine": 678,
+  "endLine": 679,
   "doc":
   "The **full Galerkin compactness package** on ℝ³, carrying genuine proof fields.\n\nProduced by `build_galerkin_package_R3_of_galSeq` (AX-2 with `spatial_compactness_R3` → AX-3,\nfrom an explicit Galerkin sequence; the capstone supplies that sequence axiom-free over\n`schemeOfBasis B` in `GalerkinODECapstone.lean`).\n\n`energy_class_limit` proof-carries that the limit curve lies in the Leray–Hopf energy\nclass: a.e. `memH1VF_R3` + integrable viscous dissipation (non-vacuity of the\nenergy inequality). ",
   "deps":
@@ -2638,7 +2638,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain"]},
- {"startLine": 648,
+ {"startLine": 649,
   "signature":
   "(𝔊 : LerayHopf.R3GalerkinScheme) → LerayHopf.R3NSForms 𝔊 → ℝ → ℝ → ↥LerayHopf.L2Sigma_R3 → Type",
   "private": false,
@@ -2646,7 +2646,7 @@
   "kind": "abbrev",
   "id": "LerayHopf.LerayHopfSolutionFull_R3",
   "file": "LerayHopf/R3/SolutionInterfaces.lean",
-  "endLine": 665,
+  "endLine": 666,
   "doc":
   "The **full Leray–Hopf solution** structure on ℝ³, carrying genuine proof fields.\n\nAll fields are typed propositions (not `Prop` placeholders):\n- `weak_eq`: the curve satisfies the weak NS identity against separated-variable tests\n  `ψ(t)w(x)` with `w` ranging over `IsSchwartzDivFree_R3` (the standard space-time test\n  formulation is not derived from this; see `WeakFormNS`'s docstring),\n- `energy_ineq`: the Leray–Hopf energy inequality on `[0, T]`,\n- `initial_trace`: the initial datum is attained in the strong L² sense as `t → 0⁺` (a\n  one-sided trace at the initial time only, **not** weak continuity `C_w([0,T]; L²_σ)`\n  on the whole interval, which is not a field of this structure),\n- `energy_class`: a.e. `memH1VF_R3` on `[0, T]` and interval-integrable viscous\n  dissipation (prevents `viscousFormSq_R3 ν` collapsing off H¹, making `energy_ineq`\n  non-vacuous). This is a.e.-in-time H¹ membership plus integrable dissipation, **not**\n  literal Bochner membership `u ∈ L²(0,T;H¹_σ(ℝ³))`, since `u_aestronglyMeasurable` is\n  strong measurability into the ambient `L2VF_R3`, not into `H¹` as a Banach space. ",
   "deps":
@@ -2688,9 +2688,9 @@
   "kind": "structure",
   "id": "LerayHopf.P2ExitWitness",
   "file": "LerayHopf/Torus/KappaChainExit.lean",
-  "endLine": 103,
+  "endLine": 105,
   "doc":
-  "**Typed P2 exit contract (production).**  A witness certifies that the\nκ-generalized torus compactness chain runs end-to-end over a base family bound (via\n`transport`) to the given dependent family `galSeq₁`, with effective mode map\n`κ := φ₁`.  Field types are the production conclusions of the chain stages; the pin is\nphrased against `galSeq₁` itself. ",
+  "**Typed P2 exit contract (production).**  A witness certifies that the\nκ-generalized torus compactness chain runs end-to-end over a base family bound (via\n`transport`) to the given dependent family `galSeq₁`, with outer index map\n`κ := φ₁` — the index map selecting which entries of the original Galerkin family are\nused, the package choosing its own extraction `φ` internally so that convergence is\nstated along the composed index map `κ ∘ φ`.  Field types are the production conclusions\nof the chain stages; the pin is phrased against `galSeq₁` itself. ",
   "deps":
   ["LerayHopf.GalerkinSolutionData",
    "LerayHopf.L2Sigma",
@@ -3364,9 +3364,9 @@
   "kind": "structure",
   "id": "LerayHopf.R3KappaChainExitWitness",
   "file": "LerayHopf/R3/KappaChainExit.lean",
-  "endLine": 104,
+  "endLine": 107,
   "doc":
-  "**Typed P2′ exit contract (production).**  A witness certifies that the κ-generalized ℝ³\ncompactness chain runs end-to-end over a base family bound (via `transport`) to the given\ndependent family `galSeq₁`, with effective mode map `κ := φ₁`.  Field types are the production\nconclusions of the chain stages; the pin is phrased against `galSeq₁` itself, along `alPkg.φ`\ndirectly (ℝ³ simplification: `galerkin_limit_passage_R3` pins along `alPkg.φ` with no\nsub-extraction `ρ` — the torus witness's `ρ`/`ρ_mono` fields are ABSENT by design). ",
+  "**Typed P2′ exit contract (production).**  A witness certifies that the κ-generalized ℝ³\ncompactness chain runs end-to-end over a base family bound (via `transport`) to the given\ndependent family `galSeq₁`, with outer index map `κ := φ₁` — the index map selecting which\nentries of the original Galerkin family are used, the package choosing its own extraction `φ`\ninternally so that convergence is stated along the composed index map `κ ∘ φ`.  Field types\nare the production\nconclusions of the chain stages; the pin is phrased against `galSeq₁` itself, along `alPkg.φ`\ndirectly (ℝ³ simplification: `galerkin_limit_passage_R3` pins along `alPkg.φ` with no\nsub-extraction `ρ` — the torus witness's `ρ`/`ρ_mono` fields are ABSENT by design). ",
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.GalerkinSolutionData_R3",
@@ -5081,25 +5081,25 @@
    "LerayHopf.memH1VF_R3",
    "LerayHopf.restrictToBall",
    "LerayHopf.viscousFormSq_R3"]},
- {"startLine": 1264,
+ {"startLine": 1301,
   "signature": "ℝ → ℝ",
   "private": false,
   "name": "LerayHopf.ballMassSqrt",
   "kind": "def",
   "id": "LerayHopf.ballMassSqrt",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1267,
+  "endLine": 1304,
   "doc":
   "The \"ball mass factor\" `V_R := (volume B_R)^{1/2}` controlling the sup→L²(B_R) transfer. ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 1269,
+ {"startLine": 1306,
   "signature": "∀ (R : ℝ), 0 ≤ LerayHopf.ballMassSqrt R",
   "private": false,
   "name": "LerayHopf.ballMassSqrt_nonneg",
   "kind": "theorem",
   "id": "LerayHopf.ballMassSqrt_nonneg",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1272,
+  "endLine": 1309,
   "doc":
   "The ball-mass factor `ballMassSqrt R` is nonnegative, as a square root of a measure. ",
   "deps": ["LerayHopf.ballMassSqrt"]},
@@ -6052,7 +6052,7 @@
    "LerayHopf.IsSchwartzDivFree_R3",
    "LerayHopf.L2Sigma_R3",
    "LerayHopf.L2VF_R3"]},
- {"startLine": 1519,
+ {"startLine": 1571,
   "signature":
   "∀ (R C r₀ : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (rep : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3),\n  (∀ f ∈ S, LerayHopf.restrictToBall R (rep f) = f) →\n    0 < r₀ →\n      (∀ f ∈ S, ‖f‖ ≤ C) →\n        (∀ f ∈ S, ‖LerayHopf.restrictToBall (R + r₀) (rep f)‖ ≤ C) →\n          (∀ ε > 0,\n              ∃ δ > 0, ∀ f ∈ S, ∀ (h : LerayHopf.Domain3), ‖h‖ < δ → ‖LerayHopf.translate_L2VF h (rep f) - rep f‖ < ε) →\n            ∀ (ε : ℝ),\n              0 < ε →\n                ∃ K ρf,\n                  K.supportRadius ≤ r₀ ∧\n                    (∀ f ∈ S, ↑↑(ρf f) =ᵐ[MeasureTheory.volume] LerayHopf.mollifyRep K (rep f)) ∧\n                      (∀ f ∈ S, ‖f - LerayHopf.restrictToBall R (ρf f)‖ < ε) ∧\n                        TotallyBounded ((fun f => LerayHopf.restrictToBall R (ρf f)) '' S)",
   "private": false,
@@ -6060,7 +6060,7 @@
   "kind": "theorem",
   "id": "LerayHopf.convolution_l2_tendsto_uniform",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1655,
+  "endLine": 1707,
   "doc":
   "**FK step 3.**  Uniform L²-approximation of a translation-equicontinuous family by its\nmollifications, for the CONCRETE mollifier.\n\nIf a family `{rep f | f ∈ S}` of L²(ℝ³) fields has a uniform L²-translation modulus\n(the second hypothesis of `FrechetKolmogorovInput`), then for every tolerance `ε > 0` there is\nan admissible smooth compactly supported kernel `K` and a choice of L²-classes `ρf : S → L2VF_R3`\nwhose chosen pointwise representative is `mollifyRep K (rep f)`, such that every member is within\n`ε` in L² of its mollification:\n\n  `∀ f ∈ S, ‖f − restrictToBall R (ρf f)‖ < ε`,\n\nwith the rate controlled UNIFORMLY over the family by the translation modulus.  The derivation\nroutes through the two named analytic helpers `young_convolution_memLp_L2` (global Young, producing\nthe `L²`-class `ρf f`) and `convolution_sub_L2_le_translation_modulus` (vector Minkowski, producing\nthe rate), the kernel constructor `exists_normalized_mollifierKernel`, and FK step 2\n`mollified_family_totallyBounded_L2` (total boundedness).  This is the genuinely-missing analytic\ncore (mathlib has only the *pointwise* `convolution_tendsto_right`).\n\n**Norm-correctness (Codex Gate round 3 → resolved round 4).**  The total-boundedness conjunct\ndelegates to `mollified_family_totallyBounded_L2` (steps 1+2), whose bounds need a ball-mass bound\non the kernel-support enlargement `B_{R+K.supportRadius}`.  The local hypothesis is an\nENLARGED-BALL bound at a fixed enlargement budget `r₀ ≥ 0`:\n`hbdEnl : ∀ f ∈ S, ‖restrictToBall (R + r₀) (rep f)‖ ≤ C`, which the caller obtains directly from\n`FrechetKolmogorovInput`'s GLOBAL bound `‖rep f‖ ≤ C` by ball-mass monotonicity (a single-radius\nball bound `‖f‖ ≤ C` alone would not control annulus mass, but the strengthened criterion carries\nthe global bound, so the enlarged bound is immediate).  The kernel `K` produced has support\nradius `K.supportRadius ≤ r₀`, so by monotonicity of ball mass in the radius the step-3 bound on\n`B_{R + K.supportRadius}` follows from `hbdEnl`.  The ball restriction bound `‖f‖ ≤ C` is retained\nas `hbd` only for the L²-approximation conjunct (which compares ball-restrictions); it does NOT\ncontrol the convolution. ",
   "deps":
@@ -6071,7 +6071,7 @@
    "LerayHopf.mollifyRep",
    "LerayHopf.restrictToBall",
    "LerayHopf.translate_L2VF"]},
- {"startLine": 1110,
+ {"startLine": 1147,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3)\n  (hmem : MeasureTheory.MemLp (LerayHopf.mollifyRep K g) 2 MeasureTheory.volume),\n  ‖MeasureTheory.MemLp.toLp (LerayHopf.mollifyRep K g) hmem - g‖ ≤\n    ∫ (h : LerayHopf.Domain3), K.η h • ‖LerayHopf.translate_L2VF h g - g‖",
   "private": false,
@@ -6079,7 +6079,7 @@
   "kind": "theorem",
   "id": "LerayHopf.convolution_sub_L2_le_translation_modulus",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1152,
+  "endLine": 1189,
   "doc":
   "**Analytic core — vector Minkowski form of the convolution approximation rate.**\n\n`(K.η ⋆ g) − g = ∫ h, K.η h · (τ_h g − g) dh` for a mass-one kernel, so by the vector-valued\nMinkowski integral inequality `‖∫ F(h) dh‖₂ ≤ ∫ ‖F(h)‖₂ dh` the `L²`-defect of the mollification is\ncontrolled by the kernel-weighted integral of the translation modulus:\n\n  `‖toLp(mollifyRep K g) − g‖ ≤ ∫ h, K.η h • ‖translate_L2VF h g − g‖ ∂volume`.\n\nComposed with `K.supportRadius < δ` (so the integration variable `h` ranges over `‖h‖ < δ` on the\nkernel support) and the FK uniform translation modulus, this delivers the uniform `< ε` rate. ",
   "deps":
@@ -6337,7 +6337,7 @@
    "LerayHopf.Time",
    "LerayHopf.r3Domain",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1274,
+ {"startLine": 1311,
   "signature":
   "∀ (R c : ℝ),\n  0 ≤ c →\n    ∀ (u v : ↥LerayHopf.L2VF_R3) (g₁ g₂ : LerayHopf.Domain3 → EuclideanSpace ℝ (Fin 3)),\n      ↑↑u =ᵐ[MeasureTheory.volume.restrict (Metric.closedBall 0 R)] g₁ →\n        ↑↑v =ᵐ[MeasureTheory.volume.restrict (Metric.closedBall 0 R)] g₂ →\n          (∀ x ∈ Metric.closedBall 0 R, ‖g₁ x - g₂ x‖ ≤ c) →\n            dist (LerayHopf.restrictToBall R u) (LerayHopf.restrictToBall R v) ≤ LerayHopf.ballMassSqrt R * c",
   "private": false,
@@ -6345,7 +6345,7 @@
   "kind": "theorem",
   "id": "LerayHopf.dist_restrictToBall_le_of_ae_bound",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1312,
+  "endLine": 1349,
   "doc":
   "**Sup→L²(B_R) transfer.**  If two L²(ℝ³) fields `u, v` agree a.e. on `B_R` with functions\nwhose pointwise difference is `≤ c` everywhere on `B_R`, then their ball-restrictions are within\n`ballMassSqrt R · c` in `L²(B_R)`. ",
   "deps":
@@ -6724,7 +6724,7 @@
    "LerayHopf.Torus3NSForms",
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3"]},
- {"startLine": 690,
+ {"startLine": 691,
   "signature":
   "∀ (𝔊 : LerayHopf.R3GalerkinScheme) (F : LerayHopf.R3NSForms 𝔊) (ν T : ℝ) (u₀ : ↥LerayHopf.L2Sigma_R3)\n  (pkg : LerayHopf.GalerkinCompactnessPackageFull_R3 𝔊 F ν T u₀),\n  Nonempty (LerayHopf.LerayHopfSolutionFull_R3 𝔊 F ν T u₀)",
   "private": false,
@@ -6732,7 +6732,7 @@
   "kind": "theorem",
   "id": "LerayHopf.exists_lerayHopf_from_package_full_R3",
   "file": "LerayHopf/R3/SolutionInterfaces.lean",
-  "endLine": 696,
+  "endLine": 697,
   "doc":
   "**Assembly:** A `GalerkinCompactnessPackageFull_R3` yields\n`Nonempty (LerayHopfSolutionFull_R3 …)`. ",
   "deps":
@@ -6891,7 +6891,7 @@
   "file": "LerayHopf/R3/DiagonalGalerkin.lean",
   "endLine": 68,
   "doc":
-  "**Stage handle (§2.2 Step 1).** Composition of two P2′ outputs into a single weak-limit\ncurve: `aubinLionsPackage_R3_of_timeCompactness` (with the concrete FK-derived local Rellich\ninput) produces the Aubin–Lions package with effective mode map `κ`, then\n`exists_weak_representative_R3` produces a curve `U` whose FULL-space weak pairings converge\nat every `t ∈ [0,T]` along the effective index `κ ∘ alPkg.φ`.  The returned extraction is\n`alPkg.φ` (κ threaded separately in the pin — torus-parity shape).  Needs `Rell` (supplied\ninternally, concrete and unconditional) but NOT `htest`. ",
+  "**Stage handle (§2.2 Step 1).** Composition of two P2′ outputs into a single weak-limit\ncurve: `aubinLionsPackage_R3_of_timeCompactness` (with the concrete FK-derived local Rellich\ninput) produces the Aubin–Lions package with outer index map `κ`, then\n`exists_weak_representative_R3` produces a curve `U` whose FULL-space weak pairings converge\nat every `t ∈ [0,T]` along the composed index map `κ ∘ alPkg.φ`.  The returned extraction is\n`alPkg.φ` (κ threaded separately in the pin — torus-parity shape).  Needs `Rell` (supplied\ninternally, concrete and unconditional) but NOT `htest`. ",
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.Galerkin.Domain",
@@ -7450,14 +7450,14 @@
   "doc":
   "Pointwise Fourier symbol of the complexified line derivative: for a real Schwartz `f` and\ndirection `m`, the Schwartz Fourier transform of `schwartzC (∂_m f)` at `ξ` is\n`(2π i)(inner ℝ ξ m)·𝓕(schwartzC f)(ξ)`.\n\nThis is `fourier_lineDerivOp_eq` applied to the complexified map `schwartzC f`, using\n`lineDerivOp_schwartzC` to identify `schwartzC (∂_m f) = ∂_m (schwartzC f)`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.schwartzC"]},
- {"startLine": 1688,
+ {"startLine": 1740,
   "signature": "LerayHopf.FrechetKolmogorovInput",
   "private": false,
   "name": "LerayHopf.frechetKolmogorov_holds",
   "kind": "theorem",
   "id": "LerayHopf.frechetKolmogorov_holds",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1739,
+  "endLine": 1791,
   "doc":
   "**DELIVERABLE.  Fréchet–Kolmogorov (Riesz) L²-precompactness criterion** — a genuine\ndischarge of `RellichBall.FrechetKolmogorovInput` (type copied verbatim, no weakening).\n\nAssembles the standard mollification route: from the uniform L²-translation modulus\n(`convolution_l2_tendsto_uniform`, step 3) each family member is uniformly ε-approximated by its\nmollification, whose image is totally bounded by Arzelà–Ascoli\n(`mollified_family_totallyBounded_L2`, step 2); the transfer lemma\n(`totallyBounded_of_uniform_approx`, step 4) makes `S` totally bounded, and completeness of\n`L2ballR3 R` upgrades total boundedness to precompactness\n(`isCompact_iff_totallyBounded_isComplete`), giving the compact `K ⊇ S`.\n\n**Enlarged-ball bound — RESOLVED via the criterion's global bound (Codex Gate round 3, high).**\nThe helper lemmas (steps 1–3) require, honestly, an ENLARGED-BALL bound\n`hbdEnl : ∀ f ∈ S, ‖restrictToBall (R + r₀) (rep f)‖ ≤ C` on the kernel-support enlargement\n`B_{R+r₀}` (NOT just the single-radius ball bound `‖f‖ ≤ C`, which cannot prevent arbitrarily\nlarge low-frequency mass on the annulus `B_{R+r₀} ∖ B_R`).\n\n`FrechetKolmogorovInput`'s strengthened type hands the prover, beyond the in-ball bound `hbd` and\nthe translation modulus `hmod`, a uniform GLOBAL L²-norm bound on the representatives:\n* `hbddGlobal : ∀ f ∈ S, ‖rep f‖ ≤ C`.\n\nFrom `hbddGlobal` the enlarged-ball bound is IMMEDIATE for any `r₀ ≥ 0`, by monotonicity of ball\nmass in the radius: `‖restrictToBall (R + r₀) (rep f)‖ ≤ ‖rep f‖ ≤ C` (the same\n`restrict_le_self`/`eLpNorm_mono_measure` chain as `RellichBall.admissible_family_uniform_bound`).\nThis is the standard Riesz full-mass control of Fréchet–Kolmogorov; it carries no Sobolev/gradient\ncontent.  The actual Navier–Stokes call site `localRellichInput_of_frechetKolmogorov` supplies it\nfrom its admissible family's GLOBAL `‖w‖ ≤ M` bound.\n\n**Assembly (pure proof-body fill, no upstream blocker).**  Derive `hbdEnl` from `hbddGlobal` by\nball-mass monotonicity; feed `hbdEnl`, `hbd`, `hrep`, `hmod` into `convolution_l2_tendsto_uniform`\n(step 3) to get, for each `ε`, a totally bounded mollified image approximating `S` within `ε`;\n`totallyBounded_of_uniform_approx` (step 4) makes `S` totally bounded; closure of the totally\nbounded `S` is compact (`isCompact_iff_totallyBounded_isComplete`, `L2ballR3 R` complete); take\n`K := closure S`. ",
   "deps": ["LerayHopf.FrechetKolmogorovInput"]},
@@ -9577,7 +9577,7 @@
   "doc":
   "**A4.** For a compact `K ⊆ X`, the set of `toLp` classes of all mesh-`m` step curves\nwith values in `K` is COMPACT in `Lp X 2 μ_T`.\n\nRoute (plan §3 A4): the assembly map `y ↦ (stepCurve_memLp …).toLp` is Lipschitz from\n`Fin m → X` with the sup metric (`‖stepCurve y − stepCurve y'‖_{L²} ≤ √T · max_i ‖y i − y' i‖`),\nand `{y | ∀ i, y i ∈ K}` is compact (`IsCompact.pi` on `Set.pi Set.univ (fun _ => K)`), so the\nimage is compact by `IsCompact.image`. ",
   "deps": ["LerayHopf.stepCurve", "LerayHopf.stepCurve_memLp"]},
- {"startLine": 1255,
+ {"startLine": 1292,
   "signature":
   "∀ (R : ℝ), MeasureTheory.IsFiniteMeasure (MeasureTheory.volume.restrict (Metric.closedBall 0 R))",
   "private": false,
@@ -9585,7 +9585,7 @@
   "kind": "instance",
   "id": "LerayHopf.isFiniteMeasure_volume_restrict_closedBall",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1262,
+  "endLine": 1299,
   "doc":
   "The volume of the closed ball `B_R ⊆ ℝ³` is finite (it is compact in a proper space), so the\nrestricted measure `volume.restrict B_R` is a finite measure: needed to invoke\n`Lp.norm_le_of_ae_bound` for the sup→L² transfer. ",
   "deps": ["LerayHopf.Domain3"]},
@@ -10329,7 +10329,7 @@
    "LerayHopf.haarTorus3",
    "LerayHopf.velocityProjection_n",
    "LerayHopf.velocitySpan"]},
- {"startLine": 1190,
+ {"startLine": 1227,
   "signature":
   "∀ (R C : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (rep : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3)\n  (K : LerayHopf.MollifierKernel),\n  (∀ f ∈ S, ‖LerayHopf.restrictToBall (R + K.supportRadius) (rep f)‖ ≤ C) →\n    ∀ ε > 0,\n      ∃ δ > 0,\n        ∀ f ∈ S,\n          ∀ (x y : LerayHopf.Domain3),\n            x ∈ Metric.closedBall 0 R →\n              y ∈ Metric.closedBall 0 R →\n                ‖x - y‖ < δ → ‖LerayHopf.mollifyRep K (rep f) x - LerayHopf.mollifyRep K (rep f) y‖ < ε",
   "private": false,
@@ -10337,7 +10337,7 @@
   "kind": "theorem",
   "id": "LerayHopf.mollified_family_equicontinuous",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1253,
+  "endLine": 1290,
   "doc":
   "**FK step 1 (equicontinuity).**  The CONCRETE mollified family is uniformly equicontinuous on\nits explicit representative.\n\nFor a fixed smooth compactly supported kernel `K`, the modulus of continuity of `η ⋆ g` is\ncontrolled by `‖g‖₂` times the (kernel-only) modulus of `η`\n(`‖(η ⋆ g)(x) − (η ⋆ g)(y)‖ ≤ ‖g‖₂ · ‖τ_{x−y} η − η‖₂`), uniformly over the L²-bounded family —\nbecause `K.η`, being smooth with compact support, is uniformly continuous with an L²-modulus\nindependent of `g`.  Stated for `mollifyRep K (rep f)`, NOT for an arbitrary operator.\n\n**Norm-correctness (Codex Gate round 3 → resolved round 4).**  Restricting attention to\n`x, y ∈ B_R` (the region the ball-restriction keeps) and bounding the difference quotient by the\nkernel modulus localizes the mass factor `‖g‖₂` to the kernel-reach `B_{R + K.supportRadius}`:\nthe relevant inequality is\n`‖(η⋆g)(x)−(η⋆g)(y)‖ ≤ ‖restrictToBall (R+K.supportRadius) g‖ · ‖τ_{x−y}K.η − K.η‖₂` for\n`x, y ∈ B_R`.  Hence the local hypothesis is the ENLARGED-BALL bound `hbdEnl` on `B_{R+r}`, which\nthe call site supplies from `FrechetKolmogorovInput`'s GLOBAL bound `hbddGlobal : ‖rep f‖ ≤ C`\nby ball-mass monotonicity (no upstream gap).  The equicontinuity conclusion is stated for\n`x, y ∈ B_R` only. ",
   "deps":
@@ -10347,7 +10347,7 @@
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1483,
+ {"startLine": 1535,
   "signature":
   "∀ (R C : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (rep : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3)\n  (K : LerayHopf.MollifierKernel) (ρf : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3),\n  (∀ f ∈ S, ↑↑(ρf f) =ᵐ[MeasureTheory.volume] LerayHopf.mollifyRep K (rep f)) →\n    (∀ f ∈ S, ‖LerayHopf.restrictToBall (R + K.supportRadius) (rep f)‖ ≤ C) →\n      TotallyBounded ((fun f => LerayHopf.restrictToBall R (ρf f)) '' S)",
   "private": false,
@@ -10355,7 +10355,7 @@
   "kind": "theorem",
   "id": "LerayHopf.mollified_family_totallyBounded_L2",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1512,
+  "endLine": 1564,
   "doc":
   "**FK step 2.**  Arzelà–Ascoli: a uniformly bounded, uniformly equicontinuous family of\ncontinuous functions on the compact ball `B_R` is totally bounded in `C(B_R)`, hence (via the\ncontinuous embedding `C(B_R) ↪ L²(B_R)` on a finite-measure ball) totally bounded in `L²(B_R)`.\n\nConsumes `mollified_family_uniformly_bounded` (step 1a) and `mollified_family_equicontinuous`\n(step 1b) for the CONCRETE kernel `K`; produces the total boundedness used by\n`convolution_l2_tendsto_uniform`.  The L²-classes `ρf f` whose representative is\n`mollifyRep K (rep f)` are supplied (with the a.e. agreement hypothesis `hρf`) so the result\nlands in `L²(B_R)` rather than `C(B_R)`.\n\n**Norm-correctness (Codex Gate round 3 → resolved round 4).**  Both steps 1a/1b it consumes are\nstated on `B_R` only and rest on the ENLARGED-BALL bound\n`‖restrictToBall (R+K.supportRadius) (rep f)‖ ≤ C`, which the call site derives from\n`FrechetKolmogorovInput`'s GLOBAL bound `hbddGlobal : ‖rep f‖ ≤ C` by ball-mass monotonicity.\nArzelà–Ascoli runs on the COMPACT ball `B_R`, where\nthe ball-restriction `restrictToBall R (ρf f)` lives, so the enlarged-ball sup/equicontinuity bounds\non `B_R` are exactly enough.  This lemma threads the same enlarged-ball bound `hbdEnl`. ",
   "deps":
@@ -10365,7 +10365,7 @@
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1156,
+ {"startLine": 1193,
   "signature":
   "∀ (R C : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (rep : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3)\n  (K : LerayHopf.MollifierKernel),\n  (∀ f ∈ S, ‖LerayHopf.restrictToBall (R + K.supportRadius) (rep f)‖ ≤ C) →\n    ∃ B, ∀ f ∈ S, ∀ x ∈ Metric.closedBall 0 R, ‖LerayHopf.mollifyRep K (rep f) x‖ ≤ B",
   "private": false,
@@ -10373,7 +10373,7 @@
   "kind": "theorem",
   "id": "LerayHopf.mollified_family_uniformly_bounded",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1188,
+  "endLine": 1225,
   "doc":
   "**FK step 1 (equiboundedness).**  The CONCRETE mollified family has a uniform sup bound on\nits explicit representative.\n\nFor a fixed smooth compactly supported kernel `K`, convolving an L²-bounded family with `K.η`\ngives a family with a common `L^∞`-bound via Young's inequality\n`‖η ⋆ g‖_∞ ≤ ‖η‖₂ · ‖g‖₂` (the kernel is in `L²` because it is continuous with compact support).\nThe bound is stated for the genuine representative `mollifyRep K (rep f)`, NOT for the pointwise\nevaluation of an arbitrary `Lp`-class.\n\n**Norm-correctness (Codex Gate round 3 → resolved round 4).**  Young's inequality bounds\n`‖η ⋆ g‖_∞` by `‖η‖₂‖g‖₂`.  The OUTPUT bound is needed only on `x ∈ B_R` (the region the\nball-restriction of `mollifyRep` keeps), and there `mollifyRep K (rep f) x = ∫ y, η(x−y)·rep f(y)`\nonly sees `rep f` over the kernel-reach `B_{R + K.supportRadius}` (since `η` is supported in\n`closedBall 0 K.supportRadius`).  Hence the local hypothesis is the ENLARGED-BALL bound\n`hbdEnl : ∀ f ∈ S, ‖restrictToBall (R + K.supportRadius) (rep f)‖ ≤ C`\non the kernel-support enlargement `B_{R+r}` — exactly what Young needs on `B_R`.  This bound is\nsupplied at the call site directly from `FrechetKolmogorovInput`'s GLOBAL bound\n`hbddGlobal : ‖rep f‖ ≤ C` by ball-mass monotonicity (`‖restrictToBall (R+r) g‖ ≤ ‖g‖`), so\nthere is no longer any upstream gap: the criterion's own strengthened data furnishes it.  The\noutput bound is stated for `x ∈ B_R` only. ",
   "deps":
@@ -10396,7 +10396,7 @@
   "**Explicit continuous representative of the mollified field.**\n\n`mollifyRep K f x = ∫ y, K.η (x − y) • (f y : EuclideanSpace ℝ (Fin 3)) ∂volume` is the\ngenuine pointwise-defined vector-valued convolution `η ⋆ f`.  Because `K.η` is smooth and\ncompactly supported, this integral converges for every `x` and defines a smooth (in particular\ncontinuous) function `Domain3 → EuclideanSpace ℝ (Fin 3)` — a *faithful* representative of the\nmollified L²-class, on which pointwise sup and equicontinuity bounds are legitimate.\n\nThis is the concrete operator the family lemmas below are stated for, replacing the unsound\narbitrary `ρ : L2VF_R3 → L2VF_R3`. ",
   "deps":
   ["LerayHopf.Domain3", "LerayHopf.L2VF_R3", "LerayHopf.MollifierKernel"]},
- {"startLine": 448,
+ {"startLine": 533,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (f : ↥LerayHopf.L2VF_R3) (R : ℝ) {x y : LerayHopf.Domain3},\n  x ∈ Metric.closedBall 0 R →\n    y ∈ Metric.closedBall 0 R →\n      ‖LerayHopf.mollifyRep K f x - LerayHopf.mollifyRep K f y‖ ≤\n        ‖LerayHopf.restrictToBall (R + K.supportRadius) f‖ *\n          ‖LerayHopf.translate_L2R (x - y) (LerayHopf.kernelL2R K) - LerayHopf.kernelL2R K‖",
   "private": false,
@@ -10404,7 +10404,7 @@
   "kind": "theorem",
   "id": "LerayHopf.mollifyRep_sub_le",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 602,
+  "endLine": 639,
   "doc":
   "**Helper 3 — convolution-difference estimate (modulus of the mollified field).**\n\nFor `x, y ∈ closedBall 0 R`, the increment of the mollified field is bounded by the enlarged-ball\nmass of `f` times the kernel's own L²-translation modulus at the shift `x − y`:\n\n  `‖mollifyRep K f x − mollifyRep K f y‖`\n      `≤ ‖restrictToBall (R + K.supportRadius) f‖ · ‖translate_L2R (x − y) (kernelL2R K) − kernelL2R K‖`.\n\nAfter the change of variables `z = x − y'` the difference is `∫ (K.η(x−·) − K.η(y−·)) • f`, and\nCauchy–Schwarz factors it as (kernel translation-modulus)·(enlarged-ball mass of `f`). ",
   "deps":
@@ -11056,7 +11056,7 @@
   "doc":
   "The ℝ³ NS convection form exists — THEOREM (was axiom `r3ConvectionGapOp_exists`, issue #56),\nnow proved from `r3ConvectionGapOp_holds` (the sorry-free determined-form construction in\n`ConvectionExtension.lean`) + proved density, via the sorry-free `R3NSForms_of_gap`.\n\nRoute: obtain `g : ConvectionGapOp 𝔊` from the proved theorem `r3ConvectionGapOp_holds`;\nsupply proved density (`convectionGap_schwartz_dense curlSchwartzDense_holds`) as\n`schwartz_dense`; assemble a full `ConvectionGap 𝔊`; apply `R3NSForms_of_gap`.\n\nThe conclusion `Nonempty (R3NSForms 𝔊)` is IDENTICAL to what `r3_NSForms_exist` asserted —\nno statement weakening.  The operator core is now PROVED sorry-free in this file\n(`r3ConvectionGapOp_holds`, C11); no project axiom remains for the convection operator.\nMirrors the torus `torus3_NSForms_exists` (issue #22). ",
   "deps": ["LerayHopf.R3GalerkinScheme", "LerayHopf.R3NSForms"]},
- {"startLine": 106,
+ {"startLine": 109,
   "signature":
   "∀ (𝔊 : LerayHopf.R3GalerkinScheme) (F : LerayHopf.R3NSForms 𝔊) (ν : ℝ),\n  0 < ν →\n    ∀ (T : ℝ),\n      0 < T →\n        ∀ (u₀ : ↥LerayHopf.L2Sigma_R3) (fill : (n : ℕ) → LerayHopf.GalerkinSolutionData_R3 𝔊 F ν u₀ n),\n          LerayHopf.R3TestApproxH1 𝔊 →\n            ∀ (φ₁ : ℕ → ℕ),\n              StrictMono φ₁ →\n                ∀ (galSeq₁ : (k : ℕ) → LerayHopf.GalerkinSolutionData_R3 𝔊 F ν u₀ (φ₁ k)),\n                  Nonempty (LerayHopf.R3KappaChainExitWitness 𝔊 F ν T u₀ φ₁ galSeq₁)",
   "private": false,
@@ -11064,7 +11064,7 @@
   "kind": "theorem",
   "id": "LerayHopf.r3_kappaChain_exit",
   "file": "LerayHopf/R3/KappaChainExit.lean",
-  "endLine": 140,
+  "endLine": 143,
   "doc":
   "**P2′ (#215) exit gate.**  A `R3KappaChainExitWitness` exists for every dependent reindexed\nfamily: embed it into a base family (`extendReindexedFamily_R3`), run the κ-generalized\ncompactness chain with `κ := φ₁`, and re-export the everywhere-weak pin against the dependent\nfamily via `transport`.  This is the compiled production instantiation the §6 exit gate\nrequires. ",
   "deps":
@@ -12462,7 +12462,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain"]},
- {"startLine": 105,
+ {"startLine": 107,
   "signature":
   "∀ (F : LerayHopf.Torus3NSForms) (ν : ℝ),\n  0 < ν →\n    ∀ (T : ℝ),\n      0 < T →\n        ∀ (u₀ : ↥LerayHopf.L2Sigma) (φ₁ : ℕ → ℕ),\n          StrictMono φ₁ →\n            ∀ (galSeq₁ : (k : ℕ) → LerayHopf.GalerkinSolutionData F ν u₀ (φ₁ k)),\n              Nonempty (LerayHopf.P2ExitWitness F ν T u₀ φ₁ galSeq₁)",
   "private": false,
@@ -12470,7 +12470,7 @@
   "kind": "theorem",
   "id": "LerayHopf.torus_kappaChain_exit",
   "file": "LerayHopf/Torus/KappaChainExit.lean",
-  "endLine": 138,
+  "endLine": 140,
   "doc":
   "**P2 (#201) exit gate.**  A `P2ExitWitness` exists for every dependent reindexed\nfamily: embed it into a base family (`extendReindexedFamily`), run the κ-generalized\ncompactness chain with `κ := φ₁`, and re-export the everywhere-weak pin against the\ndependent family via `transport`.  This is the compiled production instantiation the\n§5 P2 exit gate requires. ",
   "deps":
@@ -12504,7 +12504,7 @@
    "LerayHopf.WeakFormNS",
    "LerayHopf.haarTorus3",
    "LerayHopf.torus3Evolution"]},
- {"startLine": 1321,
+ {"startLine": 1402,
   "signature":
   "∀ (R : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (ρf : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3)\n  (Φ : ↥(LerayHopf.L2ballR3 R) → LerayHopf.Domain3 → EuclideanSpace ℝ (Fin 3)),\n  (∀ f ∈ S, ↑↑(ρf f) =ᵐ[MeasureTheory.volume] Φ f) →\n    ∀ (B : ℝ),\n      (∀ f ∈ S, ∀ x ∈ Metric.closedBall 0 R, ‖Φ f x‖ ≤ B) →\n        (∀ ε > 0,\n            ∃ δ > 0,\n              ∀ f ∈ S,\n                ∀ (x y : LerayHopf.Domain3),\n                  x ∈ Metric.closedBall 0 R → y ∈ Metric.closedBall 0 R → ‖x - y‖ < δ → ‖Φ f x - Φ f y‖ < ε) →\n          TotallyBounded ((fun f => LerayHopf.restrictToBall R (ρf f)) '' S)",
   "private": false,
@@ -12512,7 +12512,7 @@
   "kind": "theorem",
   "id": "LerayHopf.totallyBounded_image_of_equicont_bdd",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1481,
+  "endLine": 1533,
   "doc":
   "**Abstract Arzelà–Ascoli + sup→L² transfer.**  Let `Φ f` be a representative function for the\nL²(B_R)-class `restrictToBall R (ρf f)` (`hΦae`).  If the family `{Φ f : f ∈ S}` is uniformly\nbounded (`hB`) and uniformly equicontinuous (`hequi`) on the compact ball `B_R`, then the image\n`{restrictToBall R (ρf f) : f ∈ S}` is totally bounded in `L²(B_R)`.\n\nThe proof is the classical Arzelà–Ascoli net construction: a finite `δ`-net of centers in the\ncompact `B_R` (with `δ` from equicontinuity), a finite value-net of the bounded range, classify\neach `f` by the tuple of nearest value-net points at the centers, choose one representative per\nclass; equicontinuity plus the value-net make functions in the same class uniformly close on\n`B_R`, and `dist_restrictToBall_le_of_ae_bound` (finite-measure sup→L² bound) turns that into\nL²(B_R)-closeness. ",
   "deps":
@@ -12520,7 +12520,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2ballR3",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1659,
+ {"startLine": 1711,
   "signature":
   "∀ {α : Type u_1} [inst : PseudoMetricSpace α] (S : Set α),\n  (∀ ε > 0, ∃ T, TotallyBounded T ∧ ∀ s ∈ S, ∃ t ∈ T, dist s t < ε) → TotallyBounded S",
   "private": false,
@@ -12528,7 +12528,7 @@
   "kind": "theorem",
   "id": "LerayHopf.totallyBounded_of_uniform_approx",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1684,
+  "endLine": 1736,
   "doc":
   "**FK step 4.**  Total-boundedness transfer.  In a metric space, a set `S` that is uniformly\nε-approximable (for every `ε > 0`) by a totally bounded set is itself totally bounded.\n\nThis is the abstract glue between step 3 (uniform mollification approximation) and step 2\n(total boundedness of the mollified family): an ε-net of the approximant, fattened by ε, is a\n`2ε`-net of `S`. ",
   "deps": []},
@@ -13432,7 +13432,7 @@
    "LerayHopf.galerkinSpan",
    "LerayHopf.weightedFourierComponent",
    "_private.LerayHopf.R3.GalerkinODEExistence.0.LerayHopf.galerkinSpan_memH1"]},
- {"startLine": 1093,
+ {"startLine": 1130,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3),\n  ∃ (hmem : MeasureTheory.MemLp (LerayHopf.mollifyRep K g) 2 MeasureTheory.volume),\n    ‖MeasureTheory.MemLp.toLp (LerayHopf.mollifyRep K g) hmem‖ ≤ ‖LerayHopf.kernelL1R K‖ * ‖g‖",
   "private": false,
@@ -13440,7 +13440,7 @@
   "kind": "theorem",
   "id": "LerayHopf.young_convolution_memLp_L2",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1108,
+  "endLine": 1145,
   "doc":
   "**Analytic core — global Young convolution inequality in `L²`.**\n\nThe mollified field `mollifyRep K g = K.η ⋆ g` lies in `L²(ℝ³)` globally, with\n`‖mollifyRep K g‖_{L²} ≤ ‖kernelL1R K‖ · ‖g‖`.  The `MemLp` witness is bundled with the bound on its\n`toLp` class so callers can both form `(mollifyRep K g : L2VF_R3)` and control its norm. ",
   "deps":
@@ -18046,7 +18046,7 @@
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.FourierL2.0.LerayHopf.FourierL2.schwartzTranslate"]},
- {"startLine": 828,
+ {"startLine": 865,
   "signature":
   "∀ (g : ↥LerayHopf.L2VF_R3) (s : Set LerayHopf.Domain3),\n  MeasureTheory.AEStronglyMeasurable (fun z => ↑↑g (z.1 + z.2))\n    ((MeasureTheory.volume.restrict s).prod MeasureTheory.volume)",
   "private": true,
@@ -18054,11 +18054,11 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.aesm_g_add",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 848,
+  "endLine": 885,
   "doc":
   "Joint a.e.-strong measurability of the sheared field `(x, h) ↦ g (x + h)` over the product\nmeasure `(volume.restrict s).prod volume`: pull `g ∘ snd` back along the measure-preserving shear\n`(x, h) ↦ (x, x + h)`, then transfer to the restricted product (absolutely continuous). ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2VF_R3"]},
- {"startLine": 794,
+ {"startLine": 831,
   "signature":
   "∀ (h : LerayHopf.Domain3) (g : ↥LerayHopf.L2VF_R3),\n  ↑↑(LerayHopf.translate_L2VF h g) =ᵐ[MeasureTheory.volume] fun x => ↑↑g (x + h)",
   "private": true,
@@ -18067,12 +18067,29 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.coeFn_translate_L2VF",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 800,
+  "endLine": 837,
   "doc":
   "Coeff of the translate `τ_h g = compMeasurePreserving (·+h) g` is `g (x + h)` a.e.:\n`(translate_L2VF h g) x = g (x + h)` for a.e. `x`. ",
   "deps":
   ["LerayHopf.Domain3", "LerayHopf.L2VF_R3", "LerayHopf.translate_L2VF"]},
- {"startLine": 773,
+ {"startLine": 469,
+  "signature":
+  "∀ (K : LerayHopf.MollifierKernel) (v : LerayHopf.Domain3),\n  ↑↑(LerayHopf.translate_L2R v (LerayHopf.kernelL2R K) - LerayHopf.kernelL2R K) =ᵐ[MeasureTheory.volume] fun w =>\n    K.η (w + v) - K.η w",
+  "private": true,
+  "name": "LerayHopf.coeFn_translate_kernelL2R_sub",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.coeFn_translate_kernelL2R_sub",
+  "file": "LerayHopf/R3/FrechetKolmogorov.lean",
+  "endLine": 494,
+  "doc":
+  "**Textbook step (translated-kernel difference, `coeFn` form).**  The `L²`-class\n`translate_L2R v (kernelL2R K) − kernelL2R K` is represented pointwise a.e. by the shifted\nkernel difference `w ↦ K.η (w + v) − K.η w`.\n\nUnfolding `translate_L2R` (a `compMeasurePreserving` by `(· + v)`) and `kernelL2R` (a `toLp`)\nand transporting the kernel's `coeFn` identity along the measure-preserving shift. ",
+  "deps":
+  ["LerayHopf.Domain3",
+   "LerayHopf.MollifierKernel",
+   "LerayHopf.kernelL2R",
+   "LerayHopf.translate_L2R"]},
+ {"startLine": 810,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3), Continuous (LerayHopf.mollifyRep K g)",
   "private": true,
@@ -18081,7 +18098,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.continuous_mollifyRep",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 784,
+  "endLine": 821,
   "doc":
   "`mollifyRep K g` is the `lsmul`-convolution `K.η ⋆ ⇑g`, so it is **continuous**: the kernel is\ncontinuous with compact support and `⇑g ∈ L²` is locally integrable. ",
   "deps":
@@ -18089,7 +18106,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep"]},
- {"startLine": 631,
+ {"startLine": 668,
   "signature":
   "∀ (g : ↥LerayHopf.L2VF_R3), Continuous fun h => LerayHopf.translate_L2VF h g",
   "private": true,
@@ -18098,12 +18115,12 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.continuous_translate_L2VF",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 646,
+  "endLine": 683,
   "doc":
   "The translation family `h ↦ translate_L2VF h g` is continuous (`Lp` translation-continuity,\nthe vector-valued mirror of `kernel_translate_L2_tendsto`'s ingredient). ",
   "deps":
   ["LerayHopf.Domain3", "LerayHopf.L2VF_R3", "LerayHopf.translate_L2VF"]},
- {"startLine": 684,
+ {"startLine": 721,
   "signature":
   "LerayHopf.MollifierKernel → ↥LerayHopf.L2VF_R3 → ↥LerayHopf.L2VF_R3",
   "private": true,
@@ -18111,7 +18128,7 @@
   "kind": "def",
   "id": "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.convL2",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 688,
+  "endLine": 725,
   "doc":
   "**The kernel-weighted-translate `Lp`-valued Bochner integral** — the convolution `η ⋆ g`\nrealized as a genuine element of `L²(ℝ³)` (no `MemLp` side-condition needed: the integrand is\nBochner integrable by `integrable_kernel_smul_translate`). ",
   "deps":
@@ -18119,7 +18136,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "LerayHopf.translate_L2VF"]},
- {"startLine": 1037,
+ {"startLine": 1074,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3),\n  ↑↑(LerayHopf.convL2✝ K g) =ᵐ[MeasureTheory.volume] LerayHopf.mollifyRep K g",
   "private": true,
@@ -18127,7 +18144,7 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.convL2_coeFn_ae",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1075,
+  "endLine": 1112,
   "doc":
   "**The isolated coeFn identity — now PROVED (no `sorry`, no axiom).**\n\nThe coeFn of the `Lp`-valued Bochner integral `convL2 K g = ∫ h, K.η h • τ_h g` agrees a.e. with\nthe pointwise convolution `mollifyRep K g x = ∫ y, K.η (x − y) • g y`.\n\nmathlib provides **no** \"coeFn of an `Lp`-valued Bochner integral as the scalar integral of\ncoeFns\" lemma for this `volume`-on-ℝ³ vector-valued setting, and the raw double integral is NOT\nabsolutely convergent on `ℝ³ × ℝ³` (`φ, g ∈ L²` are not `L¹`), so a naive global scalar Fubini is\nunavailable.  The honest provable route, carried out here:\n\n* both `convL2 K g` (an `Lp` element) and `mollifyRep K g` (continuous, globally bounded by\n  `mollifyRep_apply_bound`, hence `integrableOn_mollifyRep`) are integrable on every finite-measure\n  set, so `ae_eq_of_forall_setIntegral_eq_of_sigmaFinite` reduces the goal to\n  `∫_s convL2 K g = ∫_s mollifyRep K g` for all finite measurable `s`;\n* equality of two `EuclideanSpace ℝ (Fin 3)` vectors is tested by `ext_inner_left`: it suffices to\n  show `⟪c, ∫_s convL2 K g⟫ = ⟪c, ∫_s mollifyRep K g⟫` for every `c`;\n* `convL2_setIntegral_inner` rewrites the LHS to `∫ h, K.η h · ∫ x in s, ⟪c, g (x+h)⟫` and\n  `mollifyRep_setIntegral_inner` rewrites the RHS to `∫ x in s, ∫ h, K.η h · ⟪c, g (x+h)⟫`;\n* on the FINITE set `s` the double integral of `F (x,h) = K.η h · ⟪c, g (x+h)⟫` is absolutely\n  convergent (`fubini_integrand_integrable`), so `integral_integral_swap` (Fubini over\n  `(volume.restrict s).prod volume`) exchanges the two orders. ",
   "deps":
@@ -18136,7 +18153,7 @@
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep",
    "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.convL2"]},
- {"startLine": 690,
+ {"startLine": 727,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3), ‖LerayHopf.convL2✝ K g‖ ≤ ‖g‖",
   "private": true,
@@ -18144,7 +18161,7 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.convL2_norm_le",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 705,
+  "endLine": 742,
   "doc":
   "**Global Young bound at the `Lp`-Bochner level (PROVED, no frontier).**\n`‖convL2 K g‖ ≤ ‖g‖` straight from `‖∫ F‖ ≤ ∫ ‖F‖` in the Banach space `L2VF_R3`,\n`‖K.η h • τ_h g‖ = K.η h · ‖g‖` (`norm_kernel_smul_translate`), and `∫ K.η = 1` (`K.mass_one`).\nThis is the entire norm content of Young's inequality — it needs neither the pointwise\nconvolution nor the (isolated) coeFn identity. ",
   "deps":
@@ -18152,7 +18169,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.convL2"]},
- {"startLine": 982,
+ {"startLine": 1019,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) {s : Set LerayHopf.Domain3},\n  MeasurableSet s →\n    MeasureTheory.volume s ≠ ⊤ →\n      ∀ (c : EuclideanSpace ℝ (Fin 3)),\n        inner ℝ c (∫ (x : LerayHopf.Domain3) in s, ↑↑(LerayHopf.convL2✝ K g) x) =\n          ∫ (h : LerayHopf.Domain3), K.η h * ∫ (x : LerayHopf.Domain3) in s, inner ℝ c (↑↑g (x + h))",
   "private": true,
@@ -18161,7 +18178,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.convL2_setIntegral_inner",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1009,
+  "endLine": 1046,
   "doc":
   "**LHS scalar reduction (PROVED).**  For any constant `c` and finite-measure measurable `s`,\nthe inner product of `c` with the set-integral of the `Lp`-valued Bochner integral `convL2 K g`\nover `s` equals the iterated scalar integral\n`∫ h, K.η h · (∫ x in s, ⟪c, g (x + h)⟫)`.  Commutes the inner product through the Bochner\nintegral via `integral_inner` and `inner_indicatorConstLp_eq_inner_setIntegral`. ",
   "deps":
@@ -18181,7 +18198,7 @@
   "doc":
   "**Existence of a normalized mollifier kernel of arbitrarily small support.**\n\nFor every `r > 0` there is a `MollifierKernel K` whose support radius is `≤ r`.  It is the\n`ContDiffBump (0 : Domain3)`-mollifier with `rIn = r/3 < rOut = r/2`, normalized to unit mass by\n`ContDiffBump.normed volume`.  The resulting `K.η = bump.normed volume` is `C^∞`\n(`contDiff_normed`), nonnegative (`nonneg_normed`), of mass one (`integral_normed`), and supported\nin `closedBall 0 (r/2)` (`tsupport_normed_eq`), so `K.supportRadius = r/2 ≤ r`.\n\nThis is the concrete approximate-identity kernel feeding `convolution_l2_tendsto_uniform`: choosing\nsupport `< δ` (the FK uniform translation-modulus radius for the target `ε`) drives the uniform\nL²-approximation rate. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.MollifierKernel"]},
- {"startLine": 850,
+ {"startLine": 887,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) {s : Set LerayHopf.Domain3},\n  MeasurableSet s →\n    MeasureTheory.volume s ≠ ⊤ →\n      ∀ (c : EuclideanSpace ℝ (Fin 3)),\n        MeasureTheory.Integrable (Function.uncurry fun x h => K.η h * inner ℝ c (↑↑g (x + h)))\n          ((MeasureTheory.volume.restrict s).prod MeasureTheory.volume)",
   "private": true,
@@ -18190,12 +18207,12 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.fubini_integrand_integrable",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 980,
+  "endLine": 1017,
   "doc":
   "**Joint integrability for the finite-set Fubini swap (PROVED).**  On a finite-measure\nmeasurable set `s`, the integrand `F (x, h) = K.η h · ⟪c, g (x + h)⟫` is integrable for the\nproduct measure `(volume.restrict s).prod volume`: each `h`-slice is integrable (kernel `× L²`,\nHölder) and `x ↦ ∫ h, ‖F (x, h)‖` is bounded by the constant `‖kernelL2R K‖ · ‖c‖ · ‖g‖`,\nintegrable on the finite set `s`.  This absolute convergence is exactly what makes Fubini\nlegitimate on `s` even though the raw `ℝ³ × ℝ³` double integral is not. ",
   "deps":
   ["LerayHopf.Domain3", "LerayHopf.L2VF_R3", "LerayHopf.MollifierKernel"]},
- {"startLine": 786,
+ {"startLine": 823,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) {s : Set LerayHopf.Domain3},\n  MeasureTheory.volume s ≠ ⊤ → MeasureTheory.IntegrableOn (LerayHopf.mollifyRep K g) s MeasureTheory.volume",
   "private": true,
@@ -18204,7 +18221,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.integrableOn_mollifyRep",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 792,
+  "endLine": 829,
   "doc":
   "`mollifyRep K g` is **integrable on every finite-measure set** (continuous and globally\nbounded by `‖kernelL2R K‖·‖g‖`). ",
   "deps":
@@ -18212,7 +18229,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep"]},
- {"startLine": 648,
+ {"startLine": 685,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3),\n  MeasureTheory.Integrable (fun h => K.η h • LerayHopf.translate_L2VF h g) MeasureTheory.volume",
   "private": true,
@@ -18221,7 +18238,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.integrable_kernel_smul_translate",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 663,
+  "endLine": 700,
   "doc":
   "The kernel-weighted translation family `h ↦ K.η h • translate_L2VF h g` is Bochner\nintegrable as an `L2VF_R3`-valued map: it is continuous (so strongly measurable) and supported in\n`tsupport K.η ⊆ closedBall 0 K.supportRadius` (compact), with `‖K.η h • translate_L2VF h g‖\n= |K.η h| · ‖g‖` bounded. ",
   "deps":
@@ -18229,7 +18246,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "LerayHopf.translate_L2VF"]},
- {"startLine": 802,
+ {"startLine": 839,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) (x : LerayHopf.Domain3),\n  MeasureTheory.Integrable (fun y => K.η (x - y) • ↑↑g y) MeasureTheory.volume",
   "private": true,
@@ -18238,12 +18255,12 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.integrable_kernel_translate_smul",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 826,
+  "endLine": 863,
   "doc":
   "The inner integrand `y ↦ K.η (x − y) • g y` of `mollifyRep K g x` is Bochner integrable:\nits norm `|K.η (x − y)| · ‖g y‖` is the product of two `L²` functions (Hölder, `p = q = 2`),\nhence `L¹`. ",
   "deps":
   ["LerayHopf.Domain3", "LerayHopf.L2VF_R3", "LerayHopf.MollifierKernel"]},
- {"startLine": 1077,
+ {"startLine": 1114,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3),\n  MeasureTheory.MemLp (LerayHopf.mollifyRep K g) 2 MeasureTheory.volume",
   "private": true,
@@ -18251,7 +18268,7 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.memLp_mollifyRep",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1080,
+  "endLine": 1117,
   "doc":
   "`mollifyRep K g`, as an a.e. function, lies in `L²`: it agrees a.e. with `convL2 K g`. ",
   "deps":
@@ -18259,7 +18276,20 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep"]},
- {"startLine": 723,
+ {"startLine": 448,
+  "signature":
+  "∀ (K : LerayHopf.MollifierKernel) (R : ℝ) {p z : LerayHopf.Domain3},\n  ‖p‖ ≤ R → K.η (p - z) ≠ 0 → z ∈ Metric.closedBall 0 (R + K.supportRadius)",
+  "private": true,
+  "name": "LerayHopf.mem_closedBall_add_supportRadius_of_kernel_ne_zero",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.mem_closedBall_add_supportRadius_of_kernel_ne_zero",
+  "file": "LerayHopf/R3/FrechetKolmogorov.lean",
+  "endLine": 467,
+  "doc":
+  "**Textbook step (kernel reach).**  If `‖p‖ ≤ R` and the kernel slice `z ↦ K.η (p − z)` is\nnonzero at `z`, then `z` lies in the enlarged ball `B_{R + K.supportRadius}`.\n\nThis is the geometric content of \"the mollified field on `B_R` only sees `f` over `B_{R+r}`\":\n`K.η` vanishes off `closedBall 0 K.supportRadius`, so `K.η (p − z) ≠ 0` forces `‖p − z‖ ≤ r`,\nand the triangle inequality then bounds `‖z‖` by `R + r`. ",
+  "deps": ["LerayHopf.Domain3", "LerayHopf.MollifierKernel"]},
+ {"startLine": 760,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) (x : LerayHopf.Domain3),\n  ‖LerayHopf.mollifyRep K g x‖ ≤ ‖LerayHopf.kernelL2R K‖ * ‖g‖",
   "private": true,
@@ -18268,7 +18298,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.mollifyRep_apply_bound",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 771,
+  "endLine": 808,
   "doc":
   "Global Cauchy–Schwarz / Young sup bound for the pointwise convolution, valid at EVERY `x`\n(no ball localization): `‖mollifyRep K g x‖ ≤ ‖kernelL2R K‖ · ‖g‖`.  Same Cauchy–Schwarz as\n`mollifyRep_sup_le` but with the trivial enlarged ball `B = univ`. ",
   "deps":
@@ -18277,7 +18307,7 @@
    "LerayHopf.MollifierKernel",
    "LerayHopf.kernelL2R",
    "LerayHopf.mollifyRep"]},
- {"startLine": 1082,
+ {"startLine": 1119,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3)\n  (hmem : MeasureTheory.MemLp (LerayHopf.mollifyRep K g) 2 MeasureTheory.volume),\n  MeasureTheory.MemLp.toLp (LerayHopf.mollifyRep K g) hmem =\n    ∫ (h : LerayHopf.Domain3), K.η h • LerayHopf.translate_L2VF h g",
   "private": true,
@@ -18286,7 +18316,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.mollifyRep_eq_lp_integral",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1091,
+  "endLine": 1128,
   "doc":
   "**Shared primitive.**  The `L²`-class of `mollifyRep K g` equals the `Lp`-valued Bochner\nintegral `convL2 K g = ∫ h, K.η h • τ_h g`.  Proved (no sorry) from the isolated coeFn identity\n`convL2_coeFn_ae` by `Lp.ext`. ",
   "deps":
@@ -18295,7 +18325,7 @@
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep",
    "LerayHopf.translate_L2VF"]},
- {"startLine": 1011,
+ {"startLine": 1048,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) {s : Set LerayHopf.Domain3},\n  MeasurableSet s →\n    MeasureTheory.volume s ≠ ⊤ →\n      ∀ (c : EuclideanSpace ℝ (Fin 3)),\n        inner ℝ c (∫ (x : LerayHopf.Domain3) in s, LerayHopf.mollifyRep K g x) =\n          ∫ (x : LerayHopf.Domain3) in s, ∫ (h : LerayHopf.Domain3), K.η h * inner ℝ c (↑↑g (x + h))",
   "private": true,
@@ -18304,7 +18334,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.mollifyRep_setIntegral_inner",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1035,
+  "endLine": 1072,
   "doc":
   "**RHS scalar reduction (PROVED).**  For any constant `c` and finite-measure measurable `s`,\nthe inner product of `c` with the set-integral of the pointwise convolution `mollifyRep K g`\nover `s` equals the iterated scalar integral\n`∫ x in s, ∫ h, K.η h · ⟪c, g (x + h)⟫`.  Uses `integral_inner` on the inner `∫ y` integral,\nthe translation substitution `y ↦ x + h`, and `K.even`. ",
   "deps":
@@ -18312,19 +18342,31 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep"]},
- {"startLine": 672,
+ {"startLine": 1353,
+  "signature": "∀ (V ε : ℝ), 0 ≤ V → 0 < ε → V * (ε / (2 * (V + 1))) < ε",
+  "private": true,
+  "name": "LerayHopf.mul_div_two_mul_add_one_lt",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.mul_div_two_mul_add_one_lt",
+  "file": "LerayHopf/R3/FrechetKolmogorov.lean",
+  "endLine": 1370,
+  "doc":
+  "**Textbook step (sup→L² tolerance).**  The sup-level tolerance `ε' = ε / (2 (V + 1))` is small\nenough that the mass factor `V` cannot eat the target: `V · ε' < ε` for any mass `V ≥ 0`.\n\nThe `+1` in the denominator is what makes the bound uniform in `V` (including `V = 0`), so the\nsame `ε'` works before the ball mass is known. ",
+  "deps": []},
+ {"startLine": 709,
   "signature": "∀ (K : LerayHopf.MollifierKernel), ‖LerayHopf.kernelL1R K‖ = 1",
   "private": true,
   "name": "LerayHopf.norm_kernelL1R",
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.norm_kernelL1R",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 682,
+  "endLine": 719,
   "doc":
   "The `L¹`-mass of the kernel is `1` (`K.nonneg` ⇒ `|η| = η`, `K.mass_one`). ",
   "deps":
   ["LerayHopf.Domain3", "LerayHopf.MollifierKernel", "LerayHopf.kernelL1R"]},
- {"startLine": 665,
+ {"startLine": 702,
   "signature":
   "∀ (K : LerayHopf.MollifierKernel) (g : ↥LerayHopf.L2VF_R3) (h : LerayHopf.Domain3),\n  ‖K.η h • LerayHopf.translate_L2VF h g‖ = K.η h * ‖g‖",
   "private": true,
@@ -18333,7 +18375,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.norm_kernel_smul_translate",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 670,
+  "endLine": 707,
   "doc":
   "`‖K.η h • translate_L2VF h g‖ = K.η h · ‖g‖` (using `K.nonneg` so `|K.η h| = K.η h`). ",
   "deps":
@@ -18358,6 +18400,36 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2ballR3",
    "LerayHopf.restrictToBall"]},
+ {"startLine": 1372,
+  "signature":
+  "∀ {E : Type u_1} [inst : NormedAddCommGroup E] {p p' q q' w : E} {η γ : ℝ},\n  ‖p - p'‖ < η → ‖q' - q‖ < η → dist p' w < γ → dist q' w < γ → ‖p - q‖ < η + 2 * γ + η",
+  "private": true,
+  "name": "LerayHopf.norm_sub_lt_of_center_net",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.norm_sub_lt_of_center_net",
+  "file": "LerayHopf/R3/FrechetKolmogorov.lean",
+  "endLine": 1395,
+  "doc":
+  "**Textbook step (Arzelà–Ascoli net estimate).**  Two points that are each within `η` of their\nrespective anchors `p'`, `q'`, whose anchors are both within `γ` of a common net value `w`, are\nwithin `η + 2γ + η` of each other.\n\nThis is the classification step of the Arzelà–Ascoli net construction, stated for its own sake:\n`p = Φ f x`, `p' = Φ f c`, `q = Φ g x`, `q' = Φ g c` and `w` the shared value-net point at the\ncenter `c`, so equicontinuity supplies the two `η`-bounds and membership in the same class\nsupplies the two `γ`-bounds. ",
+  "deps": []},
+ {"startLine": 496,
+  "signature":
+  "∀ (K : LerayHopf.MollifierKernel) (x y : LerayHopf.Domain3)\n  (ha : MeasureTheory.MemLp (fun z => |K.η (x - z) - K.η (y - z)|) 2 MeasureTheory.volume),\n  ‖MeasureTheory.MemLp.toLp (fun z => |K.η (x - z) - K.η (y - z)|) ha‖ =\n    ‖LerayHopf.translate_L2R (x - y) (LerayHopf.kernelL2R K) - LerayHopf.kernelL2R K‖",
+  "private": true,
+  "name": "LerayHopf.norm_toLp_kernel_slice_sub_eq_translate_modulus",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.norm_toLp_kernel_slice_sub_eq_translate_modulus",
+  "file": "LerayHopf/R3/FrechetKolmogorov.lean",
+  "endLine": 531,
+  "doc":
+  "**Textbook step (kernel translation modulus).**  The `L²`-norm of the kernel slice difference\n`z ↦ |K.η (x − z) − K.η (y − z)|` equals the kernel's own translation modulus at the shift `x − y`,\nnamely `‖translate_L2R (x − y) (kernelL2R K) − kernelL2R K‖`.\n\nThe change of variables `z ↦ y − z` (measure-preserving) turns the slice difference into\n`w ↦ |K.η (w + (x − y)) − K.η w|`, which by `coeFn_translate_kernelL2R_sub` is the modulus of the\ntranslate-difference class. ",
+  "deps":
+  ["LerayHopf.Domain3",
+   "LerayHopf.MollifierKernel",
+   "LerayHopf.kernelL2R",
+   "LerayHopf.translate_L2R"]},
  {"startLine": 90,
   "signature":
   "∃ ψ,\n  LerayHopf.L2Sigma_R3 ≤\n      (⨆ n, Submodule.span ℝ (Set.range fun k => LerayHopf.curlSchwartzL2 (ψ ↑k))).topologicalClosure ∧\n    ∀ (θ : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ) (ρ : ℝ),\n      0 < ρ →\n        ∃ k,\n          ‖LerayHopf.curlSchwartzL2 (ψ k) - LerayHopf.curlSchwartzL2 θ‖ < ρ ∧\n            ∀ (j : Fin 3),\n              ‖LerayHopf.weightedFourierComponent (LerayHopf.curlSchwartzL2 (ψ k)) ⋯ j -\n                    LerayHopf.weightedFourierComponent (LerayHopf.curlSchwartzL2 θ) ⋯ j‖ <\n                ρ",

@@ -235,3 +235,53 @@ signature 変更 38 件の内訳: 35 件は両レーンの Aubin–Lions 連鎖�
 
 display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は引き続き休眠・
 非更新。
+
+## 追記 5: 追い repin（PIN 4d65c05 → 6cd0a4b、notes#125）
+
+`uda-lab/leray-hopf` の `dev/v0.2.0` が 3 commit 進んだことへの追随。内訳は
+PR #224（#223、README のみ — Lean 宣言に影響なし）、PR #226（#154 Wave 2）、
+PR #227（#225 docstring 統一）。後者 2 つが notes 側に効くが、tip `6cd0a4b` が
+両方を含むため repin は 1 回で足りた。
+
+`lake exe extract_notes` 再実行（`6cd0a4b` の worktree 上。`.lake/packages` は
+hardlink 共有、`.lake/build` は donor から実コピーして seed し、#225 の docstring
+変更による下流 cone のみ replay）: 抽出宣言数 1,420 → 1,425。`decl_diff.py` による分類:
+
+| 区分 | 件数 | 内容 | corpus 側対応 |
+|---|---|---|---|
+| 新設 | +5 | `LerayHopf/R3/FrechetKolmogorov.lean` の private 補題（#154 Wave 2 の textbook-step 切り出し） | gloss エントリを 5 件追加（既存 private 慣行どおり） |
+| 削除 | 0 | — | — |
+| ファイル移動・改名 | 0 | — | — |
+| 可視性変更 | 0 | — | — |
+| signature text 変更 | 0 | — | — |
+
+新設 5 件（すべて private、`chapter: compactness`、`tier: gloss`）:
+
+| 宣言 | 内容 |
+|---|---|
+| `mem_closedBall_add_supportRadius_of_kernel_ne_zero` | 核の到達範囲。球 $B_R$ 上の軟化が見るのは $B_{R+r}$ 上の値だけ |
+| `coeFn_translate_kernelL2R_sub` | 平行移動した核の差の点ごと表示 |
+| `norm_toLp_kernel_slice_sub_eq_translate_modulus` | 核の切片の差のノルム＝核自身の平行移動モジュラス |
+| `mul_div_two_mul_add_one_lt` | 上限評価から $L^2$ 評価へ渡すときの許容量 $\varepsilon/(2(V+1))$ |
+| `norm_sub_lt_of_center_net` | 網の中心を経由した評価（一般のノルム空間の補題） |
+
+`norm_sub_lt_of_center_net` は Fréchet–Kolmogorov 固有の内容を含まず、任意の
+ノルム空間で成り立つ Arzelà–Ascoli の網構成の分類ステップなので、一般解析の
+補題として記述した。他の 4 件は原文の `**Textbook step (...)**` doc comment に
+整合させてある。
+
+### leray-hopf#225（docstring 統一）の反映
+
+PR #227 が Lean docstring の「有効モード写像」系表現を添字写像の語彙へ置換した分が、
+本 repin で `decls.json` の `doc` に反映された。反映後の確認:
+
+- 旧表現（`effective mode map` / `Effective absolute mode map`）を含む宣言: **0 件**
+- 新表現（`outer index map` / `composed index map`）を含む宣言: **5 件**
+  （`P2ExitWitness`, `R3KappaChainExitWitness`, `exists_weakLimitCurve_R3_kappa`,
+  `AubinLionsPackage_R3.effective_{strictMono,tendsto_atTop}`）
+
+これで notes site の宣言ページ（`node.doc`）から旧表現が消え、notes#122 で直した
+日本語対訳と用語が揃った。日本語側の添字写像体系との齟齬は見つからなかった。
+
+display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は
+引き続き休眠・非更新。
