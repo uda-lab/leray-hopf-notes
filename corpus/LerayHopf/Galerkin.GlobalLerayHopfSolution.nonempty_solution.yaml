@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.GlobalLerayHopfSolution.nonempty_solution
 tier: full
 statement_ja: |
-  [[時間大域解の束|LerayHopf.Galerkin.GlobalLerayHopfSolution]]が与えられれば、任意の $T>0$ で有限区間の Leray–Hopf 弱解が存在する。
+  [[時間大域 Leray–Hopf 解データ|LerayHopf.Galerkin.GlobalLerayHopfSolution]]が与えられれば、任意の $T>0$ で有限区間の Leray–Hopf 弱解が存在する。
 proof_ja: |
   [[切り出し|LerayHopf.Galerkin.GlobalLerayHopfSolution.toSolution]]をその $T$ に適用すればよい。
 gap:

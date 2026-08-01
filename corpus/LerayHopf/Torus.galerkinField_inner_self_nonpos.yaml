@@ -13,6 +13,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    散逸的な場の前向きノルム単調性（[[散逸場のノルム評価|LerayHopf.Galerkin.norm_le_of_forwardSolution_of_dissipative]]）の仮定を充たす鍵。移流の対角消滅は形式束 `Torus3NSForms` のフィールド `b_self_zero` による。
+    散逸的な場の前向きノルム単調性（[[散逸場のノルム評価|LerayHopf.Galerkin.norm_le_of_forwardSolution_of_dissipative]]）の仮定を充たす鍵。移流の対角消滅は形式データ `Torus3NSForms` のフィールド `b_self_zero` による。
 chapter: ode
 tags: [galerkin, dissipation, torus]

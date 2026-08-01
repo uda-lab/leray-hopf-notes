@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    形式束の線形性フィールド群を一括で供給する形。
+    形式データの線形性フィールド群を一括で供給する形。
 chapter: limit-passage
 tags: [determined-form, tensor, torus]

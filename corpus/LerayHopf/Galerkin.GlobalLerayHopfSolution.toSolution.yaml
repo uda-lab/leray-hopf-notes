@@ -1,7 +1,7 @@
 name: LerayHopf.Galerkin.GlobalLerayHopfSolution.toSolution
 tier: full
 statement_ja: |
-  [[時間大域解の束|LerayHopf.Galerkin.GlobalLerayHopfSolution]]から、指定した $T>0$ における[[有限区間の Leray–Hopf 弱解の束|LerayHopf.Galerkin.LerayHopfSolution]]を切り出す。曲線は取り替えない。
+  [[時間大域 Leray–Hopf 解データ|LerayHopf.Galerkin.GlobalLerayHopfSolution]]から、指定した $T>0$ における[[Leray–Hopf 弱解データ|LerayHopf.Galerkin.LerayHopfSolution]]を切り出す。曲線は取り替えない。
 gap:
   level: none
 chapter: galerkin-generic

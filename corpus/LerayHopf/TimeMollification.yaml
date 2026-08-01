@@ -1,7 +1,7 @@
 name: LerayHopf.Bochner.TimeMollification
 tier: full
 statement_ja: |
-  時間軟化データの束：`W1pTime` 曲線の滑らかな時間軟化
+  時間軟化データ：`W1pTime` 曲線の滑らかな時間軟化
 
   $$u^\varepsilon = \rho^\varepsilon \ast_t u$$
 
@@ -11,7 +11,7 @@ proof_ja: |
 gap:
   level: mild
   note: |
-    二つの $L^2$ 収束が**微分で連結している**（軟化した曲線の微分＝微分の軟化）ことがこの束の存在意義：$u$ と $u'$ を独立に密度近似したのでは足りない。曲線側の収束を $V$ ノルムで要求するのは、双対対の評価
+    二つの $L^2$ 収束が**微分で連結している**（軟化した曲線の微分＝微分の軟化）ことがこのデータの存在意義：$u$ と $u'$ を独立に密度近似したのでは足りない。曲線側の収束を $V$ ノルムで要求するのは、双対対の評価
 
     $$\lVert \varphi \rVert_{V'}\, \lVert v \rVert_V$$
 

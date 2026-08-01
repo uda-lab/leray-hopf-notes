@@ -58,6 +58,7 @@ Leray–Hopf 形式化（`uda-lab/leray-hopf`）の注釈コーパスで使う�
 | diagonal subsequence | 対角部分列 | `StrictMono.comp` | 多段入れ子の収束部分列を一本に合成したもの | |
 | energy class | エネルギー類 | `energy_class`, `memH1VF` | `[0,T]` 上で a.e. の $H^1_\sigma$ 所属＋粘性散逸の区間可積分性という正則性クラス。時間可測性フィールドは周囲の $L^2$ 空間へ値を取るため、文字通りの Bochner 空間所属を主張しない（issue #64 / lean-pde issue #146） | 「u ∈ L²(0,T;H¹_σ) という正則性クラス」（文字通りの Bochner 空間所属としての言い換え） |
 | proof-carrying type | 証明保持型 | `LerayHopfSolutionFull`, `GalerkinSolutionData` | 数学的性質を型のフィールドとして保持する構造体 | |
+| bundle (of mathematical components) | 束 | `DissipativeEvolution`, `torus3Evolution` | **複数の数学的構成要素（空間・埋め込み・作用素・汎関数・形式など）を一つの抽象的なまとまりとして述べるとき**にのみ使う。該当するのは「散逸発展」（空間 $H$ ＋正則性汎関数＋粘性形式＋移流形式＋テストクラス）、「Galerkin スキーム」（近似射影の族）、「Gelfand 三つ組」（空間 $V$, $H$ ＋埋め込み $\iota$ とその性質）の各行。Lean の structure を一般に「束」と呼ばないこと — 数学のベクトル束・ファイバー束との混同を招く。解と証明を保持する型は「〜データ」（例: `Galerkin.LerayHopfSolution` = Leray–Hopf 弱解データ）、形式をまとめる型は「形式データ」、領域インターフェースは「領域データ」、コンパクト性論法の出力は「コンパクト性データ」を使う（notes#121 裁定） | 「形式束」、「解の束」、「解束」、「データ束」、「データの束」、「弱解の束」、「コンパクト性の束」 |
 | abstract axiom | 抽象公理 | `-- ALLOW_AXIOM:` | 形式化で未証明のまま仮定する命題（`axiom` キーワード） | |
 | weak NS equation | 弱 NS 方程式 | `WeakFormNS` | Navier–Stokes の弱形式版（テスト関数との内積形式） | |
 | kernel-only | kernel-only | `#print axioms` | `propext/Classical.choice/Quot.sound` のみ公理に依存する状態 | |
@@ -72,7 +73,7 @@ Leray–Hopf 形式化（`uda-lab/leray-hopf`）の注釈コーパスで使う�
 | time-global (global-in-time) | 時間大域 | `exists_global_lerayHopf_r3`, `exists_global_lerayHopf_torus3`, `Galerkin.GlobalLerayHopfSolution` | ただ一本の曲線 u が任意の T > 0 について [0, T] 上の Leray–Hopf 契約を満たすこと（`∃ u, ∀ T > 0, IsLerayHopfOn … T u₀ u`）。本コーパスの「大域」は三義あるので必ず限定語を付けて区別する。(1) 本行の**時間大域** = Leray–Hopf 弱解が単一曲線として全時刻に伸びること。(2) **前向き大域**（前行）= 有限次元 Galerkin ODE が前向き時刻全体で解けること。(3) 空間の意味の**大域**（「大域 L² ノルム上界」「大域極限」など）= 球への局所制限に対する ℝ³ 全体。時間大域は弱解の存在のみを主張し、一意性・正則性・エネルギー等式は含まない | 「グローバル解」、「時間全域解」 |
 | a priori estimate | アプリオリ評価 | `energy_bound` | 解の存在論に先立って（解であることだけから）導く評価 | 「先験的評価」⚠要確認 |
 | Riesz representation | Riesz 表現 | `InnerProductSpace.toDual` | 連続線形汎関数をベクトルとの内積として表す対応。表現するベクトル = Riesz 表現元 | 「リース表現」（カナ単独は非推奨） |
-| Galerkin domain | Galerkin 領域 | `Galerkin.Domain` | 幾何に依らず Galerkin 構成を述べるための領域データの束（lean-pde issue #112） | |
+| Galerkin domain | Galerkin 領域 | `Galerkin.Domain` | 幾何に依らず Galerkin 構成を述べるための領域データ（lean-pde issue #112。notes#121 で「領域データの束」から改称） | |
 | band-limited | 帯域制限（された場） | `viscousEnn_eq_ofReal_of_bandlimited` | ある次数の Fourier 打ち切りで不変な（Fourier 台が有限の）場 | 「バンド制限」 |
 | test-shifted convection form | 部分積分形の移流形式 | `TorusConvectionExtension.convValW` | 部分積分で微分をテスト因子へ移した移流形式（略: 部分積分形）。テストの帯域制限のみで総和可能になる | 「移項形式」、「移項移流形式」 |
 | Stokes pairing | Stokes 双線形形式 | `stokesTestPairing`, `stokesTestPairing_R3` | 粘性形式の双線形版 $s(u,w)$（$\nu$ 因子は別掲）。対角値 $s(u,u)$ が粘性形式に一致 | 「Stokes テスト対」 |

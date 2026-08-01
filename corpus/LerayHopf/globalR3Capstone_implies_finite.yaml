@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   **健全性の確認（$\mathbb{R}^3$）。** [[定義として固定した時間大域主張|LerayHopf.GlobalR3CapstoneStatement]]が成り立てば、既存の有限区間主定理の形（任意の $T>0$ で完全 Leray–Hopf 解が存在する）も成り立つ。
 proof_ja: |
-  時間大域の主張からスキーム・形式束・曲線と全区間での条件を取り出し、指定された $T$ における条件に[[条件からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]を施せばよい。
+  時間大域の主張からスキーム・形式データ・曲線と全区間での条件を取り出し、指定された $T$ における条件に[[条件からの組み立て|LerayHopf.Galerkin.LerayHopfSolution.ofIsOn]]を施せばよい。
 gap:
   level: none
   note: |

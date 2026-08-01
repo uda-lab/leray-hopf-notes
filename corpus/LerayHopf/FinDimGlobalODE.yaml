@@ -7,6 +7,6 @@ statement_ja: |
 gap:
   level: mild
   note: |
-    束ねるのは唯一の還元不能な mathlib の穴、すなわちベクトル空間における先験評価からの大域存在／継続定理の欠如だけである。場 $G_n$ は二次で局所 Lipschitz にとどまり、全空間版の存在補題が適用できない。保持するのは自励場方程式であって弱形式ではない。弱形式・部分空間閉じ込め・エネルギー評価・正則性はすべて導出される。とくに弱形式とベクトル場の対応は Riesz 特徴づけ [[ベクトル場の特徴づけ|LerayHopf.galerkinODE_vectorField_spec]] で証明済みなので、この束は入力構造 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] より真に弱い。前進時刻に制限されているのは、二次場が後進時刻で有限時間爆発しうるための健全性配慮である。
+    束ねるのは唯一の還元不能な mathlib の穴、すなわちベクトル空間における先験評価からの大域存在／継続定理の欠如だけである。場 $G_n$ は二次で局所 Lipschitz にとどまり、全空間版の存在補題が適用できない。保持するのは自励場方程式であって弱形式ではない。弱形式・部分空間閉じ込め・エネルギー評価・正則性はすべて導出される。とくに弱形式とベクトル場の対応は Riesz 特徴づけ [[ベクトル場の特徴づけ|LerayHopf.galerkinODE_vectorField_spec]] で証明済みなので、このデータは入力構造 [[Galerkin ODE 入力|LerayHopf.GalerkinODEInput]] より真に弱い。前進時刻に制限されているのは、二次場が後進時刻で有限時間爆発しうるための健全性配慮である。
 chapter: ode
 tags: [galerkin-approximation, ode, isolated-hypothesis]

@@ -1,7 +1,7 @@
 name: LerayHopf.GlobalTorusCapstoneStatement
 tier: full
 statement_ja: |
-  **定義として固定した時間大域主張（$\mathbb{T}^3$）。** 命題として書き下した主定理の目標である。内容は、任意の発散が零の初期値 $u_0$ と $\nu>0$ に対し、ある形式束 $F$ と曲線 $u$ が存在して、**その同じ** $u$ について、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、というものである。
+  **定義として固定した時間大域主張（$\mathbb{T}^3$）。** 命題として書き下した主定理の目標である。内容は、任意の発散が零の初期値 $u_0$ と $\nu>0$ に対し、ある形式データ $F$ と曲線 $u$ が存在して、**その同じ** $u$ について、すべての $T>0$ で $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]が成り立つ、というものである。
 
   量化子の並びが $\exists F,\ \exists u,\ \forall T$ であることが本質で、$\forall T,\ \exists u$ ではない。
 proof_ja: |

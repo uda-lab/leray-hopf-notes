@@ -1,13 +1,13 @@
 name: LerayHopf.exists_global_lerayHopf_torus3
 tier: full
 statement_ja: |
-  **時間大域 Leray–Hopf 弱解の存在（$\mathbb{T}^3$）。** 発散が零の初期値 $u_0\in L^2_\sigma(\mathbb{T}^3)$ と粘性係数 $\nu>0$ に対して、ある形式束 $F$ と曲線 $u$ が存在して、**その同じ** $u$ が**すべての** $T>0$ について $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす。
+  **時間大域 Leray–Hopf 弱解の存在（$\mathbb{T}^3$）。** 発散が零の初期値 $u_0\in L^2_\sigma(\mathbb{T}^3)$ と粘性係数 $\nu>0$ に対して、ある形式データ $F$ と曲線 $u$ が存在して、**その同じ** $u$ が**すべての** $T>0$ について $[0,T]$ 上の[[Leray–Hopf 条件|LerayHopf.Galerkin.IsLerayHopfOn]]を満たす。
 
   曲線は $T$ に依存しない。すなわち区間ごとに別の解を取っているのではなく、一本の曲線がどの有限区間に制限しても Leray–Hopf 弱解になっている。区間ごとの解を零集合を除いて貼り合わせたものでもなく、一致は各点で成り立つ。
 
   主張するのは**弱解の存在**のみである。一意性も、より高い正則性も、エネルギー恒等式（等号版）も述べていない。
 proof_ja: |
-  **L1（一度だけ固定する）** 形式束 $F$ と Galerkin 近似族を先に固定し、続いて[[対角部分列と大域弱極限|LerayHopf.exists_diagonal_weakly_convergent_galSeq]]から対角部分列 $\delta$ と曲線 $W$ を取る。ここまでの構成は $T$ を一切参照しないので、以後どの区間を見ても同じ $F$・同じ $\delta$・同じ $W$ が使える。この「先に固定する」ことが時間大域性の全体である。
+  **L1（一度だけ固定する）** 形式データ $F$ と Galerkin 近似族を先に固定し、続いて[[対角部分列と大域弱極限|LerayHopf.exists_diagonal_weakly_convergent_galSeq]]から対角部分列 $\delta$ と曲線 $W$ を取る。ここまでの構成は $T$ を一切参照しないので、以後どの区間を見ても同じ $F$・同じ $\delta$・同じ $W$ が使える。この「先に固定する」ことが時間大域性の全体である。
 
   **L2（区間ごとの取り出し）** 自然数 $m$ を任意にとり、区間 $[0,m+1]$ で[[κ 連鎖の出口|LerayHopf.torus_kappaChain_exit]]を、添字写像を $\delta$ として対角列に沿った族の上で適用する。得られる出力データは、その区間での良い代表元 $v$ と、弱形式・エネルギー不等式・初期トレース・エネルギー類を与える。
 

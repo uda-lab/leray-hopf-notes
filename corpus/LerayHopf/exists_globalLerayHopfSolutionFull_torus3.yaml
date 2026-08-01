@@ -1,9 +1,9 @@
 name: LerayHopf.exists_globalLerayHopfSolutionFull_torus3
 tier: full
 statement_ja: |
-  **時間大域主定理の束の形（$\mathbb{T}^3$）。** [[時間大域 Leray–Hopf 弱解の存在|LerayHopf.exists_global_lerayHopf_torus3]]を、単一の曲線を抱えた[[時間大域解の束|LerayHopf.GlobalLerayHopfSolutionFull]]の非空性として言い換えたもの。
+  **時間大域主定理のデータの形（$\mathbb{T}^3$）。** [[時間大域 Leray–Hopf 弱解の存在|LerayHopf.exists_global_lerayHopf_torus3]]を、単一の曲線を抱えた[[時間大域 Leray–Hopf 解データ（$\mathbb{T}^3$）|LerayHopf.GlobalLerayHopfSolutionFull]]の非空性として言い換えたもの。
 proof_ja: |
-  主定理から形式束・曲線・全区間での条件を取り出し、そのまま束へ詰め直せばよい。曲線は取り替えない。
+  主定理から形式データ・曲線・全区間での条件を取り出し、そのままデータへ詰め直せばよい。曲線は取り替えない。
 gap:
   level: none
 chapter: capstone-torus

@@ -7,6 +7,6 @@ statement_ja: |
 gap:
   level: mild
   note: |
-    形式化では、スパンの一様評価を束にした証明を渡して有界双線形拡張器 `convBLTbdd` を走らせる。$s\mapsto{}$（この双線形）は $H^1$ 切片での一致から $\mathbb{R}$-線形であり、以後は補題インターフェイス経由で不透明に扱う（大きな拡張塔の展開を避けるため既約に指定）。
+    形式化では、スパンの一様評価をまとめた証明を渡して有界双線形拡張器 `convBLTbdd` を走らせる。$s\mapsto{}$（この双線形）は $H^1$ 切片での一致から $\mathbb{R}$-線形であり、以後は補題インターフェイス経由で不透明に扱う（大きな拡張塔の展開を避けるため既約に指定）。
 chapter: limit-passage
 tags: [convection-form, continuous-bilinear, determined-form]
