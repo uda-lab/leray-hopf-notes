@@ -107,8 +107,14 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
      re.compile(r'(?i)[?&](?:token|access_token|api_?key|secret|auth|password|sig|signature)'
                 r'=[A-Za-z0-9._~+/-]{16,}')),
     ('internal .local host', re.compile(r'\bhttps?://[A-Za-z0-9.-]+\.local\b')),
+    # Each alternative must complete a four-octet address. The `10` branch previously
+    # needed only two further octets, so an ordinary three-component version string such as
+    # `10.2.3` was classified as a private address and would have blocked publication —
+    # a false positive of exactly the kind that gets a gate switched off.
     ('private IPv4 address',
-     re.compile(r'\b(?:10|192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b')),
+     re.compile(r'\b(?:10(?:\.\d{1,3}){3}'
+                r'|192\.168(?:\.\d{1,3}){2}'
+                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})\b')),
     # Assignment shapes: a credential-ish key, then a long opaque value. The quote is
     # optional and may be backslash-escaped, because these files are JSON — an embedded
     # `api_key: "…"` is stored as `api_key: \"…\"`, and requiring a bare quote character

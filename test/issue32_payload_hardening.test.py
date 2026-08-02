@@ -144,6 +144,8 @@ LEGITIMATE_PROBES = {
     'the word password': 'password という語を含む一般的な散文。',
     'issue citation': 'leray-hopf issue #229（PR #231）で二段階に修正された。',
     'URL containing /etc/': 'https://example.com/etc/faq を参照。',
+    'three-component version': 'バージョン 10.2.3 で導入された。',
+    'section number': '第 172.16 節ではなく 172.16 章を参照。',
 }
 
 
