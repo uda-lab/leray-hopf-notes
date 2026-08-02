@@ -18,7 +18,8 @@ from imagination, because the payload is full of mathematical prose that trips n
 * **A Windows-drive rule of the shape `[A-Za-z]:\\\\` matches LaTeX, not paths.** The corpus
   contains `$f:\\mathbb R\\to H$`, `$\\varphi:\\mathbb N$`, `$\\int\\nabla u:\\nabla u$` — six
   hits in the current payload, every one legitimate mathematics. The drive-letter pattern
-  below therefore requires an uppercase letter *and* a following path segment.
+  below therefore requires a following `Users|Windows|Program|Temp` segment — that segment,
+  not the letter's case, is what separates a real path from `f:\\mathbb`.
 * **"Agent prose" is scoped to machine-generated session artifacts**, not to human-written
   provenance. The corpus deliberately cites issues, PRs and review rounds (`Codex Gate`,
   `codex review` and similar appear in upstream docstrings by design — see the 2026-07-16
@@ -85,7 +86,10 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # account key `sk-svcacct-…`, so a `sk-[A-Za-z0-9]{20,}` rule stops dead at the second
     # hyphen and never reaches its length floor — it matched only the oldest key format.
     ('OpenAI-style key', re.compile(r'\bsk-(?:proj-|svcacct-|admin-)?[A-Za-z0-9_-]{20,}')),
-    ('AWS access key id', re.compile(r'\bAKIA[0-9A-Z]{16}\b')),
+    # Both long-term (AKIA) and STS temporary (ASIA) key ids: a temporary key's
+    # accompanying secret and session token are opaque, so this prefix is often the
+    # only recognisable marker in the whole credential set.
+    ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}\b')),
     ('Google API key', re.compile(r'\bAIza[0-9A-Za-z_-]{35}\b')),
     ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}')),
     ('PEM private key', re.compile(r'-----BEGIN [A-Z ]*PRIVATE KEY-----')),
@@ -124,7 +128,10 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('macOS temp path', re.compile(r'/var/folders/[A-Za-z0-9._/+-]+')),
     ('CI runner path', re.compile(r'/runner/_work/[A-Za-z0-9._/-]+')),
     # Uppercase drive letter AND a path segment — `f:\mathbb` and friends must not match.
-    ('Windows path', re.compile(r'\b[A-Z]:\\{1,2}(?:Users|Windows|Program|Temp)\b')),
+    # Case-insensitive drive letter. The required Users|Windows|Program|Temp segment
+    # is what keeps this off `f:\\mathbb` and friends, so the letter's case can be
+    # free without reintroducing the LaTeX false positive.
+    ('Windows path', re.compile(r'\b[A-Za-z]:\\{1,2}(?:Users|Windows|Program|Temp)\b')),
 
     # --- agent / session artifacts ------------------------------------------------
     # Machine-generated session identity, NOT human-authored provenance prose.

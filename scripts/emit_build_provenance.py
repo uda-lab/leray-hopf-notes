@@ -21,7 +21,7 @@ nothing but the deployed site:
 Design notes
 ------------
 
-* **Coverage is the whole published tree, not just the data.** Both artifact steps publish
+* **Coverage is the whole published tree, not just the data — dotfiles included.** Both artifact steps publish
   `site/`, which is `index.html`, `app.js`, `styles.css`, `robots.txt` and the vendored
   KaTeX bundle as well as `site/data/*.json`. Hashing only the data would leave the code
   that renders it unverifiable while the README claimed otherwise — the digests here are
@@ -170,10 +170,12 @@ def main() -> int:
     # Everything published — the artifact steps upload the whole site/ tree, not just the
     # data — except the two files this script itself produces.
     self_written = {(site_data / PROVENANCE_NAME).resolve(), (site_data / SUMS_NAME).resolve()}
+    # Dotfiles are hashed too. `site/data/.gitkeep` already ships, and a Pages tree can
+    # carry `.nojekyll`; excluding them would mean the artifact contains bytes no digest
+    # covers, while the record claims whole-tree coverage.
     payload_files = sorted(
         p for p in site_root.rglob('*')
         if p.is_file() and p.resolve() not in self_written
-        and not any(part.startswith('.') for part in p.relative_to(site_root).parts)
     )
     if not payload_files:
         print(f'ERROR: no publishable files found under {site_root}', file=sys.stderr)

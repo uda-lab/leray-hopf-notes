@@ -100,7 +100,8 @@ LEAK_PROBES = {
     'OpenAI key (legacy sk-)': 'sk-' + 'B' * 32,
     'OpenAI key (project sk-proj-)': 'sk-proj-' + 'A' * 48,
     'OpenAI key (service account sk-svcacct-)': 'sk-svcacct-' + 'B' * 40,
-    'AWS key id': 'AKIA' + 'C' * 16,
+    'AWS key id (long-term AKIA)': 'AKIA' + 'C' * 16,
+    'AWS key id (STS temporary ASIA)': 'ASIA' + 'C' * 16,
     'PEM private key': '-----BEGIN RSA PRIVATE KEY-----',
     'home path': '/home/vscode/notes/secret.md',
     'workspace path': '/workspaces/leray-hopf-notes/local',
@@ -108,7 +109,8 @@ LEAK_PROBES = {
     'assistant session URL': 'https://claude.ai/code/session_016UU',
     'agent config dir': '/home/x/.claude/projects/foo',
     'credential assignment': 'api_key: "' + 'D' * 20 + '"',
-    'Windows path': r'C:\Users\bob\notes',
+    'Windows path (uppercase drive)': r'C:\Users\bob\notes',
+    'Windows path (lowercase drive)': r'c:\Users\bob\secret.txt',
     'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
     'credentials in URL': 'postgres://user:pw@db.internal:5432/app',
     'HTTP basic auth in URL': 'https://bob:hunter2@example.com/x',
@@ -407,6 +409,25 @@ def test_emit_clears_stale_outputs_on_early_return() -> None:
     check('stale SHA256SUMS is cleared even on an early return', not sums_left)
 
 
+
+def test_emit_hashes_dotfiles() -> None:
+    """`site/data/.gitkeep` already ships and a Pages tree may carry `.nojekyll`; excluding
+    dotfiles would mean the artifact contains bytes no digest covers while the record claims
+    whole-tree coverage (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        (data / '.gitkeep').write_text('', encoding='utf-8')
+        (data.parent / '.nojekyll').write_text('', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        check('emit succeeds with dotfiles present', code == 0, out)
+        record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        names = {f['name'] for f in record['files']}
+    check('data/.gitkeep is hashed', 'data/.gitkeep' in names, repr(sorted(names)))
+    check('.nojekyll is hashed', '.nojekyll' in names, repr(sorted(names)))
+
+
 def test_emit_refuses_pin_mismatch() -> None:
     """A provenance record that attests to the wrong commit is worse than none."""
     with tempfile.TemporaryDirectory() as td:
@@ -480,6 +501,7 @@ def main() -> None:
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()
+    test_emit_hashes_dotfiles()
     test_emitted_record_passes_the_scan()
     test_release_link_suppressed_on_citation_pin_mismatch()
     print(f'\nAll {len(CHECKS)} notes#32 payload-hardening checks passed.')
