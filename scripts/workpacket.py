@@ -79,17 +79,42 @@ def load_universe() -> tuple[list[dict], str]:
     return [], '(none)'
 
 
-def load_annotated_names() -> set[str]:
+def load_annotated_names() -> tuple[set[str], set[tuple[str, str]]]:
+    """Return (annotated names, annotated (name, file) keys).
+
+    A name alone cannot identify an annotation when the display name is ambiguous: two
+    private helpers in different modules share it, so treating "this name is annotated" as
+    "both declarations are annotated" hides the second one from every future work packet.
+    The keyed set mirrors `validate.py`'s `keyed_universe` and is what `is_annotated` uses
+    for ambiguous names (notes#7, notes#120).
+    """
     names: set[str] = set()
+    keys: set[tuple[str, str]] = set()
     for fpath in CORPUS_DIR.rglob('*.yaml'):
         try:
             with open(fpath, encoding='utf-8') as f:
                 doc = yaml.safe_load(f)
             if isinstance(doc, dict) and 'name' in doc:
                 names.add(doc['name'])
+                keys.add((doc['name'], doc.get('file') or ''))
         except (yaml.YAMLError, OSError):
             pass
-    return names
+    return names, keys
+
+
+def is_annotated(decl: dict, annotated_names: set[str],
+                 annotated_keys: set[tuple[str, str]],
+                 ambiguous_names: set[str]) -> bool:
+    """Whether THIS declaration already has an annotation.
+
+    For an ambiguous display name the match must include the defining file — `file` is
+    required on those corpus entries (notes#7), so the pair identifies the declaration.
+    For an unambiguous name `file` is optional in the corpus, so the name alone decides.
+    """
+    name = decl['name']
+    if name in ambiguous_names:
+        return (name, decl.get('file', '')) in annotated_keys
+    return name in annotated_names
 
 
 def module_matches_chapter(file_path: str, chapter: str) -> bool:
@@ -240,7 +265,10 @@ def main() -> None:
     if not universe:
         sys.exit('ERROR: no name universe found. Run scripts/count_decls.py first.')
 
-    annotated = load_annotated_names() if not args.include_annotated else set()
+    if args.include_annotated:
+        annotated_names, annotated_keys = set(), set()
+    else:
+        annotated_names, annotated_keys = load_annotated_names()
     chapter_label = args.chapter or args.module or 'all'
 
     # Display names carried by more than one declaration need module-qualified filenames;
@@ -254,7 +282,8 @@ def main() -> None:
     candidates = []
     for decl in universe:
         name = decl['name']
-        if name in annotated and not args.include_annotated:
+        if not args.include_annotated and is_annotated(
+                decl, annotated_names, annotated_keys, ambiguous_names):
             continue
         file_path = decl.get('file', '')
         if args.all:
@@ -274,7 +303,7 @@ def main() -> None:
     print()
     print(f'**Universe:** {universe_source}  ')
     print(f'**Declarations in packet:** {len(candidates)}  ')
-    print(f'**Already annotated (skipped):** {len(annotated)}  ')
+    print(f'**Already annotated (skipped):** {len(annotated_names)}  ')
     print()
     print('For each declaration below: fill in the YAML skeleton and save it.')
     print('Validate with: `python3 scripts/validate.py`')

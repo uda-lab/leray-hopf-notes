@@ -5,15 +5,27 @@
 the corpus never had, and the drift survived because nothing looked at filenames at all.
 `check_filename_matches_name` closes that hole as far as it can be closed.
 
-It deliberately checks only the **last dot-component** of the filename. Two slug conventions
-coexist in this corpus — the plain one (`name` minus the `LerayHopf.` prefix) and a
-module-qualified one, which is *required* when two declarations share a display name because
-a flat corpus cannot give them the same filename. Full equality would mean renaming every
-file of the second kind; the final component is the invariant both conventions share.
+The check has two strengths, because two situations differ in what is knowable:
+
+* **Unambiguous names** — only the **last dot-component** is checked. Several slug shapes
+  coexist historically (plain `name` minus the `LerayHopf.` prefix, variants dropping
+  intermediate namespaces, module-qualified ones), so full equality would mean renaming
+  hundreds of files. The final component is the invariant they all share.
+* **Ambiguous names** — the whole slug is checked. A flat corpus cannot give two same-named
+  declarations one filename, so the module prefix is what separates them, and `file` is
+  already required there (notes#7) to derive the expected slug. A wrong prefix does not
+  merely look untidy: it points the reader at the wrong declaration.
+
+`scripts/workpacket.py` is covered too, because it is what taught the nested layout to every
+contributor in the first place: it must emit flat paths, carry `file` on ambiguous skeletons
+(otherwise the skeleton is invalid the moment it is saved), and track annotated ambiguous
+declarations by `(name, file)` so annotating one does not hide the other.
 
 Covers: the matching case, a mismatched final component, the module-qualified collision
-convention, names carrying an apostrophe (`continuous_restrictToBall'` really exists), a
-missing/non-string `name` (must not crash or double-report), and the committed corpus.
+convention and a wrong module prefix, names carrying an apostrophe
+(`continuous_restrictToBall'` really exists), a missing/non-string `name` (must not crash or
+double-report), generator output including an end-to-end generate-save-validate round trip,
+and the committed corpus.
 """
 
 from __future__ import annotations
@@ -283,6 +295,34 @@ def test_generated_ambiguous_skeleton_validates() -> None:
     check('generated ambiguous skeleton validates as saved', code == 0, out)
 
 
+def test_ambiguous_annotation_tracked_by_file() -> None:
+    """Annotating one of two same-named declarations must not hide the other.
+
+    `load_annotated_names` used to return names only, so once either
+    `LerayHopf.measurable_natFloor_real` was annotated, every later work packet skipped the
+    other one as "already annotated" — which would make the module-qualified skeleton
+    unreachable through the documented workflow (notes#120).
+    """
+    wp = import_script('workpacket_issue120_ann', REPO_ROOT / 'scripts' / 'workpacket.py')
+    amb = {'LerayHopf.measurable_natFloor_real'}
+    done = {'name': 'LerayHopf.measurable_natFloor_real',
+            'file': 'LerayHopf/Bochner/StepFunctionCompactness.lean'}
+    todo = {'name': 'LerayHopf.measurable_natFloor_real',
+            'file': 'LerayHopf/R3/SpacetimePrecompact.lean'}
+    names = {'LerayHopf.measurable_natFloor_real'}
+    keys = {('LerayHopf.measurable_natFloor_real',
+             'LerayHopf/Bochner/StepFunctionCompactness.lean')}
+
+    check('the annotated colliding declaration is recognised',
+          wp.is_annotated(done, names, keys, amb))
+    check('the OTHER colliding declaration is still offered',
+          not wp.is_annotated(todo, names, keys, amb))
+
+    plain = {'name': 'LerayHopf.rellich_seq_compact'}
+    check('an unambiguous name is matched by name alone (file is optional there)',
+          wp.is_annotated(plain, {'LerayHopf.rellich_seq_compact'}, set(), set()))
+
+
 def test_missing_name_does_not_crash() -> None:
     """A missing `name` is already a schema error — the filename check must not add noise
     on top of it, and must not raise."""
@@ -314,6 +354,7 @@ def main() -> None:
     test_ambiguous_name_requires_correct_module_prefix()
     test_workpacket_generates_flat_paths()
     test_generated_ambiguous_skeleton_validates()
+    test_ambiguous_annotation_tracked_by_file()
     test_missing_name_does_not_crash()
     test_committed_corpus_is_clean()
     print(f'\nAll {len(CHECKS)} notes#120 filename-check tests passed.')
