@@ -155,6 +155,16 @@ def main() -> int:
     # one — precisely the drift the frontend guard exists to catch at runtime, so the
     # build-time record must not certify it.
     sources_path = site_data / 'sources.json'
+    # A payload that claims embedded source must actually ship it. Skipping validation when
+    # the file is absent would let a standalone run attest to a payload whose source half is
+    # simply missing — the record would describe declarations whose text was never there.
+    claims_source = bool(nodes.get('has_source')) or bool(nodes.get('source_count'))
+    if claims_source and not sources_path.is_file():
+        print(f'ERROR: nodes.json claims embedded source (has_source='
+              f'{nodes.get("has_source")!r}, source_count={nodes.get("source_count")!r}) '
+              f'but {sources_path} is missing — refusing to attest to an incomplete payload',
+              file=sys.stderr)
+        return 1
     if sources_path.is_file():
         try:
             sources_pin = json.loads(sources_path.read_text(encoding='utf-8')).get('pin')

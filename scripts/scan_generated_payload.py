@@ -75,6 +75,9 @@ DEFAULT_SITE_DATA = REPO_ROOT / 'site' / 'data'
 # "not there, so nothing to scan" is exactly how a scan silently stops covering things.
 REQUIRED_PAYLOADS = ('nodes.json', 'sources.json', 'coverage.json')
 
+# A single IPv4 octet, 0-255.
+_OCTET = r'(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)'
+
 # (label, compiled pattern). Ordered roughly by severity.
 LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # --- credentials -------------------------------------------------------------
@@ -115,10 +118,13 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # needed only two further octets, so an ordinary three-component version string such as
     # `10.2.3` was classified as a private address and would have blocked publication —
     # a false positive of exactly the kind that gets a gate switched off.
+    # Octets are range-checked (0-255). Without that, dotted values such as
+    # `10.999.999.999` or `10.256.0.1` — which cannot be addresses at all — would block
+    # publication: the same false-positive class as the earlier `10.2.3` version string.
     ('private IPv4 address',
-     re.compile(r'\b(?:10(?:\.\d{1,3}){3}'
-                r'|192\.168(?:\.\d{1,3}){2}'
-                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})\b')),
+     re.compile(r'\b(?:10(?:\.' + _OCTET + r'){3}'
+                r'|192\.168(?:\.' + _OCTET + r'){2}'
+                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.' + _OCTET + r'){2})\b')),
     # Assignment shapes: a credential-ish key, then a long opaque value. The quote is
     # optional and may be backslash-escaped, because these files are JSON — an embedded
     # `api_key: "…"` is stored as `api_key: \"…\"`, and requiring a bare quote character

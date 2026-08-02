@@ -147,6 +147,8 @@ LEGITIMATE_PROBES = {
     'issue citation': 'leray-hopf issue #229（PR #231）で二段階に修正された。',
     'URL containing /etc/': 'https://example.com/etc/faq を参照。',
     'three-component version': 'バージョン 10.2.3 で導入された。',
+    'out-of-range dotted value': '10.999.999.999 は住所ではない。',
+    'octet 256': '10.256.0.1 も同様である。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
 }
 
@@ -464,6 +466,21 @@ def test_emit_hashes_dotfiles() -> None:
     check('.nojekyll is hashed', '.nojekyll' in names, repr(sorted(names)))
 
 
+
+def test_emit_refuses_when_sources_json_is_missing() -> None:
+    """A payload claiming embedded source must ship it. Skipping validation when the file is
+    absent let a standalone run attest to a payload whose source half was simply missing."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        (data / 'sources.json').unlink()
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+    check('emit refuses when sources.json is missing but claimed', code != 0, out)
+    check('no record is written for an incomplete payload', not wrote)
+
+
 def test_emit_refuses_pin_mismatch() -> None:
     """A provenance record that attests to the wrong commit is worse than none."""
     with tempfile.TemporaryDirectory() as td:
@@ -535,6 +552,7 @@ def main() -> None:
     test_emit_covers_every_published_file()
     test_emit_refuses_pin_mismatch()
     test_emit_refuses_sources_pin_mismatch()
+    test_emit_refuses_when_sources_json_is_missing()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()
