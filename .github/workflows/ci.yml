@@ -254,9 +254,10 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: site-data
-          path: |
-            site/
-            !site/data/.gitkeep
+          # No exclusions: SHA256SUMS covers the whole site/ tree, so dropping any file
+          # here would make the documented `cd site && sha256sum -c data/SHA256SUMS` fail
+          # on a downloaded artifact for a file that was never shipped.
+          path: site/
           retention-days: 30
 
       - name: Upload GitHub Pages artifact

@@ -163,12 +163,23 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
     # `git status --porcelain` never reports changes under `.git`, so a payload naming git
     # administrative state would pass every gate and be attested as "source from the pinned
     # commit". A declaration may only be sourced from a file the commit actually tracks.
-    code, tracked_out, tracked_err = run_git(lean_root, 'ls-tree', '-r', '--name-only', 'HEAD')
+    #
+    # Modes matter, not just names: a tracked SYMLINK (mode 120000) such as
+    # `Foo.lean -> .git/HEAD` appears in ls-tree, resolves inside the checkout, and leaves
+    # `git status` clean — so reading it through the filesystem would serve git
+    # administrative bytes under a legitimate-looking tracked path. Only regular file blobs
+    # (100644 / 100755) may be a declaration source.
+    code, tracked_out, tracked_err = run_git(lean_root, 'ls-tree', '-r', 'HEAD')
     if code != 0:
         failures.append('source_text: could not list tracked files at HEAD '
                         f'({tracked_err or tracked_out})')
         return
-    tracked = set(tracked_out.splitlines())
+    tracked: set[str] = set()
+    for line in tracked_out.splitlines():
+        meta, _, name = line.partition('\t')
+        parts = meta.split()
+        if len(parts) >= 2 and parts[0] in ('100644', '100755') and parts[1] == 'blob':
+            tracked.add(name)
 
     def lines_of(rel: str) -> list[str] | None:
         if rel not in file_cache:
@@ -215,8 +226,9 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
             continue
         if rel not in tracked:
             mismatches.append(
-                f'{safe(slug)}: file "{safe(rel)}" is not tracked at HEAD in the pinned '
-                f'checkout — only files the commit actually contains may be a source')
+                f'{safe(slug)}: file "{safe(rel)}" is not a regular tracked file at HEAD '
+                f'in the pinned checkout — only a regular blob the commit actually '
+                f'contains may be a source (symlinks and submodules are rejected)')
             continue
         lines = lines_of(rel)
         if lines is None:

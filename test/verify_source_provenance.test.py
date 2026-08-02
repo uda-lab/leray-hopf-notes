@@ -470,7 +470,7 @@ def test_untracked_path_inside_checkout_fails() -> None:
         sources["sources"]["decl0"] = (lean_root / ".git" / "HEAD").read_text().rstrip("\n")
         code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
     assert code == 1, out
-    assert "not tracked at HEAD" in out, out
+    assert "not a regular tracked file" in out, out
 
 
 def test_trailing_newline_tampering_fails() -> None:
@@ -506,6 +506,36 @@ def test_invalid_line_range_fails() -> None:
         assert "invalid line range" in out, out
 
 
+
+def test_tracked_symlink_source_fails() -> None:
+    """A tracked SYMLINK (mode 120000) such as `Foo.lean -> .git/HEAD` appears in ls-tree,
+    resolves inside the checkout and leaves `git status` clean, so a name-only tracked check
+    would serve git administrative bytes under a legitimate-looking path (adversarial
+    review). Only regular blobs may be a source."""
+    verify = import_script("verify_symlink")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        root = tmp / "lean-root"
+        root.mkdir()
+        git(root, "init", "-q")
+        git(root, "config", "user.email", "test@example.com")
+        git(root, "config", "user.name", "Test")
+        (root / "Foo.lean").write_text("theorem decl0 : True := trivial\n", encoding="utf-8")
+        (root / "Link.lean").symlink_to(".git/HEAD")
+        git(root, "add", "-A")
+        git(root, "commit", "-q", "-m", "init")
+        sha = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"],
+                             check=True, capture_output=True, text=True).stdout.strip()
+        git(root, "checkout", "-q", "--detach", sha)
+
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = "Link.lean"
+        sources["sources"]["decl0"] = (root / ".git" / "HEAD").read_text().rstrip("\n")
+        code, out = run_main(verify, base_args(tmp, root, sha, nodes, sources))
+    assert code == 1, out
+    assert "not a regular tracked file" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -532,6 +562,7 @@ def main() -> None:
         test_untracked_path_inside_checkout_fails,
         test_trailing_newline_tampering_fails,
         test_invalid_line_range_fails,
+        test_tracked_symlink_source_fails,
     ]
     for test in tests:
         test()
