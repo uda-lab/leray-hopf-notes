@@ -143,17 +143,44 @@ def read_lean_snippet(lean_root: Path, file_path: str,
     return '\n'.join(snippet_lines)
 
 
-def yaml_skeleton(decl: dict, chapter: str, tier: str | None) -> str:
+CORPUS_ROOT_NAMESPACE = 'LerayHopf'
+
+
+def corpus_path_for(decl: dict, ambiguous_names: set[str] | None = None) -> str:
+    """Where a new annotation for `decl` should be saved (notes#120).
+
+    The corpus is FLAT — everything lives directly in `corpus/LerayHopf/`. This function
+    used to emit `corpus/<module/path>/<simple-name>.yaml`, i.e. the nested layout
+    `corpus/README.md` wrongly documented, which is how the drift kept regenerating itself:
+    every work packet instructed its author to create a directory that does not exist.
+
+    The slug is the declaration name minus the `LerayHopf.` root namespace. When the display
+    name is ambiguous (the same `name` on more than one declaration, as happens for private
+    helpers in different modules), a flat corpus cannot give both the same filename, so the
+    slug is prefixed with the defining module path flattened onto dots.
+    """
+    name = decl['name']
+    slug = name[len(CORPUS_ROOT_NAMESPACE) + 1:] if name.startswith(
+        CORPUS_ROOT_NAMESPACE + '.') else name
+
+    if ambiguous_names and name in ambiguous_names:
+        module = decl.get('file', '').removesuffix('.lean')
+        if module.startswith(CORPUS_ROOT_NAMESPACE + '/'):
+            module = module[len(CORPUS_ROOT_NAMESPACE) + 1:]
+        if module:
+            slug = f"{module.replace('/', '.')}.{name.split('.')[-1]}"
+
+    return f'corpus/{CORPUS_ROOT_NAMESPACE}/{slug}.yaml'
+
+
+def yaml_skeleton(decl: dict, chapter: str, tier: str | None,
+                  ambiguous_names: set[str] | None = None) -> str:
     name = decl['name']
     kind = decl.get('kind', 'theorem')
     if tier is None:
         tier = 'full' if kind in THEOREM_KINDS else 'gloss'
 
-    # module path → corpus path
-    file_path = decl.get('file', '')
-    # strip leading LerayHopf/ and .lean suffix
-    module_part = file_path.replace('.lean', '').replace('/', '.')
-    corpus_path = f"corpus/{file_path.replace('.lean', '')}/{name.split('.')[-1]}.yaml"
+    corpus_path = corpus_path_for(decl, ambiguous_names)
 
     lines = [
         f'# Save to: {corpus_path}',
@@ -207,6 +234,13 @@ def main() -> None:
 
     annotated = load_annotated_names() if not args.include_annotated else set()
     chapter_label = args.chapter or args.module or 'all'
+
+    # Display names carried by more than one declaration need module-qualified filenames;
+    # a flat corpus cannot give them the same one (notes#7, notes#120).
+    name_counts: dict[str, int] = {}
+    for decl in universe:
+        name_counts[decl['name']] = name_counts.get(decl['name'], 0) + 1
+    ambiguous_names = {name for name, count in name_counts.items() if count > 1}
 
     # Filter universe
     candidates = []
@@ -282,7 +316,7 @@ def main() -> None:
         print('### YAML skeleton')
         print()
         print('```yaml')
-        print(yaml_skeleton(decl, chapter_label, args.tier))
+        print(yaml_skeleton(decl, chapter_label, args.tier, ambiguous_names))
         print('```')
         print()
         print('---')

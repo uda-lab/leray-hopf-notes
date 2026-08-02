@@ -35,26 +35,21 @@ Key fields:
 
 ## Naming
 
-`<slug>` is normally the fully-qualified declaration name with the leading `LerayHopf.`
-stripped. A declaration that carries a namespace therefore keeps it in the filename, dots and
-all — the slug is not reduced to the last component:
+**For a new entry**, take the fully-qualified name and strip the leading `LerayHopf.`. A
+declaration that carries a namespace keeps it in the filename, dots and all — the slug is not
+reduced to the last component:
 
 ```
 LerayHopf.Galerkin.GlobalLerayHopfSolution
   -> corpus/LerayHopf/Galerkin.GlobalLerayHopfSolution.yaml
 ```
 
-A minority of files instead qualify the slug by the **defining module** path, flattened with
-dots:
+`scripts/workpacket.py` prints the correct path for each declaration it emits, so prefer that
+over deriving one by hand.
 
-```
-LerayHopf.exists_weak_limit_in_submodule        (LerayHopf/Bochner/WeakLimitToolkit.lean)
-  -> corpus/LerayHopf/Bochner.WeakLimitToolkit.exists_weak_limit_in_submodule.yaml
-```
-
-This form is **required** when two declarations share a display `name` — a flat corpus cannot
-give them the same filename. Private helpers in different modules collide this way, and the
-module prefix is what separates them:
+**When the display `name` is ambiguous** — carried by more than one declaration, as happens
+for private helpers of the same name in different modules — a flat corpus cannot give both the
+same filename. Qualify the slug with the defining module path, flattened onto dots:
 
 ```
 LerayHopf.measurable_natFloor_real   (two private declarations, two modules)
@@ -63,18 +58,25 @@ LerayHopf.measurable_natFloor_real   (two private declarations, two modules)
 ```
 
 Disambiguate by **prefixing**, never by suffixing: `measurable_natFloor_real_a.yaml` would
-spell a declaration that does not exist.
+spell a declaration that does not exist. `validate.py` enforces this form for ambiguous names,
+deriving the expected prefix from the required `file` field.
+
+**Existing files vary.** Most follow the rule above, but a few hundred predate it and drop
+intermediate namespaces — `corpus/LerayHopf/GelfandTriple.yaml` annotates
+`LerayHopf.Bochner.GelfandTriple`, and a handful drop only part of a namespace. These are not
+being renamed: the filename is a convention, not a key, and mass-renaming would churn every
+corpus path for no functional gain. Do not copy those shapes for new entries.
 
 **The filename is a convention, not a key.** The join is on the `name` field, which must match
 a declaration in `extracted/decls.json`; `file` disambiguates when a display `name` is
 ambiguous (notes#7).
 
-`validate.py` does check that the filename's **last dot-component** equals the declaration's
-simple name, which catches a typo or a half-edited copy of a neighbouring entry. It cannot
-check more than that: the two slug conventions above coexist, so requiring the whole filename
-to equal `name` minus the prefix would mean renaming every module-qualified file (notes#120).
-
-When adding an entry, prefer the first form — the `name` field minus the `LerayHopf.` prefix.
+`validate.py` checks that the filename's **last dot-component** equals the declaration's simple
+name, which catches a typo or a half-edited copy of a neighbouring entry. For unambiguous names
+it cannot check more than that — the historical slug shapes above coexist, so requiring full
+equality would mean renaming hundreds of files (notes#120). For **ambiguous** names it checks
+the whole slug, since there a wrong module prefix does not merely look untidy: it points the
+reader at the wrong declaration.
 
 ## 執筆規約（notes#12 v1.1 — 組版・レジスタ）
 

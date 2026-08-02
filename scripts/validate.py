@@ -176,32 +176,55 @@ def check_references(doc: dict, fpath: Path, bib_ids: set[str]) -> list[str]:
     return errs
 
 
-def check_filename_matches_name(doc: dict, fpath: Path) -> list[str]:
-    """The filename must end with the declaration's simple name (notes#120).
+def check_filename_matches_name(doc: dict, fpath: Path,
+                                collisions: dict[str, set[str]] | None = None) -> list[str]:
+    """Check the filename against the declaration it annotates (notes#120).
 
-    Filenames are a convention, not a key — nothing else joins on them, which is how
-    `corpus/README.md` came to document a nested module layout the corpus never had. A
-    full filename-vs-`name` equality check is not available: two slug conventions coexist,
-    the plain one (`name` minus the `LerayHopf.` prefix) and a module-qualified one
-    (`Bochner.WeakLimitToolkit.exists_weak_limit_in_submodule` for a declaration whose
-    display name has no such namespace). Enforcing equality would mean renaming every file
-    of the second kind.
+    Filenames are a convention, not a key — nothing joined on them, which is how
+    `corpus/README.md` came to document a nested module layout the corpus never had.
 
-    What *is* invariant across both conventions is the final dot-component, so that is what
-    this checks. It still catches the realistic drift — a typo, or a file copied from a
-    neighbouring declaration and only half-edited — without demanding a mass rename.
+    Two strengths of check apply, because two situations differ in what is knowable:
+
+    * **Unambiguous names** — only the final dot-component is checked. Several slug
+      conventions coexist historically (the plain `name` minus the `LerayHopf.` prefix,
+      variants that drop intermediate namespaces, and module-qualified ones), so full
+      equality would mean renaming hundreds of files. The final component is the invariant
+      they all share, and checking it still catches the realistic drift: a typo, or a file
+      copied from a neighbouring declaration and only half-edited.
+
+    * **Ambiguous names** — the whole slug is checked. When a display `name` belongs to more
+      than one declaration, `file` is already required (notes#7), so the expected
+      module-qualified slug is derivable. That is worth enforcing: here a wrong module prefix
+      does not merely look untidy, it points the reader at the wrong declaration, and a
+      final-component-only check would accept it silently.
     """
     name = doc.get('name')
     if not isinstance(name, str) or not name:
         return []  # missing/!str `name` is already a schema error; don't double-report
-    expected = name.rsplit('.', 1)[-1]
-    actual = fpath.stem.rsplit('.', 1)[-1]
-    if actual != expected:
+
+    expected_simple = name.rsplit('.', 1)[-1]
+    actual_simple = fpath.stem.rsplit('.', 1)[-1]
+    if actual_simple != expected_simple:
         return [
-            f'ERROR: {fpath}: filename\'s last component "{actual}" does not match the '
-            f'declaration\'s simple name "{expected}" (from name: "{name}") — see the '
-            f'Naming section of corpus/README.md'
+            f'ERROR: {fpath}: filename\'s last component "{actual_simple}" does not match '
+            f'the declaration\'s simple name "{expected_simple}" (from name: "{name}") — '
+            f'see the Naming section of corpus/README.md'
         ]
+
+    if collisions and name in collisions:
+        source = doc.get('file')
+        if isinstance(source, str) and source:
+            module = source.removesuffix('.lean')
+            if module.startswith('LerayHopf/'):
+                module = module[len('LerayHopf/'):]
+            expected_slug = f"{module.replace('/', '.')}.{expected_simple}"
+            if fpath.stem != expected_slug:
+                return [
+                    f'ERROR: {fpath}: "{name}" is an ambiguous display name, so the filename '
+                    f'must be qualified by its defining module: expected '
+                    f'"{expected_slug}.yaml", got "{fpath.name}" (file: "{source}") — '
+                    f'see the Naming section of corpus/README.md'
+                ]
     return []
 
 
@@ -303,7 +326,7 @@ def main() -> None:
             errors.extend(errs)
 
         errors.extend(check_references(doc, fpath, bib_ids))
-        errors.extend(check_filename_matches_name(doc, fpath))
+        errors.extend(check_filename_matches_name(doc, fpath, collisions))
 
         # notes#65 safety net: proof_status defaults to 'verified' when absent, so a corpus
         # entry whose own prose admits an intentionally-open `sorry` but never sets

@@ -179,6 +179,70 @@ def test_apostrophe_in_name() -> None:
     check('apostrophe in declaration name is handled', code == 0, out)
 
 
+def test_ambiguous_name_requires_correct_module_prefix() -> None:
+    """For a colliding display name the whole slug is checked: a wrong module prefix points
+    the reader at the wrong declaration, so the final component alone is not enough."""
+    module = import_script('validate_issue120_amb', VALIDATE_PATH)
+    collisions = {'LerayHopf.measurable_natFloor_real': {
+        'LerayHopf/Bochner/StepFunctionCompactness.lean',
+        'LerayHopf/R3/SpacetimePrecompact.lean',
+    }}
+    doc = {'name': 'LerayHopf.measurable_natFloor_real',
+           'file': 'LerayHopf/R3/SpacetimePrecompact.lean'}
+
+    good = Path('corpus/LerayHopf/R3.SpacetimePrecompact.measurable_natFloor_real.yaml')
+    check('correct module prefix accepted',
+          module.check_filename_matches_name(doc, good, collisions) == [])
+
+    wrong = Path('corpus/LerayHopf/R3.WrongModule.measurable_natFloor_real.yaml')
+    errs = module.check_filename_matches_name(doc, wrong, collisions)
+    check('wrong module prefix rejected', len(errs) == 1, repr(errs))
+    check('error names the expected slug',
+          'R3.SpacetimePrecompact.measurable_natFloor_real.yaml' in (errs[0] if errs else ''),
+          repr(errs))
+
+    bare = Path('corpus/LerayHopf/measurable_natFloor_real.yaml')
+    check('unqualified filename rejected for an ambiguous name',
+          len(module.check_filename_matches_name(doc, bare, collisions)) == 1)
+
+    # An unambiguous name must NOT be held to the module-prefix rule.
+    plain_doc = {'name': 'LerayHopf.rellich_seq_compact'}
+    plain = Path('corpus/LerayHopf/rellich_seq_compact.yaml')
+    check('unambiguous name is not forced to carry a module prefix',
+          module.check_filename_matches_name(plain_doc, plain, collisions) == [])
+
+
+def test_workpacket_generates_flat_paths() -> None:
+    """The generator is what taught the nested layout to every contributor, so its output
+    is pinned here too (notes#120)."""
+    wp = import_script('workpacket_issue120', REPO_ROOT / 'scripts' / 'workpacket.py')
+    d = decl('LerayHopf.rellich_seq_compact', 'LerayHopf.rellich_seq_compact',
+             'LerayHopf/Torus/RellichEmbedding.lean')
+    path = wp.corpus_path_for(d, set())
+    check('generated path is a direct child of corpus/LerayHopf/',
+          path == 'corpus/LerayHopf/rellich_seq_compact.yaml', path)
+    check('generated path has no nested directories',
+          path.count('/') == 2, path)
+
+    namespaced = decl('LerayHopf.Bochner.GelfandTriple', 'LerayHopf.Bochner.GelfandTriple',
+                      'LerayHopf/Bochner/GelfandTriple.lean')
+    check('namespace is kept in the slug, not turned into a directory',
+          wp.corpus_path_for(namespaced, set()) ==
+          'corpus/LerayHopf/Bochner.GelfandTriple.yaml',
+          wp.corpus_path_for(namespaced, set()))
+
+    ambiguous = decl('_private.0.LerayHopf.measurable_natFloor_real',
+                     'LerayHopf.measurable_natFloor_real',
+                     'LerayHopf/R3/SpacetimePrecompact.lean', private=True)
+    generated = wp.corpus_path_for(ambiguous, {'LerayHopf.measurable_natFloor_real'})
+    check('ambiguous name gets the module-qualified slug',
+          generated ==
+          'corpus/LerayHopf/R3.SpacetimePrecompact.measurable_natFloor_real.yaml',
+          generated)
+    check('generated collision path matches a file that really exists',
+          (REPO_ROOT / generated).exists(), generated)
+
+
 def test_missing_name_does_not_crash() -> None:
     """A missing `name` is already a schema error — the filename check must not add noise
     on top of it, and must not raise."""
@@ -207,6 +271,8 @@ def main() -> None:
     test_module_qualified_filename_passes()
     test_suffix_disambiguation_is_rejected()
     test_apostrophe_in_name()
+    test_ambiguous_name_requires_correct_module_prefix()
+    test_workpacket_generates_flat_paths()
     test_missing_name_does_not_crash()
     test_committed_corpus_is_clean()
     print(f'\nAll {len(CHECKS)} notes#120 filename-check tests passed.')
