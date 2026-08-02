@@ -157,9 +157,13 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('tool-call transcript marker', re.compile(r'<(?:function_calls|invoke name=|tool_use_id)')),
 ]
 
-# Any remaining long opaque run in a diagnostic excerpt. Deliberately blunt: it only ever
-# affects displayed context, never detection.
-OPAQUE_RUN = re.compile(r'[A-Za-z0-9+/=_-]{20,}')
+# A long opaque run left over after pattern redaction — e.g. the tail of a credential whose
+# body contains a delimiter its own pattern excludes. Applied to every diagnostic, never to
+# detection. `/`, `.` and `_` are excluded from the run so real paths, Lean identifiers and
+# slugs stay readable: `LerayHopf/R3/FrechetKolmogorov.lean` and
+# `exists_diagonal_weakly_convergent_galSeq_R3` must survive, or failure messages stop
+# saying which declaration failed.
+OPAQUE_RUN = re.compile(r'[A-Za-z0-9+=-]{20,}')
 
 # Declaration source must never come from a scaffold module.
 SCAFFOLD_MODULE = re.compile(r'(?:^|/)Scratch/')
@@ -176,7 +180,10 @@ def redact_all(fragment: str) -> str:
     """
     for _name, pattern in LEAK_PATTERNS:
         fragment = pattern.sub(lambda m: f'‹redacted:{len(m.group(0))} chars›', fragment)
-    return fragment
+    # Defence in depth on EVERY diagnostic path, not just excerpts: pattern redaction can
+    # leave a long opaque tail when a credential's body contains a character its pattern's
+    # class excludes.
+    return OPAQUE_RUN.sub(lambda m: f'‹redacted:{len(m.group(0))} chars›', fragment)
 
 
 def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
@@ -191,24 +198,20 @@ def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
     hi = min(len(text), end + width)
     # Snap to whole matches. Repeat until stable, since expanding can pull in a further
     # partially-overlapped match at the new boundary.
+    # Snap over OPAQUE_RUN as well as the leak patterns: cropping through an opaque run
+    # leaves a fragment shorter than the run threshold, which the scrub then does not
+    # recognise — so the tail survives verbatim.
     changed = True
     while changed:
         changed = False
-        for _name, pattern in LEAK_PATTERNS:
+        for pattern in [pat for _n, pat in LEAK_PATTERNS] + [OPAQUE_RUN]:
             for m in pattern.finditer(text):
                 if m.start() < hi and m.end() > lo:      # overlaps the window
                     if m.start() < lo:
                         lo, changed = m.start(), True
                     if m.end() > hi:
                         hi, changed = m.end(), True
-    shown = redact_all(text[lo:hi])
-    # Defence in depth, for the diagnostic only. Pattern redaction can still leave a long
-    # opaque run beside a match — a token whose body contains a character the pattern's class
-    # excludes gets split, and the tail survives. This context exists solely for a human to
-    # locate the finding, so over-redacting it costs nothing and under-redacting it costs a
-    # published credential.
-    shown = OPAQUE_RUN.sub(lambda m: f'‹redacted:{len(m.group(0))} chars›', shown)
-    return shown.replace('\n', ' ')
+    return redact_all(text[lo:hi]).replace('\n', ' ')
 
 
 def scan_text(label: str, text: str) -> list[str]:

@@ -213,14 +213,21 @@ def test_adjacent_credentials_are_fully_redacted() -> None:
         'split by underscore': 'ghp_' + 'A' * 36 + 'ghp_' + 'B' * 36,
         'separated by prose': 'ghp_' + 'A' * 30 + ' and ' + 'ghp_' + 'B' * 30,
         'different schemes concatenated': 'AKIA' + 'C' * 16 + 'sk-' + 'D' * 32,
+        # A body split by a delimiter the pattern excludes: the tail is only reachable by
+        # the opaque-run scrub, and cropping through it used to leave a sub-threshold
+        # fragment the scrub no longer recognised.
+        'body split by a delimiter': 'password=' + 'A' * 20 + '.' + 'B' * 24,
     }
     for label, payload in cases.items():
         with tempfile.TemporaryDirectory() as td:
-            data = make_payload(Path(td), extra_prose=payload)
+            # Also put it in `file`, which reaches the scaffold diagnostic — a separate
+            # code path from the pattern excerpt, and one that leaked independently.
+            data = make_payload(Path(td), extra_prose=payload,
+                                node_file=f'/workspace/{payload}/Scratch/Foo.lean')
             code, out = run(SCAN, '--site-data', str(data))
         check(f'adjacent credentials detected: {label}', code != 0, out)
         check(f'no credential body printed verbatim: {label}',
-              not any(ch * 18 in out for ch in 'ABCD'), out)
+              not any(ch * 15 in out for ch in 'ABCD'), out)
 
 
 def test_scan_rejects_scaffold_source() -> None:
