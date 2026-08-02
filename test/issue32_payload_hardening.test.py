@@ -117,6 +117,7 @@ LEAK_PROBES = {
     'email address': 'someone@example.com',
     'internal .local host': 'https://internal.uda-lab.local:8443/admin',
     'private IPv4': 'reachable at 10.0.0.5 from the runner',
+    'concatenated credentials': 'AKIA' + 'C' * 16 + 'sk-' + 'D' * 32,
     'secret in query parameter': 'https://api.example.com/v1?token=' + 'Z' * 32,
     'singular /workspace/ path': '/workspace/leray-hopf-notes/private.txt',
     'codex session path': '/root/.codex/sessions/secret.jsonl',
@@ -194,6 +195,26 @@ def test_findings_do_not_leak_neighbouring_secrets() -> None:
     check('no credential body appears verbatim in the diagnostics',
           'A' * 20 not in out and 'B' * 20 not in out, out)
     check('the diagnostic shows a redaction placeholder instead', 'redacted:' in out, out)
+
+
+
+def test_adjacent_credentials_are_fully_redacted() -> None:
+    """Cropping the context before redacting could begin the window inside a neighbouring
+    credential, cutting off the prefix its pattern needs; and pattern redaction alone can
+    leave a long opaque tail when a token contains a character its class excludes. Both
+    printed a credential body into the public log (adversarial review)."""
+    cases = {
+        'split by underscore': 'ghp_' + 'A' * 36 + 'ghp_' + 'B' * 36,
+        'separated by prose': 'ghp_' + 'A' * 30 + ' and ' + 'ghp_' + 'B' * 30,
+        'different schemes concatenated': 'AKIA' + 'C' * 16 + 'sk-' + 'D' * 32,
+    }
+    for label, payload in cases.items():
+        with tempfile.TemporaryDirectory() as td:
+            data = make_payload(Path(td), extra_prose=payload)
+            code, out = run(SCAN, '--site-data', str(data))
+        check(f'adjacent credentials detected: {label}', code != 0, out)
+        check(f'no credential body printed verbatim: {label}',
+              not any(ch * 18 in out for ch in 'ABCD'), out)
 
 
 def test_scan_rejects_scaffold_source() -> None:
@@ -489,6 +510,7 @@ def main() -> None:
     test_scan_ignores_legitimate_content()
     test_documented_limits_stay_documented()
     test_findings_do_not_leak_neighbouring_secrets()
+    test_adjacent_credentials_are_fully_redacted()
     test_scan_rejects_scaffold_source()
     test_scaffold_diagnostic_is_redacted()
     test_scan_requires_core_payloads()

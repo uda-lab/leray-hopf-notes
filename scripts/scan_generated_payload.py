@@ -81,7 +81,7 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # Legacy (`ghp_`, `gho_`, …) AND fine-grained (`github_pat_…`) GitHub tokens. The
     # fine-grained form is the current default when minting a PAT, so matching only the
     # legacy prefixes would miss the shape most likely to leak today.
-    ('GitHub token', re.compile(r'\bgh[pousr]_[A-Za-z0-9]{20,}|\bgithub_pat_[A-Za-z0-9_]{20,}')),
+    ('GitHub token', re.compile(r'\bgh[pousr]_[A-Za-z0-9_]{20,}|\bgithub_pat_[A-Za-z0-9_]{20,}')),
     # OpenAI keys. The hyphen class matters: a project key is `sk-proj-…` and a service
     # account key `sk-svcacct-…`, so a `sk-[A-Za-z0-9]{20,}` rule stops dead at the second
     # hyphen and never reaches its length floor — it matched only the oldest key format.
@@ -89,7 +89,9 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # Both long-term (AKIA) and STS temporary (ASIA) key ids: a temporary key's
     # accompanying secret and session token are opaque, so this prefix is often the
     # only recognisable marker in the whole credential set.
-    ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}\b')),
+    # No trailing \b: a key id butted directly against another token (`AKIA…sk-…`) has no
+    # word boundary after it, and the fixed 16-char body already pins the length.
+    ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}')),
     ('Google API key', re.compile(r'\bAIza[0-9A-Za-z_-]{35}\b')),
     ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}')),
     ('PEM private key', re.compile(r'-----BEGIN [A-Z ]*PRIVATE KEY-----')),
@@ -144,6 +146,10 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('tool-call transcript marker', re.compile(r'<(?:function_calls|invoke name=|tool_use_id)')),
 ]
 
+# Any remaining long opaque run in a diagnostic excerpt. Deliberately blunt: it only ever
+# affects displayed context, never detection.
+OPAQUE_RUN = re.compile(r'[A-Za-z0-9+/=_-]{20,}')
+
 # Declaration source must never come from a scaffold module.
 SCAFFOLD_MODULE = re.compile(r'(?:^|/)Scratch/')
 
@@ -163,10 +169,35 @@ def redact_all(fragment: str) -> str:
 
 
 def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
-    """A short, fully-redacted window around a hit — enough to locate it, not to leak it."""
+    """A short, fully-redacted window around a hit — enough to locate it, not to leak it.
+
+    The window is snapped outward to fully contain any match it overlaps BEFORE redaction.
+    Cropping first and redacting after is not safe: a window that begins inside a
+    neighbouring credential cuts off the prefix the pattern needs (`ghp_`), so redaction no
+    longer recognises it and the remaining body is printed verbatim.
+    """
     lo = max(0, start - width)
     hi = min(len(text), end + width)
-    return redact_all(text[lo:hi]).replace('\n', ' ')
+    # Snap to whole matches. Repeat until stable, since expanding can pull in a further
+    # partially-overlapped match at the new boundary.
+    changed = True
+    while changed:
+        changed = False
+        for _name, pattern in LEAK_PATTERNS:
+            for m in pattern.finditer(text):
+                if m.start() < hi and m.end() > lo:      # overlaps the window
+                    if m.start() < lo:
+                        lo, changed = m.start(), True
+                    if m.end() > hi:
+                        hi, changed = m.end(), True
+    shown = redact_all(text[lo:hi])
+    # Defence in depth, for the diagnostic only. Pattern redaction can still leave a long
+    # opaque run beside a match — a token whose body contains a character the pattern's class
+    # excludes gets split, and the tail survives. This context exists solely for a human to
+    # locate the finding, so over-redacting it costs nothing and under-redacting it costs a
+    # published credential.
+    shown = OPAQUE_RUN.sub(lambda m: f'‹redacted:{len(m.group(0))} chars›', shown)
+    return shown.replace('\n', ' ')
 
 
 def scan_text(label: str, text: str) -> list[str]:
