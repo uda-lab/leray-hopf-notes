@@ -16,7 +16,10 @@ hierarchy is *not* mirrored as directories. For example, the declaration
 corpus/LerayHopf/rellich_seq_compact.yaml
 ```
 
-Neither the defining module nor the `R3` / `Torus` split appears anywhere in the path.
+The defining module plays no part in that path — there is no `Torus/` directory, and the
+`R3` / `Torus` split never becomes a directory anywhere in the corpus. Module names *do*
+appear, flattened onto dots inside the filename, in the one case where they are needed to
+tell two same-named declarations apart; see Naming below.
 
 ## Schema
 
