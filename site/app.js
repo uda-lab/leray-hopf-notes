@@ -461,9 +461,27 @@ async function loadSources() {
   if (state.sources) return state.sources;
   if (!state.sourcesPromise) {
     const sourcePayload = (state.data && state.data.source_payload) || 'sources.json';
+    // notes#32: capture the expectation NOW, from the nodes.json this request is being made
+    // against — not after the await. Reading state.data once the response lands would
+    // compare against whatever happens to be loaded by then, which is the wrong payload
+    // after a reload or route change and is exactly the drift this check exists to catch.
+    const expected = state.data && state.data.pin;
     state.sourcesPromise = fetch('data/' + sourcePayload)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(payload => {
+        // nodes.json and sources.json are fetched separately and joined here at runtime, so
+        // a stale or swapped sources.json would quietly attach the wrong Lean text to the
+        // right declaration — the one failure the build-time provenance gate cannot cover,
+        // because it happens in the browser. Refuse the payload unless its pin matches, and
+        // surface the mismatch instead of degrading to "no source available", which reads
+        // like a missing file.
+        const got = payload && payload.pin;
+        if (expected && got !== expected) {
+          const err = new Error(
+            'source payload pin mismatch: expected ' + expected + ', got ' + (got || '(none)'));
+          err.pinMismatch = { expected: expected, got: got || null };
+          throw err;
+        }
         state.sources = (payload && payload.sources) || {};
         return state.sources;
       })
@@ -804,9 +822,22 @@ function renderDecl(app, slug) {
               text: `ソース本文が見つかりません。位置: ${node.file}:${node.startLine}–${node.endLine}`,
             }));
           }
-        }).catch(() => {
+        }).catch(err => {
           loaded = false;
           wrap.innerHTML = '';
+          if (err && err.pinMismatch) {
+            // Not a transient fetch failure: the payloads disagree about which commit they
+            // came from, so any source text shown would be untrustworthy. Say so plainly
+            // rather than inviting a retry that cannot help.
+            wrap.appendChild(el('p', {
+              class: 'filemeta source-pin-mismatch',
+              text: `ソース payload の provenance が一致しません（nodes.json: ${err.pinMismatch.expected} / `
+                + `sources.json: ${err.pinMismatch.got || '(なし)'}）。`
+                + `別のコミットのソースを表示する恐れがあるため、本文の表示を停止しました。位置: `
+                + `${node.file}:${node.startLine}–${node.endLine}`,
+            }));
+            return;
+          }
           wrap.appendChild(el('p', {
             class: 'filemeta',
             text: `ソース payload を読み込めませんでした。パネルを閉じて再度開くと再試行します。位置: ${node.file}:${node.startLine}–${node.endLine}`,

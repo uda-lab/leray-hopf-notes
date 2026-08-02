@@ -88,15 +88,55 @@ PRs build and validate the source-enabled payload but never deploy it — only a
 (or manual `workflow_dispatch`) on `main`, with the deploy gate variable set, reaches
 `deploy-pages`.
 
-**Explicit deploy gate: `vars.PAGES_DEPLOY_ENABLED`.** #32 lists 11 audit-mandated
-provenance/readiness items; this PR implements 5 of them (see the PR body for which).
+**Explicit deploy gate: `vars.PAGES_DEPLOY_ENABLED`.**
 Rather than let "Pages isn't configured in Settings yet" stand in as an implicit block
 on publishing, the workflow requires an owner-controlled repository Actions variable
 (`Settings → Secrets and variables → Actions → Variables → PAGES_DEPLOY_ENABLED`,
 unset/false by default) to be explicitly set to `true` before the `github-pages`
 artifact is even built, let alone deployed. This makes "ready to publish" an
-affirmative decision the owner makes after verifying the remaining #32 items, not a
-side effect of enabling Pages for unrelated reasons.
+affirmative decision the owner makes, not a side effect of enabling Pages for
+unrelated reasons.
+
+**Published provenance: `build-provenance.json` + `SHA256SUMS`.** The build-time gate
+below proves the payload came from the exact `extracted/PIN` commit — and that proof
+used to stop at the workflow log, leaving the deployed site carrying no evidence of it.
+`scripts/emit_build_provenance.py` writes the evidence into the payload itself: the
+pinned source commit and its URL, the payload counts (`decl_count` / `source_count` /
+`proof_status_counts`), the CI run that produced it (or an explicit `"ci": null` for a
+local build — it does not invent a run id), and the SHA-256 of every published file.
+Verification needs nothing but the deployed site:
+
+```bash
+cd site/data && sha256sum -c SHA256SUMS
+```
+
+The record excludes itself and `SHA256SUMS` from its own file list, and refuses to write
+at all if `nodes.json`'s pin disagrees with `extracted/PIN` — a record attesting to the
+wrong commit would be worse than none.
+
+**Leak scan: `scripts/scan_generated_payload.py`.** The payload embeds verbatim Lean
+source and the whole corpus, so it is where a stray absolute path, credential, or agent
+transcript would actually become public. That audit was performed by hand once
+(notes#32, 2026-07-16); this makes it a gate on every build, covering every `*.json`
+in `site/data` (so payload files added later are scanned without editing the scanner)
+plus a structural check that no declaration is sourced from a `Scratch/` module.
+
+Its patterns are calibrated against a real source-enabled build, because the corpus is
+full of prose that naive rules misread: a `[A-Za-z]:\\` "Windows drive" pattern matches
+`$f:\mathbb R$` and `$\int\nabla u:\nabla u$`. Equally, "agent prose" is scoped to
+machine-generated session artifacts (session ids, transcript paths, agent home
+directories) and *not* to human-written provenance — the corpus deliberately cites
+issues, PRs and review rounds, and flagging those would fail every build on content
+that is published by design. `test/issue32_payload_hardening.test.py` pins both halves:
+planted leaks must be caught, and that legitimate content must not be.
+
+**Runtime provenance: the frontend refuses a mismatched payload.** `nodes.json` and
+`sources.json` are fetched separately and joined in the browser, so a stale or swapped
+`sources.json` would attach the wrong Lean text to the right declaration — the one
+failure the build-time gate cannot see. `loadSources()` captures the expected pin at
+request time and rejects a payload whose `pin` differs, and the source panel says so
+explicitly rather than degrading to "source not found", which would read like a missing
+file and invite a pointless retry.
 
 **Fail-closed provenance gate (notes#32).** `scripts/verify_source_provenance.py`
 independently re-derives, rather than trusts, the following before any deployment can

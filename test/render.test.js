@@ -244,6 +244,66 @@ check('source payload is lazy-loaded from data/sources.json by slug', async () =
   }
 });
 
+/* ==== notes#32: runtime payload provenance — the frontend joins nodes.json and
+   sources.json at load time, so a stale/swapped sources.json would attach the wrong Lean
+   text to the right declaration. The build-time gate cannot see that; this must. ==== */
+
+check('(#32) runtime payload provenance: pin match accepted, mismatch refused', async () => {
+  // One sequential check rather than four: check() starts every async body eagerly and they
+  // all share the global `state`, so four concurrent tests would race each other on
+  // state.data / state.sourcesPromise. Each scenario below sets up and calls loadSources
+  // with no await in between, so its setup is atomic with respect to the other tests.
+  const oldFetch = global.fetch;
+  const PIN_A = 'a'.repeat(40);
+  const PIN_B = 'b'.repeat(40);
+
+  const run = async (nodesPin, payload) => {
+    state.sources = null;
+    state.sourcesPromise = null;
+    state.data = nodesPin
+      ? { source_payload: 'sources.json', pin: nodesPin }
+      : { source_payload: 'sources.json' };
+    global.fetch = async () => ({ ok: true, json: async () => payload });
+    try {
+      return { value: await loadSourceFor({ slug: 'cap', has_source: true }), err: null };
+    } catch (e) {
+      return { value: null, err: e };
+    }
+  };
+
+  try {
+    // 1. Matching pin — accepted.
+    let r = await run(PIN_A, { pin: PIN_A, sources: { cap: 'theorem cap : True' } });
+    assert.strictEqual(r.err, null, 'a matching pin must not reject');
+    assert.strictEqual(r.value, 'theorem cap : True');
+
+    // 2. Mismatched pin — refused, and identifiable as a provenance failure rather than a
+    //    generic fetch error, so the UI can say why a retry will not help.
+    r = await run(PIN_A, { pin: PIN_B, sources: { cap: 'WRONG COMMIT SOURCE' } });
+    assert.ok(r.err, 'a mismatched pin must reject rather than resolve');
+    assert.ok(r.err.pinMismatch, 'the rejection must be identifiable as a pin mismatch');
+    assert.strictEqual(r.err.pinMismatch.expected, PIN_A);
+    assert.strictEqual(r.err.pinMismatch.got, PIN_B);
+    assert.notStrictEqual(r.value, 'WRONG COMMIT SOURCE',
+      'source from a payload that failed provenance must never be returned');
+
+    // 3. sources.json carrying no pin at all must not pass as "nothing to compare".
+    r = await run(PIN_A, { sources: { cap: 'theorem cap : True' } });
+    assert.ok(r.err && r.err.pinMismatch, 'a missing pin must not pass as "no mismatch"');
+    assert.strictEqual(r.err.pinMismatch.got, null);
+
+    // 4. An older payload with no pin in nodes.json still loads — the guard must not break
+    //    builds that predate pin stamping.
+    r = await run(null, { sources: { cap: 'theorem cap : True' } });
+    assert.strictEqual(r.err, null, 'a pin-less nodes.json must remain loadable');
+    assert.strictEqual(r.value, 'theorem cap : True');
+  } finally {
+    global.fetch = oldFetch;
+    state.sources = null;
+    state.sourcesPromise = null;
+  }
+});
+
 /* ==== notes#65: proof_status badge / banner — must not look like a proved theorem ==== */
 check('(e) proofStatusBadge renders nothing for the default verified status (absent/verified)', () => {
   assert.strictEqual(proofStatusBadge(undefined), null, 'no badge when proof_status is absent');

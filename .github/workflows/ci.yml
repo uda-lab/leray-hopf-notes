@@ -91,6 +91,9 @@ jobs:
       - name: Source provenance gate regression tests (notes#32)
         run: python3 test/verify_source_provenance.test.py
 
+      - name: Payload leak-scan and provenance-record tests (notes#32)
+        run: python3 test/issue32_payload_hardening.test.py
+
   render-tests:
     name: Site render harness (jsdom)
     runs-on: ubuntu-latest
@@ -187,6 +190,28 @@ jobs:
             --fail-raw-mib 20 --fail-gzip-mib 6 | tee size-report.md || status=$?
           cat size-report.md >> "$GITHUB_STEP_SUMMARY"
           exit "$status"
+
+      - name: Emit build provenance and checksums (notes#32)
+        # The provenance gate above proves, at build time, that the payload came from the
+        # exact PIN commit — and then that proof used to disappear, because nothing about it
+        # shipped with the site. This writes it into the payload (build-provenance.json +
+        # SHA256SUMS) so a reader or a later audit can verify the deployed artifact with
+        # `cd site/data && sha256sum -c SHA256SUMS`, needing nothing but the site itself.
+        #
+        # Ordering matters twice over. It runs *after* the provenance gate, because a record
+        # attesting to a payload that failed verification would be worse than no record. And
+        # it runs *after* the size report, because that step writes site/data/size-report.json
+        # — emitting checksums first would ship one published file with no digest, which is
+        # exactly the hole this step exists to close.
+        run: python3 scripts/emit_build_provenance.py
+
+      - name: Scan generated payload for leaks (notes#32)
+        # The published payload embeds verbatim Lean source and the whole corpus, so it is
+        # where a stray absolute path, credential, or agent transcript would actually become
+        # public. This was a one-off manual audit (issue #32, 2026-07-16); here it gates
+        # every build. Runs last of the payload steps so it covers every file that ships,
+        # including the size report and the provenance record just written.
+        run: python3 scripts/scan_generated_payload.py
 
       - name: Upload site artifact
         # Upload even if the size report failed (but not if the job was cancelled), so a

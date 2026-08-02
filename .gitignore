@@ -4,3 +4,7 @@ __pycache__/
 # Generated site data (produced in CI and locally via build_site_data.py)
 # site/data/ is a generated-only directory; do not add hand-written source JSON here.
 site/data/*.json
+# notes#32: emit_build_provenance.py writes this alongside build-provenance.json. It is
+# generated per build (the digests change with every payload), so it must not be committed
+# — a checked-in copy would go stale immediately and invite `sha256sum -c` failures.
+site/data/SHA256SUMS
