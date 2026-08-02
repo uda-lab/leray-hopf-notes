@@ -18,6 +18,7 @@ content the owner has already approved for publication. Those cases are pinned b
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -41,9 +42,24 @@ def check(label: str, cond: bool, detail: str = '') -> None:
         sys.exit(1)
 
 
-def run(script: Path, *args: str) -> tuple[int, str]:
+# GitHub Actions sets these in every step, so a test that reads the ambient environment
+# behaves differently locally and in CI. emit_build_provenance.py's CI-context branch keys
+# off GITHUB_RUN_ID, so each scenario states the environment it means instead of inheriting
+# one — this test asserted "ci is None" and passed locally while failing in CI.
+CI_ENV_VARS = ('GITHUB_RUN_ID', 'GITHUB_REPOSITORY', 'GITHUB_WORKFLOW',
+               'GITHUB_RUN_ATTEMPT', 'GITHUB_SHA', 'GITHUB_REF')
+
+
+def run(script: Path, *args: str, ci_env: dict[str, str] | None = None) -> tuple[int, str]:
+    """Run a script with a deliberately-controlled CI environment.
+
+    `ci_env=None` means "a local build": every GitHub Actions variable is stripped.
+    Passing a dict means "running in CI" with exactly those values.
+    """
+    env = {k: v for k, v in os.environ.items() if k not in CI_ENV_VARS}
+    env.update(ci_env or {})
     proc = subprocess.run([sys.executable, str(script), *args],
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, env=env)
     return proc.returncode, proc.stdout + proc.stderr
 
 
@@ -192,7 +208,8 @@ def test_emit_writes_record_and_sums() -> None:
         record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
         check('record pins the source commit', record['source']['pin'] == 'c' * 40)
         check('record carries payload counts', record['payload']['decl_count'] == 1)
-        check('record reports no CI context for a local build', record['ci'] is None)
+        check('record reports no CI context for a local build', record['ci'] is None,
+              repr(record['ci']))
 
         names = {f['name'] for f in record['files']}
         check('record covers the payload files',
@@ -208,6 +225,34 @@ def test_emit_writes_record_and_sums() -> None:
                                 capture_output=True, text=True)
         check('sha256sum -c verifies the emitted checksums', verify.returncode == 0,
               verify.stdout + verify.stderr)
+
+
+def test_emit_records_ci_context_when_in_ci() -> None:
+    """The CI branch was previously untested — and the local-build assertion silently
+    depended on the ambient environment, so it passed locally and failed in Actions."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'),
+                        ci_env={
+                            'GITHUB_RUN_ID': '12345',
+                            'GITHUB_REPOSITORY': 'uda-lab/leray-hopf-notes',
+                            'GITHUB_WORKFLOW': 'CI',
+                            'GITHUB_RUN_ATTEMPT': '2',
+                            'GITHUB_SHA': 'f' * 40,
+                            'GITHUB_REF': 'refs/heads/main',
+                        })
+        check('emit succeeds under a CI environment', code == 0, out)
+        record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        ci = record['ci']
+        check('CI context is recorded when GITHUB_RUN_ID is set', ci is not None, repr(ci))
+        check('CI context carries the run id', ci['run_id'] == '12345', repr(ci))
+        check('CI context builds a resolvable run URL',
+              ci['run_url'] == 'https://github.com/uda-lab/leray-hopf-notes/actions/runs/12345',
+              repr(ci))
+        check('CI context records the notes commit that built it',
+              ci['notes_commit'] == 'f' * 40, repr(ci))
 
 
 def test_emit_covers_every_published_file() -> None:
@@ -276,6 +321,7 @@ def main() -> None:
     test_scan_requires_core_payloads()
     test_scan_covers_files_added_later()
     test_emit_writes_record_and_sums()
+    test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()
     test_emit_refuses_pin_mismatch()
     test_emitted_record_passes_the_scan()
