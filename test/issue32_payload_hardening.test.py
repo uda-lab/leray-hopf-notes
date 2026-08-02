@@ -121,6 +121,8 @@ LEAK_PROBES = {
     'system path /etc': '/etc/passwd',
     'system path /opt': '/opt/private/config',
     'system path /var': '/var/lib/app/token',
+    'Slack app-level token': 'xapp-1-A1234567890-1234567890-abcdefABCDEF1234567890abcdef',
+    'Slack webhook URL': 'https://hooks.slack.com/services/T0000/B0000/abcdefghijklmnop',
     'secret in query parameter': 'https://api.example.com/v1?token=' + 'Z' * 32,
     'singular /workspace/ path': '/workspace/leray-hopf-notes/private.txt',
     'codex session path': '/root/.codex/sessions/secret.jsonl',

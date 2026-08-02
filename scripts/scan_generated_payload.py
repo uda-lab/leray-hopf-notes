@@ -93,7 +93,11 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # word boundary after it, and the fixed 16-char body already pins the length.
     ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}')),
     ('Google API key', re.compile(r'\bAIza[0-9A-Za-z_-]{35}\b')),
-    ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}')),
+    # Bot/user (`xox…`) and app-level (`xapp-`) tokens, plus incoming-webhook URLs, which
+    # are themselves the credential.
+    ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}|\bxapp-[0-9A-Za-z-]{10,}')),
+    ('Slack webhook URL',
+     re.compile(r'https://hooks\.slack\.com/services/[A-Za-z0-9/_-]{10,}')),
     ('PEM private key', re.compile(r'-----BEGIN [A-Z ]*PRIVATE KEY-----')),
     ('Bearer credential', re.compile(r'(?i)\bauthorization\s*:\s*bearer\s+[A-Za-z0-9._-]{20,}')),
     ('JWT', re.compile(r'\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}')),
