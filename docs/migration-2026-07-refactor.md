@@ -285,3 +285,73 @@ PR #227 が Lean docstring の「有効モード写像」系表現を添字写�
 
 display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は
 引き続き休眠・非更新。
+
+## 追記 6: v0.2.0 リリース repin（PIN 6cd0a4b → 2a06790、notes#130）
+
+`uda-lab/leray-hopf` の v0.2.0 リリースへの追随。`dev/v0.2.0` が **true merge commit**
+PR #228 で `main` へ昇格し、その SHA `2a06790` にタグ `v0.2.0`（および `v0.2.0-rc1`）が
+付いた。本 repin で初めて PIN がリリースタグ上の commit を指す。
+
+現行 PIN からの upstream 差分は 3 commit（`82627cb` = #230/#231、`7b9aae4` = #232、
+マージコミット `2a06790`）だが、Lean ソースの差分は 1 ファイル・docstring のみ:
+
+```
+$ git diff --name-only 6cd0a4b 2a06790 -- '*.lean'
+LerayHopf/R3/FrechetKolmogorov.lean
+```
+
+`lake exe extract_notes` 再実行（`2a06790` の worktree 上。`.lake/packages` は hardlink
+共有、`.lake/build` は donor `82627cb` から実コピーして seed。`82627cb..2a06790` は
+`.lean` / `lakefile.toml` / `lean-toolchain` を一切触らないため olean は完全一致で、
+リビルドは発生しなかった）: 抽出宣言数 1,425 → 1,425。`decl_diff.py` による分類:
+
+| 区分 | 件数 | 内容 | corpus 側対応 |
+|---|---|---|---|
+| 新設 | 0 | — | — |
+| 削除 | 0 | — | — |
+| ファイル移動・改名 | 0 | — | — |
+| 可視性変更 | 0 | — | — |
+| signature text 変更 | 0 | — | — |
+
+`decls.json` の実差分は次の 2 種類だけである。
+
+- `mul_div_two_mul_add_one_lt` の `doc`（leray-hopf#229 → PR #231 の修正）
+- 同一ファイル内で docstring が 12 行伸びたことによる `startLine` / `endLine` のずれ
+  （6 宣言: `totallyBounded_image_of_equicont_bdd`, `mollified_family_totallyBounded_L2`,
+  `convolution_l2_tendsto_uniform`, `frechetKolmogorov_holds`, および同ファイルの
+  private 補題 2 件）
+
+### leray-hopf#229（doc comment の二段階修正）と gloss の整合
+
+この docstring 変更は字句の統一ではなく、**二段階の overclaim 修正**だった。
+
+1. 一次の誤り —「分母の `+1` が評価を `V` について一様にし、球の質量を知る前に同じ
+   許容量 `ε'` が使える」。`ε' = ε/(2(V+1))` は `V` に依存するので誤り。本 repo の
+   PR #126 に対する codex レビューが発見し、leray-hopf#229 として起票された。
+2. **二次の誤り** — 一次修正が持ち込んだ置き換え記述「`+1` は `V/(V+1) < 1` を与え、
+   証明はそれを使ってより強い `< ε/2` を導く」。マージ前の adversarial review が検出。
+   実際の `calc` は等号を許す `V ≤ V+1` を使って `≤ ε/2` に至り、そこから `< ε` を
+   閉じており、狭義の `< ε/2` は証明していない。
+
+最終版の doc comment は証明が実際に踏む等号を許すステップを記述し、狭義の `< ε/2` は
+「数学的には真だが statement の主張でも証明の結論でもない」と明記している。
+
+`corpus/LerayHopf/mul_div_two_mul_add_one_lt.yaml` は PR #126 時点で**二次の誤りと
+同型の記述**（`+1` の役割として $V/(V+1)<1$ を挙げ、$\varepsilon/2$ 未満を「主張より
+強い」と述べる）を持っていたため、本 repin で最終 doc comment に整合させた。書かれて
+いた等式・不等式自体は真だが、補題の内容として狭義の評価を前面に置く点が statement とも
+証明とも一致していなかった。
+
+なお leray-hopf#229 のクローズコメントは「notes#126 は既に正しい日本語 prose を持つため
+修正目的の追い repin は不要」と記録しているが、これは一次の誤りのみを見た評価である。
+二次の overclaim は notes 側にも存在していた。本節をその記録の訂正とする。
+
+### CITATION.cff
+
+`references[0].commit` を `2a06790` に更新したほか、PIN がリリースタグ上に乗ったため
+`version: "0.2.0"` と `date-released: "2026-08-02"` を追加した。この 2 フィールドは
+**PIN がリリースタグの commit と一致している間だけ**有効である。タグの付いていない
+commit へ repin する際は削除すること（`commit` が抽出元の正であり続ける）。
+
+display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は
+引き続き休眠・非更新。

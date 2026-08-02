@@ -6052,7 +6052,7 @@
    "LerayHopf.IsSchwartzDivFree_R3",
    "LerayHopf.L2Sigma_R3",
    "LerayHopf.L2VF_R3"]},
- {"startLine": 1571,
+ {"startLine": 1583,
   "signature":
   "∀ (R C r₀ : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (rep : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3),\n  (∀ f ∈ S, LerayHopf.restrictToBall R (rep f) = f) →\n    0 < r₀ →\n      (∀ f ∈ S, ‖f‖ ≤ C) →\n        (∀ f ∈ S, ‖LerayHopf.restrictToBall (R + r₀) (rep f)‖ ≤ C) →\n          (∀ ε > 0,\n              ∃ δ > 0, ∀ f ∈ S, ∀ (h : LerayHopf.Domain3), ‖h‖ < δ → ‖LerayHopf.translate_L2VF h (rep f) - rep f‖ < ε) →\n            ∀ (ε : ℝ),\n              0 < ε →\n                ∃ K ρf,\n                  K.supportRadius ≤ r₀ ∧\n                    (∀ f ∈ S, ↑↑(ρf f) =ᵐ[MeasureTheory.volume] LerayHopf.mollifyRep K (rep f)) ∧\n                      (∀ f ∈ S, ‖f - LerayHopf.restrictToBall R (ρf f)‖ < ε) ∧\n                        TotallyBounded ((fun f => LerayHopf.restrictToBall R (ρf f)) '' S)",
   "private": false,
@@ -6060,7 +6060,7 @@
   "kind": "theorem",
   "id": "LerayHopf.convolution_l2_tendsto_uniform",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1707,
+  "endLine": 1719,
   "doc":
   "**FK step 3.**  Uniform L²-approximation of a translation-equicontinuous family by its\nmollifications, for the CONCRETE mollifier.\n\nIf a family `{rep f | f ∈ S}` of L²(ℝ³) fields has a uniform L²-translation modulus\n(the second hypothesis of `FrechetKolmogorovInput`), then for every tolerance `ε > 0` there is\nan admissible smooth compactly supported kernel `K` and a choice of L²-classes `ρf : S → L2VF_R3`\nwhose chosen pointwise representative is `mollifyRep K (rep f)`, such that every member is within\n`ε` in L² of its mollification:\n\n  `∀ f ∈ S, ‖f − restrictToBall R (ρf f)‖ < ε`,\n\nwith the rate controlled UNIFORMLY over the family by the translation modulus.  The derivation\nroutes through the two named analytic helpers `young_convolution_memLp_L2` (global Young, producing\nthe `L²`-class `ρf f`) and `convolution_sub_L2_le_translation_modulus` (vector Minkowski, producing\nthe rate), the kernel constructor `exists_normalized_mollifierKernel`, and FK step 2\n`mollified_family_totallyBounded_L2` (total boundedness).  This is the genuinely-missing analytic\ncore (mathlib has only the *pointwise* `convolution_tendsto_right`).\n\n**Norm-correctness (Codex Gate round 3 → resolved round 4).**  The total-boundedness conjunct\ndelegates to `mollified_family_totallyBounded_L2` (steps 1+2), whose bounds need a ball-mass bound\non the kernel-support enlargement `B_{R+K.supportRadius}`.  The local hypothesis is an\nENLARGED-BALL bound at a fixed enlargement budget `r₀ ≥ 0`:\n`hbdEnl : ∀ f ∈ S, ‖restrictToBall (R + r₀) (rep f)‖ ≤ C`, which the caller obtains directly from\n`FrechetKolmogorovInput`'s GLOBAL bound `‖rep f‖ ≤ C` by ball-mass monotonicity (a single-radius\nball bound `‖f‖ ≤ C` alone would not control annulus mass, but the strengthened criterion carries\nthe global bound, so the enlarged bound is immediate).  The kernel `K` produced has support\nradius `K.supportRadius ≤ r₀`, so by monotonicity of ball mass in the radius the step-3 bound on\n`B_{R + K.supportRadius}` follows from `hbdEnl`.  The ball restriction bound `‖f‖ ≤ C` is retained\nas `hbd` only for the L²-approximation conjunct (which compares ball-restrictions); it does NOT\ncontrol the convolution. ",
   "deps":
@@ -7450,14 +7450,14 @@
   "doc":
   "Pointwise Fourier symbol of the complexified line derivative: for a real Schwartz `f` and\ndirection `m`, the Schwartz Fourier transform of `schwartzC (∂_m f)` at `ξ` is\n`(2π i)(inner ℝ ξ m)·𝓕(schwartzC f)(ξ)`.\n\nThis is `fourier_lineDerivOp_eq` applied to the complexified map `schwartzC f`, using\n`lineDerivOp_schwartzC` to identify `schwartzC (∂_m f) = ∂_m (schwartzC f)`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.schwartzC"]},
- {"startLine": 1740,
+ {"startLine": 1752,
   "signature": "LerayHopf.FrechetKolmogorovInput",
   "private": false,
   "name": "LerayHopf.frechetKolmogorov_holds",
   "kind": "theorem",
   "id": "LerayHopf.frechetKolmogorov_holds",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1791,
+  "endLine": 1803,
   "doc":
   "**DELIVERABLE.  Fréchet–Kolmogorov (Riesz) L²-precompactness criterion** — a genuine\ndischarge of `RellichBall.FrechetKolmogorovInput` (type copied verbatim, no weakening).\n\nAssembles the standard mollification route: from the uniform L²-translation modulus\n(`convolution_l2_tendsto_uniform`, step 3) each family member is uniformly ε-approximated by its\nmollification, whose image is totally bounded by Arzelà–Ascoli\n(`mollified_family_totallyBounded_L2`, step 2); the transfer lemma\n(`totallyBounded_of_uniform_approx`, step 4) makes `S` totally bounded, and completeness of\n`L2ballR3 R` upgrades total boundedness to precompactness\n(`isCompact_iff_totallyBounded_isComplete`), giving the compact `K ⊇ S`.\n\n**Enlarged-ball bound — RESOLVED via the criterion's global bound (Codex Gate round 3, high).**\nThe helper lemmas (steps 1–3) require, honestly, an ENLARGED-BALL bound\n`hbdEnl : ∀ f ∈ S, ‖restrictToBall (R + r₀) (rep f)‖ ≤ C` on the kernel-support enlargement\n`B_{R+r₀}` (NOT just the single-radius ball bound `‖f‖ ≤ C`, which cannot prevent arbitrarily\nlarge low-frequency mass on the annulus `B_{R+r₀} ∖ B_R`).\n\n`FrechetKolmogorovInput`'s strengthened type hands the prover, beyond the in-ball bound `hbd` and\nthe translation modulus `hmod`, a uniform GLOBAL L²-norm bound on the representatives:\n* `hbddGlobal : ∀ f ∈ S, ‖rep f‖ ≤ C`.\n\nFrom `hbddGlobal` the enlarged-ball bound is IMMEDIATE for any `r₀ ≥ 0`, by monotonicity of ball\nmass in the radius: `‖restrictToBall (R + r₀) (rep f)‖ ≤ ‖rep f‖ ≤ C` (the same\n`restrict_le_self`/`eLpNorm_mono_measure` chain as `RellichBall.admissible_family_uniform_bound`).\nThis is the standard Riesz full-mass control of Fréchet–Kolmogorov; it carries no Sobolev/gradient\ncontent.  The actual Navier–Stokes call site `localRellichInput_of_frechetKolmogorov` supplies it\nfrom its admissible family's GLOBAL `‖w‖ ≤ M` bound.\n\n**Assembly (pure proof-body fill, no upstream blocker).**  Derive `hbdEnl` from `hbddGlobal` by\nball-mass monotonicity; feed `hbdEnl`, `hbd`, `hrep`, `hmod` into `convolution_l2_tendsto_uniform`\n(step 3) to get, for each `ε`, a totally bounded mollified image approximating `S` within `ε`;\n`totallyBounded_of_uniform_approx` (step 4) makes `S` totally bounded; closure of the totally\nbounded `S` is compact (`isCompact_iff_totallyBounded_isComplete`, `L2ballR3 R` complete); take\n`K := closure S`. ",
   "deps": ["LerayHopf.FrechetKolmogorovInput"]},
@@ -10347,7 +10347,7 @@
    "LerayHopf.MollifierKernel",
    "LerayHopf.mollifyRep",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1535,
+ {"startLine": 1547,
   "signature":
   "∀ (R C : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (rep : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3)\n  (K : LerayHopf.MollifierKernel) (ρf : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3),\n  (∀ f ∈ S, ↑↑(ρf f) =ᵐ[MeasureTheory.volume] LerayHopf.mollifyRep K (rep f)) →\n    (∀ f ∈ S, ‖LerayHopf.restrictToBall (R + K.supportRadius) (rep f)‖ ≤ C) →\n      TotallyBounded ((fun f => LerayHopf.restrictToBall R (ρf f)) '' S)",
   "private": false,
@@ -10355,7 +10355,7 @@
   "kind": "theorem",
   "id": "LerayHopf.mollified_family_totallyBounded_L2",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1564,
+  "endLine": 1576,
   "doc":
   "**FK step 2.**  Arzelà–Ascoli: a uniformly bounded, uniformly equicontinuous family of\ncontinuous functions on the compact ball `B_R` is totally bounded in `C(B_R)`, hence (via the\ncontinuous embedding `C(B_R) ↪ L²(B_R)` on a finite-measure ball) totally bounded in `L²(B_R)`.\n\nConsumes `mollified_family_uniformly_bounded` (step 1a) and `mollified_family_equicontinuous`\n(step 1b) for the CONCRETE kernel `K`; produces the total boundedness used by\n`convolution_l2_tendsto_uniform`.  The L²-classes `ρf f` whose representative is\n`mollifyRep K (rep f)` are supplied (with the a.e. agreement hypothesis `hρf`) so the result\nlands in `L²(B_R)` rather than `C(B_R)`.\n\n**Norm-correctness (Codex Gate round 3 → resolved round 4).**  Both steps 1a/1b it consumes are\nstated on `B_R` only and rest on the ENLARGED-BALL bound\n`‖restrictToBall (R+K.supportRadius) (rep f)‖ ≤ C`, which the call site derives from\n`FrechetKolmogorovInput`'s GLOBAL bound `hbddGlobal : ‖rep f‖ ≤ C` by ball-mass monotonicity.\nArzelà–Ascoli runs on the COMPACT ball `B_R`, where\nthe ball-restriction `restrictToBall R (ρf f)` lives, so the enlarged-ball sup/equicontinuity bounds\non `B_R` are exactly enough.  This lemma threads the same enlarged-ball bound `hbdEnl`. ",
   "deps":
@@ -12504,7 +12504,7 @@
    "LerayHopf.WeakFormNS",
    "LerayHopf.haarTorus3",
    "LerayHopf.torus3Evolution"]},
- {"startLine": 1402,
+ {"startLine": 1414,
   "signature":
   "∀ (R : ℝ) (S : Set ↥(LerayHopf.L2ballR3 R)) (ρf : ↥(LerayHopf.L2ballR3 R) → ↥LerayHopf.L2VF_R3)\n  (Φ : ↥(LerayHopf.L2ballR3 R) → LerayHopf.Domain3 → EuclideanSpace ℝ (Fin 3)),\n  (∀ f ∈ S, ↑↑(ρf f) =ᵐ[MeasureTheory.volume] Φ f) →\n    ∀ (B : ℝ),\n      (∀ f ∈ S, ∀ x ∈ Metric.closedBall 0 R, ‖Φ f x‖ ≤ B) →\n        (∀ ε > 0,\n            ∃ δ > 0,\n              ∀ f ∈ S,\n                ∀ (x y : LerayHopf.Domain3),\n                  x ∈ Metric.closedBall 0 R → y ∈ Metric.closedBall 0 R → ‖x - y‖ < δ → ‖Φ f x - Φ f y‖ < ε) →\n          TotallyBounded ((fun f => LerayHopf.restrictToBall R (ρf f)) '' S)",
   "private": false,
@@ -12512,7 +12512,7 @@
   "kind": "theorem",
   "id": "LerayHopf.totallyBounded_image_of_equicont_bdd",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1533,
+  "endLine": 1545,
   "doc":
   "**Abstract Arzelà–Ascoli + sup→L² transfer.**  Let `Φ f` be a representative function for the\nL²(B_R)-class `restrictToBall R (ρf f)` (`hΦae`).  If the family `{Φ f : f ∈ S}` is uniformly\nbounded (`hB`) and uniformly equicontinuous (`hequi`) on the compact ball `B_R`, then the image\n`{restrictToBall R (ρf f) : f ∈ S}` is totally bounded in `L²(B_R)`.\n\nThe proof is the classical Arzelà–Ascoli net construction: a finite `δ`-net of centers in the\ncompact `B_R` (with `δ` from equicontinuity), a finite value-net of the bounded range, classify\neach `f` by the tuple of nearest value-net points at the centers, choose one representative per\nclass; equicontinuity plus the value-net make functions in the same class uniformly close on\n`B_R`, and `dist_restrictToBall_le_of_ae_bound` (finite-measure sup→L² bound) turns that into\nL²(B_R)-closeness. ",
   "deps":
@@ -12520,7 +12520,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2ballR3",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1711,
+ {"startLine": 1723,
   "signature":
   "∀ {α : Type u_1} [inst : PseudoMetricSpace α] (S : Set α),\n  (∀ ε > 0, ∃ T, TotallyBounded T ∧ ∀ s ∈ S, ∃ t ∈ T, dist s t < ε) → TotallyBounded S",
   "private": false,
@@ -12528,7 +12528,7 @@
   "kind": "theorem",
   "id": "LerayHopf.totallyBounded_of_uniform_approx",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1736,
+  "endLine": 1748,
   "doc":
   "**FK step 4.**  Total-boundedness transfer.  In a metric space, a set `S` that is uniformly\nε-approximable (for every `ε > 0`) by a totally bounded set is itself totally bounded.\n\nThis is the abstract glue between step 3 (uniform mollification approximation) and step 2\n(total boundedness of the mollified family): an ε-net of the approximant, fattened by ε, is a\n`2ε`-net of `S`. ",
   "deps": []},
@@ -18350,9 +18350,9 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.mul_div_two_mul_add_one_lt",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1370,
+  "endLine": 1382,
   "doc":
-  "**Textbook step (sup→L² tolerance).**  The sup-level tolerance `ε' = ε / (2 (V + 1))` is small\nenough that the mass factor `V` cannot eat the target: `V · ε' < ε` for any mass `V ≥ 0`.\n\nThe `+1` in the denominator is what makes the bound uniform in `V` (including `V = 0`), so the\nsame `ε'` works before the ball mass is known. ",
+  "**Textbook step (sup→L² tolerance).**  For a mass factor `V ≥ 0` and a target `ε > 0`,\n\n  `V · (ε / (2 (V + 1))) < ε`.\n\nIt is applied by fixing the mass `V` first and only then choosing the sup-level tolerance\n`ε' = ε / (2 (V + 1))`, so that multiplying by `V` still cannot eat the target.  Note that `ε'`\ngenuinely depends on `V`, so it can only be chosen once the ball mass has been bounded.\n\nThe `+1` in the denominator does two things: it keeps the denominator from degenerating at\n`V = 0`, and it makes the mass factor bounded by the denominator, `V ≤ V + 1`.  The proof uses\nexactly that non-strict step to reach\n\n  `V · (ε / (2 (V + 1))) ≤ ε / 2`,\n\nand then concludes `< ε`.  The sharper strict bound `< ε / 2` is also true, since\n`V / (V + 1) < 1` for every `V ≥ 0`, but it is neither what the statement claims nor what the\nproof establishes. ",
   "deps": []},
  {"startLine": 709,
   "signature": "∀ (K : LerayHopf.MollifierKernel), ‖LerayHopf.kernelL1R K‖ = 1",
@@ -18400,7 +18400,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2ballR3",
    "LerayHopf.restrictToBall"]},
- {"startLine": 1372,
+ {"startLine": 1384,
   "signature":
   "∀ {E : Type u_1} [inst : NormedAddCommGroup E] {p p' q q' w : E} {η γ : ℝ},\n  ‖p - p'‖ < η → ‖q' - q‖ < η → dist p' w < γ → dist q' w < γ → ‖p - q‖ < η + 2 * γ + η",
   "private": true,
@@ -18409,7 +18409,7 @@
   "id":
   "_private.LerayHopf.R3.FrechetKolmogorov.0.LerayHopf.norm_sub_lt_of_center_net",
   "file": "LerayHopf/R3/FrechetKolmogorov.lean",
-  "endLine": 1395,
+  "endLine": 1407,
   "doc":
   "**Textbook step (Arzelà–Ascoli net estimate).**  Two points that are each within `η` of their\nrespective anchors `p'`, `q'`, whose anchors are both within `γ` of a common net value `w`, are\nwithin `η + 2γ + η` of each other.\n\nThis is the classification step of the Arzelà–Ascoli net construction, stated for its own sake:\n`p = Φ f x`, `p' = Φ f c`, `q = Φ g x`, `q' = Φ g c` and `w` the shared value-net point at the\ncenter `c`, so equicontinuity supplies the two `η`-bounds and membership in the same class\nsupplies the two `γ`-bounds. ",
   "deps": []},
