@@ -5,15 +5,21 @@ Per-declaration annotation YAML files.
 ## Layout
 
 ```
-corpus/<module-path>/<decl-name>.yaml
+corpus/LerayHopf/<slug>.yaml
 ```
 
-The `<module-path>` mirrors the Lean module path with `.` replaced by `/`.
-For example, the declaration `LerayHopf.R3.rellich_seq_compact` lives at:
+The corpus is **flat**: every entry sits directly in `corpus/LerayHopf/`, and the Lean module
+hierarchy is *not* mirrored as directories. For example, the declaration
+`LerayHopf.rellich_seq_compact`, defined in `LerayHopf/Torus/RellichEmbedding.lean`, lives at:
 
 ```
-corpus/LerayHopf/R3/rellich_seq_compact.yaml
+corpus/LerayHopf/rellich_seq_compact.yaml
 ```
+
+The defining module plays no part in that path — there is no `Torus/` directory, and the
+`R3` / `Torus` split never becomes a directory anywhere in the corpus. Module names *do*
+appear, flattened onto dots inside the filename, in the one case where they are needed to
+tell two same-named declarations apart; see Naming below.
 
 ## Schema
 
@@ -32,8 +38,48 @@ Key fields:
 
 ## Naming
 
-Corpus files use the declaration's **simple name** (last component) as the filename.
-The fully-qualified name is stored in the `name` field for join against `extracted/`.
+**For a new entry**, take the fully-qualified name and strip the leading `LerayHopf.`. A
+declaration that carries a namespace keeps it in the filename, dots and all — the slug is not
+reduced to the last component:
+
+```
+LerayHopf.Galerkin.GlobalLerayHopfSolution
+  -> corpus/LerayHopf/Galerkin.GlobalLerayHopfSolution.yaml
+```
+
+`scripts/workpacket.py` prints the correct path for each declaration it emits, so prefer that
+over deriving one by hand.
+
+**When the display `name` is ambiguous** — carried by more than one declaration, as happens
+for private helpers of the same name in different modules — a flat corpus cannot give both the
+same filename. Qualify the slug with the defining module path, flattened onto dots:
+
+```
+LerayHopf.measurable_natFloor_real   (two private declarations, two modules)
+  -> corpus/LerayHopf/Bochner.StepFunctionCompactness.measurable_natFloor_real.yaml
+  -> corpus/LerayHopf/R3.SpacetimePrecompact.measurable_natFloor_real.yaml
+```
+
+Disambiguate by **prefixing**, never by suffixing: `measurable_natFloor_real_a.yaml` would
+spell a declaration that does not exist. `validate.py` enforces this form for ambiguous names,
+deriving the expected prefix from the required `file` field.
+
+**Existing files vary.** Most follow the rule above, but a few hundred predate it and drop
+intermediate namespaces — `corpus/LerayHopf/GelfandTriple.yaml` annotates
+`LerayHopf.Bochner.GelfandTriple`, and a handful drop only part of a namespace. These are not
+being renamed: the filename is a convention, not a key, and mass-renaming would churn every
+corpus path for no functional gain. Do not copy those shapes for new entries.
+
+**The filename is a convention, not a key.** The join is on the `name` field, which must match
+a declaration in `extracted/decls.json`; `file` disambiguates when a display `name` is
+ambiguous (notes#7).
+
+`validate.py` checks that the filename's **last dot-component** equals the declaration's simple
+name, which catches a typo or a half-edited copy of a neighbouring entry. For unambiguous names
+it cannot check more than that — the historical slug shapes above coexist, so requiring full
+equality would mean renaming hundreds of files (notes#120). For **ambiguous** names it checks
+the whole slug, since there a wrong module prefix does not merely look untidy: it points the
+reader at the wrong declaration.
 
 ## 執筆規約（notes#12 v1.1 — 組版・レジスタ）
 

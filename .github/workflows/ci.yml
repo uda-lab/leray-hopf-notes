@@ -68,6 +68,9 @@ jobs:
       - name: Uniqueness-overclaim guard (notes#119)
         run: python3 test/issue119_uniqueness_overclaim.test.py
 
+      - name: Corpus filename consistency tests (notes#120)
+        run: python3 test/issue120_filename_check.test.py
+
       - name: Coverage report
         run: python3 scripts/coverage.py
 

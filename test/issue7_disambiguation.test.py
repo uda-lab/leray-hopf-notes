@@ -121,8 +121,15 @@ def test_validate_accepts_collision_file_and_unique_name_without_file() -> None:
             decl("LerayHopf.unique", "LerayHopf.unique", "Unique.lean"),
         ])
         (root / "extracted" / "PIN").write_text("b" * 40 + "\n", encoding="utf-8")
-        write_corpus(root / "corpus" / "shared_a.yaml", "LerayHopf.shared", "A側。", "A.lean")
-        write_corpus(root / "corpus" / "shared_b.yaml", "LerayHopf.shared", "B側。", "B.lean")
+        # Colliding display names need distinct filenames. The corpus disambiguates by
+        # PREFIXING the defining module path, which keeps the declaration's simple name as
+        # the final dot-component — as in the real
+        # Bochner.StepFunctionCompactness.measurable_natFloor_real.yaml /
+        # R3.SpacetimePrecompact.measurable_natFloor_real.yaml pair. Suffixing instead
+        # ("shared_a") would spell a declaration that does not exist, and notes#120's
+        # filename check rejects it. Mirror the real convention here.
+        write_corpus(root / "corpus" / "A.shared.yaml", "LerayHopf.shared", "A側。", "A.lean")
+        write_corpus(root / "corpus" / "B.shared.yaml", "LerayHopf.shared", "B側。", "B.lean")
         write_corpus(root / "corpus" / "unique.yaml", "LerayHopf.unique", "一意名。")
 
         code, output = run_main(validate, [])
@@ -141,8 +148,8 @@ def test_build_site_data_joins_collision_annotations_by_file_to_stable_id() -> N
             decl("LerayHopf.unique", "LerayHopf.unique", "Unique.lean"),
         ])
         (root / "extracted" / "PIN").write_text("c" * 40 + "\n", encoding="utf-8")
-        write_corpus(root / "corpus" / "shared_a.yaml", "LerayHopf.shared", "A側。", "A.lean")
-        write_corpus(root / "corpus" / "shared_b.yaml", "LerayHopf.shared", "B側。", "B.lean")
+        write_corpus(root / "corpus" / "A.shared.yaml", "LerayHopf.shared", "A側。", "A.lean")
+        write_corpus(root / "corpus" / "B.shared.yaml", "LerayHopf.shared", "B側。", "B.lean")
         write_corpus(root / "corpus" / "unique.yaml", "LerayHopf.unique", "一意名。")
 
         out_path = root / "nodes.json"

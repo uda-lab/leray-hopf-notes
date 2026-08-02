@@ -79,17 +79,63 @@ def load_universe() -> tuple[list[dict], str]:
     return [], '(none)'
 
 
-def load_annotated_names() -> set[str]:
+def load_annotated_names() -> tuple[set[str], set[tuple[str, str]]]:
+    """Return (annotated names, annotated (name, file) keys).
+
+    A name alone cannot identify an annotation when the display name is ambiguous: two
+    private helpers in different modules share it, so treating "this name is annotated" as
+    "both declarations are annotated" hides the second one from every future work packet.
+    The keyed set mirrors `validate.py`'s `keyed_universe` and is what `is_annotated` uses
+    for ambiguous names (notes#7, notes#120).
+    """
     names: set[str] = set()
+    keys: set[tuple[str, str]] = set()
     for fpath in CORPUS_DIR.rglob('*.yaml'):
         try:
             with open(fpath, encoding='utf-8') as f:
                 doc = yaml.safe_load(f)
             if isinstance(doc, dict) and 'name' in doc:
                 names.add(doc['name'])
+                keys.add((doc['name'], doc.get('file') or ''))
         except (yaml.YAMLError, OSError):
             pass
-    return names
+    return names, keys
+
+
+def ambiguous_names_in(universe: list[dict], universe_source: str) -> set[str]:
+    """Display names carried by more than one declaration (notes#7, notes#120).
+
+    Only the authoritative universe counts. `names-fallback.json` is a static text scan and
+    is deliberately left un-refreshed, so it carries duplicates that are not real collisions
+    — currently nine "ambiguous" names against the authoritative two. Trusting those would
+    make the generator offer module-qualified skeletons for declarations that are actually
+    unique, and their existing corpus entries (which correctly omit `file`) would stop being
+    recognised as annotated, so saving either skeleton produces a duplicate annotation.
+
+    `validate.py` takes the same position: `load_name_universe` returns an empty collision
+    map on the fallback path. Diverging from that is what makes the two disagree.
+    """
+    if universe_source != 'decls.json':
+        return set()
+    counts: dict[str, int] = {}
+    for decl in universe:
+        counts[decl['name']] = counts.get(decl['name'], 0) + 1
+    return {name for name, count in counts.items() if count > 1}
+
+
+def is_annotated(decl: dict, annotated_names: set[str],
+                 annotated_keys: set[tuple[str, str]],
+                 ambiguous_names: set[str]) -> bool:
+    """Whether THIS declaration already has an annotation.
+
+    For an ambiguous display name the match must include the defining file — `file` is
+    required on those corpus entries (notes#7), so the pair identifies the declaration.
+    For an unambiguous name `file` is optional in the corpus, so the name alone decides.
+    """
+    name = decl['name']
+    if name in ambiguous_names:
+        return (name, decl.get('file', '')) in annotated_keys
+    return name in annotated_names
 
 
 def module_matches_chapter(file_path: str, chapter: str) -> bool:
@@ -143,21 +189,56 @@ def read_lean_snippet(lean_root: Path, file_path: str,
     return '\n'.join(snippet_lines)
 
 
-def yaml_skeleton(decl: dict, chapter: str, tier: str | None) -> str:
+CORPUS_ROOT_NAMESPACE = 'LerayHopf'
+
+
+def corpus_path_for(decl: dict, ambiguous_names: set[str] | None = None) -> str:
+    """Where a new annotation for `decl` should be saved (notes#120).
+
+    The corpus is FLAT — everything lives directly in `corpus/LerayHopf/`. This function
+    used to emit `corpus/<module/path>/<simple-name>.yaml`, i.e. the nested layout
+    `corpus/README.md` wrongly documented, which is how the drift kept regenerating itself:
+    every work packet instructed its author to create a directory that does not exist.
+
+    The slug is the declaration name minus the `LerayHopf.` root namespace. When the display
+    name is ambiguous (the same `name` on more than one declaration, as happens for private
+    helpers in different modules), a flat corpus cannot give both the same filename, so the
+    slug is prefixed with the defining module path flattened onto dots.
+    """
+    name = decl['name']
+    slug = name[len(CORPUS_ROOT_NAMESPACE) + 1:] if name.startswith(
+        CORPUS_ROOT_NAMESPACE + '.') else name
+
+    if ambiguous_names and name in ambiguous_names:
+        module = decl.get('file', '').removesuffix('.lean')
+        if module.startswith(CORPUS_ROOT_NAMESPACE + '/'):
+            module = module[len(CORPUS_ROOT_NAMESPACE) + 1:]
+        if module:
+            slug = f"{module.replace('/', '.')}.{name.split('.')[-1]}"
+
+    return f'corpus/{CORPUS_ROOT_NAMESPACE}/{slug}.yaml'
+
+
+def yaml_skeleton(decl: dict, chapter: str, tier: str | None,
+                  ambiguous_names: set[str] | None = None) -> str:
     name = decl['name']
     kind = decl.get('kind', 'theorem')
     if tier is None:
         tier = 'full' if kind in THEOREM_KINDS else 'gloss'
 
-    # module path → corpus path
-    file_path = decl.get('file', '')
-    # strip leading LerayHopf/ and .lean suffix
-    module_part = file_path.replace('.lean', '').replace('/', '.')
-    corpus_path = f"corpus/{file_path.replace('.lean', '')}/{name.split('.')[-1]}.yaml"
+    corpus_path = corpus_path_for(decl, ambiguous_names)
 
     lines = [
         f'# Save to: {corpus_path}',
         f'name: {name}',
+    ]
+    # `validate.py` REQUIRES `file` when the display name is ambiguous (notes#7) — without
+    # it the entry cannot say which of the same-named declarations it annotates, and fails
+    # validation outright. Emitting the module-qualified path but leaving `file` for the
+    # author to discover would hand them a skeleton that is invalid the moment it is saved.
+    if ambiguous_names and name in ambiguous_names and decl.get('file'):
+        lines.append(f'file: {decl["file"]}')
+    lines += [
         f'tier: {tier}',
         'statement_ja: |',
         '  # TODO: 日本語で主張を記述',
@@ -205,14 +286,20 @@ def main() -> None:
     if not universe:
         sys.exit('ERROR: no name universe found. Run scripts/count_decls.py first.')
 
-    annotated = load_annotated_names() if not args.include_annotated else set()
+    if args.include_annotated:
+        annotated_names, annotated_keys = set(), set()
+    else:
+        annotated_names, annotated_keys = load_annotated_names()
     chapter_label = args.chapter or args.module or 'all'
+
+    ambiguous_names = ambiguous_names_in(universe, universe_source)
 
     # Filter universe
     candidates = []
     for decl in universe:
         name = decl['name']
-        if name in annotated and not args.include_annotated:
+        if not args.include_annotated and is_annotated(
+                decl, annotated_names, annotated_keys, ambiguous_names):
             continue
         file_path = decl.get('file', '')
         if args.all:
@@ -232,7 +319,7 @@ def main() -> None:
     print()
     print(f'**Universe:** {universe_source}  ')
     print(f'**Declarations in packet:** {len(candidates)}  ')
-    print(f'**Already annotated (skipped):** {len(annotated)}  ')
+    print(f'**Already annotated (skipped):** {len(annotated_names)}  ')
     print()
     print('For each declaration below: fill in the YAML skeleton and save it.')
     print('Validate with: `python3 scripts/validate.py`')
@@ -282,7 +369,7 @@ def main() -> None:
         print('### YAML skeleton')
         print()
         print('```yaml')
-        print(yaml_skeleton(decl, chapter_label, args.tier))
+        print(yaml_skeleton(decl, chapter_label, args.tier, ambiguous_names))
         print('```')
         print()
         print('---')
