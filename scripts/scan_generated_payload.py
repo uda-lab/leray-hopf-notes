@@ -129,6 +129,11 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('tmp path', re.compile(r'/tmp/[A-Za-z0-9._/-]+')),
     ('macOS temp path', re.compile(r'/var/folders/[A-Za-z0-9._/+-]+')),
     ('CI runner path', re.compile(r'/runner/_work/[A-Za-z0-9._/-]+')),
+    # Standard system roots. The negative lookbehind keeps this off URL paths and off
+    # relative fragments inside longer strings; measured zero hits on the real payload.
+    ('system path',
+     re.compile(r'(?<![A-Za-z0-9_/.-])/(?:etc|opt|var|srv|mnt|media|usr/local)/'
+                r'[A-Za-z0-9._/-]+')),
     # Uppercase drive letter AND a path segment — `f:\mathbb` and friends must not match.
     # Case-insensitive drive letter. The required Users|Windows|Program|Temp segment
     # is what keeps this off `f:\\mathbb` and friends, so the letter's case can be

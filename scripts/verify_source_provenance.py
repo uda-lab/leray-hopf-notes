@@ -36,8 +36,12 @@ Checks (see notes#32 issue body, "Audit-mandated provenance additions"):
   4. `nodes.json`'s embedded `pin` field equals `sources.json`'s embedded
      `pin` field, so the two payloads the frontend joins at runtime cannot
      silently drift apart.
-  5. Every embedded snippet is byte-identical to its `file`:`startLine`-`endLine`
-     range in a file the pinned commit actually tracks (physical containment is not
+  5. Every embedded snippet is identical to its `file`:`startLine`-`endLine`
+     range in a file the pinned commit actually tracks. "Identical" is with respect to
+     line content, not raw bytes: both sides are read with universal newlines, so a CRLF
+     file compares equal to the LF-normalised text the builder embeds — which is the text
+     that actually ships, so this is the comparison that matters. It is stated rather than
+     called byte-equality, which it is not (physical containment is not
      enough — `.git/HEAD` resolves inside the checkout and `git status` never reports
      changes under `.git`, so administrative state could otherwise be attested as
      source). The comparison is exact, with no trailing-newline normalisation. Checks 1-4 are all *bookkeeping* — commit
@@ -260,8 +264,8 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
                         + '\n'.join(f'    {m}' for m in mismatches))
     else:
         failures_note = f' (sampled every {sample}th)' if sample and sample > 1 else ''
-        passes.append(f'source_text: all {compared} embedded snippets are byte-identical to '
-                      f'their file/line range in the pinned checkout{failures_note}')
+        passes.append(f'source_text: all {compared} embedded snippets match their file/line '
+                      f'range in the pinned checkout{failures_note}')
 
 
 def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passes: list[str]) -> None:

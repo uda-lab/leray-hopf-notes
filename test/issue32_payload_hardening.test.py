@@ -118,6 +118,9 @@ LEAK_PROBES = {
     'internal .local host': 'https://internal.uda-lab.local:8443/admin',
     'private IPv4': 'reachable at 10.0.0.5 from the runner',
     'concatenated credentials': 'AKIA' + 'C' * 16 + 'sk-' + 'D' * 32,
+    'system path /etc': '/etc/passwd',
+    'system path /opt': '/opt/private/config',
+    'system path /var': '/var/lib/app/token',
     'secret in query parameter': 'https://api.example.com/v1?token=' + 'Z' * 32,
     'singular /workspace/ path': '/workspace/leray-hopf-notes/private.txt',
     'codex session path': '/root/.codex/sessions/secret.jsonl',
@@ -140,6 +143,7 @@ LEGITIMATE_PROBES = {
     'review-round prose': 'Codex Gate round 3 の指摘で修正した設計記録。',
     'the word password': 'password という語を含む一般的な散文。',
     'issue citation': 'leray-hopf issue #229（PR #231）で二段階に修正された。',
+    'URL containing /etc/': 'https://example.com/etc/faq を参照。',
 }
 
 
