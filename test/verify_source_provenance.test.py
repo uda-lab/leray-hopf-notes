@@ -438,6 +438,24 @@ def test_source_path_escaping_checkout_fails() -> None:
         assert "outside the pinned checkout" in out, out
 
 
+
+def test_failure_diagnostics_are_redacted() -> None:
+    """This gate runs BEFORE the leak scan, so nothing downstream can mask its output. A
+    `file` field carrying a credential would be disclosed by the very diagnostic that
+    rejected it, into a public Actions log (adversarial review, PR #135)."""
+    verify = import_script("verify_redact")
+    secret = "ghp_" + "A" * 30
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = f"/workspace/{secret}/Foo.lean"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential leaked into the diagnostic:\n{out}"
+    assert "redacted:" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -460,6 +478,7 @@ def main() -> None:
         test_tampered_source_text_fails,
         test_missing_line_range_fails,
         test_source_path_escaping_checkout_fails,
+        test_failure_diagnostics_are_redacted,
     ]
     for test in tests:
         test()

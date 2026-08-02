@@ -63,6 +63,23 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
 
+# Failure messages here interpolate payload-supplied values (slugs, file paths) into the
+# public Actions log, and this gate runs BEFORE the leak scan — so nothing downstream can
+# mask them. A `file` field containing a credential or a local path would be disclosed by
+# the very diagnostic that rejected it. Reuse the scanner's redactor so there is one list
+# of secret shapes rather than two that drift apart.
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from scan_generated_payload import redact_all as _redact_all
+except ImportError:  # pragma: no cover - scanner absent; degrade to omitting the value
+    def _redact_all(fragment: str) -> str:
+        return '‹value withheld: leak scanner unavailable for redaction›'
+
+
+def safe(value: object) -> str:
+    """A payload-supplied value, redacted, for interpolation into a failure message."""
+    return _redact_all(str(value))
+
 
 def run_git(lean_root: Path, *args: str) -> tuple[int, str, str]:
     proc = subprocess.run(
@@ -171,24 +188,24 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
         slug = node.get('slug')
         embedded = src_map.get(slug)
         if embedded is None:
-            mismatches.append(f'{slug}: marked has_source but absent from sources.json')
+            mismatches.append(f'{safe(slug)}: marked has_source but absent from sources.json')
             continue
         rel, start, end = node.get('file'), node.get('startLine'), node.get('endLine')
         if not rel or not isinstance(start, int) or not isinstance(end, int):
-            mismatches.append(f'{slug}: missing file/startLine/endLine for verification')
+            mismatches.append(f'{safe(slug)}: missing file/startLine/endLine for verification')
             continue
         if escapes_checkout(rel):
             mismatches.append(
-                f'{slug}: file "{rel}" resolves outside the pinned checkout — a declaration '
-                f'may only be sourced from within it')
+                f'{safe(slug)}: file "{safe(rel)}" resolves outside the pinned checkout — '
+                f'a declaration may only be sourced from within it')
             continue
         lines = lines_of(rel)
         if lines is None:
-            mismatches.append(f'{slug}: {rel} not readable in the pinned checkout')
+            mismatches.append(f'{safe(slug)}: {safe(rel)} not readable in the pinned checkout')
             continue
         expected = '\n'.join(lines[start - 1:end])
         if embedded.rstrip('\n') != expected.rstrip('\n'):
-            mismatches.append(f'{slug}: embedded text differs from {rel}:{start}-{end}')
+            mismatches.append(f'{safe(slug)}: embedded text differs from {safe(rel)}:{start}-{end}')
         compared += 1
         if len(mismatches) >= 10:
             mismatches.append('… (further mismatches suppressed)')
