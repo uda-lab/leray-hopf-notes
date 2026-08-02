@@ -115,6 +115,7 @@ LEAK_PROBES = {
     'email address': 'someone@example.com',
     'internal .local host': 'https://internal.uda-lab.local:8443/admin',
     'private IPv4': 'reachable at 10.0.0.5 from the runner',
+    'secret in query parameter': 'https://api.example.com/v1?token=' + 'Z' * 32,
 }
 
 # Shapes the scan knowingly does NOT catch. Pinned so the documented limits stay honest:
@@ -122,6 +123,7 @@ LEAK_PROBES = {
 DOCUMENTED_LIMITS = {
     'base64-encoded credential': 'dXNlcjpzdXBlcnNlY3JldHBhc3N3b3JkMTIz',
     'SSH key body without header': 'AAAAB3NzaC1yc2EAAAADAQABAAABgQ' + 'C' * 40,
+    'arbitrary internal DNS name': 'db.prod.internal.example',
 }
 
 # Content that MUST NOT trip the scan — all of it really appears in this corpus.
@@ -215,8 +217,9 @@ def test_emit_writes_record_and_sums() -> None:
               repr(record['ci']))
 
         names = {f['name'] for f in record['files']}
-        check('record covers the payload files',
-              {'nodes.json', 'sources.json', 'coverage.json'} <= names, repr(names))
+        check('record covers the payload files (site-relative names)',
+              {'data/nodes.json', 'data/sources.json', 'data/coverage.json'} <= names,
+              repr(sorted(names)))
         check('record does not list itself', 'build-provenance.json' not in names)
         check('record does not list SHA256SUMS', 'SHA256SUMS' not in names)
 
@@ -224,7 +227,7 @@ def test_emit_writes_record_and_sums() -> None:
         check('SHA256SUMS lists every recorded file',
               all(f['name'] in sums and f['sha256'] in sums for f in record['files']))
 
-        verify = subprocess.run(['sha256sum', '-c', 'SHA256SUMS'], cwd=data,
+        verify = subprocess.run(['sha256sum', '-c', 'data/SHA256SUMS'], cwd=data.parent,
                                 capture_output=True, text=True)
         check('sha256sum -c verifies the emitted checksums', verify.returncode == 0,
               verify.stdout + verify.stderr)
@@ -277,15 +280,77 @@ def test_emit_covers_every_published_file() -> None:
         check('emit succeeds with extra payload files present', code == 0, out)
 
         record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        site = data.parent
         recorded = {f['name'] for f in record['files']}
-        shipped = {p.name for p in data.iterdir()
-                   if p.is_file() and p.name not in ('build-provenance.json', 'SHA256SUMS')}
-        check('every shipped payload file has a recorded digest', recorded == shipped,
+        shipped = {str(q.relative_to(site)) for q in site.rglob('*')
+                   if q.is_file() and q.name not in ('build-provenance.json', 'SHA256SUMS')}
+        check('every shipped file has a recorded digest', recorded == shipped,
               f'recorded={sorted(recorded)} shipped={sorted(shipped)}')
 
-        verify = subprocess.run(['sha256sum', '-c', 'SHA256SUMS'], cwd=data,
+        verify = subprocess.run(['sha256sum', '-c', 'data/SHA256SUMS'], cwd=site,
                                 capture_output=True, text=True)
         check('sha256sum -c verifies all of them', verify.returncode == 0,
+              verify.stdout + verify.stderr)
+
+
+def test_emit_refuses_sources_pin_mismatch() -> None:
+    """Validating only nodes.json let a standalone run attest to the right commit while the
+    source text beside it came from another (adversarial review, PR #135)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root, pin='a' * 40)
+        sources = json.loads((data / 'sources.json').read_text(encoding='utf-8'))
+        sources['pin'] = 'b' * 40
+        (data / 'sources.json').write_text(json.dumps(sources), encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+    check('emit refuses when sources.json pin disagrees', code != 0, out)
+    check('no record written for a half-mismatched payload', not wrote)
+
+
+def test_emit_clears_stale_outputs() -> None:
+    """A reused workspace must not keep the previous run's evidence when this run refuses."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root, pin='a' * 40)
+        (data / 'build-provenance.json').write_text('{"stale": true}', encoding='utf-8')
+        (data / 'SHA256SUMS').write_text('deadbeef  nodes.json\n', encoding='utf-8')
+        (root / 'extracted' / 'PIN').write_text('d' * 40, encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        record_left = (data / 'build-provenance.json').exists()
+        sums_left = (data / 'SHA256SUMS').exists()
+    check('emit still refuses a mismatched payload', code != 0, out)
+    check('a stale provenance record does not survive a refusal', not record_left)
+    check('stale SHA256SUMS do not survive a refusal', not sums_left)
+
+
+def test_emit_hashes_the_whole_published_tree() -> None:
+    """Both artifact steps publish site/, not site/data — hashing only the data left
+    index.html, app.js, styles.css and the vendored KaTeX bundle unverifiable while the
+    README claimed a digest for every published file."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        site = data.parent
+        (site / 'index.html').write_text('<!doctype html>', encoding='utf-8')
+        (site / 'app.js').write_text('// app', encoding='utf-8')
+        (site / 'vendor' / 'katex').mkdir(parents=True)
+        (site / 'vendor' / 'katex' / 'katex.min.js').write_text('//k', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        check('emit succeeds over a full site tree', code == 0, out)
+
+        record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        names = {f['name'] for f in record['files']}
+        for expected in ('index.html', 'app.js', 'vendor/katex/katex.min.js',
+                         'data/nodes.json', 'data/sources.json'):
+            check(f'digest covers {expected}', expected in names, repr(sorted(names)))
+
+        verify = subprocess.run(['sha256sum', '-c', 'data/SHA256SUMS'], cwd=site,
+                                capture_output=True, text=True)
+        check('sha256sum -c verifies from the site root', verify.returncode == 0,
               verify.stdout + verify.stderr)
 
 
@@ -315,6 +380,35 @@ def test_emitted_record_passes_the_scan() -> None:
     check('the scan reports having covered the record', 'build-provenance.json' in out, out)
 
 
+
+# ------------------------------------------------- citation / release-link suppression
+
+def test_release_link_suppressed_on_citation_pin_mismatch() -> None:
+    """A stale CITATION.cff would keep advertising the previous release while the payload
+    was built from a newer commit, pointing readers at an attestation for source they are
+    not looking at. A build warning nobody reads is not protection (adversarial review)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        'bsd_issue32', REPO_ROOT / 'scripts' / 'build_site_data.py')
+    bsd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(bsd)
+
+    real_pin = (REPO_ROOT / 'extracted' / 'PIN').read_text(encoding='utf-8').strip()
+    warnings: list = []
+    agreeing = bsd.read_citation_meta(real_pin, warnings)
+    check('release metadata is emitted when CITATION.cff agrees with the PIN',
+          bool(agreeing.get('source_version')), repr(agreeing))
+    check('no warning when they agree', not warnings, repr(warnings))
+
+    warnings = []
+    mismatched = bsd.read_citation_meta('9' * 40, warnings)
+    check('release version is suppressed when CITATION.cff disagrees with the PIN',
+          mismatched.get('source_version') == '', repr(mismatched))
+    check('release date is suppressed too',
+          mismatched.get('source_date_released') == '', repr(mismatched))
+    check('the mismatch is still warned about', len(warnings) == 1, repr(warnings))
+
+
 def main() -> None:
     test_scan_accepts_clean_payload()
     test_scan_detects_leaks()
@@ -327,7 +421,11 @@ def main() -> None:
     test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()
     test_emit_refuses_pin_mismatch()
+    test_emit_refuses_sources_pin_mismatch()
+    test_emit_clears_stale_outputs()
+    test_emit_hashes_the_whole_published_tree()
     test_emitted_record_passes_the_scan()
+    test_release_link_suppressed_on_citation_pin_mismatch()
     print(f'\nAll {len(CHECKS)} notes#32 payload-hardening checks passed.')
 
 

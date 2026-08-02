@@ -36,6 +36,14 @@ Checks (see notes#32 issue body, "Audit-mandated provenance additions"):
   4. `nodes.json`'s embedded `pin` field equals `sources.json`'s embedded
      `pin` field, so the two payloads the frontend joins at runtime cannot
      silently drift apart.
+  5. Every embedded snippet is byte-identical to its `file`:`startLine`-`endLine`
+     range in the pinned checkout. Checks 1-4 are all *bookkeeping* — commit
+     equality, cleanliness, counts, keys — and a payload can satisfy every one
+     of them while carrying text that commit never contained: a hand-built
+     `sources.json` full of `TAMPERED SOURCE`, with correct pins and counts,
+     passed all four. This check is what makes "this came from that commit" a
+     statement about the bytes rather than about the metadata, and it is what
+     the provenance record written afterwards actually attests to.
 
 Usage:
     python3 scripts/verify_source_provenance.py --lean-root /path/to/leray-hopf
@@ -103,6 +111,76 @@ def check_clean_detached(lean_root: Path, failures: list[str], passes: list[str]
         )
         return
     passes.append('clean_detached: --lean-root checkout is clean and HEAD is detached')
+
+
+def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: dict,
+                                       failures: list[str], passes: list[str],
+                                       sample: int = 0) -> None:
+    """Every embedded snippet must equal the exact file/line range in the pinned checkout.
+
+    Until this existed the gate verified *metadata* — that HEAD equals the PIN, that the
+    checkout is clean, that counts and keys line up — but never that the shipped text is
+    what that commit actually says. A payload with correct pins, correct counts and
+    `TAMPERED SOURCE` in every entry passed all four checks, and the provenance record
+    written afterwards would then attest to it. Checking the bytes is what makes "this came
+    from that commit" a statement about the content rather than about the bookkeeping.
+
+    `sample=N` compares a deterministic subset (every k-th declaration) for a quick local
+    run; the default compares all of them, which is what CI does.
+    """
+    nodes_list = nodes.get('nodes')
+    src_map = sources.get('sources')
+    if not isinstance(nodes_list, list) or not isinstance(src_map, dict):
+        failures.append('source_text: nodes.json "nodes" and/or sources.json "sources" '
+                        'are missing or not of the expected type')
+        return
+
+    file_cache: dict[str, list[str] | None] = {}
+
+    def lines_of(rel: str) -> list[str] | None:
+        if rel not in file_cache:
+            path = lean_root / rel
+            try:
+                file_cache[rel] = path.read_text(encoding='utf-8', errors='replace').splitlines()
+            except OSError:
+                file_cache[rel] = None
+        return file_cache[rel]
+
+    candidates = [n for n in nodes_list if n.get('has_source')]
+    if sample and sample > 1:
+        candidates = candidates[::sample]
+
+    mismatches: list[str] = []
+    compared = 0
+    for node in candidates:
+        slug = node.get('slug')
+        embedded = src_map.get(slug)
+        if embedded is None:
+            mismatches.append(f'{slug}: marked has_source but absent from sources.json')
+            continue
+        rel, start, end = node.get('file'), node.get('startLine'), node.get('endLine')
+        if not rel or not isinstance(start, int) or not isinstance(end, int):
+            mismatches.append(f'{slug}: missing file/startLine/endLine for verification')
+            continue
+        lines = lines_of(rel)
+        if lines is None:
+            mismatches.append(f'{slug}: {rel} not readable in the pinned checkout')
+            continue
+        expected = '\n'.join(lines[start - 1:end])
+        if embedded.rstrip('\n') != expected.rstrip('\n'):
+            mismatches.append(f'{slug}: embedded text differs from {rel}:{start}-{end}')
+        compared += 1
+        if len(mismatches) >= 10:
+            mismatches.append('… (further mismatches suppressed)')
+            break
+
+    if mismatches:
+        failures.append('source_text: embedded source does not match the pinned checkout:\n'
+                        + '\n'.join(f'    {m}' for m in mismatches))
+    else:
+        failures_note = f' (sampled every {sample}th)' if sample and sample > 1 else ''
+        passes.append(f'source_text: all {compared} embedded snippets are byte-identical to '
+                      f'their file/line range in the pinned checkout{failures_note}')
 
 
 def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passes: list[str]) -> None:
@@ -251,6 +329,9 @@ def main() -> int:
                         help='Path to extracted/PIN (default: %(default)s)')
     parser.add_argument('--nodes-json', default=str(REPO_ROOT / 'site' / 'data' / 'nodes.json'),
                         help='Path to the built nodes.json (default: %(default)s)')
+    parser.add_argument('--sample', type=int, default=0,
+                        help='compare only every Nth embedded snippet against the checkout '
+                             '(default 0 = compare all; CI must use the default)')
     parser.add_argument('--sources-json', default=str(REPO_ROOT / 'site' / 'data' / 'sources.json'),
                         help='Path to the built sources.json (default: %(default)s)')
     args = parser.parse_args()
@@ -286,6 +367,8 @@ def main() -> int:
         check_source_coverage(nodes, sources, failures, passes)
         if pin is not None:
             check_pin_consistency(pin, nodes, sources, failures, passes)
+        check_source_text_matches_checkout(lean_root, nodes, sources, failures, passes,
+                                           sample=args.sample)
 
     for p in passes:
         print(f'PASS: {p}')

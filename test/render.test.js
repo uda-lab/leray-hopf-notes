@@ -260,6 +260,7 @@ check('(#32) runtime payload provenance: pin match accepted, mismatch refused', 
   const run = async (nodesPin, payload) => {
     state.sources = null;
     state.sourcesPromise = null;
+    state.sourcesPin = undefined;
     state.data = nodesPin
       ? { source_payload: 'sources.json', pin: nodesPin }
       : { source_payload: 'sources.json' };
@@ -297,6 +298,31 @@ check('(#32) runtime payload provenance: pin match accepted, mismatch refused', 
     r = await run(null, { sources: { cap: 'theorem cap : True' } });
     assert.strictEqual(r.err, null, 'a pin-less nodes.json must remain loadable');
     assert.strictEqual(r.value, 'theorem cap : True');
+
+    // 5. ONE-SIDED absence must still be refused. `expected && …` used to disable the check
+    //    entirely when nodes.json had no pin, so a pin-less nodes.json would accept a
+    //    sources.json naming a concrete, different commit.
+    r = await run(null, { pin: PIN_B, sources: { cap: 'WRONG COMMIT SOURCE' } });
+    assert.ok(r.err && r.err.pinMismatch,
+      'a pin-less nodes.json must not accept a pinned sources.json');
+    assert.strictEqual(r.err.pinMismatch.expected, null);
+    assert.strictEqual(r.err.pinMismatch.got, PIN_B);
+
+    // 6. The CACHE is bound to the nodes pin. Loading under PIN_A then swapping nodes.json
+    //    for PIN_B must refetch — otherwise the old commit's source is served with no pin
+    //    comparison at all, because no fetch happens.
+    r = await run(PIN_A, { pin: PIN_A, sources: { cap: 'SOURCE-A' } });
+    assert.strictEqual(r.value, 'SOURCE-A');
+    state.data = { source_payload: 'sources.json', pin: PIN_B };
+    let refetched = 0;
+    global.fetch = async () => {
+      refetched += 1;
+      return { ok: true, json: async () => ({ pin: PIN_B, sources: { cap: 'SOURCE-B' } }) };
+    };
+    const afterSwap = await loadSourceFor({ slug: 'cap', has_source: true });
+    assert.strictEqual(refetched, 1, 'a changed nodes pin must invalidate the source cache');
+    assert.strictEqual(afterSwap, 'SOURCE-B',
+      'after a pin change the NEW commit\'s source must be served, not the cached old one');
   } finally {
     global.fetch = oldFetch;
     state.sources = null;

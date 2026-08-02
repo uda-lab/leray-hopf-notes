@@ -269,10 +269,12 @@ def read_citation_meta(pin: str, warnings: list) -> dict:
     refs = cff.get('references')
     source = refs[0] if isinstance(refs, list) and refs and isinstance(refs[0], dict) else {}
     source_commit = source.get('commit', '')
-    if pin and source_commit and pin != source_commit:
+    _citation_pin_agrees = not (pin and source_commit and pin != source_commit)
+    if not _citation_pin_agrees:
         warnings.append(
             f'WARNING: CITATION.cff references[0].commit ({source_commit}) does not '
-            f'match extracted/PIN ({pin}) — the next repin PR must update CITATION.cff too'
+            f'match extracted/PIN ({pin}) — the next repin PR must update CITATION.cff too; '
+            f'the release link is suppressed until they agree'
         )
     return {
         'authors': authors,
@@ -287,8 +289,15 @@ def read_citation_meta(pin: str, warnings: list) -> dict:
         # precisely the condition under which a release link is meaningful — absent it, the
         # site falls back to the commit link rather than guessing at a tag that may not
         # exist.
-        'source_version': source.get('version') or '',
-        'source_date_released': str(source.get('date-released') or ''),
+        #
+        # Suppressed on a commit/PIN mismatch. The warning above is not enough here: a
+        # stale CITATION.cff would keep advertising the previous release while the payload
+        # was built from a newer commit, pointing readers at an attestation for source they
+        # are not looking at. A warning they never see is no protection, so the link is
+        # withheld rather than merely flagged.
+        'source_version': (source.get('version') or '') if _citation_pin_agrees else '',
+        'source_date_released': (str(source.get('date-released') or '')
+                                 if _citation_pin_agrees else ''),
     }
 
 

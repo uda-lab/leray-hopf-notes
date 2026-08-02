@@ -42,6 +42,10 @@ completeness. It will not catch a credential that carries no recognisable marker
   `ssh-rsa`), for the same reason.
 * **high-entropy strings in general.** An entropy heuristic on a payload this size, full of
   Lean identifiers and LaTeX, produces far more noise than signal.
+* **arbitrary internal DNS names.** `*.local` is caught because that suffix is reserved for
+  local networks, but a private host under a normal domain (`db.prod.internal.example`) is
+  shape-identical to any other hostname. Catching it would need a site-specific allowlist
+  of public domains, which is a different tool from a pattern scan.
 
 Every pattern below was verified to produce zero hits on a real source-enabled build before
 being added — a rule that fires on legitimate content is worse than no rule, because the
@@ -91,6 +95,11 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # `https://user:token@host/…`, and the rest of that family in one rule.
     ('credentials in URL', re.compile(r'://[^\s/@:"\\]+:[^\s/@"\\]+@')),
     ('email address', re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')),
+    # A secret passed as a query parameter. Narrow on purpose: the parameter name must be
+    # credential-ish AND the value long enough to be one, so ordinary links survive.
+    ('secret in query parameter',
+     re.compile(r'(?i)[?&](?:token|access_token|api_?key|secret|auth|password|sig|signature)'
+                r'=[A-Za-z0-9._~+/-]{16,}')),
     ('internal .local host', re.compile(r'\bhttps?://[A-Za-z0-9.-]+\.local\b')),
     ('private IPv4 address',
      re.compile(r'\b(?:10|192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b')),

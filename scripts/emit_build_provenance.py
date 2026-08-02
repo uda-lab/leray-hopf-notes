@@ -10,19 +10,27 @@ of it, so a reader — or a later audit — cannot check what they were served. 
 writes that evidence next to the payload:
 
   site/data/build-provenance.json   what was built, from which commit, with which counts,
-                                    and the SHA-256 of every published payload file
+                                    and the SHA-256 of every published file
   site/data/SHA256SUMS              the same digests in `sha256sum -c` format
 
 Both are emitted into the payload directory and published with it, so verification needs
 nothing but the deployed site:
 
-    cd site/data && sha256sum -c SHA256SUMS
+    cd site && sha256sum -c data/SHA256SUMS
 
 Design notes
 ------------
 
+* **Coverage is the whole published tree, not just the data.** Both artifact steps publish
+  `site/`, which is `index.html`, `app.js`, `styles.css`, `robots.txt` and the vendored
+  KaTeX bundle as well as `site/data/*.json`. Hashing only the data would leave the code
+  that renders it unverifiable while the README claimed otherwise — the digests here are
+  therefore taken over `site/**`, with paths relative to `site/`.
 * **The record excludes itself and SHA256SUMS.** A file cannot contain its own digest, and
   a checksum file that lists itself is a self-reference an auditor has to special-case.
+* **Stale outputs are removed before anything else.** A workspace reused across builds
+  would otherwise keep the previous run's record and digests when this run refuses to
+  write, leaving evidence that describes a payload that is no longer there.
 * **CI context is recorded when present, and its absence is stated rather than faked.**
   A local build says `"ci": null`; it does not invent a run id. The point of the record is
   to be trustworthy about provenance, so guessing is the one thing it must not do.
@@ -91,17 +99,29 @@ def main() -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--site-data', default=str(DEFAULT_SITE_DATA))
     parser.add_argument('--pin-file', default=str(DEFAULT_PIN_FILE))
+    parser.add_argument('--site-root', default=None,
+                        help='published tree to hash (default: the parent of --site-data)')
     args = parser.parse_args()
 
     site_data = Path(args.site_data).resolve()
     pin_file = Path(args.pin_file).resolve()
+    site_root = Path(args.site_root).resolve() if args.site_root else site_data.parent
 
     if not site_data.is_dir():
         print(f'ERROR: payload directory not found: {site_data}', file=sys.stderr)
         return 1
+    if not site_root.is_dir():
+        print(f'ERROR: site root not found: {site_root}', file=sys.stderr)
+        return 1
     if not pin_file.is_file():
         print(f'ERROR: pin file not found: {pin_file}', file=sys.stderr)
         return 1
+
+    # Clear stale evidence first. If this run refuses to write, a previous run's record and
+    # digests must not survive to describe a payload that has since changed.
+    for stale in (site_data / PROVENANCE_NAME, site_data / SUMS_NAME):
+        if stale.exists():
+            stale.unlink()
 
     pin = pin_file.read_text(encoding='utf-8').strip()
 
@@ -127,18 +147,38 @@ def main() -> int:
               file=sys.stderr)
         return 1
 
-    # Everything published except the two files this script itself produces.
+    # sources.json must agree too. Checking only nodes.json would let a standalone run
+    # attest to the right commit while the source text shipped alongside came from another
+    # one — precisely the drift the frontend guard exists to catch at runtime, so the
+    # build-time record must not certify it.
+    sources_path = site_data / 'sources.json'
+    if sources_path.is_file():
+        try:
+            sources_pin = json.loads(sources_path.read_text(encoding='utf-8')).get('pin')
+        except json.JSONDecodeError as exc:
+            print(f'ERROR: sources.json is not valid JSON: {exc}', file=sys.stderr)
+            return 1
+        if sources_pin != pin:
+            print(f'ERROR: sources.json pin ({sources_pin!r}) does not match {pin_file} '
+                  f'({pin!r}) — refusing to attest to a payload whose two halves disagree',
+                  file=sys.stderr)
+            return 1
+
+    # Everything published — the artifact steps upload the whole site/ tree, not just the
+    # data — except the two files this script itself produces.
+    self_written = {(site_data / PROVENANCE_NAME).resolve(), (site_data / SUMS_NAME).resolve()}
     payload_files = sorted(
-        p for p in site_data.iterdir()
-        if p.is_file() and p.name not in (PROVENANCE_NAME, SUMS_NAME)
-        and not p.name.startswith('.')
+        p for p in site_root.rglob('*')
+        if p.is_file() and p.resolve() not in self_written
+        and not any(part.startswith('.') for part in p.relative_to(site_root).parts)
     )
     if not payload_files:
-        print(f'ERROR: no payload files found in {site_data}', file=sys.stderr)
+        print(f'ERROR: no publishable files found under {site_root}', file=sys.stderr)
         return 1
 
     files_record = [
-        {'name': p.name, 'bytes': p.stat().st_size, 'sha256': sha256_of(p)}
+        {'name': str(p.relative_to(site_root)), 'bytes': p.stat().st_size,
+         'sha256': sha256_of(p)}
         for p in payload_files
     ]
 
@@ -146,7 +186,7 @@ def main() -> int:
         'schema_version': SCHEMA_VERSION,
         'description': (
             'Build provenance for the leray-hopf-notes static site payload. '
-            'Verify with: cd site/data && sha256sum -c SHA256SUMS'
+            'Verify with: cd site && sha256sum -c data/SHA256SUMS'
         ),
         'source': {
             'repository': SOURCE_REPO,
@@ -175,9 +215,12 @@ def main() -> int:
     sums_path.write_text(
         ''.join(f'{f["sha256"]}  {f["name"]}\n' for f in files_record), encoding='utf-8')
 
-    print(f'Wrote {provenance_path.name} and {sums_path.name} for PIN {pin}')
-    for f in files_record:
+    print(f'Wrote {provenance_path.name} and {sums_path.name} for PIN {pin} '
+          f'({len(files_record)} published files under {site_root})')
+    for f in files_record[:6]:
         print(f'  {f["sha256"][:16]}…  {f["name"]} ({f["bytes"]} bytes)')
+    if len(files_record) > 6:
+        print(f'  … and {len(files_record) - 6} more')
     if record['ci'] is None:
         print('  ci: null (local build — no GITHUB_RUN_ID in environment)')
     else:

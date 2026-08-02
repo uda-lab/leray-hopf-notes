@@ -16,6 +16,8 @@ const state = {
   chapterTotals: new Map(),
   sources: null,           // slug -> verbatim Lean source, loaded lazily from data/sources.json
   sourcesPromise: null,
+  sourcesPin: undefined,   // notes#32: the nodes.json pin `sources` was fetched against
+
   trail: [],              // session navigation stack of decl slugs (breadcrumb)
 };
 
@@ -458,14 +460,19 @@ async function loadData() {
 }
 
 async function loadSources() {
+  // notes#32: the cache and any in-flight request are bound to the nodes payload they were
+  // made against. Without this, `state.sources` survives a reload that swapped nodes.json
+  // for a different commit, and the already-cached source — from the OLD commit — is handed
+  // out with no fetch and therefore no pin comparison at all.
+  const expected = (state.data && state.data.pin) || null;
+  if (state.sourcesPin !== expected) {
+    state.sources = null;
+    state.sourcesPromise = null;
+    state.sourcesPin = expected;
+  }
   if (state.sources) return state.sources;
   if (!state.sourcesPromise) {
     const sourcePayload = (state.data && state.data.source_payload) || 'sources.json';
-    // notes#32: capture the expectation NOW, from the nodes.json this request is being made
-    // against — not after the await. Reading state.data once the response lands would
-    // compare against whatever happens to be loaded by then, which is the wrong payload
-    // after a reload or route change and is exactly the drift this check exists to catch.
-    const expected = state.data && state.data.pin;
     state.sourcesPromise = fetch('data/' + sourcePayload)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(payload => {
@@ -475,8 +482,14 @@ async function loadSources() {
         // because it happens in the browser. Refuse the payload unless its pin matches, and
         // surface the mismatch instead of degrading to "no source available", which reads
         // like a missing file.
-        const got = payload && payload.pin;
-        if (expected && got !== expected) {
+        //
+        // EXACT agreement, including one-sided absence. An earlier `expected && …` form
+        // disabled the check whenever nodes.json carried no pin, so a pin-less nodes.json
+        // would happily accept a sources.json that names a concrete, different commit.
+        // Both absent is the only pin-less case that passes — that is a pre-pin payload,
+        // where there is genuinely nothing to compare.
+        const got = (payload && payload.pin) || null;
+        if (got !== expected) {
           const err = new Error(
             'source payload pin mismatch: expected ' + expected + ', got ' + (got || '(none)'));
           err.pinMismatch = { expected: expected, got: got || null };

@@ -103,16 +103,18 @@ used to stop at the workflow log, leaving the deployed site carrying no evidence
 `scripts/emit_build_provenance.py` writes the evidence into the payload itself: the
 pinned source commit and its URL, the payload counts (`decl_count` / `source_count` /
 `proof_status_counts`), the CI run that produced it (or an explicit `"ci": null` for a
-local build — it does not invent a run id), and the SHA-256 of every published file.
+local build — it does not invent a run id), and the SHA-256 of every published file — the whole `site/` tree, not just the data, since that is what the artifact steps upload.
 Verification needs nothing but the deployed site:
 
 ```bash
-cd site/data && sha256sum -c SHA256SUMS
+cd site && sha256sum -c data/SHA256SUMS
 ```
 
-The record excludes itself and `SHA256SUMS` from its own file list, and refuses to write
-at all if `nodes.json`'s pin disagrees with `extracted/PIN` — a record attesting to the
-wrong commit would be worse than none.
+The record excludes itself and `SHA256SUMS` from its own file list, refuses to write at
+all if either `nodes.json`'s or `sources.json`'s pin disagrees with `extracted/PIN` — a
+record attesting to the wrong commit would be worse than none — and clears any previous
+run's record and digests first, so stale evidence cannot survive a refusal in a reused
+workspace.
 
 **Leak scan: `scripts/scan_generated_payload.py`.** The payload embeds verbatim Lean
 source and the whole corpus, so it is where a stray absolute path, credential, or agent
@@ -134,7 +136,9 @@ planted leaks must be caught, and that legitimate content must not be.
 `sources.json` are fetched separately and joined in the browser, so a stale or swapped
 `sources.json` would attach the wrong Lean text to the right declaration — the one
 failure the build-time gate cannot see. `loadSources()` captures the expected pin at
-request time and rejects a payload whose `pin` differs, and the source panel says so
+request time, binds the source cache to it (so a reload that swaps in a different commit
+refetches instead of serving the old cached text with no comparison at all), requires
+*exact* agreement including one-sided absence, and rejects a payload whose `pin` differs, and the source panel says so
 explicitly rather than degrading to "source not found", which would read like a missing
 file and invite a pointless retry.
 

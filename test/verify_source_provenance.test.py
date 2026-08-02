@@ -33,6 +33,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / "scripts" / "verify_source_provenance.py"
 
 
+# Enough lines in the fixture Foo.lean for every declaration any test asks for.
+FIXTURE_DECLS = 16
+
+
 def import_script(name: str):
     spec = importlib.util.spec_from_file_location(name, SCRIPT_PATH)
     assert spec and spec.loader
@@ -65,7 +69,12 @@ def make_pinned_repo(tmp: Path) -> tuple[Path, str]:
     git(root, "init", "-q")
     git(root, "config", "user.email", "test@example.com")
     git(root, "config", "user.name", "Test")
-    (root / "Foo.lean").write_text("theorem foo : True := trivial\n", encoding="utf-8")
+    # One line per fixture declaration, so make_payloads can quote real file ranges: the
+    # source_text check (notes#32, added after the adversarial review on PR #135) compares
+    # every embedded snippet against its file/line range in this checkout.
+    (root / "Foo.lean").write_text(
+        "".join(f"theorem decl{i} : True := trivial\n" for i in range(FIXTURE_DECLS)),
+        encoding="utf-8")
     git(root, "add", "Foo.lean")
     git(root, "commit", "-q", "-m", "init")
     sha = subprocess.run(
@@ -84,9 +93,14 @@ def write_json(path: Path, data) -> None:
 def make_payloads(sha: str, decl_count: int, source_count: int) -> tuple[dict, dict]:
     """A valid, internally-consistent (nodes.json, sources.json) pair reflecting the real
     build_site_data.py output shape: the first `source_count` of `decl_count` node slugs
-    are marked has_source:true and have a matching entry in sources.json's "sources" map."""
+    are marked has_source:true and have a matching entry in sources.json's "sources" map.
+
+    Each node also carries the file/line range it came from, and its sources.json entry is
+    the verbatim text of that range in the fixture checkout — otherwise the source_text
+    check would (correctly) reject these payloads as not matching the pinned source."""
     node_list = [
-        {"slug": f"decl{i}", "has_source": i < source_count}
+        {"slug": f"decl{i}", "has_source": i < source_count,
+         "file": "Foo.lean", "startLine": i + 1, "endLine": i + 1}
         for i in range(decl_count)
     ]
     nodes = {
@@ -95,7 +109,8 @@ def make_payloads(sha: str, decl_count: int, source_count: int) -> tuple[dict, d
         "decl_count": decl_count,
         "nodes": node_list,
     }
-    sources_map = {f"decl{i}": f"source text {i}" for i in range(source_count)}
+    sources_map = {f"decl{i}": f"theorem decl{i} : True := trivial"
+                   for i in range(source_count)}
     sources = {
         "pin": sha,
         "source_count": source_count,
@@ -369,6 +384,41 @@ def test_missing_lean_root_fails() -> None:
     assert "does not exist" in out
 
 
+
+def test_tampered_source_text_fails() -> None:
+    """The four original checks are all bookkeeping — commit equality, cleanliness, counts,
+    keys — and a payload can satisfy every one while carrying text that commit never had.
+    Before the source_text check, exactly this payload passed the whole gate (adversarial
+    review, PR #135), and the provenance record written afterwards would have attested to it.
+    """
+    verify = import_script("verify_tampered")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 3, 3)
+        sources["sources"]["decl1"] = "TAMPERED SOURCE"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+    assert "decl1" in out, out
+    # The bookkeeping checks still pass — which is the point: they cannot see this.
+    assert "PASS: pin_match" in out and "PASS: pin_consistency" in out, out
+
+
+def test_missing_line_range_fails() -> None:
+    """A node marked has_source with no file/line range cannot be verified, so it must fail
+    rather than be skipped past."""
+    verify = import_script("verify_norange")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 2, 2)
+        del nodes["nodes"][0]["startLine"]
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -388,6 +438,8 @@ def main() -> None:
         test_has_source_slug_set_mismatch_fails,
         test_nodes_json_non_object_top_level_fails,
         test_missing_lean_root_fails,
+        test_tampered_source_text_fails,
+        test_missing_line_range_fails,
     ]
     for test in tests:
         test()
