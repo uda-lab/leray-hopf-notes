@@ -30,6 +30,7 @@ pointing inside the repo or outside it; `display_path` labels findings according
 """
 
 import argparse
+import os
 import re
 import sys
 import unicodedata
@@ -75,7 +76,15 @@ def display_path(fpath: Path) -> str:
     finding under a relative `--corpus`, which crashed the linter exactly when it had
     something to report.
     """
-    resolved = fpath.resolve()
+    try:
+        resolved = fpath.resolve()
+    except (OSError, RuntimeError):
+        # resolve() walks the filesystem, so it can fail on the very inputs a linter is
+        # most likely to be pointed at by accident: a symlink loop raises RuntimeError,
+        # other lookup failures raise OSError. Fall back to a purely lexical absolute
+        # path, which touches no filesystem. Formatting a path must never be the thing
+        # that aborts the run — that is the same failure shape as the original bug.
+        resolved = Path(os.path.abspath(fpath))
     try:
         return str(resolved.relative_to(REPO_ROOT))
     except ValueError:

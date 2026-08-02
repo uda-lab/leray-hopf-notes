@@ -8,7 +8,17 @@ to report about — and a clean subtree passed, which is why it stayed hidden. T
 call also crashed for an absolute `--corpus` pointing outside the repo.
 
 Covers: relative and absolute `--corpus` with a hard finding, an out-of-repo `--corpus`,
-the YAML parse-error branch (the second crash site), and the clean-subtree exit-0 path.
+the YAML parse-error branch (the second crash site), a symlink loop (which made the first
+fix's `resolve()` raise `RuntimeError` — the same "formatting a path aborts the run" shape
+as the original bug), and the clean-subtree exit-0 path.
+
+Two kinds of check live here, and they fail for different reasons:
+
+* **Regression checks** — relative `--corpus`, out-of-repo `--corpus`, the parse-error
+  branch, and the symlink loop. These fail against the pre-fix script.
+* **Compatibility checks** — absolute in-repo `--corpus`, the clean subtree, and the
+  missing directory. These pass both before and after the fix on purpose: they pin the
+  behaviour the fix must not disturb.
 """
 
 from __future__ import annotations
@@ -60,8 +70,11 @@ def import_script(name: str, path: Path):
 def run_main(module, argv: list[str]) -> tuple[int, str]:
     """Run the linter's main() with argv, returning (exit_code, combined output).
 
-    A ValueError escaping main() is the notes#128 crash itself, so it is caught and
-    reported as a distinct exit code rather than aborting the whole test run.
+    The notes#128 crashes escape main() as exceptions rather than exit codes: ValueError
+    from `relative_to`, and RuntimeError/OSError from `resolve()` on a symlink loop. They
+    are caught here and turned into a distinct exit code so the check that expects them
+    to be gone reports a readable FAIL, instead of the crash killing the test run itself.
+    The catch is deliberately limited to that family — anything else still propagates.
     """
     old_argv = sys.argv[:]
     sys.argv = [str(module.__file__), *argv]
@@ -79,8 +92,8 @@ def run_main(module, argv: list[str]) -> tuple[int, str]:
                     # into the captured output the checks read.
                     out.write(f"\n{exc.code}")
                     code = 1
-            except ValueError as exc:
-                out.write(f"\nCRASHED with ValueError: {exc}")
+            except (ValueError, RuntimeError, OSError) as exc:
+                out.write(f"\nCRASHED with {type(exc).__name__}: {exc}")
                 code = -1
             else:
                 code = 0
@@ -176,6 +189,26 @@ def test_relative_corpus_with_parse_error(module) -> None:
     check("relative --corpus reports the parse error", "parse error" in out, out)
 
 
+def test_symlink_loop(module) -> None:
+    """A looping symlink makes `Path.resolve()` raise RuntimeError, so the first fix for
+    notes#128 traded the original ValueError for a narrower crash. Path formatting has to
+    be total: the loop must surface as a reported parse error, not an aborted run."""
+    with tempfile.TemporaryDirectory(dir=REPO_ROOT) as tmp:
+        sub = Path(tmp) / "sub"
+        sub.mkdir(parents=True)
+        (sub / "loop.yaml").symlink_to("loop.yaml")
+        rel = Path(tmp).name + "/sub"
+        with chdir(REPO_ROOT):
+            code, out = run_main(module, ["--corpus", rel])
+    check("symlink loop under a relative --corpus does not crash", code == 1, out)
+    check("symlink loop is reported as a parse error", "parse error" in out, out)
+    check(
+        "symlink loop still gets a repo-relative label",
+        f"{rel}/loop.yaml" in out,
+        out,
+    )
+
+
 def test_relative_corpus_clean_subtree(module) -> None:
     """A clean subtree exits 0 under both --strict and plain mode (the pre-fix behaviour
     that masked the bug — it must not regress into a spurious failure)."""
@@ -206,6 +239,7 @@ def main() -> None:
     test_absolute_corpus_inside_repo_with_finding(module)
     test_absolute_corpus_outside_repo_with_finding(module)
     test_relative_corpus_with_parse_error(module)
+    test_symlink_loop(module)
     test_relative_corpus_clean_subtree(module)
     test_missing_corpus_dir_still_errors(module)
     print(f"\nAll {len(CHECKS)} notes#128 prose_lint path checks passed.")
