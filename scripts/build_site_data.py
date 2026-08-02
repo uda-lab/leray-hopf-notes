@@ -281,6 +281,14 @@ def read_citation_meta(pin: str, warnings: list) -> dict:
         'license_url': cff.get('license-url', ''),
         'source_repository': source.get('repository-code', ''),
         'source_commit': source_commit,
+        # notes#32 item 11: the site should link the source-side release attestation, not
+        # just the bare commit. CITATION.cff carries `version` only while the pin sits
+        # exactly on a release tag (see the caveat comment there), so its presence is
+        # precisely the condition under which a release link is meaningful — absent it, the
+        # site falls back to the commit link rather than guessing at a tag that may not
+        # exist.
+        'source_version': source.get('version') or '',
+        'source_date_released': str(source.get('date-released') or ''),
     }
 
 

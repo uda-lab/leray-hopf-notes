@@ -521,6 +521,45 @@ check('(h) renderAbout lists bibliography entries, shows citation/license metada
     'the id passed to renderAbout must be highlighted');
 });
 
+check('(#32) renderAbout links the source-side release attestation when the pin is a release', () => {
+  const appEl = document.getElementById('app');
+  const baseCitation = {
+    authors: ['Tomoki Uda'],
+    repository_code: 'https://github.com/uda-lab/leray-hopf-notes',
+    source_repository: 'https://github.com/uda-lab/leray-hopf',
+    source_commit: 'abc123deadbeef',
+  };
+
+  // With a release version present, the release tag must be linked — this is what lets a
+  // reader reach the full-build attestation for this exact commit.
+  appEl.innerHTML = '';
+  state.data = {
+    nodes: [], chapters: [], pin: 'abc123deadbeef', bibliography: {},
+    citation: Object.assign({}, baseCitation,
+      { source_version: '0.2.0', source_date_released: '2026-08-02' }),
+  };
+  renderAbout(appEl, null);
+  const releaseLink = Array.from(appEl.querySelectorAll('a'))
+    .find(a => a.getAttribute('href') === 'https://github.com/uda-lab/leray-hopf/releases/tag/v0.2.0');
+  assert.ok(releaseLink, 'the release tag must be linked when CITATION.cff carries a version');
+  assert.strictEqual(releaseLink.textContent, 'v0.2.0');
+  assert.ok(appEl.textContent.includes('2026-08-02'), 'the release date must be shown');
+
+  // Without a version — i.e. pinned to an untagged commit — no release link may be
+  // invented; the commit link alone remains.
+  appEl.innerHTML = '';
+  state.data = {
+    nodes: [], chapters: [], pin: 'abc123deadbeef', bibliography: {},
+    citation: Object.assign({}, baseCitation),
+  };
+  renderAbout(appEl, null);
+  const invented = Array.from(appEl.querySelectorAll('a'))
+    .find(a => (a.getAttribute('href') || '').includes('/releases/tag/'));
+  assert.ok(!invented, 'no release link may be guessed when the pin is not on a release tag');
+  assert.ok(Array.from(appEl.querySelectorAll('a')).some(a => a.textContent === 'abc123deadbeef'),
+    'the commit link must still be present');
+});
+
 /* ==== notes#72: accessibility — DAG toggle is a real, keyboard-operable control ==== */
 check('(i) dagItem renders the expand toggle as a real <button> with aria-expanded, toggling on click', () => {
   addNode({

@@ -1309,6 +1309,26 @@ function renderAbout(app, highlightId) {
       el('a', { href: citation.source_repository, text: citation.source_repository }),
       pin ? el('span', {}, [' — pinned commit ', el('a', { class: 'mono', href: commitHref, text: pin })]) : null,
     ]));
+    // notes#32 item 11: link the source-side release attestation, so a reader can check
+    // the full-build evidence for this exact commit without this repo running a Lean build.
+    // Only rendered when CITATION.cff carries a version, which it does only while the pin
+    // sits on a release tag — otherwise there is no release page to point at.
+    if (citation.source_version) {
+      const tag = 'v' + citation.source_version;
+      citeList.appendChild(el('li', {}, [
+        'ソース側リリース: ',
+        el('a', {
+          href: `${citation.source_repository}/releases/tag/${tag}`,
+          text: tag,
+        }),
+        el('span', {
+          text: citation.source_date_released
+            ? `（${citation.source_date_released} 公開。full-build attestation と `
+              + `release-provenance.json はリリース資産として恒久保存されている）`
+            : '（full-build attestation はリリース資産として保存されている）',
+        }),
+      ]));
+    }
   }
   if (citation.license) {
     citeList.appendChild(el('li', { text: 'license: ' + [].concat(citation.license).join(', ')
