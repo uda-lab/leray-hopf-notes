@@ -95,8 +95,11 @@ def make_payload(root: Path, *, pin: str = 'a' * 40, extra_prose: str | None = N
 # --------------------------------------------------------------------------- scan
 
 LEAK_PROBES = {
-    'GitHub token': 'ghp_' + 'A' * 30,
-    'OpenAI key': 'sk-' + 'B' * 32,
+    'GitHub token (legacy ghp_)': 'ghp_' + 'A' * 30,
+    'GitHub token (fine-grained github_pat_)': 'github_pat_' + '1A2B3C4D5E' * 8 + 'abcdef',
+    'OpenAI key (legacy sk-)': 'sk-' + 'B' * 32,
+    'OpenAI key (project sk-proj-)': 'sk-proj-' + 'A' * 48,
+    'OpenAI key (service account sk-svcacct-)': 'sk-svcacct-' + 'B' * 40,
     'AWS key id': 'AKIA' + 'C' * 16,
     'PEM private key': '-----BEGIN RSA PRIVATE KEY-----',
     'home path': '/home/vscode/notes/secret.md',

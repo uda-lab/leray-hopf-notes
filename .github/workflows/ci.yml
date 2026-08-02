@@ -211,6 +211,14 @@ jobs:
         # public. This was a one-off manual audit (issue #32, 2026-07-16); here it gates
         # every build. Runs last of the payload steps so it covers every file that ships,
         # including the size report and the provenance record just written.
+        #
+        # `!cancelled()` so it still runs when the size-report step failed its hard ceiling.
+        # That failure is deliberately inspectable (see the upload step), which means the
+        # payload still gets uploaded — so it must still have been scanned first. Without
+        # this, a size breach would skip the scan and the upload condition below would then
+        # have to choose between blocking a legitimate inspection or shipping unscanned.
+        id: leak-scan
+        if: ${{ !cancelled() }}
         run: python3 scripts/scan_generated_payload.py
 
       - name: Upload site artifact
@@ -218,7 +226,14 @@ jobs:
         # hard-ceiling breach is inspectable. Runs on every PR and push (not just main),
         # so PR-time source-enabled builds stay inspectable even though only a push to
         # main goes on to actually deploy.
-        if: ${{ !cancelled() }}
+        #
+        # But NOT when the leak scan rejected the payload. `!cancelled()` alone is true
+        # after any ordinary step failure, so this step would otherwise package the exact
+        # payload the scan just refused and publish it as a downloadable Actions artifact —
+        # deployment being skipped is no comfort when the bytes are one click away. Gating
+        # on the scan's own conclusion keeps the size-report inspection path open (the scan
+        # runs regardless of that failure) while closing the leak path.
+        if: ${{ !cancelled() && steps.leak-scan.conclusion == 'success' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: site-data
@@ -232,7 +247,9 @@ jobs:
         # vars.PAGES_DEPLOY_ENABLED repository variable (see that job's comment); this
         # upload step uses the identical condition so nothing pages-shaped is even
         # prepared, let alone deployed, until the owner has explicitly flipped the gate.
-        if: ${{ !cancelled() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PAGES_DEPLOY_ENABLED == 'true' }}
+        # Same leak-scan gate as the plain artifact upload above, for the same reason: a
+        # Pages artifact that was rejected by the scan must not be packaged at all.
+        if: ${{ !cancelled() && steps.leak-scan.conclusion == 'success' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && vars.PAGES_DEPLOY_ENABLED == 'true' }}
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site/

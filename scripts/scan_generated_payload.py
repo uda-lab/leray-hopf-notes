@@ -73,8 +73,14 @@ REQUIRED_PAYLOADS = ('nodes.json', 'sources.json', 'coverage.json')
 # (label, compiled pattern). Ordered roughly by severity.
 LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # --- credentials -------------------------------------------------------------
-    ('GitHub token', re.compile(r'\bgh[pousr]_[A-Za-z0-9]{20,}')),
-    ('OpenAI-style key', re.compile(r'\bsk-[A-Za-z0-9]{20,}')),
+    # Legacy (`ghp_`, `gho_`, …) AND fine-grained (`github_pat_…`) GitHub tokens. The
+    # fine-grained form is the current default when minting a PAT, so matching only the
+    # legacy prefixes would miss the shape most likely to leak today.
+    ('GitHub token', re.compile(r'\bgh[pousr]_[A-Za-z0-9]{20,}|\bgithub_pat_[A-Za-z0-9_]{20,}')),
+    # OpenAI keys. The hyphen class matters: a project key is `sk-proj-…` and a service
+    # account key `sk-svcacct-…`, so a `sk-[A-Za-z0-9]{20,}` rule stops dead at the second
+    # hyphen and never reaches its length floor — it matched only the oldest key format.
+    ('OpenAI-style key', re.compile(r'\bsk-(?:proj-|svcacct-|admin-)?[A-Za-z0-9_-]{20,}')),
     ('AWS access key id', re.compile(r'\bAKIA[0-9A-Z]{16}\b')),
     ('Google API key', re.compile(r'\bAIza[0-9A-Za-z_-]{35}\b')),
     ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}')),
