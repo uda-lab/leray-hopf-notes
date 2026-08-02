@@ -30,6 +30,23 @@ from imagination, because the payload is full of mathematical prose that trips n
   `Scratch/` module. Those are outside the extraction universe by design, so their presence
   would mean the universe or the reader had gone wrong, not merely that prose looked odd.
 
+Known limits — deliberately not covered
+---------------------------------------
+
+This is a pattern scan, not a secret-detection engine, and saying so beats implying
+completeness. It will not catch a credential that carries no recognisable marker:
+
+* **base64-encoded secrets.** An opaque base64 blob is indistinguishable from legitimate
+  encoded data by shape alone; a rule broad enough to catch it would fire on anything.
+* **a bare key body with its header stripped** (e.g. an SSH public-key body without
+  `ssh-rsa`), for the same reason.
+* **high-entropy strings in general.** An entropy heuristic on a payload this size, full of
+  Lean identifiers and LaTeX, produces far more noise than signal.
+
+Every pattern below was verified to produce zero hits on a real source-enabled build before
+being added — a rule that fires on legitimate content is worse than no rule, because the
+first person it inconveniences will simply switch the gate off.
+
 Usage:
     python3 scripts/scan_generated_payload.py
     python3 scripts/scan_generated_payload.py --site-data site/data
@@ -63,6 +80,14 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}')),
     ('PEM private key', re.compile(r'-----BEGIN [A-Z ]*PRIVATE KEY-----')),
     ('Bearer credential', re.compile(r'(?i)\bauthorization\s*:\s*bearer\s+[A-Za-z0-9._-]{20,}')),
+    ('JWT', re.compile(r'\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}')),
+    # Credentials embedded in a URL's userinfo — covers `postgres://user:pw@host/db`,
+    # `https://user:token@host/…`, and the rest of that family in one rule.
+    ('credentials in URL', re.compile(r'://[^\s/@:"\\]+:[^\s/@"\\]+@')),
+    ('email address', re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')),
+    ('internal .local host', re.compile(r'\bhttps?://[A-Za-z0-9.-]+\.local\b')),
+    ('private IPv4 address',
+     re.compile(r'\b(?:10|192\.168|172\.(?:1[6-9]|2\d|3[01]))\.\d{1,3}\.\d{1,3}\b')),
     # Assignment shapes: a credential-ish key, then a long opaque value. The quote is
     # optional and may be backslash-escaped, because these files are JSON — an embedded
     # `api_key: "…"` is stored as `api_key: \"…\"`, and requiring a bare quote character

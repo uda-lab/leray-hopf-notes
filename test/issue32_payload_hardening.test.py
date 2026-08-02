@@ -90,6 +90,19 @@ LEAK_PROBES = {
     'agent config dir': '/home/x/.claude/projects/foo',
     'credential assignment': 'api_key: "' + 'D' * 20 + '"',
     'Windows path': r'C:\Users\bob\notes',
+    'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
+    'credentials in URL': 'postgres://user:pw@db.internal:5432/app',
+    'HTTP basic auth in URL': 'https://bob:hunter2@example.com/x',
+    'email address': 'someone@example.com',
+    'internal .local host': 'https://internal.uda-lab.local:8443/admin',
+    'private IPv4': 'reachable at 10.0.0.5 from the runner',
+}
+
+# Shapes the scan knowingly does NOT catch. Pinned so the documented limits stay honest:
+# if a future pattern starts catching one of these, the docstring must stop disclaiming it.
+DOCUMENTED_LIMITS = {
+    'base64-encoded credential': 'dXNlcjpzdXBlcnNlY3JldHBhc3N3b3JkMTIz',
+    'SSH key body without header': 'AAAAB3NzaC1yc2EAAAADAQABAAABgQ' + 'C' * 40,
 }
 
 # Content that MUST NOT trip the scan — all of it really appears in this corpus.
@@ -124,6 +137,19 @@ def test_scan_ignores_legitimate_content() -> None:
             data = make_payload(Path(td), extra_prose=payload)
             code, out = run(SCAN, '--site-data', str(data))
         check(f'scan does NOT fire on legitimate content: {label}', code == 0, out)
+
+
+def test_documented_limits_stay_documented() -> None:
+    """The docstring disclaims these shapes; pin that so the disclaimer stays truthful.
+
+    If a future pattern starts catching one of them, this check fails and forces the
+    docstring to be updated — the disclaimer is part of the contract, not a hedge.
+    """
+    for label, payload in DOCUMENTED_LIMITS.items():
+        with tempfile.TemporaryDirectory() as td:
+            data = make_payload(Path(td), extra_prose=f'説明。{payload}')
+            code, _ = run(SCAN, '--site-data', str(data))
+        check(f'documented limit still applies (not caught): {label}', code == 0)
 
 
 def test_scan_rejects_scaffold_source() -> None:
@@ -245,6 +271,7 @@ def main() -> None:
     test_scan_accepts_clean_payload()
     test_scan_detects_leaks()
     test_scan_ignores_legitimate_content()
+    test_documented_limits_stay_documented()
     test_scan_rejects_scaffold_source()
     test_scan_requires_core_payloads()
     test_scan_covers_files_added_later()
