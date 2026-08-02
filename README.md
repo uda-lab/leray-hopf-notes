@@ -20,7 +20,7 @@ issue/PR の書き方は [`CONTRIBUTING.md`](CONTRIBUTING.md) にまとめてい
 
 ```
 corpus/           宣言ごとの注釈 YAML（statement_ja / proof_ja / gap note / chapter）
-                  layout: corpus/<モジュールパス>/<宣言名>.yaml
+                  layout: corpus/LerayHopf/<宣言名>.yaml（フラット。corpus/README.md 参照）
 extracted/        機械抽出 JSON（leray-hopf の warm ビルドから生成、コミット済み）
   names-fallback.json  静的 walk による名前 universe（decls.json 欠落時のフォールバック、
                         意図的に unrefresh のスケルトン — decls.json が正典）

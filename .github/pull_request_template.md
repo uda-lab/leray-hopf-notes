@@ -3,7 +3,7 @@
 ## 対象宣言リスト
 
 <!-- 追加・更新した corpus YAML のファイルパスと宣言名を列挙 -->
-<!-- 例: corpus/LerayHopf/R3/AxiomaticClosure/exists_lerayHopf_r3_axiomatic.yaml -->
+<!-- 例: corpus/LerayHopf/exists_lerayHopf_r3_axiomatic.yaml（配置はフラット。corpus/README.md 参照） -->
 
 - [ ] 
 

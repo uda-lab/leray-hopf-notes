@@ -47,7 +47,7 @@ backtick/allowlist exemption. Otherwise 0.
 Usage:
     python3 scripts/glossary_lint.py
     python3 scripts/glossary_lint.py --strict
-    python3 scripts/glossary_lint.py --corpus corpus/LerayHopf/R3/  # specific subtree
+    python3 scripts/glossary_lint.py --corpus corpus/LerayHopf/  # specific subtree
 """
 
 import argparse
