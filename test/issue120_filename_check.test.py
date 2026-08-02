@@ -323,6 +323,36 @@ def test_ambiguous_annotation_tracked_by_file() -> None:
           wp.is_annotated(plain, {'LerayHopf.rellich_seq_compact'}, set(), set()))
 
 
+def test_fallback_universe_declares_no_collisions() -> None:
+    """`names-fallback.json` is a static text scan, deliberately left un-refreshed, so its
+    duplicates are not real collisions. Trusting them would offer module-qualified skeletons
+    for genuinely unique declarations whose corpus entries correctly omit `file` — which then
+    stop being recognised as annotated, so saving the skeleton duplicates the annotation.
+    `validate.py` returns an empty collision map on the fallback path; this must agree."""
+    wp = import_script('workpacket_issue120_fb', REPO_ROOT / 'scripts' / 'workpacket.py')
+    authoritative = json.loads((REPO_ROOT / 'extracted' / 'decls.json').read_text('utf-8'))
+    fallback = json.loads(
+        (REPO_ROOT / 'extracted' / 'names-fallback.json').read_text('utf-8'))
+
+    auth_amb = wp.ambiguous_names_in(authoritative, 'decls.json')
+    fb_amb = wp.ambiguous_names_in(fallback, 'names-fallback.json')
+    check('authoritative universe reports its real collisions', len(auth_amb) == 2,
+          repr(sorted(auth_amb)))
+    check('fallback universe reports no collisions', fb_amb == set(), repr(sorted(fb_amb)))
+
+    # A name duplicated only by the fallback scan must keep the plain path and stay
+    # recognised as annotated via its (file-less) corpus entry.
+    spurious = {'name': 'LerayHopf.exists_weak_limit_in_submodule',
+                'file': 'LerayHopf/Bochner/WeakLimitToolkit.lean'}
+    check('fallback-only duplicate keeps a plain path',
+          wp.corpus_path_for(spurious, fb_amb) ==
+          'corpus/LerayHopf/exists_weak_limit_in_submodule.yaml',
+          wp.corpus_path_for(spurious, fb_amb))
+    check('fallback-only duplicate is still recognised as annotated',
+          wp.is_annotated(spurious, {'LerayHopf.exists_weak_limit_in_submodule'},
+                          set(), fb_amb))
+
+
 def test_missing_name_does_not_crash() -> None:
     """A missing `name` is already a schema error — the filename check must not add noise
     on top of it, and must not raise."""
@@ -355,6 +385,7 @@ def main() -> None:
     test_workpacket_generates_flat_paths()
     test_generated_ambiguous_skeleton_validates()
     test_ambiguous_annotation_tracked_by_file()
+    test_fallback_universe_declares_no_collisions()
     test_missing_name_does_not_crash()
     test_committed_corpus_is_clean()
     print(f'\nAll {len(CHECKS)} notes#120 filename-check tests passed.')

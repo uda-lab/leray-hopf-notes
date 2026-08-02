@@ -102,6 +102,27 @@ def load_annotated_names() -> tuple[set[str], set[tuple[str, str]]]:
     return names, keys
 
 
+def ambiguous_names_in(universe: list[dict], universe_source: str) -> set[str]:
+    """Display names carried by more than one declaration (notes#7, notes#120).
+
+    Only the authoritative universe counts. `names-fallback.json` is a static text scan and
+    is deliberately left un-refreshed, so it carries duplicates that are not real collisions
+    — currently nine "ambiguous" names against the authoritative two. Trusting those would
+    make the generator offer module-qualified skeletons for declarations that are actually
+    unique, and their existing corpus entries (which correctly omit `file`) would stop being
+    recognised as annotated, so saving either skeleton produces a duplicate annotation.
+
+    `validate.py` takes the same position: `load_name_universe` returns an empty collision
+    map on the fallback path. Diverging from that is what makes the two disagree.
+    """
+    if universe_source != 'decls.json':
+        return set()
+    counts: dict[str, int] = {}
+    for decl in universe:
+        counts[decl['name']] = counts.get(decl['name'], 0) + 1
+    return {name for name, count in counts.items() if count > 1}
+
+
 def is_annotated(decl: dict, annotated_names: set[str],
                  annotated_keys: set[tuple[str, str]],
                  ambiguous_names: set[str]) -> bool:
@@ -271,12 +292,7 @@ def main() -> None:
         annotated_names, annotated_keys = load_annotated_names()
     chapter_label = args.chapter or args.module or 'all'
 
-    # Display names carried by more than one declaration need module-qualified filenames;
-    # a flat corpus cannot give them the same one (notes#7, notes#120).
-    name_counts: dict[str, int] = {}
-    for decl in universe:
-        name_counts[decl['name']] = name_counts.get(decl['name'], 0) + 1
-    ambiguous_names = {name for name, count in name_counts.items() if count > 1}
+    ambiguous_names = ambiguous_names_in(universe, universe_source)
 
     # Filter universe
     candidates = []
