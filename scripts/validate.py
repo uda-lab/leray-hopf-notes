@@ -176,6 +176,35 @@ def check_references(doc: dict, fpath: Path, bib_ids: set[str]) -> list[str]:
     return errs
 
 
+def check_filename_matches_name(doc: dict, fpath: Path) -> list[str]:
+    """The filename must end with the declaration's simple name (notes#120).
+
+    Filenames are a convention, not a key — nothing else joins on them, which is how
+    `corpus/README.md` came to document a nested module layout the corpus never had. A
+    full filename-vs-`name` equality check is not available: two slug conventions coexist,
+    the plain one (`name` minus the `LerayHopf.` prefix) and a module-qualified one
+    (`Bochner.WeakLimitToolkit.exists_weak_limit_in_submodule` for a declaration whose
+    display name has no such namespace). Enforcing equality would mean renaming every file
+    of the second kind.
+
+    What *is* invariant across both conventions is the final dot-component, so that is what
+    this checks. It still catches the realistic drift — a typo, or a file copied from a
+    neighbouring declaration and only half-edited — without demanding a mass rename.
+    """
+    name = doc.get('name')
+    if not isinstance(name, str) or not name:
+        return []  # missing/!str `name` is already a schema error; don't double-report
+    expected = name.rsplit('.', 1)[-1]
+    actual = fpath.stem.rsplit('.', 1)[-1]
+    if actual != expected:
+        return [
+            f'ERROR: {fpath}: filename\'s last component "{actual}" does not match the '
+            f'declaration\'s simple name "{expected}" (from name: "{name}") — see the '
+            f'Naming section of corpus/README.md'
+        ]
+    return []
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--strict', action='store_true',
@@ -274,6 +303,7 @@ def main() -> None:
             errors.extend(errs)
 
         errors.extend(check_references(doc, fpath, bib_ids))
+        errors.extend(check_filename_matches_name(doc, fpath))
 
         # notes#65 safety net: proof_status defaults to 'verified' when absent, so a corpus
         # entry whose own prose admits an intentionally-open `sorry` but never sets

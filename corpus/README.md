@@ -5,15 +5,18 @@ Per-declaration annotation YAML files.
 ## Layout
 
 ```
-corpus/<module-path>/<decl-name>.yaml
+corpus/LerayHopf/<slug>.yaml
 ```
 
-The `<module-path>` mirrors the Lean module path with `.` replaced by `/`.
-For example, the declaration `LerayHopf.R3.rellich_seq_compact` lives at:
+The corpus is **flat**: every entry sits directly in `corpus/LerayHopf/`, and the Lean module
+hierarchy is *not* mirrored as directories. For example, the declaration
+`LerayHopf.rellich_seq_compact`, defined in `LerayHopf/Torus/RellichEmbedding.lean`, lives at:
 
 ```
-corpus/LerayHopf/R3/rellich_seq_compact.yaml
+corpus/LerayHopf/rellich_seq_compact.yaml
 ```
+
+Neither the defining module nor the `R3` / `Torus` split appears anywhere in the path.
 
 ## Schema
 
@@ -32,8 +35,46 @@ Key fields:
 
 ## Naming
 
-Corpus files use the declaration's **simple name** (last component) as the filename.
-The fully-qualified name is stored in the `name` field for join against `extracted/`.
+`<slug>` is normally the fully-qualified declaration name with the leading `LerayHopf.`
+stripped. A declaration that carries a namespace therefore keeps it in the filename, dots and
+all — the slug is not reduced to the last component:
+
+```
+LerayHopf.Galerkin.GlobalLerayHopfSolution
+  -> corpus/LerayHopf/Galerkin.GlobalLerayHopfSolution.yaml
+```
+
+A minority of files instead qualify the slug by the **defining module** path, flattened with
+dots:
+
+```
+LerayHopf.exists_weak_limit_in_submodule        (LerayHopf/Bochner/WeakLimitToolkit.lean)
+  -> corpus/LerayHopf/Bochner.WeakLimitToolkit.exists_weak_limit_in_submodule.yaml
+```
+
+This form is **required** when two declarations share a display `name` — a flat corpus cannot
+give them the same filename. Private helpers in different modules collide this way, and the
+module prefix is what separates them:
+
+```
+LerayHopf.measurable_natFloor_real   (two private declarations, two modules)
+  -> corpus/LerayHopf/Bochner.StepFunctionCompactness.measurable_natFloor_real.yaml
+  -> corpus/LerayHopf/R3.SpacetimePrecompact.measurable_natFloor_real.yaml
+```
+
+Disambiguate by **prefixing**, never by suffixing: `measurable_natFloor_real_a.yaml` would
+spell a declaration that does not exist.
+
+**The filename is a convention, not a key.** The join is on the `name` field, which must match
+a declaration in `extracted/decls.json`; `file` disambiguates when a display `name` is
+ambiguous (notes#7).
+
+`validate.py` does check that the filename's **last dot-component** equals the declaration's
+simple name, which catches a typo or a half-edited copy of a neighbouring entry. It cannot
+check more than that: the two slug conventions above coexist, so requiring the whole filename
+to equal `name` minus the prefix would mean renaming every module-qualified file (notes#120).
+
+When adding an entry, prefer the first form — the `name` field minus the `LerayHopf.` prefix.
 
 ## 執筆規約（notes#12 v1.1 — 組版・レジスタ）
 
