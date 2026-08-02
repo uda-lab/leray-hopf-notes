@@ -114,8 +114,12 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 
     # --- local filesystem paths --------------------------------------------------
     ('home directory path', re.compile(r'/home/[A-Za-z0-9._-]+/')),
+    ('root home path', re.compile(r'/root/[A-Za-z0-9._-]+')),
     ('macOS home path', re.compile(r'/Users/[A-Za-z0-9._-]+/')),
-    ('container workspace path', re.compile(r'/workspaces/[A-Za-z0-9._-]+')),
+    # Both spellings: this container mounts /workspaces/<repo>, other agent images use the
+    # singular /workspace/<repo>, and a rule that knows only the local one would miss the
+    # very path it exists to catch when the payload is built elsewhere.
+    ('container workspace path', re.compile(r'/workspaces?/[A-Za-z0-9._-]+')),
     ('tmp path', re.compile(r'/tmp/[A-Za-z0-9._/-]+')),
     ('macOS temp path', re.compile(r'/var/folders/[A-Za-z0-9._/+-]+')),
     ('CI runner path', re.compile(r'/runner/_work/[A-Za-z0-9._/-]+')),
@@ -126,7 +130,9 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # Machine-generated session identity, NOT human-authored provenance prose.
     ('agent session id', re.compile(r'(?i)\b(?:CODEX_COMPANION_)?SESSION_ID\s*[:=]')),
     ('assistant session URL', re.compile(r'https?://claude\.ai/code/session[_/]')),
-    ('agent config directory', re.compile(r'/\.claude/(?:projects|plugins|shell-snapshots)/')),
+    # Agent home/state directories, across the assistants that actually build this repo.
+    ('agent config directory',
+     re.compile(r'/\.(?:claude|codex)/(?:projects|plugins|shell-snapshots|sessions|log)/')),
     ('agent transcript path', re.compile(r'TRANSCRIPT_PATH\s*[:=]')),
     ('tool-call transcript marker', re.compile(r'<(?:function_calls|invoke name=|tool_use_id)')),
 ]
@@ -135,13 +141,25 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 SCAFFOLD_MODULE = re.compile(r'(?:^|/)Scratch/')
 
 
+def redact_all(fragment: str) -> str:
+    """Replace every recognised secret shape in `fragment` with a length-only placeholder.
+
+    The context window around a finding is printed to the Actions log — which is public, and
+    is written precisely when publication was rejected, i.e. exactly when a real credential
+    is present. Redacting only the match that triggered *this* finding would print any
+    neighbouring credential verbatim: two adjacent tokens each disclose the other. So every
+    pattern is applied to the whole fragment before it is shown.
+    """
+    for _name, pattern in LEAK_PATTERNS:
+        fragment = pattern.sub(lambda m: f'‹redacted:{len(m.group(0))} chars›', fragment)
+    return fragment
+
+
 def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
-    """A short, redacted window around a hit — enough to locate it, not to leak it."""
+    """A short, fully-redacted window around a hit — enough to locate it, not to leak it."""
     lo = max(0, start - width)
     hi = min(len(text), end + width)
-    hit_len = end - start
-    redacted = text[start:start + 4] + '…' + f'[{hit_len} chars]'
-    return (text[lo:start] + '‹' + redacted + '›' + text[end:hi]).replace('\n', ' ')
+    return redact_all(text[lo:hi]).replace('\n', ' ')
 
 
 def scan_text(label: str, text: str) -> list[str]:

@@ -269,12 +269,23 @@ def read_citation_meta(pin: str, warnings: list) -> dict:
     refs = cff.get('references')
     source = refs[0] if isinstance(refs, list) and refs and isinstance(refs[0], dict) else {}
     source_commit = source.get('commit', '')
-    _citation_pin_agrees = not (pin and source_commit and pin != source_commit)
-    if not _citation_pin_agrees:
+    # Agreement requires BOTH values to be present and equal. Treating a missing commit as
+    # agreement would let a CITATION.cff that kept its `version` but lost its `commit` keep
+    # advertising a release link, with nothing tying that release to extracted/PIN.
+    _citation_pin_agrees = bool(pin) and bool(source_commit) and pin == source_commit
+    if pin and source_commit and pin != source_commit:
         warnings.append(
             f'WARNING: CITATION.cff references[0].commit ({source_commit}) does not '
             f'match extracted/PIN ({pin}) — the next repin PR must update CITATION.cff too; '
             f'the release link is suppressed until they agree'
+        )
+    elif source.get('version') and not _citation_pin_agrees:
+        # A version with nothing to tie it to the pin: the link would assert a release
+        # relationship the data cannot support, so it is withheld and said out loud.
+        warnings.append(
+            f'WARNING: CITATION.cff references[0] has version '
+            f'"{source.get("version")}" but no commit to check against extracted/PIN '
+            f'({pin or "(absent)"}) — the release link is suppressed'
         )
     return {
         'authors': authors,

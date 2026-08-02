@@ -167,6 +167,7 @@ jobs:
           python3 scripts/build_site_data.py --lean-root leray-hopf
 
       - name: Verify source provenance (notes#32 fail-closed gate)
+        id: verify-provenance
         # Independently re-checks the leray-hopf checkout against extracted/PIN via git
         # plumbing (not the ref string used to request the checkout), confirms the
         # checkout is clean and detached, and cross-checks the build outputs — hard-fails
@@ -203,6 +204,14 @@ jobs:
         # it runs *after* the size report, because that step writes site/data/size-report.json
         # — emitting checksums first would ship one published file with no digest, which is
         # exactly the hole this step exists to close.
+        #
+        # `!cancelled() && verify-provenance succeeded` rather than the default `success()`:
+        # a size-ceiling breach is a supported, deliberately-inspectable failure, and under
+        # the default condition it would skip this step, so the inspection artifact would be
+        # published with no checksums at all. Gating on the provenance gate instead keeps
+        # the one thing that must never be attested-around — an unverified payload — while
+        # letting the size-breach path keep its evidence.
+        if: ${{ !cancelled() && steps.verify-provenance.conclusion == 'success' }}
         run: python3 scripts/emit_build_provenance.py
 
       - name: Scan generated payload for leaks (notes#32)

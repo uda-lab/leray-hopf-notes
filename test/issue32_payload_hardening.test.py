@@ -116,6 +116,9 @@ LEAK_PROBES = {
     'internal .local host': 'https://internal.uda-lab.local:8443/admin',
     'private IPv4': 'reachable at 10.0.0.5 from the runner',
     'secret in query parameter': 'https://api.example.com/v1?token=' + 'Z' * 32,
+    'singular /workspace/ path': '/workspace/leray-hopf-notes/private.txt',
+    'codex session path': '/root/.codex/sessions/secret.jsonl',
+    'root home path': '/root/secrets.env',
 }
 
 # Shapes the scan knowingly does NOT catch. Pinned so the documented limits stay honest:
@@ -171,6 +174,24 @@ def test_documented_limits_stay_documented() -> None:
             data = make_payload(Path(td), extra_prose=f'説明。{payload}')
             code, _ = run(SCAN, '--site-data', str(data))
         check(f'documented limit still applies (not caught): {label}', code == 0)
+
+
+
+def test_findings_do_not_leak_neighbouring_secrets() -> None:
+    """Findings go to a public Actions log precisely when a real credential is present.
+
+    The context window around a match used to be printed verbatim, so two adjacent tokens
+    each disclosed the other — the diagnostic leaked what the gate had just refused to
+    publish (adversarial review, PR #135).
+    """
+    first, second = 'ghp_' + 'A' * 30, 'ghp_' + 'B' * 30
+    with tempfile.TemporaryDirectory() as td:
+        data = make_payload(Path(td), extra_prose=f'{first} and {second}')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('two adjacent credentials are still detected', code != 0, out)
+    check('no credential body appears verbatim in the diagnostics',
+          'A' * 20 not in out and 'B' * 20 not in out, out)
+    check('the diagnostic shows a redaction placeholder instead', 'redacted:' in out, out)
 
 
 def test_scan_rejects_scaffold_source() -> None:
@@ -414,6 +435,7 @@ def main() -> None:
     test_scan_detects_leaks()
     test_scan_ignores_legitimate_content()
     test_documented_limits_stay_documented()
+    test_findings_do_not_leak_neighbouring_secrets()
     test_scan_rejects_scaffold_source()
     test_scan_requires_core_payloads()
     test_scan_covers_files_added_later()
