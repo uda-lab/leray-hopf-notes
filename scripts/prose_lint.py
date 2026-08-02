@@ -23,6 +23,10 @@ Usage:
     python3 scripts/prose_lint.py
     python3 scripts/prose_lint.py --strict
     python3 scripts/prose_lint.py --corpus corpus/LerayHopf/
+    python3 scripts/prose_lint.py --corpus /abs/path/to/leray-hopf-notes/corpus/LerayHopf/
+
+--corpus takes a relative path (resolved against the current directory) or an absolute one,
+pointing inside the repo or outside it; `display_path` labels findings accordingly.
 """
 
 import argparse
@@ -36,7 +40,7 @@ try:
 except ImportError:
     sys.exit('ERROR: PyYAML required. pip install pyyaml')
 
-REPO_ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent
 CORPUS_DIR = REPO_ROOT / 'corpus'
 
 PROSE_FIELDS = ('statement_ja', 'proof_ja')   # gap.note handled separately (nested)
@@ -59,6 +63,23 @@ ULIST_RE = re.compile(r'^\s{0,3}[-+]\s')
 OLIST_RE = re.compile(r'^\s{0,3}\d+\.\s')
 BLOCKQUOTE_RE = re.compile(r'^\s{0,3}>\s')
 LINK_RE = re.compile(r'!?\[[^\]]*\]\([^)]*\)')
+
+
+def display_path(fpath: Path) -> str:
+    """Label a file in a finding: repo-relative when it sits inside the repo, absolute
+    otherwise (notes#128).
+
+    `fpath` comes from `--corpus`, so it can be relative to the current directory or point
+    outside the repo entirely. Resolving both sides before comparing is what makes
+    `relative_to` safe here — calling it on the raw path raised `ValueError` for every
+    finding under a relative `--corpus`, which crashed the linter exactly when it had
+    something to report.
+    """
+    resolved = fpath.resolve()
+    try:
+        return str(resolved.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(resolved)
 
 
 def zen_len(s: str) -> int:
@@ -153,7 +174,7 @@ def lint_doc(fpath: Path, doc: dict) -> list[str]:
     gap = doc.get('gap')
     if isinstance(gap, dict) and isinstance(gap.get('note'), str):
         out.extend(check_field('gap.note', gap['note']))
-    return [(sev, f'{fpath.relative_to(REPO_ROOT)}: {msg}') for sev, msg in out]
+    return [(sev, f'{display_path(fpath)}: {msg}') for sev, msg in out]
 
 
 def main() -> None:
@@ -175,7 +196,7 @@ def main() -> None:
             with open(fpath, encoding='utf-8') as f:
                 doc = yaml.safe_load(f)
         except (yaml.YAMLError, OSError) as exc:
-            errors.append(f'{fpath.relative_to(REPO_ROOT)}: parse error: {exc}')
+            errors.append(f'{display_path(fpath)}: parse error: {exc}')
             continue
         if not isinstance(doc, dict):
             continue

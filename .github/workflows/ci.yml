@@ -62,6 +62,9 @@ jobs:
         # while working on notes#122/#125. Keep this as a bare command.
         run: python3 scripts/prose_lint.py --strict
 
+      - name: Prose lint --corpus path regression tests (notes#128)
+        run: python3 test/prose_lint_paths.test.py
+
       - name: Coverage report
         run: python3 scripts/coverage.py
 
