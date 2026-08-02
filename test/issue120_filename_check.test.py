@@ -242,6 +242,46 @@ def test_workpacket_generates_flat_paths() -> None:
     check('generated collision path matches a file that really exists',
           (REPO_ROOT / generated).exists(), generated)
 
+    # An ambiguous skeleton must carry `file`, which validate.py requires for colliding
+    # names — otherwise saving the skeleton as instructed yields an invalid entry.
+    skeleton = wp.yaml_skeleton(ambiguous, 'compactness', 'gloss',
+                                {'LerayHopf.measurable_natFloor_real'})
+    check('ambiguous skeleton emits the file field',
+          'file: LerayHopf/R3/SpacetimePrecompact.lean' in skeleton, skeleton)
+    plain_skeleton = wp.yaml_skeleton(d, 'compactness', 'gloss', set())
+    check('unambiguous skeleton does not emit a file field',
+          '\nfile:' not in plain_skeleton, plain_skeleton)
+
+
+def test_generated_ambiguous_skeleton_validates() -> None:
+    """End-to-end: save what the generator prints for a colliding name, and validate it."""
+    wp = import_script('workpacket_issue120_e2e', REPO_ROOT / 'scripts' / 'workpacket.py')
+    ambiguous = decl('_private.0.LerayHopf.measurable_natFloor_real',
+                     'LerayHopf.measurable_natFloor_real',
+                     'LerayHopf/R3/SpacetimePrecompact.lean', private=True)
+    other = decl('_private.1.LerayHopf.measurable_natFloor_real',
+                 'LerayHopf.measurable_natFloor_real',
+                 'LerayHopf/Bochner/StepFunctionCompactness.lean', private=True)
+    amb = {'LerayHopf.measurable_natFloor_real'}
+
+    skeleton = wp.yaml_skeleton(ambiguous, 'compactness', 'gloss', amb)
+    body = '\n'.join(line for line in skeleton.splitlines()
+                     if not line.startswith('# Save to:'))
+    body = body.replace('# TODO: 日本語で主張を記述', '主張。')
+    rel = wp.corpus_path_for(ambiguous, amb)
+
+    module = import_script('validate_issue120_e2e', VALIDATE_PATH)
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        patch_validate(module, root)
+        write_json(root / 'extracted' / 'decls.json', [ambiguous, other])
+        (root / 'extracted' / 'PIN').write_text('a' * 40 + '\n', encoding='utf-8')
+        target = root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(body + '\n', encoding='utf-8')
+        code, out = run_main(module, [])
+    check('generated ambiguous skeleton validates as saved', code == 0, out)
+
 
 def test_missing_name_does_not_crash() -> None:
     """A missing `name` is already a schema error — the filename check must not add noise
@@ -273,6 +313,7 @@ def main() -> None:
     test_apostrophe_in_name()
     test_ambiguous_name_requires_correct_module_prefix()
     test_workpacket_generates_flat_paths()
+    test_generated_ambiguous_skeleton_validates()
     test_missing_name_does_not_crash()
     test_committed_corpus_is_clean()
     print(f'\nAll {len(CHECKS)} notes#120 filename-check tests passed.')

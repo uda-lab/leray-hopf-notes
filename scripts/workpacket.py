@@ -185,6 +185,14 @@ def yaml_skeleton(decl: dict, chapter: str, tier: str | None,
     lines = [
         f'# Save to: {corpus_path}',
         f'name: {name}',
+    ]
+    # `validate.py` REQUIRES `file` when the display name is ambiguous (notes#7) — without
+    # it the entry cannot say which of the same-named declarations it annotates, and fails
+    # validation outright. Emitting the module-qualified path but leaving `file` for the
+    # author to discover would hand them a skeleton that is invalid the moment it is saved.
+    if ambiguous_names and name in ambiguous_names and decl.get('file'):
+        lines.append(f'file: {decl["file"]}')
+    lines += [
         f'tier: {tier}',
         'statement_ja: |',
         '  # TODO: 日本語で主張を記述',
