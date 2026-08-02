@@ -456,6 +456,37 @@ def test_failure_diagnostics_are_redacted() -> None:
     assert "redacted:" in out, out
 
 
+
+def test_untracked_path_inside_checkout_fails() -> None:
+    """Physical containment is not enough: `.git/HEAD` resolves inside the checkout and
+    `git status --porcelain` never reports changes under `.git`, so git administrative
+    state could be attested as source from the pinned commit (adversarial review)."""
+    verify = import_script("verify_untracked")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = ".git/HEAD"
+        sources["sources"]["decl0"] = (lean_root / ".git" / "HEAD").read_text().rstrip("\n")
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "not tracked at HEAD" in out, out
+
+
+def test_trailing_newline_tampering_fails() -> None:
+    """Normalising trailing newlines on both sides would let a payload differ from the
+    declared range and still be reported as byte-identical."""
+    verify = import_script("verify_newline")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        sources["sources"]["decl0"] += "\n\n"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -479,6 +510,8 @@ def main() -> None:
         test_missing_line_range_fails,
         test_source_path_escaping_checkout_fails,
         test_failure_diagnostics_are_redacted,
+        test_untracked_path_inside_checkout_fails,
+        test_trailing_newline_tampering_fails,
     ]
     for test in tests:
         test()

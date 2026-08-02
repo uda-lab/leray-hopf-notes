@@ -37,7 +37,10 @@ Checks (see notes#32 issue body, "Audit-mandated provenance additions"):
      `pin` field, so the two payloads the frontend joins at runtime cannot
      silently drift apart.
   5. Every embedded snippet is byte-identical to its `file`:`startLine`-`endLine`
-     range in the pinned checkout. Checks 1-4 are all *bookkeeping* — commit
+     range in a file the pinned commit actually tracks (physical containment is not
+     enough — `.git/HEAD` resolves inside the checkout and `git status` never reports
+     changes under `.git`, so administrative state could otherwise be attested as
+     source). The comparison is exact, with no trailing-newline normalisation. Checks 1-4 are all *bookkeeping* — commit
      equality, cleanliness, counts, keys — and a payload can satisfy every one
      of them while carrying text that commit never contained: a hand-built
      `sources.json` full of `TAMPERED SOURCE`, with correct pins and counts,
@@ -156,6 +159,17 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
 
     root_resolved = lean_root.resolve()
 
+    # Physical containment is not enough: `.git/HEAD` resolves inside the checkout, and
+    # `git status --porcelain` never reports changes under `.git`, so a payload naming git
+    # administrative state would pass every gate and be attested as "source from the pinned
+    # commit". A declaration may only be sourced from a file the commit actually tracks.
+    code, tracked_out, tracked_err = run_git(lean_root, 'ls-tree', '-r', '--name-only', 'HEAD')
+    if code != 0:
+        failures.append('source_text: could not list tracked files at HEAD '
+                        f'({tracked_err or tracked_out})')
+        return
+    tracked = set(tracked_out.splitlines())
+
     def lines_of(rel: str) -> list[str] | None:
         if rel not in file_cache:
             # `lean_root / rel` is NOT safe on its own: pathlib lets an absolute `rel`
@@ -199,12 +213,20 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
                 f'{safe(slug)}: file "{safe(rel)}" resolves outside the pinned checkout — '
                 f'a declaration may only be sourced from within it')
             continue
+        if rel not in tracked:
+            mismatches.append(
+                f'{safe(slug)}: file "{safe(rel)}" is not tracked at HEAD in the pinned '
+                f'checkout — only files the commit actually contains may be a source')
+            continue
         lines = lines_of(rel)
         if lines is None:
             mismatches.append(f'{safe(slug)}: {safe(rel)} not readable in the pinned checkout')
             continue
         expected = '\n'.join(lines[start - 1:end])
-        if embedded.rstrip('\n') != expected.rstrip('\n'):
+        # Exact comparison. Normalising trailing newlines on both sides would let a payload
+        # differ from the declared range by appended/removed newlines and still be reported
+        # as byte-identical — which is precisely the guarantee this check advertises.
+        if embedded != expected:
             mismatches.append(f'{safe(slug)}: embedded text differs from {safe(rel)}:{start}-{end}')
         compared += 1
         if len(mismatches) >= 10:
