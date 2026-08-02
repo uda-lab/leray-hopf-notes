@@ -65,6 +65,9 @@ jobs:
       - name: Prose lint --corpus path regression tests (notes#128)
         run: python3 test/prose_lint_paths.test.py
 
+      - name: Uniqueness-overclaim guard (notes#119)
+        run: python3 test/issue119_uniqueness_overclaim.test.py
+
       - name: Coverage report
         run: python3 scripts/coverage.py
 
