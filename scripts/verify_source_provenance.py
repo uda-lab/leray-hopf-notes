@@ -222,6 +222,16 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
         if lines is None:
             mismatches.append(f'{safe(slug)}: {safe(rel)} not readable in the pinned checkout')
             continue
+        # A range must actually address lines. Python slicing is forgiving in exactly the
+        # wrong way here: `startLine: 0, endLine: 0` slices to the empty string, which then
+        # compares equal to an empty embedded snippet, so a payload naming no real
+        # declaration range would pass. Out-of-range values truncate silently for the same
+        # reason.
+        if not (1 <= start <= end <= len(lines)):
+            mismatches.append(
+                f'{safe(slug)}: invalid line range {start}-{end} for {safe(rel)} '
+                f'({len(lines)} lines) — must satisfy 1 <= startLine <= endLine <= EOF')
+            continue
         expected = '\n'.join(lines[start - 1:end])
         # Exact comparison. Normalising trailing newlines on both sides would let a payload
         # differ from the declared range by appended/removed newlines and still be reported

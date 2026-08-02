@@ -323,6 +323,28 @@ check('(#32) runtime payload provenance: pin match accepted, mismatch refused', 
     assert.strictEqual(refetched, 1, 'a changed nodes pin must invalidate the source cache');
     assert.strictEqual(afterSwap, 'SOURCE-B',
       'after a pin change the NEW commit\'s source must be served, not the cached old one');
+
+    // 7. A response superseded mid-flight must not overwrite the cache: if nodes.json
+    //    changed while a fetch was running, the older response landing later would publish
+    //    the OLD commit's source under the NEW pin, with no further comparison.
+    state.sources = null;
+    state.sourcesPromise = null;
+    state.sourcesPin = undefined;
+    state.data = { source_payload: 'sources.json', pin: PIN_A };
+    let releaseOld;
+    global.fetch = async () => ({
+      ok: true,
+      json: () => new Promise(res => {
+        releaseOld = () => res({ pin: PIN_A, sources: { cap: 'SOURCE-A' } });
+      }),
+    });
+    const inFlight = loadSourceFor({ slug: 'cap', has_source: true });
+    const fresh = await run(PIN_B, { pin: PIN_B, sources: { cap: 'SOURCE-B' } });
+    assert.strictEqual(fresh.value, 'SOURCE-B');
+    releaseOld();
+    await inFlight.catch(() => {});
+    assert.notStrictEqual(state.sources && state.sources.cap, 'SOURCE-A',
+      'a superseded in-flight response must not overwrite the newer cache');
   } finally {
     global.fetch = oldFetch;
     state.sources = null;

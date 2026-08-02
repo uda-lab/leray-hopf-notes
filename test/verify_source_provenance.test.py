@@ -487,6 +487,25 @@ def test_trailing_newline_tampering_fails() -> None:
     assert "source_text" in out, out
 
 
+
+def test_invalid_line_range_fails() -> None:
+    """Python slicing is forgiving in exactly the wrong way: `startLine: 0, endLine: 0`
+    slices to the empty string and compares equal to an empty embedded snippet, so a
+    payload naming no real declaration range would pass (adversarial review)."""
+    verify = import_script("verify_range")
+    for start, end, embedded in ((0, 0, ""), (1, 10**7, "x"), (3, 1, "x")):
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            lean_root, sha = make_pinned_repo(tmp)
+            nodes, sources = make_payloads(sha, 1, 1)
+            nodes["nodes"][0]["startLine"] = start
+            nodes["nodes"][0]["endLine"] = end
+            sources["sources"]["decl0"] = embedded
+            code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+        assert code == 1, f"range {start}-{end} was accepted:\n{out}"
+        assert "invalid line range" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -512,6 +531,7 @@ def main() -> None:
         test_failure_diagnostics_are_redacted,
         test_untracked_path_inside_checkout_fails,
         test_trailing_newline_tampering_fails,
+        test_invalid_line_range_fails,
     ]
     for test in tests:
         test()

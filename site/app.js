@@ -495,7 +495,14 @@ async function loadSources() {
           err.pinMismatch = { expected: expected, got: got || null };
           throw err;
         }
-        state.sources = (payload && payload.sources) || {};
+        // A request that was superseded while in flight must not overwrite the cache: if
+        // nodes.json changed mid-fetch, `sourcesPin` already names the NEW pin, and letting
+        // this older response land would serve the old commit's source under the new pin
+        // with no further comparison. Return its own payload to this caller; do not publish
+        // it as the shared cache.
+        const resolved = (payload && payload.sources) || {};
+        if (state.sourcesPin !== expected) return resolved;
+        state.sources = resolved;
         return state.sources;
       })
       .catch(err => {

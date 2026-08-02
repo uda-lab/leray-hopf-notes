@@ -388,6 +388,25 @@ def test_emit_hashes_the_whole_published_tree() -> None:
               verify.stdout + verify.stderr)
 
 
+
+def test_emit_clears_stale_outputs_on_early_return() -> None:
+    """Cleanup must happen before ANY validation that can return early — a bad --pin-file
+    used to leave the previous run's evidence in place for a later packaging step to
+    publish (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        (data / 'build-provenance.json').write_text('{"stale": true}', encoding='utf-8')
+        (data / 'SHA256SUMS').write_text('deadbeef  data/nodes.json\n', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'does-not-exist'))
+        record_left = (data / 'build-provenance.json').exists()
+        sums_left = (data / 'SHA256SUMS').exists()
+    check('emit fails on a missing pin file', code != 0, out)
+    check('stale record is cleared even on an early return', not record_left)
+    check('stale SHA256SUMS is cleared even on an early return', not sums_left)
+
+
 def test_emit_refuses_pin_mismatch() -> None:
     """A provenance record that attests to the wrong commit is worse than none."""
     with tempfile.TemporaryDirectory() as td:
@@ -459,6 +478,7 @@ def main() -> None:
     test_emit_refuses_pin_mismatch()
     test_emit_refuses_sources_pin_mismatch()
     test_emit_clears_stale_outputs()
+    test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()
     test_emitted_record_passes_the_scan()
     test_release_link_suppressed_on_citation_pin_mismatch()

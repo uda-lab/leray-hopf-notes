@@ -110,18 +110,21 @@ def main() -> int:
     if not site_data.is_dir():
         print(f'ERROR: payload directory not found: {site_data}', file=sys.stderr)
         return 1
+
+    # Clear stale evidence as soon as the payload directory is known — BEFORE any other
+    # validation. Every check below can return early, and each such return used to leave the
+    # previous run's record and digests in place, so a later packaging step could publish
+    # evidence describing an older payload.
+    for stale in (site_data / PROVENANCE_NAME, site_data / SUMS_NAME):
+        if stale.exists():
+            stale.unlink()
+
     if not site_root.is_dir():
         print(f'ERROR: site root not found: {site_root}', file=sys.stderr)
         return 1
     if not pin_file.is_file():
         print(f'ERROR: pin file not found: {pin_file}', file=sys.stderr)
         return 1
-
-    # Clear stale evidence first. If this run refuses to write, a previous run's record and
-    # digests must not survive to describe a payload that has since changed.
-    for stale in (site_data / PROVENANCE_NAME, site_data / SUMS_NAME):
-        if stale.exists():
-            stale.unlink()
 
     pin = pin_file.read_text(encoding='utf-8').strip()
 
