@@ -419,6 +419,25 @@ def test_missing_line_range_fails() -> None:
     assert "source_text" in out, out
 
 
+
+def test_source_path_escaping_checkout_fails() -> None:
+    """`lean_root / rel` is not confinement: pathlib lets an absolute `rel` replace the base
+    and `..` walk out of it. The builder resolves paths the same way, so a payload claiming
+    `file: /etc/hostname` would agree with the file it names and pass every check while the
+    artifact carried bytes from an unrelated runner file (adversarial review, PR #135)."""
+    verify = import_script("verify_escape")
+    for bad in ("/etc/hostname", "../../etc/hostname"):
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            lean_root, sha = make_pinned_repo(tmp)
+            nodes, sources = make_payloads(sha, 1, 1)
+            nodes["nodes"][0]["file"] = bad
+            sources["sources"]["decl0"] = "whatever"
+            code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+        assert code == 1, f"{bad} was accepted:\n{out}"
+        assert "outside the pinned checkout" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -440,6 +459,7 @@ def main() -> None:
         test_missing_lean_root_fails,
         test_tampered_source_text_fails,
         test_missing_line_range_fails,
+        test_source_path_escaping_checkout_fails,
     ]
     for test in tests:
         test()

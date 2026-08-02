@@ -175,9 +175,14 @@ def scan_scaffold_sources(nodes: dict, label: str) -> list[str]:
     for node in nodes.get('nodes', []):
         src_file = node.get('file') or ''
         if SCAFFOLD_MODULE.search(src_file):
+            # Redact these too. A scaffold path can itself contain a local path or
+            # credential (`/workspace/private/Scratch/Secret.lean`), and this line goes to
+            # the same public log as the pattern findings — masking one while printing the
+            # other verbatim would defeat the redaction entirely.
             findings.append(
                 f'{label}: scaffold source embedded: declaration '
-                f'"{node.get("name", node.get("slug", "?"))}" is sourced from {src_file}'
+                f'"{redact_all(str(node.get("name", node.get("slug", "?"))))}" '
+                f'is sourced from {redact_all(src_file)}'
             )
     return findings
 

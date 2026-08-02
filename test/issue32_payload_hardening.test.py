@@ -202,6 +202,19 @@ def test_scan_rejects_scaffold_source() -> None:
     check('scaffold failure names the offending module', 'Scratch' in out, out)
 
 
+
+def test_scaffold_diagnostic_is_redacted() -> None:
+    """The scaffold line goes to the same public log as the pattern findings, so masking one
+    while printing the other verbatim would defeat the redaction (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        data = make_payload(Path(td), node_file='/workspace/private/Scratch/Secret.lean')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a scaffold path that is also a local path is rejected', code != 0, out)
+    check('the scaffold diagnostic does not print the local path verbatim',
+          '/workspace/private' not in out, out)
+    check('the scaffold diagnostic shows a redaction placeholder', 'redacted:' in out, out)
+
+
 def test_scan_requires_core_payloads() -> None:
     with tempfile.TemporaryDirectory() as td:
         data = make_payload(Path(td))
@@ -437,6 +450,7 @@ def main() -> None:
     test_documented_limits_stay_documented()
     test_findings_do_not_leak_neighbouring_secrets()
     test_scan_rejects_scaffold_source()
+    test_scaffold_diagnostic_is_redacted()
     test_scan_requires_core_payloads()
     test_scan_covers_files_added_later()
     test_emit_writes_record_and_sums()

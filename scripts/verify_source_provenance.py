@@ -137,14 +137,29 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
 
     file_cache: dict[str, list[str] | None] = {}
 
+    root_resolved = lean_root.resolve()
+
     def lines_of(rel: str) -> list[str] | None:
         if rel not in file_cache:
-            path = lean_root / rel
-            try:
-                file_cache[rel] = path.read_text(encoding='utf-8', errors='replace').splitlines()
-            except OSError:
+            # `lean_root / rel` is NOT safe on its own: pathlib lets an absolute `rel`
+            # replace the base entirely, and `..` walks out of it. A payload claiming
+            # `file: /etc/hostname` or `../.git/config` would then be compared against —
+            # and agree with — a file outside the pinned checkout, because the builder
+            # resolves it the same way. Every provenance check would pass while the
+            # artifact carried bytes from an unrelated runner file. Confine it here.
+            candidate = (lean_root / rel).resolve()
+            if not candidate.is_relative_to(root_resolved):
                 file_cache[rel] = None
+            else:
+                try:
+                    file_cache[rel] = candidate.read_text(
+                        encoding='utf-8', errors='replace').splitlines()
+                except OSError:
+                    file_cache[rel] = None
         return file_cache[rel]
+
+    def escapes_checkout(rel: str) -> bool:
+        return not (lean_root / rel).resolve().is_relative_to(root_resolved)
 
     candidates = [n for n in nodes_list if n.get('has_source')]
     if sample and sample > 1:
@@ -161,6 +176,11 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
         rel, start, end = node.get('file'), node.get('startLine'), node.get('endLine')
         if not rel or not isinstance(start, int) or not isinstance(end, int):
             mismatches.append(f'{slug}: missing file/startLine/endLine for verification')
+            continue
+        if escapes_checkout(rel):
+            mismatches.append(
+                f'{slug}: file "{rel}" resolves outside the pinned checkout — a declaration '
+                f'may only be sourced from within it')
             continue
         lines = lines_of(rel)
         if lines is None:
