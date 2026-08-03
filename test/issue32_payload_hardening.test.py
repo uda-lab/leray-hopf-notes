@@ -276,6 +276,34 @@ def test_credential_findings_withhold_context() -> None:
               'value withheld' in out, out)
 
 
+
+def test_emit_validates_the_supplied_checkout() -> None:
+    """Verifying text against a checkout at some OTHER commit and then recording
+    `source_text_verified: true` would attest to the wrong thing with more confidence than
+    before (adversarial review)."""
+    import subprocess as sp
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        lean = root / 'lean'
+        lean.mkdir()
+        for args in (('init', '-q'), ('config', 'user.email', 't@e'),
+                     ('config', 'user.name', 'T')):
+            sp.run(['git', '-C', str(lean), *args], check=True, capture_output=True)
+        (lean / 'Foo.lean').write_text('theorem a : True := trivial\n', encoding='utf-8')
+        sp.run(['git', '-C', str(lean), 'add', '-A'], check=True, capture_output=True)
+        sp.run(['git', '-C', str(lean), 'commit', '-q', '-m', 'i'], check=True,
+               capture_output=True)
+
+        # The payload pins a different commit than this checkout is at.
+        data = make_payload(root, pin='a' * 40)
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'),
+                        '--lean-root', str(lean))
+        wrote = (data / 'build-provenance.json').exists()
+    check('emit refuses a --lean-root at the wrong commit', code != 0, out)
+    check('no record written in that case', not wrote)
+
+
 def test_record_states_whether_source_text_was_verified() -> None:
     """Without --lean-root the embedded text cannot be compared to the pinned commit, and a
     record that stayed silent would imply a guarantee it never made."""
@@ -760,6 +788,7 @@ def main() -> None:
     test_adjacent_credentials_are_fully_redacted()
     test_credential_findings_withhold_context()
     test_record_states_whether_source_text_was_verified()
+    test_emit_validates_the_supplied_checkout()
     test_scan_rejects_scaffold_source()
     test_scaffold_diagnostic_is_redacted()
     test_scan_requires_core_payloads()

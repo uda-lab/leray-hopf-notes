@@ -632,6 +632,30 @@ def test_slug_set_diagnostics_are_redacted() -> None:
     assert "redacted:" in out, out
 
 
+
+def test_worktree_tampering_under_assume_unchanged_fails() -> None:
+    """`git status` stays clean when a path carries the `assume-unchanged` index bit, so a
+    modified worktree file would be compared against — and agree with — a payload the commit
+    never contained. Reading the blob from the object store closes that, and with it the
+    whole family of worktree-level tricks (adversarial review)."""
+    verify = import_script("verify_assume_unchanged")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        git(lean_root, "update-index", "--assume-unchanged", "Foo.lean")
+        (lean_root / "Foo.lean").write_text("theorem TAMPERED : False := sorry\n",
+                                            encoding="utf-8")
+        status = subprocess.run(["git", "-C", str(lean_root), "status", "--porcelain"],
+                                capture_output=True, text=True).stdout
+        assert status == "", f"fixture precondition: status must look clean, got {status!r}"
+
+        nodes, sources = make_payloads(sha, 1, 1)
+        sources["sources"]["decl0"] = "theorem TAMPERED : False := sorry"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, f"worktree-tampered text was accepted:\n{out}"
+    assert "source_text" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -664,6 +688,7 @@ def main() -> None:
         test_payload_pin_diagnostics_are_redacted,
         test_count_diagnostics_are_redacted,
         test_slug_set_diagnostics_are_redacted,
+        test_worktree_tampering_under_assume_unchanged_fails,
     ]
     for test in tests:
         test()

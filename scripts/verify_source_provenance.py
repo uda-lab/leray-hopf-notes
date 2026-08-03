@@ -203,22 +203,19 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
             tracked.add(name)
 
     def lines_of(rel: str) -> list[str] | None:
+        """The file's content AS COMMITTED, read from the object store — not the worktree.
+
+        Reading the checked-out file is weaker than it looks. `git status` stays clean when
+        a path carries the `assume-unchanged` or `skip-worktree` index bit, so a modified
+        worktree file would be compared against, and agree with, a payload that the commit
+        never contained. Going to the blob sidesteps that, and with it the whole family of
+        worktree-level tricks (symlinks, replaced files, path escapes): `git show HEAD:<p>`
+        cannot resolve outside the commit, so containment stops being something this code
+        has to enforce by hand.
+        """
         if rel not in file_cache:
-            # `lean_root / rel` is NOT safe on its own: pathlib lets an absolute `rel`
-            # replace the base entirely, and `..` walks out of it. A payload claiming
-            # `file: /etc/hostname` or `../.git/config` would then be compared against —
-            # and agree with — a file outside the pinned checkout, because the builder
-            # resolves it the same way. Every provenance check would pass while the
-            # artifact carried bytes from an unrelated runner file. Confine it here.
-            candidate = (lean_root / rel).resolve()
-            if not candidate.is_relative_to(root_resolved):
-                file_cache[rel] = None
-            else:
-                try:
-                    file_cache[rel] = candidate.read_text(
-                        encoding='utf-8', errors='replace').splitlines()
-                except OSError:
-                    file_cache[rel] = None
+            code_, out_, _err = run_git(lean_root, 'show', f'HEAD:{rel}')
+            file_cache[rel] = out_.splitlines() if code_ == 0 else None
         return file_cache[rel]
 
     def escapes_checkout(rel: str) -> bool:

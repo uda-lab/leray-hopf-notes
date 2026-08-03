@@ -214,8 +214,15 @@ def main() -> int:
         _verify.check_source_coverage(nodes, sources_doc, gate_failures, gate_passes)
         source_text_verified = False
         if args.lean_root:
+            # The checkout itself has to be the pinned one, clean and detached, before its
+            # contents mean anything: verifying text against a checkout at some other commit
+            # and then recording `source_text_verified: true` would attest to the wrong
+            # thing with more confidence than before.
+            lean_root = Path(args.lean_root)
+            _verify.check_pin_match(lean_root, pin, gate_failures, gate_passes)
+            _verify.check_clean_detached(lean_root, gate_failures, gate_passes)
             _verify.check_source_text_matches_checkout(
-                Path(args.lean_root), nodes, sources_doc, gate_failures, gate_passes)
+                lean_root, nodes, sources_doc, gate_failures, gate_passes)
             source_text_verified = not gate_failures
         if gate_failures:
             print('ERROR: the payload does not satisfy the provenance coverage checks, so '
