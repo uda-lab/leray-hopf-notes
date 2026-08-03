@@ -75,6 +75,12 @@ SUMS_NAME = 'SHA256SUMS'
 # that resolves to nothing — evidence that looks authoritative and points nowhere.
 PIN_PATTERN = re.compile(r'^[0-9a-f]{40}$')
 
+# Characters a published filename may not contain: backslash (which `sha256sum -c` reads
+# as an escape marker) and every C0 control character plus DEL. Newline splits a record in
+# two; a trailing carriage return makes the record CRLF-terminated so the name is looked up
+# without it. The rest have no legitimate use in a static site's file names.
+UNSAFE_NAME_CHARS = frozenset('\\' + ''.join(chr(c) for c in range(0x20)) + '\x7f')
+
 SOURCE_REPO = 'https://github.com/uda-lab/leray-hopf'
 SCHEMA_VERSION = 1
 
@@ -275,7 +281,13 @@ def main() -> int:
     # checksum file that still looks authoritative.
     for p in payload_files:
         rel_name = str(p.relative_to(site_root))
-        if '\n' in rel_name or '\\' in rel_name:
+        # Not just `\n`: a name ENDING in `\r` writes a CRLF-terminated record, and
+        # `sha256sum -c` then looks up the name without the CR and reports
+        # "FAILED open or read" (verified locally). Rather than add carriage return to a
+        # list that has now been extended twice, reject every C0 control character and DEL
+        # — a published static site has no legitimate use for any of them, and each one is
+        # a chance to write a record that does not verify (codex round 17).
+        if any(c in rel_name for c in UNSAFE_NAME_CHARS):
             # `unicode_escape` makes the name printable; it does not make it SAFE. A name
             # like `data/ghp_AAAA…\noops.txt` reaches this message with the credential
             # intact, and the emitter runs before the leak scan, so the rejection publishes

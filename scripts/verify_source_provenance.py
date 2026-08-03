@@ -138,9 +138,13 @@ def check_clean_detached(lean_root: Path, failures: list[str], passes: list[str]
         )
         return
     if out:
+        # The porcelain output is a list of PATHS from the checkout, including untracked
+        # ones — i.e. names an earlier build step chose. An untracked `ghp_AAAA…` file is
+        # reproduced verbatim here, and this gate runs before the leak scan, so the
+        # diagnostic publishes the credential that made the checkout dirty (codex round 17).
         failures.append(
             f'clean_detached: --lean-root checkout is not clean; git status --porcelain '
-            f'reported:\n{out}'
+            f'reported:\n{safe(out)}'
         )
         return
 

@@ -848,6 +848,73 @@ def test_emit_requires_the_fields_something_depends_on() -> None:
     check('and writes the record for it', wrote, out)
 
 
+
+def test_published_names_that_break_verification_are_refused() -> None:
+    """A name ending in `\\r` writes a CRLF-terminated checksum record, and `sha256sum -c`
+    then looks the name up without the carriage return and reports "FAILED open or read"
+    (codex round 17). Rather than extend a list that had already grown twice, every C0
+    control character and DEL is rejected — each is a chance to emit a record that does not
+    verify, and none has a use in a static site's file names.
+
+    The accepted case is checked by actually running `sha256sum -c`, so this pins the
+    property that matters (the digests verify) rather than the rule that implements it.
+    """
+    secret = 'ghp_' + 'A' * 30
+    for label, name in (('a trailing carriage return', 'ok.txt\r'),
+                        ('a newline', 'a\nb.txt'),
+                        ('a backslash', 'a\\b.txt'),
+                        ('a tab', 'a\tb.txt'),
+                        ('a DEL character', 'a\x7fb.txt'),
+                        ('a credential and a newline', f'{secret}\noops.txt')):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            (root / 'site' / name).write_text('x', encoding='utf-8')
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+        check(f'a published name with {label} is refused', code != 0, out)
+        check(f'no checksum file is written for {label}', 'A' * 18 not in out, out)
+
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        (root / 'site' / 'fine name (with punctuation).txt').write_text('x', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        check('an ordinary name is accepted', code == 0, out)
+        verified = subprocess.run(['sha256sum', '-c', 'data/SHA256SUMS'],
+                                  cwd=root / 'site', capture_output=True, text=True)
+        check('and the emitted SHA256SUMS actually verifies',
+              verified.returncode == 0, verified.stdout + verified.stderr)
+
+
+def test_dirty_checkout_diagnostic_redacts_untracked_names() -> None:
+    """`git status --porcelain` lists PATHS an earlier build step chose, untracked ones
+    included, and this gate runs before the leak scan — so an untracked `ghp_AAAA…` file is
+    published by the diagnostic that rejected the checkout for containing it (codex round
+    17)."""
+    import subprocess as sp
+    secret = 'ghp_' + 'A' * 30
+    sys.path.insert(0, str(REPO_ROOT / 'scripts'))
+    import verify_source_provenance as verifier
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        (root / 'seed.txt').write_text('x', encoding='utf-8')
+        for args in (('init', '-q'), ('config', 'user.email', 't@e'),
+                     ('config', 'user.name', 'T'), ('add', '-A'),
+                     ('commit', '-q', '-m', 'i')):
+            sp.run(['git', '-C', str(root), *args], check=True, capture_output=True)
+        (root / f'{secret}.txt').write_text('x', encoding='utf-8')
+
+        failures: list[str] = []
+        verifier.check_clean_detached(root, failures, [])
+    check('a dirty checkout is reported', len(failures) == 1, str(failures))
+    check('the untracked credential-shaped name is not printed',
+          'A' * 18 not in failures[0], failures[0])
+    check('the diagnostic still says what was wrong',
+          'not clean' in failures[0], failures[0])
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1522,6 +1589,8 @@ def main() -> None:
     test_emit_rejects_non_object_node_entries()
     test_no_emitter_diagnostic_path_leaks_a_credential()
     test_emit_requires_the_fields_something_depends_on()
+    test_published_names_that_break_verification_are_refused()
+    test_dirty_checkout_diagnostic_redacts_untracked_names()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()
