@@ -268,17 +268,36 @@ def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
     return redact_all(text[lo:hi]).replace('\n', ' ')
 
 
+def credential_spans(text: str) -> list[tuple[int, int]]:
+    spans = []
+    for name, pattern in LEAK_PATTERNS:
+        if name in CREDENTIAL_LABELS:
+            spans.extend((m.start(), m.end()) for m in pattern.finditer(text))
+    return spans
+
+
 def scan_text(label: str, text: str) -> list[str]:
     findings = []
+    # A NON-credential finding's context window can still overlap a credential sitting
+    # beside it (`/tmp/foo password=…`), and the redaction that survives cropping is not
+    # guaranteed to cover it. Any window touching a credential is withheld wholesale.
+    cred_spans = credential_spans(text)
+    shown_label = redact_all(label)
     for name, pattern in LEAK_PATTERNS:
         for m in pattern.finditer(text):
             if name in CREDENTIAL_LABELS:
                 # No context at all — see CREDENTIAL_LABELS. Offset is enough to locate it.
                 findings.append(
-                    f'{label}: {name}: {m.end() - m.start()} chars at offset {m.start()} '
-                    f'(value withheld)')
-            else:
-                findings.append(f'{label}: {name}: …{excerpt(text, m.start(), m.end())}…')
+                    f'{shown_label}: {name}: {m.end() - m.start()} chars at offset '
+                    f'{m.start()} (value withheld)')
+                continue
+            lo, hi = max(0, m.start() - 40), min(len(text), m.end() + 40)
+            if any(cs < hi and ce > lo for cs, ce in cred_spans):
+                findings.append(
+                    f'{shown_label}: {name}: {m.end() - m.start()} chars at offset '
+                    f'{m.start()} (context withheld: a credential lies within it)')
+                continue
+            findings.append(f'{shown_label}: {name}: …{excerpt(text, m.start(), m.end())}…')
     return findings
 
 
@@ -335,22 +354,33 @@ def main() -> int:
     tracked = _tracked_files(site_root)
     scannable = []
     for path in sorted(site_root.rglob('*')):
-        if not path.is_file() or path.suffix.lower() in BINARY_SUFFIXES:
+        if not path.is_file():
             continue
         rel = str(path.relative_to(site_root))
         # `tracked is None` means git could not tell us — scan it, per _tracked_files.
         generated = rel.startswith('data/') or tracked is None or rel not in tracked
         if not generated:
+            # Committed files — index.html, app.js, the vendored KaTeX bundle and its
+            # fonts — are reviewed in PRs and are not this gate's subject.
+            continue
+
+        # The NAME is payload too: a build writing `site/data/ghp_…json` publishes the
+        # credential in the directory listing, whatever the file contains.
+        failures.extend(scan_text(f'{redact_all(rel)} (filename)', rel))
+
+        if path.suffix.lower() in BINARY_SUFFIXES:
+            # A GENERATED binary cannot be inspected, and "cannot inspect" is not "safe":
+            # a build dropping `site/data/debug.zip` would ship whatever it contains.
+            # (Committed binaries never reach here — they were skipped just above.)
+            failures.append(
+                f'{redact_all(rel)}: generated binary payload cannot be inspected — '
+                f'publication is refused rather than shipping it unscanned')
             continue
         try:
             scannable.append((rel, path.read_text(encoding='utf-8')))
         except (UnicodeDecodeError, OSError) as exc:
-            # Fail closed. A generated file with an unexpected extension that does not
-            # decode is not "binary, therefore harmless" — it is a file this gate could not
-            # inspect, shipping in the published tree. Known binary payload types are
-            # excluded by suffix above; anything else reaching here is unexplained.
             failures.append(
-                f'{rel}: generated file could not be read as UTF-8 text '
+                f'{redact_all(rel)}: generated file could not be read as UTF-8 text '
                 f'({type(exc).__name__}) — it ships unscanned, so publication is refused')
 
     for name, text in scannable:
@@ -358,8 +388,8 @@ def main() -> int:
         if hits:
             failures.extend(hits)
         else:
-            passes.append(f'{name}: no secret / local-path / agent-session pattern '
-                          f'({len(text)} chars scanned)')
+            passes.append(f'{redact_all(name)}: no secret / local-path / agent-session '
+                          f'pattern ({len(text)} chars scanned)')
 
     nodes_path = site_data / 'nodes.json'
     if nodes_path.is_file():

@@ -389,6 +389,35 @@ def test_emitter_pin_diagnostics_are_redacted() -> None:
     check('the emitter diagnostic redacts it', 'redacted:' in out, out)
 
 
+
+def test_diagnostics_never_expose_credentials_by_any_route() -> None:
+    """Three routes reached the public log after the credential-context fix: a NON-credential
+    finding whose window overlaps a credential, the generated filename itself, and a
+    generated binary that was skipped entirely (adversarial review)."""
+    secret = 'A' * 24
+
+    with tempfile.TemporaryDirectory() as td:
+        data = make_payload(Path(td), extra_prose=f'/tmp/foo password={secret}')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a path finding beside a credential is detected', code != 0, out)
+    check('its context is withheld rather than printed', 'A' * 15 not in out, out)
+
+    with tempfile.TemporaryDirectory() as td:
+        data = make_payload(Path(td))
+        (data / ('ghp_' + 'A' * 30 + '.json')).write_text('{}', encoding='utf-8')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a credential in the FILENAME is detected', code != 0, out)
+    check('the filename is redacted in the diagnostic', 'A' * 15 not in out, out)
+
+    with tempfile.TemporaryDirectory() as td:
+        data = make_payload(Path(td))
+        (data / 'debug.zip').write_bytes(b'PK\x03\x04ghp_' + b'A' * 30)
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a generated binary payload is refused, not skipped', code != 0, out)
+    check('the refusal says it cannot be inspected',
+          'cannot be inspected' in out, out)
+
+
 def test_scan_requires_core_payloads() -> None:
     with tempfile.TemporaryDirectory() as td:
         data = make_payload(Path(td))
@@ -846,6 +875,7 @@ def main() -> None:
     test_scan_covers_generated_files_anywhere_in_the_tree()
     test_scan_fails_on_undecodable_generated_file()
     test_emitter_pin_diagnostics_are_redacted()
+    test_diagnostics_never_expose_credentials_by_any_route()
     test_emit_writes_record_and_sums()
     test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()
