@@ -1,7 +1,11 @@
 name: LerayHopf.stepCurve_eval
 tier: gloss
 statement_ja: |
-  階段曲線の値。分割数が正のとき、時刻 $t$ での値は $t$ の属する区画に対応する標本点の値である。
+  階段曲線の値。分割数 $m$ が正のとき、時刻 $t$ での値は次の番号に対応する標本点の値である。
+
+  $$\min\bigl(\lfloor t\,m/T\rfloor_{\mathbb N},\ m-1\bigr)$$
+
+  $\lfloor\cdot\rfloor_{\mathbb N}$ は負の値を $0$ に切り詰める自然数値の床である。複製元と同じく、時間長 $T$ と時刻 $t$ には条件を課しておらず、区間の外でもこの番号で値が定まる。
 gap:
   level: none
   note: |

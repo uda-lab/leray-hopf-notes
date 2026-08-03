@@ -2,7 +2,7 @@ name: LerayHopf.measurable_natFloor_real
 file: LerayHopf/R3/SpacetimePrecompact.lean
 tier: gloss
 statement_ja: |
-  実数に対する床函数は可測である。値域が可算なので、各値の逆像が区間として可測であることを見ればよい。
+  実数に対する自然数値の床函数は可測である。この床は、非負の実数に対してはそれ以下の最大の自然数を返し、**負の実数に対しては $0$ を返す**。値域が可算なので、各値の逆像が区間として可測であることを見れば足りる。
 gap:
   level: none
   note: |

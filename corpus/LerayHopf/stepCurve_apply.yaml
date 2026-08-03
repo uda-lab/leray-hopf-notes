@@ -1,7 +1,13 @@
 name: LerayHopf.stepCurve_apply
 tier: gloss
 statement_ja: |
-  [[階段曲線|LerayHopf.stepCurve]]の値。分割数が正のとき、時刻 $t$ での値は、$t$ が属する区画の番号に対応する標本点の値である。区画番号は $t$ を区画幅で割った商の整数部分を取り、最後の区画に丸めて定める。
+  [[階段曲線|LerayHopf.stepCurve]]の値。分割数 $m$ が正のとき、時刻 $t$ での値は次の番号に対応する標本点の値である。
+
+  $$\min\bigl(\lfloor t\,m/T\rfloor_{\mathbb N},\ m-1\bigr)$$
+
+  ここで $\lfloor\cdot\rfloor_{\mathbb N}$ は負の値を $0$ に切り詰める自然数値の床であり、$\min$ によって番号は最後の標本に丸められる。
+
+  主張が課しているのは分割数の正値性だけで、時間長 $T$ と時刻 $t$ には条件がない。時間長が正で $t$ が $[0,T]$ にあるときには上の番号は $t$ を含む区画の番号に一致するが、$T=0$ や区間の外の $t$ に対しても値はこの番号で定まる。
 gap:
   level: none
 provenance: |
