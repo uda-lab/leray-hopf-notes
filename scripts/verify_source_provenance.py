@@ -64,6 +64,7 @@ fails; exits 0 and prints a PASS line per check otherwise.
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -88,6 +89,21 @@ def safe(value: object) -> str:
     return _redact_all(str(value))
 
 
+SHA_PATTERN = re.compile(r'^[0-9a-f]{40}$')
+
+
+def safe_pin(value: object) -> str:
+    """A payload-supplied pin, safe to print.
+
+    A real 40-hex SHA is shown verbatim — redacting it would make "these two pins differ"
+    diagnostics useless, and it carries nothing secret. Anything else is payload-controlled
+    text that reached this message BEFORE the leak scan runs, so a credential-shaped `pin`
+    would otherwise be published in the Actions log by the check that rejected it.
+    """
+    text = str(value)
+    return text if SHA_PATTERN.match(text) else _redact_all(text)
+
+
 def run_git(lean_root: Path, *args: str) -> tuple[int, str, str]:
     proc = subprocess.run(
         ['git', '-C', str(lean_root), *args],
@@ -107,7 +123,8 @@ def check_pin_match(lean_root: Path, pin: str, failures: list[str], passes: list
     head = out
     if head != pin:
         failures.append(
-            f'pin_match: --lean-root HEAD ({head}) does not equal extracted/PIN ({pin})'
+            f'pin_match: --lean-root HEAD ({safe_pin(head)}) does not equal '
+            f'extracted/PIN ({safe_pin(pin)})'
         )
         return
     passes.append(f'pin_match: --lean-root HEAD == PIN ({pin})')
@@ -393,19 +410,21 @@ def check_pin_consistency(pin: str, nodes: dict, sources: dict, failures: list[s
     sources_pin = sources.get('pin')
     if not nodes_pin or not sources_pin:
         failures.append(
-            f'pin_consistency: missing pin field(s) — nodes.json pin={nodes_pin!r}, '
-            f'sources.json pin={sources_pin!r}'
+            f'pin_consistency: missing pin field(s) — nodes.json pin='
+            f'{safe_pin(nodes_pin)!r}, sources.json pin={safe_pin(sources_pin)!r}'
         )
         return
     if nodes_pin != pin:
         failures.append(
-            f'pin_consistency: nodes.json pin ({nodes_pin}) != extracted/PIN ({pin}) — '
+            f'pin_consistency: nodes.json pin ({safe_pin(nodes_pin)}) != extracted/PIN '
+            f'({safe_pin(pin)}) — '
             f'nodes.json appears to be stale'
         )
         return
     if sources_pin != pin:
         failures.append(
-            f'pin_consistency: sources.json pin ({sources_pin}) != extracted/PIN ({pin}) '
+            f'pin_consistency: sources.json pin ({safe_pin(sources_pin)}) != '
+            f'extracted/PIN ({safe_pin(pin)}) '
             f'— sources.json appears to be stale'
         )
         return

@@ -577,6 +577,26 @@ def test_non_integer_counts_fail() -> None:
             assert "is not an integer" in out, out
 
 
+
+def test_payload_pin_diagnostics_are_redacted() -> None:
+    """This gate runs before the leak scan, so a credential-shaped `pin` in either payload
+    would be published by the very check that rejected it. A real 40-hex SHA must stay
+    readable, or "these two pins differ" says nothing (adversarial review)."""
+    verify = import_script("verify_pin_redact")
+    secret = "ghp_" + "A" * 30
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["pin"] = secret
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential-shaped pin leaked:\n{out}"
+    assert "redacted:" in out, out
+    # The legitimate SHA on the other side is still shown, so the message is usable.
+    assert sha in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -606,6 +626,7 @@ def main() -> None:
         test_tracked_symlink_source_fails,
         test_boolean_line_numbers_fail,
         test_non_integer_counts_fail,
+        test_payload_pin_diagnostics_are_redacted,
     ]
     for test in tests:
         test()
