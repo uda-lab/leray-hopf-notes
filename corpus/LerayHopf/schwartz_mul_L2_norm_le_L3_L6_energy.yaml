@@ -1,10 +1,16 @@
 name: LerayHopf.schwartz_mul_L2_norm_le_L3_L6_energy
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  積に対する $(3,6)\to 2$ の Hölder 段。2 つの Schwartz 関数の積の $L^2$ ノルムは、一方の $L^3$ ノルムと他方の $L^6$ ノルムの積で押さえられる。
+
+  $$\lVert f\,h\rVert_{L^2}\ \le\ \lVert f\rVert_{L^3}\,\lVert h\rVert_{L^6}$$
+
+  指数の関係 $1/3+1/6=1/2$ による。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.schwartz_mul_L2_norm_le_L3_L6_energy`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    指数三つ組が Hölder の関係を満たすことをインスタンスとして用意し、拡張実数値で述べられた評価を実数値に移す手順が要る。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第7波（`TrilinearEstimate.lean`＋`GalerkinTrilinearBound.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.schwartz_mul_L2_norm_le_L3_L6_energy`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, schwartz, energy]

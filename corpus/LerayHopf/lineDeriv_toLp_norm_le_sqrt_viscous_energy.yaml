@@ -1,10 +1,14 @@
 name: LerayHopf.lineDeriv_toLp_norm_le_sqrt_viscous_energy
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  各偏微分の $L^2$ ノルムは、粘性散逸形式の平方根で押さえられる。ベクトル場の各成分が Schwartz 関数 $\psi_i$ で代表されるとき、任意の成分 $i$ と方向 $a$ について次が成り立つ。
+
+  $$\bigl\lVert\partial_a\psi_i\bigr\rVert_{L^2}\ \le\ \sqrt{V_1}$$
+
+  $V_1$ は[[粘性散逸形式|LerayHopf.viscousFormSq_R3]]の $\nu=1$ の値である。単一の項が、成分と方向の両方についての二重総和以下であることによる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.lineDeriv_toLp_norm_le_sqrt_viscous_energy`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第7波（`TrilinearEstimate.lean`＋`GalerkinTrilinearBound.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.lineDeriv_toLp_norm_le_sqrt_viscous_energy`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, schwartz, energy]
