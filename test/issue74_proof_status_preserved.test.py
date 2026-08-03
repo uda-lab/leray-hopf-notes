@@ -19,6 +19,10 @@ Adding a declaration to this list is correct when a new `sorry` appears upstream
 one is only correct when a repin actually discharges the `sorry` — not when a file is
 reformatted.
 
+The comparison is on the `contains-sorry` VALUE, not on the presence of the field: the
+schema also permits `verified`, `scaffold`, `retired` and `invalid-statement`, and a test
+keyed on presence would fail the first time any of those is set for an unrelated entry.
+
 Run: python3 test/issue74_proof_status_preserved.test.py
 """
 
@@ -52,18 +56,24 @@ def check(label: str, cond: bool, detail: str = '') -> None:
 
 
 def main() -> None:
-    present = {p.name for p in CORPUS.glob('*.yaml')
-               if 'proof_status' in yaml.safe_load(p.read_text(encoding='utf-8'))}
+    # Only `contains-sorry` is compared. `proof_status` also legitimately carries
+    # `verified`, `scaffold`, `retired` and `invalid-statement` (see
+    # docs/schemas/corpus.schema.json); keying on "has the field at all" would make this
+    # test fail the first time someone sets one of those for an unrelated reason.
+    marked = {p.name for p in CORPUS.glob('*.yaml')
+              if yaml.safe_load(p.read_text(encoding='utf-8')).get('proof_status')
+              == 'contains-sorry'}
 
-    missing = sorted(UNFINISHED - present)
-    check('every declaration with an unfinished proof still declares proof_status',
-          not missing, f'lost the field: {missing}')
+    missing = sorted(UNFINISHED - marked)
+    check('every declaration with an unfinished proof still declares contains-sorry',
+          not missing,
+          f'lost the marking: {missing} — a missing proof_status defaults to verified in '
+          f'build_site_data.py, so the site would present an unfinished proof as complete')
 
-    extra = sorted(present - UNFINISHED)
-    check('no unexpected declaration claims a non-default proof_status',
+    extra = sorted(marked - UNFINISHED)
+    check('no unlisted declaration is marked contains-sorry',
           not extra,
-          f'{extra} — if a new sorry appeared upstream, add it to UNFINISHED; '
-          f'if a repin discharged one, remove it')
+          f'{extra} — if a new sorry appeared upstream, add it to UNFINISHED')
 
     for name in sorted(UNFINISHED):
         doc = yaml.safe_load((CORPUS / name).read_text(encoding='utf-8'))
