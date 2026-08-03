@@ -43,6 +43,12 @@ completeness. It will not catch a credential that carries no recognisable marker
   `ssh-rsa`), for the same reason.
 * **high-entropy strings in general.** An entropy heuristic on a payload this size, full of
   Lean identifiers and LaTeX, produces far more noise than signal.
+* **an unquoted credential MID-LINE whose value contains `,;{}()<>` or a backtick.** On its
+  own line a bare value is read to the end of the line, punctuation and all; mid-line it
+  stops at those characters, because minified JavaScript is one long line in which
+  `"op-token":1,spacing:1,textord:1};function` would otherwise score as a credential and
+  `site/vendor/katex/katex.min.js` would block its own build. A bare value has no delimiter,
+  so there is no single extent that is right in both places.
 * **arbitrary internal DNS names.** `*.local` is caught because that suffix is reserved for
   local networks, but a private host under a normal domain (`db.prod.internal.example`) is
   shape-identical to any other hostname. Catching it would need a site-specific allowlist
@@ -123,8 +129,17 @@ _CREDENTIAL_SEPARATOR = r'(?:\\?["\'])?\s*[:=]\s*'
 # passwords contain punctuation (`abc!defghijklmnopqrst`), and a class of
 # [A-Za-z0-9/+=._-] stops dead at the `!` — three characters short of the length floor.
 #
-# The two branches exist to keep prose and code out. A quoted value runs to its closing
-# quote. A bare one runs to the first character no password would contain.
+# The branches exist to keep prose and code out. A quoted value runs to its closing quote.
+# A BARE one has no delimiter at all, so its extent must be inferred — and the right
+# inference depends on where it sits:
+#
+# * On its OWN LINE (`PASSWORD=abc,defghij…` in a generated `.env` or config file) the value
+#   owns the rest of the line and every punctuation character belongs to it. Anchoring to
+#   the start of a line is what makes that assumption safe.
+# * MID-LINE the same text cannot be told apart from code, so there the value stops at the
+#   characters that separate tokens in code and prose. What that costs is disclosed under
+#   "Known limits" — three rounds of review went into widening this one class before the
+#   answer turned out to be that a bare value has no single extent to widen to.
 #
 # "Printable ASCII minus whitespace" was the obvious bare class and it is wrong: minified
 # JavaScript is one long run of it, so `,token:o}=e;switch(n){case` scores as a credential
@@ -140,6 +155,10 @@ _CREDENTIAL_SEPARATOR = r'(?:\\?["\'])?\s*[:=]\s*'
 # containing a quote, which is a false NEGATIVE in a publication gate. It is therefore
 # read as content, the ordinary-file convention. The cost is stated below under
 # "Deliberate over-matches"; a gate resolves ambiguity toward reporting.
+# A whole config line. Printable ASCII only, for the same reason as the class below:
+# `[^\s]` would swallow a Japanese sentence, which has no spaces to stop at.
+_CONFIG_LINE_VALUE = r'[!-~]{16,}'
+
 _CREDENTIAL_VALUE = (r'(?:'
                      r'\\?"(?:[^"\\\n]|\\.){16,}?\\?"'
                      r"|\\?'(?:[^'\\\n]|\\.){16,}?\\?'"
@@ -216,8 +235,15 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # match and redacted whole — otherwise each sub-run can fall under the opaque-run
     # threshold and survive verbatim in the diagnostic.
     ('credential assignment',
-     re.compile(r'(?i)(?:^|[^A-Za-z0-9])' + _CREDENTIAL_NAME +
-                _CREDENTIAL_SEPARATOR + _CREDENTIAL_VALUE)),
+     re.compile(r'(?im)(?:'
+                # a config line: the value owns the rest of the line, punctuation included
+                r'^[ \t]*(?:export[ \t]+)?' + _CREDENTIAL_NAME +
+                _CREDENTIAL_SEPARATOR + _CONFIG_LINE_VALUE +
+                r'|'
+                # anywhere else: quoted, or bare up to a code/prose separator
+                r'(?:^|[^A-Za-z0-9])' + _CREDENTIAL_NAME +
+                _CREDENTIAL_SEPARATOR + _CREDENTIAL_VALUE +
+                r')')),
 
     # --- local filesystem paths --------------------------------------------------
     ('home directory path', re.compile(r'/home/[A-Za-z0-9._-]+/')),

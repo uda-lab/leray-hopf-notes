@@ -964,6 +964,14 @@ def test_credential_name_compounds_and_values() -> None:
         # an escaped quote is CONTENT in an ordinary JSON file; reading it as the value
         # delimiter drops every real password containing a quote
         (r'{"password":"abc\"defghijklmnopqrstuvwxyz"}', True),
+        # a bare value on its OWN LINE owns the rest of the line, punctuation included
+        ('password=abc,defghijklmnopqrstuvwxyz', True),
+        ('PASSWORD=abc;defghijklmnopqrstuvwxyz', True),
+        ('export GH_TOKEN=ghp_' + 'A' * 30, True),
+        ('  DB_PASSWORD=a{b}c,d;e|f' + 'g' * 12, True),
+        ('x=1\nPASSWORD=abc;defghijklmnopqrst\ny=2', True),
+        # ...but a line-anchored Japanese sentence is still prose, not a value
+        ('token: これは行頭から始まる日本語の長い説明文である', False),
         # a short password must not reach the floor by running into its neighbours
         ('{"password":"short","x":"y","z":"w"}', False),
         ('{"password":"short"}', False),
@@ -978,6 +986,27 @@ def test_credential_name_compounds_and_values() -> None:
         check(f'credential matrix ({"leak" if want else "clean"}): {text[:44]}',
               bool(pattern.search(text)) is want, text)
 
+
+
+
+def test_scan_reads_config_line_credentials_to_end_of_line() -> None:
+    """A generated `.env`-style file puts an unquoted password on its own line, where commas
+    and semicolons are part of the password rather than separators. Mid-line the same text
+    is indistinguishable from minified JavaScript, so the two contexts are read differently
+    — this pins the config-file context against a real file, not against prose (codex
+    round 10)."""
+    for label, line in (('comma in value', 'password=abc,defghijklmnopqrstuvwxyz'),
+                        ('semicolon in value', 'PASSWORD=abc;defghijklmnopqrstuvwxyz'),
+                        ('exported shell assignment', 'export GH_TOKEN=ghp_' + 'A' * 30)):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            (data / 'config.env').write_text(f'# generated\n{line}\nDEBUG=0\n',
+                                             encoding='utf-8')
+            code, out = run(SCAN, '--site-data', str(data))
+        check(f'a config-line credential is caught: {label}', code != 0, out)
+        check(f'the config-line finding withholds the value: {label}',
+              'defghijklmnop' not in out and 'A' * 18 not in out, out)
 
 
 def test_nested_json_short_credential_is_a_documented_over_match() -> None:
@@ -1144,6 +1173,7 @@ def main() -> None:
     test_emit_redacts_missing_source_diagnostics()
     test_quoted_credential_key_matches_unescaped()
     test_credential_name_compounds_and_values()
+    test_scan_reads_config_line_credentials_to_end_of_line()
     test_nested_json_short_credential_is_a_documented_over_match()
     test_credential_pattern_terminates_on_adversarial_input()
     test_emit_redacts_published_file_names()
