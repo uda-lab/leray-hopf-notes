@@ -1,12 +1,19 @@
 name: LerayHopf.Bochner.timeConv_prod_integrable
 tier: gloss
 statement_ja: |
-  時間方向の畳み込みの被積分関数を 2 変数の関数と見たとき、直積測度について可積分であること。係数関数が連続でコンパクト台を持ち、軟化子が正規化されており、場が局所可積分であることを仮定する。切り出しごとの可積分性に加えて、台のコンパクト性で有界な箱の上での評価に帰着させる。Fubini の定理を適用するための前提である。
+  時間方向の畳み込みの被積分関数を 2 変数の関数と見たとき、直積測度について可積分であること。係数関数が連続でコンパクト台を持ち、軟化子が正規化されており、場が局所可積分であることを仮定する。切り出しごとの可積分性に加えて、台のコンパクト性で有界な箱の上での評価に帰着させる。
 gap:
   level: mild
   note: |
-    切り出しの可積分性だけでは直積可積分性は出ないため、台のコンパクト性による箱への閉じ込めが別途要る。
+    **この宣言の証明には未証明の `sorry` が 1 箇所残っている。** 残っているのは Fubini の適用に必要な側条件、すなわち次の写像がコンパクトな箱の上で $L^1$ に属することである。
+
+    $$s\ \mapsto\ \int_t\bigl\lVert a(t)\,\rho(s)\,w(t-s)\bigr\rVert$$
+
+    上流では標準的な箱評価として `ALLOW_SORRY` の注記つきで残されている。**入れ替えの等式そのものは無条件に証明されている** — 未証明なのは可積分性の側条件だけである。切り出しごとの可積分性（`timeConv_slice_integrable`）は完全に証明されている。
 provenance: |
-  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/Bochner/TimeMollifierInterval.lean` の `LerayHopf.Bochner.timeConv_prod_integrable`。
+  private helper であることを理由に一般的な gloss へ隠さない — 現状は [[全直線拡張|LerayHopf.Bochner.w1pTime_lineExtension]] と同じ Stream D の残余として扱う。
+
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/Bochner/TimeMollifierInterval.lean` の `LerayHopf.Bochner.timeConv_prod_integrable`。手書き化の初版で `proof_status: contains-sorry` と `sorry` の開示を落としてしまい、codex レビューの P1 指摘で復元した（未証明の証明が site 上で verified として表示される状態だった）。
 chapter: bochner
 tags: [private-helper, bochner]
+proof_status: contains-sorry
