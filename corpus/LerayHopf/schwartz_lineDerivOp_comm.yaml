@@ -1,10 +1,14 @@
 name: LerayHopf.schwartz_lineDerivOp_comm
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Schwartz 関数に対する Clairaut の定理。2 つの方向微分は順序を入れ替えても各点で同じ値を与える。
+
+  $$(\partial_u\partial_v f)(x)\ =\ (\partial_v\partial_u f)(x)$$
+
+  Schwartz 関数は何度でも微分でき、2 階微分が対称であることによる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SchwartzDivFreeBasis.lean` の `LerayHopf.schwartz_lineDerivOp_comm`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/SchwartzDivFreeBasis.lean` の `LerayHopf.schwartz_lineDerivOp_comm`。
 chapter: projections-galerkin
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, projections]

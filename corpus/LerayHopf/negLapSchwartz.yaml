@@ -1,10 +1,14 @@
 name: LerayHopf.negLapSchwartz
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  実数値 Schwartz 関数に対する負の Laplacian を、ふたたび Schwartz 関数として与える構成。
+
+  $$-\Delta f\ =\ -\sum_a\partial_a\partial_a f$$
+
+  Schwartz 関数として扱えるので、標準的な $L^2$ 類を持つ。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/CurlDensity.lean` の `LerayHopf.negLapSchwartz`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/StokesFourier.lean` の `LerayHopf.negLapSchwartz`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, fourier, schwartz]

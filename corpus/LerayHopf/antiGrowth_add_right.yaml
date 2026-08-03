@@ -1,10 +1,14 @@
 name: LerayHopf.FourierL2.antiGrowth_add_right
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  右平行移動に対する逆向きの増大評価。任意の $x$ について次を満たす指数と定数が取れる。
+
+  $$\lVert x\rVert\ \le\ (1+\lVert h\rVert)\,(1+\lVert x+h\rVert)$$
+
+  平行移動を Schwartz 関数の合成として扱うために必要な条件である。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/FourierL2.lean` の `LerayHopf.FourierL2.antiGrowth_add_right`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/FourierL2.lean` の `LerayHopf.FourierL2.antiGrowth_add_right`。
 chapter: spaces
-tags: [private-helper, generated]
+tags: [private-helper, fourier, r3]

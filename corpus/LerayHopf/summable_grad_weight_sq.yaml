@@ -1,10 +1,14 @@
 name: LerayHopf.summable_grad_weight_sq
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $H^1$ に属する成分については、勾配側の重みを掛けた係数の自乗和が総和可能であること。
+
+  $$\sum_l\Bigl(\sum_i l_i^2\Bigr)\bigl\lVert\hat f(l)\bigr\rVert^2\ <\ \infty$$
+
+  $H^1$ の重み $1+\sum_i l_i^2$ に含まれる分として押さえられる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusEnergyConvection.lean` の `LerayHopf.summable_grad_weight_sq`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/Torus/EnergyConvection.lean` の `LerayHopf.summable_grad_weight_sq`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, torus, energy]
