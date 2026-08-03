@@ -1,10 +1,12 @@
 name: LerayHopf.viscousFormSq_R3_smul'
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  [[粘性形式|LerayHopf.viscousFormSq_R3]]は粘性係数について線形である。係数 $\nu$ での値は、係数 $1$ での値の $\nu$ 倍に等しい。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTimeModulus.lean` の `LerayHopf.viscousFormSq_R3_smul'`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    `LerayHopf/R3/GalerkinODE.lean` の同内容の宣言の複製。原本がこのファイルの import 集合より下流にあるための置き直しである。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/GalerkinTimeModulus.lean` の `LerayHopf.viscousFormSq_R3_smul'`。
 chapter: ode
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, ode]

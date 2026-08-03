@@ -1,10 +1,10 @@
 name: LerayHopf.galerkin_stokes_curve_continuousOn
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  固定した $H^1$ テストに対する[[粘性ペアリング|LerayHopf.stokesTestPairing_R3]]が、Galerkin 曲線に沿って $[0,\infty)$ 上で連続であること。テストを固定するとペアリングが曲線について連続線形になり、曲線の連続性が伝わることによる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTimeModulus.lean` の `LerayHopf.galerkin_stokes_curve_continuousOn`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/GalerkinTimeModulus.lean` の `LerayHopf.galerkin_stokes_curve_continuousOn`。
 chapter: ode
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, ode]

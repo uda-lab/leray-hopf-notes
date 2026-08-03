@@ -1,10 +1,14 @@
 name: LerayHopf.perTest_hasDerivAt_R3
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  テスト場との内積で作ったスカラー曲線の微分。テスト場がレベル $n$ の射影で不変なとき、非負の各時刻で次の微分係数を持つ。
+
+  $$\frac{d}{dt}\langle u_n(t),w\rangle\ =\ -\bigl(\nu\,S(u_n(t),w)+b(u_n(t),u_n(t),w)\bigr)$$
+
+  曲線の微分可能性と各時刻の常微分方程式による。トーラス版の対応物を全空間へ移したものである。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GoodRepresentative.lean` の `LerayHopf.perTest_hasDerivAt_R3`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/GoodRepresentative.lean` の `LerayHopf.perTest_hasDerivAt_R3`。
 chapter: misc
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, ode]

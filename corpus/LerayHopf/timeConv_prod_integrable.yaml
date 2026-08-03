@@ -1,13 +1,12 @@
 name: LerayHopf.Bochner.timeConv_prod_integrable
 tier: gloss
 statement_ja: |
-  この補助項目は、Bochner 時間層で、弱時間微分、時間軟化、可測性、または時間方向のコンパクト性を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  時間方向の畳み込みの被積分関数を 2 変数の関数と見たとき、直積測度について可積分であること。係数関数が連続でコンパクト台を持ち、軟化子が正規化されており、場が局所可積分であることを仮定する。切り出しごとの可積分性に加えて、台のコンパクト性で有界な箱の上での評価に帰着させる。Fubini の定理を適用するための前提である。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/Bochner/TimeMollifierInterval.lean` の `LerayHopf.Bochner.timeConv_prod_integrable`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。**証明本文に未証明の `sorry` が残っている**。
+    切り出しの可積分性だけでは直積可積分性は出ないため、台のコンパクト性による箱への閉じ込めが別途要る。
 provenance: |
-  private helper であることを理由に一般的な gloss へ隠さない — 現状は [[全直線拡張|LerayHopf.Bochner.w1pTime_lineExtension]] と同じ Stream D の残余として扱う。
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/Bochner/TimeMollifierInterval.lean` の `LerayHopf.Bochner.timeConv_prod_integrable`。
 chapter: bochner
-tags: [private-helper, generated]
-proof_status: contains-sorry
+tags: [private-helper, bochner]

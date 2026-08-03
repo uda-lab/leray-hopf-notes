@@ -1,10 +1,14 @@
 name: LerayHopf.abs_intervalIntegral_le_of_le_abs
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  区間積分に対する一般的な優関数評価。閉区間上で連続な 2 つの関数について、一方の絶対値が他方以下であるなら、**部分区間**上の積分の絶対値は、優関数の**全区間**上の積分で押さえられる。
+
+  $$\Bigl|\int_x^y R\Bigr|\ \le\ \int_a^b \mathrm{bd}$$
+
+  部分区間の取り方によらない評価が得られるため、時間の刻み幅について一様な評価を作るのに使う。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTimeModulus.lean` の `LerayHopf.abs_intervalIntegral_le_of_le_abs`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第12波（最終波・残り全成分）で手書き化。抽出元: `LerayHopf/R3/GalerkinTimeModulus.lean` の `LerayHopf.abs_intervalIntegral_le_of_le_abs`。
 chapter: ode
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, ode]
