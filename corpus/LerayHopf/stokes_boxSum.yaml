@@ -1,10 +1,12 @@
 name: LerayHopf.stokes_boxSum
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  帯域制限されたテスト場に対して、Stokes 双線形形式が Fourier 箱の上の有限和に落ちること。テスト場の Fourier 係数が箱の外で消えることによる。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusTraceEnergy.lean` の `LerayHopf.stokes_boxSum`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    `LerayHopf/Torus/LimitPassage.lean` の `private` な `stokesTestPairing_eq_boxSum` と主張・証明ともに同一の複製である（`private` は import 境界を越えて見えない）。名前だけが異なる。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/TraceEnergy.lean` の `LerayHopf.stokes_boxSum`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, torus, limit-passage]

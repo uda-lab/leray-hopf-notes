@@ -1,10 +1,14 @@
 name: LerayHopf.energy_ineq_of_representative
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  弱連続な代表元に対する、すべての時刻でのエネルギー不等式。運動エネルギーの項は自乗ノルムの弱下半連続性から各時刻で、散逸の項は空間についての下半連続性と時間についての Fatou の補題から得られ、両者を Galerkin のエネルギー恒等式に対して下極限の優加法性で突き合わせる。
+
+  仮定に $[0,T]$ 上での散逸の可積分性を明示的に置いている。これが無いと、可積分でない場合に実数値の区間積分が $0$ に落ちてしまい、不等式が空虚に成り立ってしまう。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusTraceEnergy.lean` の `LerayHopf.energy_ineq_of_representative`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    散逸の可積分性の仮定は codex レビューの P2 指摘を受けて追加されたもので、上位の定理側でエネルギー類の条件から供給される（原文 docstring に経緯が記録されている）。証明は 3 つの名前付きの段（運動エネルギーの下極限評価、散逸の下極限評価、両者の統合）に分かれる。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/TraceEnergy.lean` の `LerayHopf.energy_ineq_of_representative`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, torus, energy]

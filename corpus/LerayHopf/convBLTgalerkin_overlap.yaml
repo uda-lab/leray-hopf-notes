@@ -1,10 +1,14 @@
 name: LerayHopf.TorusConvectionExtension.convBLTgalerkin_overlap
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Galerkin テスト空間上での移流形式の反対称性。テスト空間の 2 元 $s,s'$ と任意の $u$ に対し、$s$ と $s'$ を入れ替えると符号が変わる。
+
+  $$\langle B(s')u,\,s\rangle\ =\ -\langle B(s)u,\,s'\rangle$$
+
+  Fourier 側で Galerkin テストどうしの反対称性が成り立ち、それを稠密性によって任意の $u$ へ延長した形である。$\mathbb R^3$ 版の重なり補題の Torus における対応物。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusConvectionExtension.lean` の `LerayHopf.TorusConvectionExtension.convBLTgalerkin_overlap`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/ConvectionExtension.lean` の `LerayHopf.TorusConvectionExtension.convBLTgalerkin_overlap`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, torus, convection]
