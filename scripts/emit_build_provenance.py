@@ -229,9 +229,15 @@ def main() -> int:
         gate_failures: list[str] = []
         gate_passes: list[str] = []
         _verify.check_pin_consistency(pin, nodes, sources_doc, gate_failures, gate_passes)
-        _verify.check_source_coverage(nodes, sources_doc, gate_failures, gate_passes)
         source_text_verified = False
-        if args.lean_root:
+        if not claims_source:
+            # A source-less build still writes sources.json, as an empty stub. Holding it to
+            # the source-ENABLED rule (source_count == decl_count) rejects the builder's own
+            # documented output; the stub is checked for being genuinely empty instead.
+            _verify.check_empty_source_stub(nodes, sources_doc, gate_failures, gate_passes)
+        else:
+            _verify.check_source_coverage(nodes, sources_doc, gate_failures, gate_passes)
+        if claims_source and args.lean_root:
             # The checkout itself has to be the pinned one, clean and detached, before its
             # contents mean anything: verifying text against a checkout at some other commit
             # and then recording `source_text_verified: true` would attest to the wrong

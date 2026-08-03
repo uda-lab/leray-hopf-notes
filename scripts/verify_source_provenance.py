@@ -358,6 +358,51 @@ def check_payload_structure(nodes: dict, failures: list[str], passes: list[str],
         f'source_count ({source_count}) within range')
 
 
+def check_empty_source_stub(nodes: dict, sources: dict,
+                            failures: list[str], passes: list[str]) -> None:
+    """A source-LESS build still writes sources.json — as an empty stub.
+
+    `build_site_data.py` without `--lean-root` emits `{"pin": …, "source_count": 0,
+    "sources": {}}` while decl_count stays at the full universe size, so applying the
+    source-enabled coverage rule (`source_count == decl_count`) to it rejects the builder's
+    own documented output (codex round 12). The stub gets this check instead: it must be
+    genuinely empty and must agree with nodes.json that nothing was embedded. "No sources"
+    is only a safe thing to attest to if the payload is consistent about it.
+    """
+    source_count = sources.get('source_count')
+    if isinstance(source_count, bool) or not isinstance(source_count, int):
+        failures.append(
+            f'empty_source_stub: sources.json source_count is not an integer: '
+            f'{safe(source_count)} ({type(source_count).__name__})')
+        return
+    if source_count != 0:
+        failures.append(
+            f'empty_source_stub: nodes.json claims no embedded source but sources.json '
+            f'declares source_count={source_count}')
+        return
+    sources_map = sources.get('sources')
+    if not isinstance(sources_map, dict):
+        failures.append(
+            'empty_source_stub: sources.json "sources" field is missing or not a JSON object')
+        return
+    if sources_map:
+        failures.append(
+            f'empty_source_stub: nodes.json claims no embedded source but sources.json '
+            f'carries {len(sources_map)} entries')
+        return
+    node_list = nodes.get('nodes')
+    marked = [n.get('slug') for n in node_list
+              if isinstance(n, dict) and n.get('has_source')] if isinstance(node_list, list) else []
+    if marked:
+        failures.append(
+            f'empty_source_stub: sources.json is empty but {len(marked)} node(s) are '
+            f'marked has_source:true (first: {safe(sorted(marked)[:5])})')
+        return
+    passes.append(
+        'empty_source_stub: sources.json is an empty stub and nodes.json agrees that no '
+        'source text was embedded')
+
+
 def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passes: list[str]) -> None:
     """source_count == decl_count (zero misses), cross-checked against sources.json's own
     declared count, its actual "sources" object, and the has_source:true node slugs — so a

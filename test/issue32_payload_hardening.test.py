@@ -605,6 +605,61 @@ def test_emit_validates_structure_of_a_source_less_payload() -> None:
     check('a well-formed source-less payload is still accepted', code == 0, out)
 
 
+
+def test_emit_accepts_a_real_source_less_build() -> None:
+    """`build_site_data.py` without `--lean-root` writes sources.json as an EMPTY STUB, not
+    as nothing — so holding it to the source-enabled rule (`source_count == decl_count`)
+    rejects the builder's own documented output (codex round 12).
+
+    This runs the real builder rather than hand-building a payload: the previous acceptance
+    test deleted sources.json, which is not the shape the source-less path actually
+    produces, and that is exactly why the defect survived it.
+    """
+    import subprocess as sp
+    with tempfile.TemporaryDirectory() as td:
+        data = Path(td) / 'data'
+        data.mkdir()
+        built = sp.run([sys.executable, str(REPO_ROOT / 'scripts' / 'build_site_data.py'),
+                        '--no-coverage', '--out', str(data / 'nodes.json')],
+                       capture_output=True, text=True)
+        check('the source-less builder run succeeds', built.returncode == 0, built.stderr)
+
+        stub = json.loads((data / 'sources.json').read_text(encoding='utf-8'))
+        nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+        # Pin the shape this test depends on. If the builder ever stops writing the stub,
+        # this test would otherwise keep passing while covering nothing.
+        check('the builder writes an empty sources.json stub',
+              stub.get('source_count') == 0 and stub.get('sources') == {}, str(stub)[:200])
+        check('...while decl_count stays at the full universe size',
+              isinstance(nodes.get('decl_count'), int) and nodes['decl_count'] > 0,
+              str(nodes.get('decl_count')))
+
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(REPO_ROOT / 'extracted' / 'PIN'))
+        check('emit accepts the real source-less build', code == 0, out)
+        record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        check('and does not claim the source text was verified',
+              record.get('source_text_verified') is False, str(record)[:200])
+
+        # An inconsistent stub is still refused: "no sources" is only safe to attest to
+        # when the payload agrees with itself about it.
+        for label, mutate in (('a non-empty sources map',
+                               lambda d: d.update(sources={'LerayHopf.foo': 'x'})),
+                              ('a nonzero source_count',
+                               lambda d: d.update(source_count=3))):
+            (data / 'build-provenance.json').unlink(missing_ok=True)
+            (data / 'SHA256SUMS').unlink(missing_ok=True)
+            doc = json.loads((data / 'sources.json').read_text(encoding='utf-8'))
+            mutate(doc)
+            (data / 'sources.json').write_text(json.dumps(doc), encoding='utf-8')
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(REPO_ROOT / 'extracted' / 'PIN'))
+            check(f'an inconsistent stub is refused: {label}', code != 0, out)
+            check(f'no record is written for {label}',
+                  not (data / 'build-provenance.json').exists(), out)
+            (data / 'sources.json').write_text(json.dumps(stub), encoding='utf-8')
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1264,6 +1319,7 @@ def main() -> None:
     test_scope_fails_towards_scanning_when_git_is_unavailable()
     test_scan_covers_files_staged_but_never_committed()
     test_emit_validates_structure_of_a_source_less_payload()
+    test_emit_accepts_a_real_source_less_build()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()
