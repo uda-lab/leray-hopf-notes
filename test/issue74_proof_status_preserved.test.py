@@ -23,11 +23,15 @@ The comparison is on the `contains-sorry` VALUE, not on the presence of the fiel
 schema also permits `verified`, `scaffold`, `retired` and `invalid-statement`, and a test
 keyed on presence would fail the first time any of those is set for an unrelated entry.
 
-SCOPE: this pins declarations whose OWN proof body contains a literal `sorry`. Declarations
-that merely DEPEND on one are out of scope here and are tracked in notes#146 — the schema
-says `contains-sorry` also covers "via a sorry-dependent private helper", but `decls.json`'s
-`uses` does not record private helpers, so that closure cannot be computed reliably from the
-data this repo has.
+Two sets are pinned. `DIRECT` holds declarations whose own proof body contains a literal
+`sorry`. `TRANSITIVE` holds the public theorems that call one of those in their proof — the
+schema counts those as `contains-sorry` too ("directly or via a sorry-dependent private
+helper"), and they were being shown as verified until notes#146.
+
+The transitive set is NOT a closure. It was found by scanning same-file callers, which is
+sound here because the sorry-bearing declarations are private or file-local, but it does not
+generalise: `decls.json`'s `uses` does not record private helpers, so a real closure cannot
+be computed from the data this repo has. notes#146 tracks that gap.
 
 Run: python3 test/issue74_proof_status_preserved.test.py
 """
@@ -40,7 +44,7 @@ import yaml
 CORPUS = Path(__file__).resolve().parents[1] / 'corpus' / 'LerayHopf'
 
 # Declarations whose upstream proof contains a `sorry` at the pinned commit.
-UNFINISHED = {
+DIRECT = {
     'isWeakTimeDeriv_primitive.yaml',
     'timeConv_prod_integrable.yaml',
     'timeMollification_exists.yaml',
@@ -48,6 +52,16 @@ UNFINISHED = {
     'w1pTime_lineExtension.yaml',
     'weakTimeDerivℝ_even_reflection.yaml',
 }
+
+# Public theorems whose proofs call one of the above (notes#146). Each must say so in its
+# prose as well: a reader of the declaration page has no other way to learn it.
+TRANSITIVE = {
+    'timeConvL2_weakDeriv_comm.yaml': 'timeConv_prod_integrable',
+    'timeMollification_of_w1pTime.yaml': 'timeMollification_exists',
+    'w1pTime_continuous_in_Vprime.yaml': 'isWeakTimeDeriv_primitive',
+}
+
+UNFINISHED = DIRECT | set(TRANSITIVE)
 
 CHECKS: list[str] = []
 
@@ -85,10 +99,17 @@ def main() -> None:
         doc = yaml.safe_load((CORPUS / name).read_text(encoding='utf-8'))
         check(f'{name} is marked contains-sorry',
               doc.get('proof_status') == 'contains-sorry', str(doc.get('proof_status')))
-        prose = (doc.get('gap') or {}).get('note', '') + (doc.get('statement_ja') or '')
+        prose = ((doc.get('gap') or {}).get('note', '') or '') + (doc.get('statement_ja') or '')
         check(f'{name} discloses the unfinished proof in its prose',
               'sorry' in prose,
               'the reader of this page must be told the proof is incomplete')
+
+    for name, dep in sorted(TRANSITIVE.items()):
+        prose = ((yaml.safe_load((CORPUS / name).read_text(encoding='utf-8')).get('gap') or {})
+                 .get('note', '') or '')
+        check(f'{name} names the declaration it inherits the sorry from',
+              dep in prose,
+              f'must name `{dep}` so the reader can follow the dependency')
 
     print(f'\nAll {len(CHECKS)} notes#74 proof-status checks passed.')
 
