@@ -12,7 +12,12 @@ gap:
   level: mild
   note: |
     区間版の弱微分では不健全だった（シフトしたテストが区間述語の適用範囲から外れる）ことが docstring に記録されており、全直線述語への定理の型の修正と局所可積分性の追加がその解決である。軟化と微分の交換という時間軟化理論の中心的な結果。
+
+    **この定理の証明は未証明の `sorry` に推移的に依存している。** Fubini による順序交換の段で `private` 補題 `timeConv_prod_integrable` を用いており、その補題には結合可積分性の側条件が `sorry` のまま残っている（上流に `ALLOW_SORRY` の注記あり）。**入れ替えの等式そのものは無条件に証明されている**ので、欠けているのは可積分性の側条件だけである。
 provenance: |
   codex P1 対応の履歴。
+
+  notes#146: `sorry` を持つ `private` 補題への推移的依存があるにもかかわらず完了状態の印が無く、site 上で verified として表示されていた。schema は `contains-sorry` を「directly or **via a sorry-dependent private helper**」と定義しているため、印を付けた。
 chapter: bochner
 tags: [weak-time-derivative, bochner]
+proof_status: contains-sorry

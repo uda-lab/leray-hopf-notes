@@ -7,6 +7,9 @@ proof_ja: |
 gap:
   level: large
   note: |
-    存在定理が現状 `sorry` なので、この選択の値も同じ壁に条件づけられている（それを隔離して後続の定理を記述できるようにするため）。
+    依存先の [[存在定理|LerayHopf.Bochner.timeMollification_exists]] が現状 `sorry` を含むため、この選択の値も同じ壁に条件づけられている（それを隔離して後続の定理を記述できるようにするため）。
+provenance: |
+  notes#146: `sorry` を持つ `timeMollification_exists` への依存は `gap.note` に記載されていたが、機械可読な完了状態の印が無かったため site 上で verified として表示されていた。印を付けた。
 chapter: bochner
 tags: [gelfand-triple, bochner]
+proof_status: contains-sorry
