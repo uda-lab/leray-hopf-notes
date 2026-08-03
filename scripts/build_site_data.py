@@ -269,10 +269,23 @@ def read_citation_meta(pin: str, warnings: list) -> dict:
     refs = cff.get('references')
     source = refs[0] if isinstance(refs, list) and refs and isinstance(refs[0], dict) else {}
     source_commit = source.get('commit', '')
+    # Agreement requires BOTH values to be present and equal. Treating a missing commit as
+    # agreement would let a CITATION.cff that kept its `version` but lost its `commit` keep
+    # advertising a release link, with nothing tying that release to extracted/PIN.
+    _citation_pin_agrees = bool(pin) and bool(source_commit) and pin == source_commit
     if pin and source_commit and pin != source_commit:
         warnings.append(
             f'WARNING: CITATION.cff references[0].commit ({source_commit}) does not '
-            f'match extracted/PIN ({pin}) — the next repin PR must update CITATION.cff too'
+            f'match extracted/PIN ({pin}) — the next repin PR must update CITATION.cff too; '
+            f'the release link is suppressed until they agree'
+        )
+    elif source.get('version') and not _citation_pin_agrees:
+        # A version with nothing to tie it to the pin: the link would assert a release
+        # relationship the data cannot support, so it is withheld and said out loud.
+        warnings.append(
+            f'WARNING: CITATION.cff references[0] has version '
+            f'"{source.get("version")}" but no commit to check against extracted/PIN '
+            f'({pin or "(absent)"}) — the release link is suppressed'
         )
     return {
         'authors': authors,
@@ -281,6 +294,21 @@ def read_citation_meta(pin: str, warnings: list) -> dict:
         'license_url': cff.get('license-url', ''),
         'source_repository': source.get('repository-code', ''),
         'source_commit': source_commit,
+        # notes#32 item 11: the site should link the source-side release attestation, not
+        # just the bare commit. CITATION.cff carries `version` only while the pin sits
+        # exactly on a release tag (see the caveat comment there), so its presence is
+        # precisely the condition under which a release link is meaningful — absent it, the
+        # site falls back to the commit link rather than guessing at a tag that may not
+        # exist.
+        #
+        # Suppressed on a commit/PIN mismatch. The warning above is not enough here: a
+        # stale CITATION.cff would keep advertising the previous release while the payload
+        # was built from a newer commit, pointing readers at an attestation for source they
+        # are not looking at. A warning they never see is no protection, so the link is
+        # withheld rather than merely flagged.
+        'source_version': (source.get('version') or '') if _citation_pin_agrees else '',
+        'source_date_released': (str(source.get('date-released') or '')
+                                 if _citation_pin_agrees else ''),
     }
 
 

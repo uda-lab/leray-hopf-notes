@@ -36,6 +36,21 @@ Checks (see notes#32 issue body, "Audit-mandated provenance additions"):
   4. `nodes.json`'s embedded `pin` field equals `sources.json`'s embedded
      `pin` field, so the two payloads the frontend joins at runtime cannot
      silently drift apart.
+  5. Every embedded snippet is identical to its `file`:`startLine`-`endLine`
+     range in a file the pinned commit actually tracks. "Identical" is with respect to
+     line content, not raw bytes: both sides are read with universal newlines, so a CRLF
+     file compares equal to the LF-normalised text the builder embeds — which is the text
+     that actually ships, so this is the comparison that matters. It is stated rather than
+     called byte-equality, which it is not (physical containment is not
+     enough — `.git/HEAD` resolves inside the checkout and `git status` never reports
+     changes under `.git`, so administrative state could otherwise be attested as
+     source). The comparison is exact, with no trailing-newline normalisation. Checks 1-4 are all *bookkeeping* — commit
+     equality, cleanliness, counts, keys — and a payload can satisfy every one
+     of them while carrying text that commit never contained: a hand-built
+     `sources.json` full of `TAMPERED SOURCE`, with correct pins and counts,
+     passed all four. This check is what makes "this came from that commit" a
+     statement about the bytes rather than about the metadata, and it is what
+     the provenance record written afterwards actually attests to.
 
 Usage:
     python3 scripts/verify_source_provenance.py --lean-root /path/to/leray-hopf
@@ -49,11 +64,44 @@ fails; exits 0 and prints a PASS line per check otherwise.
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
+
+# Failure messages here interpolate payload-supplied values (slugs, file paths) into the
+# public Actions log, and this gate runs BEFORE the leak scan — so nothing downstream can
+# mask them. A `file` field containing a credential or a local path would be disclosed by
+# the very diagnostic that rejected it. Reuse the scanner's redactor so there is one list
+# of secret shapes rather than two that drift apart.
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from scan_generated_payload import redact_all as _redact_all
+except ImportError:  # pragma: no cover - scanner absent; degrade to omitting the value
+    def _redact_all(fragment: str) -> str:
+        return '‹value withheld: leak scanner unavailable for redaction›'
+
+
+def safe(value: object) -> str:
+    """A payload-supplied value, redacted, for interpolation into a failure message."""
+    return _redact_all(str(value))
+
+
+SHA_PATTERN = re.compile(r'^[0-9a-f]{40}$')
+
+
+def safe_pin(value: object) -> str:
+    """A payload-supplied pin, safe to print.
+
+    A real 40-hex SHA is shown verbatim — redacting it would make "these two pins differ"
+    diagnostics useless, and it carries nothing secret. Anything else is payload-controlled
+    text that reached this message BEFORE the leak scan runs, so a credential-shaped `pin`
+    would otherwise be published in the Actions log by the check that rejected it.
+    """
+    text = str(value)
+    return text if SHA_PATTERN.match(text) else _redact_all(text)
 
 
 def run_git(lean_root: Path, *args: str) -> tuple[int, str, str]:
@@ -75,7 +123,8 @@ def check_pin_match(lean_root: Path, pin: str, failures: list[str], passes: list
     head = out
     if head != pin:
         failures.append(
-            f'pin_match: --lean-root HEAD ({head}) does not equal extracted/PIN ({pin})'
+            f'pin_match: --lean-root HEAD ({safe_pin(head)}) does not equal '
+            f'extracted/PIN ({safe_pin(pin)})'
         )
         return
     passes.append(f'pin_match: --lean-root HEAD == PIN ({pin})')
@@ -89,9 +138,13 @@ def check_clean_detached(lean_root: Path, failures: list[str], passes: list[str]
         )
         return
     if out:
+        # The porcelain output is a list of PATHS from the checkout, including untracked
+        # ones — i.e. names an earlier build step chose. An untracked `ghp_AAAA…` file is
+        # reproduced verbatim here, and this gate runs before the leak scan, so the
+        # diagnostic publishes the credential that made the checkout dirty (codex round 17).
         failures.append(
             f'clean_detached: --lean-root checkout is not clean; git status --porcelain '
-            f'reported:\n{out}'
+            f'reported:\n{safe(out)}'
         )
         return
 
@@ -103,6 +156,323 @@ def check_clean_detached(lean_root: Path, failures: list[str], passes: list[str]
         )
         return
     passes.append('clean_detached: --lean-root checkout is clean and HEAD is detached')
+
+
+def git_show_raw(lean_root: Path, spec: str) -> str | None:
+    """`git show <spec>` WITHOUT the whitespace stripping run_git applies.
+
+    run_git().strip() is right for `rev-parse`/`status` output; applied to file content it
+    silently discards leading blank lines and trailing spaces, so a blob would no longer be
+    compared as the commit stores it.
+    """
+    proc = subprocess.run(['git', '-C', str(lean_root), 'show', spec],
+                          capture_output=True, text=True)
+    return proc.stdout if proc.returncode == 0 else None
+
+
+def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: dict,
+                                       failures: list[str], passes: list[str],
+                                       sample: int = 0) -> None:
+    """Every embedded snippet must equal the exact file/line range in the pinned checkout.
+
+    Until this existed the gate verified *metadata* — that HEAD equals the PIN, that the
+    checkout is clean, that counts and keys line up — but never that the shipped text is
+    what that commit actually says. A payload with correct pins, correct counts and
+    `TAMPERED SOURCE` in every entry passed all four checks, and the provenance record
+    written afterwards would then attest to it. Checking the bytes is what makes "this came
+    from that commit" a statement about the content rather than about the bookkeeping.
+
+    `sample=N` compares a deterministic subset (every k-th declaration) for a quick local
+    run; the default compares all of them, which is what CI does.
+    """
+    nodes_list = nodes.get('nodes')
+    src_map = sources.get('sources')
+    if not isinstance(nodes_list, list) or not isinstance(src_map, dict):
+        failures.append('source_text: nodes.json "nodes" and/or sources.json "sources" '
+                        'are missing or not of the expected type')
+        return
+
+    file_cache: dict[str, list[str] | None] = {}
+
+    root_resolved = lean_root.resolve()
+
+    # Physical containment is not enough: `.git/HEAD` resolves inside the checkout, and
+    # `git status --porcelain` never reports changes under `.git`, so a payload naming git
+    # administrative state would pass every gate and be attested as "source from the pinned
+    # commit". A declaration may only be sourced from a file the commit actually tracks.
+    #
+    # Modes matter, not just names: a tracked SYMLINK (mode 120000) such as
+    # `Foo.lean -> .git/HEAD` appears in ls-tree, resolves inside the checkout, and leaves
+    # `git status` clean — so reading it through the filesystem would serve git
+    # administrative bytes under a legitimate-looking tracked path. Only regular file blobs
+    # (100644 / 100755) may be a declaration source.
+    code, tracked_out, tracked_err = run_git(lean_root, 'ls-tree', '-r', 'HEAD')
+    if code != 0:
+        failures.append('source_text: could not list tracked files at HEAD '
+                        f'({tracked_err or tracked_out})')
+        return
+    tracked: set[str] = set()
+    for line in tracked_out.splitlines():
+        meta, _, name = line.partition('\t')
+        parts = meta.split()
+        if len(parts) >= 2 and parts[0] in ('100644', '100755') and parts[1] == 'blob':
+            tracked.add(name)
+
+    def lines_of(rel: str) -> list[str] | None:
+        """The file's content AS COMMITTED, read from the object store — not the worktree.
+
+        Reading the checked-out file is weaker than it looks. `git status` stays clean when
+        a path carries the `assume-unchanged` or `skip-worktree` index bit, so a modified
+        worktree file would be compared against, and agree with, a payload that the commit
+        never contained. Going to the blob sidesteps that, and with it the whole family of
+        worktree-level tricks (symlinks, replaced files, path escapes): `git show HEAD:<p>`
+        cannot resolve outside the commit, so containment stops being something this code
+        has to enforce by hand.
+        """
+        if rel not in file_cache:
+            blob = git_show_raw(lean_root, f'HEAD:{rel}')
+            file_cache[rel] = blob.splitlines() if blob is not None else None
+        return file_cache[rel]
+
+    def escapes_checkout(rel: str) -> bool:
+        return not (lean_root / rel).resolve().is_relative_to(root_resolved)
+
+    candidates = [n for n in nodes_list if n.get('has_source')]
+    if sample and sample > 1:
+        candidates = candidates[::sample]
+
+    mismatches: list[str] = []
+    compared = 0
+    for node in candidates:
+        slug = node.get('slug')
+        embedded = src_map.get(slug)
+        if embedded is None:
+            mismatches.append(f'{safe(slug)}: marked has_source but absent from sources.json')
+            continue
+        rel, start, end = node.get('file'), node.get('startLine'), node.get('endLine')
+        # `isinstance(True, int)` is True in Python, so a JSON `startLine: true` would
+        # otherwise pass and select line 1.
+        def is_line_no(x: object) -> bool:
+            return isinstance(x, int) and not isinstance(x, bool)
+
+        if not rel or not is_line_no(start) or not is_line_no(end):
+            mismatches.append(f'{safe(slug)}: missing file/startLine/endLine for verification')
+            continue
+        if escapes_checkout(rel):
+            mismatches.append(
+                f'{safe(slug)}: file "{safe(rel)}" resolves outside the pinned checkout — '
+                f'a declaration may only be sourced from within it')
+            continue
+        if rel not in tracked:
+            mismatches.append(
+                f'{safe(slug)}: file "{safe(rel)}" is not a regular tracked file at HEAD '
+                f'in the pinned checkout — only a regular blob the commit actually '
+                f'contains may be a source (symlinks and submodules are rejected)')
+            continue
+        lines = lines_of(rel)
+        if lines is None:
+            mismatches.append(f'{safe(slug)}: {safe(rel)} not readable in the pinned checkout')
+            continue
+        # A range must actually address lines. Python slicing is forgiving in exactly the
+        # wrong way here: `startLine: 0, endLine: 0` slices to the empty string, which then
+        # compares equal to an empty embedded snippet, so a payload naming no real
+        # declaration range would pass. Out-of-range values truncate silently for the same
+        # reason.
+        if not (1 <= start <= end <= len(lines)):
+            mismatches.append(
+                f'{safe(slug)}: invalid line range {start}-{end} for {safe(rel)} '
+                f'({len(lines)} lines) — must satisfy 1 <= startLine <= endLine <= EOF')
+            continue
+        expected = '\n'.join(lines[start - 1:end])
+        # Exact comparison. Normalising trailing newlines on both sides would let a payload
+        # differ from the declared range by appended/removed newlines and still be reported
+        # as byte-identical — which is precisely the guarantee this check advertises.
+        if embedded != expected:
+            mismatches.append(f'{safe(slug)}: embedded text differs from {safe(rel)}:{start}-{end}')
+        compared += 1
+        if len(mismatches) >= 10:
+            mismatches.append('… (further mismatches suppressed)')
+            break
+
+    if mismatches:
+        failures.append('source_text: embedded source does not match the pinned checkout:\n'
+                        + '\n'.join(f'    {m}' for m in mismatches))
+    else:
+        failures_note = f' (sampled every {sample}th)' if sample and sample > 1 else ''
+        passes.append(f'source_text: all {compared} embedded snippets match their file/line '
+                      f'range in the pinned checkout{failures_note}')
+
+
+def check_payload_structure(nodes: dict, failures: list[str], passes: list[str],
+                            label: str = 'payload_structure') -> None:
+    """The invariants nodes.json must satisfy on its OWN, with or without embedded sources.
+
+    Separated out because a source-less payload used to skip validation entirely: with no
+    sources.json to cross-check against, `decl_count: "1"` and an empty `nodes` array were
+    copied straight into build-provenance.json and attested (codex round 11). Coverage
+    against sources.json is a stronger claim layered on top of these, not a precondition
+    for making any claim at all.
+
+    `label` names the caller's check in the failure text, so `check_source_coverage` keeps
+    reporting under its own name while sharing this one definition. The alternative —
+    a second copy of these rules for the source-less path — is what let the emitter and the
+    verifier drift apart in the first place.
+    """
+    source_count = nodes.get('source_count')
+    decl_count = nodes.get('decl_count')
+    if source_count is None or decl_count is None:
+        failures.append(
+            f'{label}: nodes.json is missing source_count and/or decl_count')
+        return
+    # Counts must be genuine integers. `True` and `1.0` compare and `len()`-compare exactly
+    # like `1`, so malformed count metadata would pass every comparison below and then be
+    # copied verbatim into build-provenance.json — attested as if it had been checked.
+    # (`isinstance(True, int)` is True in Python, hence the explicit bool exclusion.)
+    counts = [('nodes.json source_count', source_count), ('nodes.json decl_count', decl_count)]
+    if nodes.get('annotated_count') is not None:
+        counts.append(('nodes.json annotated_count', nodes.get('annotated_count')))
+    for count_label, value in counts:
+        if isinstance(value, bool) or not isinstance(value, int):
+            failures.append(
+                f'{label}: {count_label} is not an integer: {safe(value)} '
+                f'({type(value).__name__})')
+            return
+    if source_count < 0 or decl_count < 0:
+        failures.append(
+            f'{label}: negative counts in nodes.json (source_count={source_count}, '
+            f'decl_count={decl_count})')
+        return
+    if source_count > decl_count:
+        failures.append(
+            f'{label}: source_count ({source_count}) exceeds decl_count '
+            f'({decl_count}) — impossible for a valid build; nodes.json is internally '
+            f'inconsistent')
+        return
+    node_list = nodes.get('nodes')
+    if not isinstance(node_list, list):
+        failures.append(f'{label}: nodes.json "nodes" field is missing or not a list')
+        return
+    if len(node_list) != decl_count:
+        failures.append(
+            f'{label}: nodes.json declares decl_count={decl_count} but its '
+            f'"nodes" array has {len(node_list)} entries')
+        return
+
+    # Every entry must be an object BEFORE the array is used for any tally. The counts below
+    # filter on `isinstance(n, dict)`, which silently reads a `null` entry as "present but
+    # unannotated" — so `nodes: [null]` with decl_count 1 and annotated_count 0 satisfied
+    # every count and got a provenance record for a payload the frontend cannot consume
+    # (codex round 14). A tally that skips malformed entries is not a check on them.
+    malformed = [i for i, n in enumerate(node_list) if not isinstance(n, dict)]
+    if malformed:
+        failures.append(
+            f'{label}: nodes.json "nodes" contains {len(malformed)} entry/entries that are '
+            f'not JSON objects (first at index {malformed[0]}: '
+            f'{safe(type(node_list[malformed[0]]).__name__)})')
+        return
+
+    # "Is an object" was still not a check on the CONTENT: `nodes: [{}]` satisfied every
+    # count and got a provenance record for a payload the site cannot render — search calls
+    # `n.name.toLowerCase()` with no guard (codex round 16).
+    #
+    # The required set is deliberately not a full schema. It is exactly the fields something
+    # depends on: those the frontend dereferences unguarded, and those the counts above are
+    # computed from — a tally over `corpus` and `has_source` means nothing if either can be
+    # absent or the wrong type. Attesting to a payload is a claim that it is usable, and a
+    # claim that broad has to rest on the fields that decide it.
+    for index, node in enumerate(node_list):
+        for field, ok, expected in (
+                ('slug', lambda v: isinstance(v, str) and v, 'a non-empty string'),
+                ('name', lambda v: isinstance(v, str) and v, 'a non-empty string'),
+                ('shortName', lambda v: isinstance(v, str), 'a string'),
+                ('kind', lambda v: isinstance(v, str), 'a string'),
+                ('file', lambda v: isinstance(v, str), 'a string'),
+                ('startLine', lambda v: isinstance(v, int) and not isinstance(v, bool),
+                 'an integer'),
+                ('endLine', lambda v: isinstance(v, int) and not isinstance(v, bool),
+                 'an integer'),
+                ('has_source', lambda v: isinstance(v, bool), 'a boolean'),
+                ('corpus', lambda v: isinstance(v, dict), 'a JSON object')):
+            if field not in node:
+                failures.append(
+                    f'{label}: nodes.json node at index {index} is missing the required '
+                    f'field "{field}"')
+                return
+            if not ok(node[field]):
+                failures.append(
+                    f'{label}: nodes.json node at index {index} field "{field}" must be '
+                    f'{expected}, got {safe(type(node[field]).__name__)}')
+                return
+
+    # annotated_count is summary metadata copied verbatim into build-provenance.json, so
+    # "it is an integer" is not enough: `-1` and `decl_count + 1` are both well-typed and
+    # both impossible. `build_site_data.py` computes it as the number of nodes with a
+    # truthy `corpus`, so that tally is what it has to equal — checking only the range
+    # would still attest to a count that no longer describes the payload.
+    annotated_count = nodes.get('annotated_count')
+    if annotated_count is not None:
+        if not 0 <= annotated_count <= decl_count:
+            failures.append(
+                f'{label}: nodes.json annotated_count ({annotated_count}) is outside '
+                f'0..decl_count ({decl_count}) — impossible for a valid build')
+            return
+        annotated = sum(1 for n in node_list if isinstance(n, dict) and n.get('corpus'))
+        if annotated != annotated_count:
+            failures.append(
+                f'{label}: nodes.json declares annotated_count={annotated_count} but '
+                f'{annotated} node(s) carry corpus annotations')
+            return
+
+    passes.append(
+        f'{label}: decl_count == len("nodes") == {decl_count}, counts well-typed, '
+        f'source_count ({source_count}) and annotated_count '
+        f'({annotated_count if annotated_count is not None else "absent"}) consistent '
+        f'with the nodes array')
+
+
+def check_empty_source_stub(nodes: dict, sources: dict,
+                            failures: list[str], passes: list[str]) -> None:
+    """A source-LESS build still writes sources.json — as an empty stub.
+
+    `build_site_data.py` without `--lean-root` emits `{"pin": …, "source_count": 0,
+    "sources": {}}` while decl_count stays at the full universe size, so applying the
+    source-enabled coverage rule (`source_count == decl_count`) to it rejects the builder's
+    own documented output (codex round 12). The stub gets this check instead: it must be
+    genuinely empty and must agree with nodes.json that nothing was embedded. "No sources"
+    is only a safe thing to attest to if the payload is consistent about it.
+    """
+    source_count = sources.get('source_count')
+    if isinstance(source_count, bool) or not isinstance(source_count, int):
+        failures.append(
+            f'empty_source_stub: sources.json source_count is not an integer: '
+            f'{safe(source_count)} ({type(source_count).__name__})')
+        return
+    if source_count != 0:
+        failures.append(
+            f'empty_source_stub: nodes.json claims no embedded source but sources.json '
+            f'declares source_count={source_count}')
+        return
+    sources_map = sources.get('sources')
+    if not isinstance(sources_map, dict):
+        failures.append(
+            'empty_source_stub: sources.json "sources" field is missing or not a JSON object')
+        return
+    if sources_map:
+        failures.append(
+            f'empty_source_stub: nodes.json claims no embedded source but sources.json '
+            f'carries {len(sources_map)} entries')
+        return
+    node_list = nodes.get('nodes')
+    marked = [n.get('slug') for n in node_list
+              if isinstance(n, dict) and n.get('has_source')] if isinstance(node_list, list) else []
+    if marked:
+        failures.append(
+            f'empty_source_stub: sources.json is empty but {len(marked)} node(s) are '
+            f'marked has_source:true (first: {safe(sorted(marked)[:5])})')
+        return
+    passes.append(
+        'empty_source_stub: sources.json is an empty stub and nodes.json agrees that no '
+        'source text was embedded')
 
 
 def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passes: list[str]) -> None:
@@ -118,6 +488,15 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
     field passed as long as the declared counts matched — fail-open exactly where this gate is
     supposed to be fail-closed.
     """
+    # The payload-only invariants (count types, node-array length, has_source tally) live in
+    # check_payload_structure so the emitter can apply them to a source-less payload too.
+    # Re-deriving them here is what let them drift apart in the first place.
+    structure_failures: list[str] = []
+    check_payload_structure(nodes, structure_failures, [], label='source_coverage')
+    if structure_failures:
+        failures.extend(structure_failures)
+        return
+
     source_count = nodes.get('source_count')
     decl_count = nodes.get('decl_count')
     if source_count is None or decl_count is None:
@@ -125,6 +504,18 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
             'source_coverage: nodes.json is missing source_count and/or decl_count'
         )
         return
+    # Counts must be genuine integers. `True` and `1.0` compare and `len()`-compare exactly
+    # like `1`, so malformed count metadata would pass every comparison below and then be
+    # copied verbatim into build-provenance.json — attested as if it had been checked.
+    # (`isinstance(True, int)` is True in Python, hence the explicit bool exclusion.)
+    for label, value in (('nodes.json source_count', source_count),
+                         ('nodes.json decl_count', decl_count)):
+        if isinstance(value, bool) or not isinstance(value, int):
+            failures.append(
+                f'source_coverage: {label} is not an integer: {safe(value)} '
+                f'({type(value).__name__})'
+            )
+            return
     if source_count > decl_count:
         failures.append(
             f'source_coverage: source_count ({source_count}) exceeds decl_count '
@@ -154,6 +545,14 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
         return
 
     sources_source_count = sources.get('source_count')
+    if not (sources_source_count is None
+            or (isinstance(sources_source_count, int)
+                and not isinstance(sources_source_count, bool))):
+        failures.append(
+            f'source_coverage: sources.json source_count is not an integer: '
+            f'{safe(sources_source_count)} ({type(sources_source_count).__name__})'
+        )
+        return
     if sources_source_count is None:
         failures.append('source_coverage: sources.json is missing source_count')
         return
@@ -185,8 +584,9 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
         extra = sorted(sources_slugs - has_source_slugs)[:5]
         failures.append(
             f'source_coverage: the set of node slugs with has_source:true does not match '
-            f'the "sources" object\'s keys (missing from sources.json: {missing}; present '
-            f'in sources.json but not marked has_source:true in nodes.json: {extra})'
+            f'the "sources" object\'s keys (missing from sources.json: '
+            f'{safe(sorted(missing))}; present in sources.json but not marked '
+            f'has_source:true in nodes.json: {safe(sorted(extra))})'
         )
         return
 
@@ -205,19 +605,21 @@ def check_pin_consistency(pin: str, nodes: dict, sources: dict, failures: list[s
     sources_pin = sources.get('pin')
     if not nodes_pin or not sources_pin:
         failures.append(
-            f'pin_consistency: missing pin field(s) — nodes.json pin={nodes_pin!r}, '
-            f'sources.json pin={sources_pin!r}'
+            f'pin_consistency: missing pin field(s) — nodes.json pin='
+            f'{safe_pin(nodes_pin)!r}, sources.json pin={safe_pin(sources_pin)!r}'
         )
         return
     if nodes_pin != pin:
         failures.append(
-            f'pin_consistency: nodes.json pin ({nodes_pin}) != extracted/PIN ({pin}) — '
+            f'pin_consistency: nodes.json pin ({safe_pin(nodes_pin)}) != extracted/PIN '
+            f'({safe_pin(pin)}) — '
             f'nodes.json appears to be stale'
         )
         return
     if sources_pin != pin:
         failures.append(
-            f'pin_consistency: sources.json pin ({sources_pin}) != extracted/PIN ({pin}) '
+            f'pin_consistency: sources.json pin ({safe_pin(sources_pin)}) != '
+            f'extracted/PIN ({safe_pin(pin)}) '
             f'— sources.json appears to be stale'
         )
         return
@@ -251,6 +653,9 @@ def main() -> int:
                         help='Path to extracted/PIN (default: %(default)s)')
     parser.add_argument('--nodes-json', default=str(REPO_ROOT / 'site' / 'data' / 'nodes.json'),
                         help='Path to the built nodes.json (default: %(default)s)')
+    parser.add_argument('--sample', type=int, default=0,
+                        help='compare only every Nth embedded snippet against the checkout '
+                             '(default 0 = compare all; CI must use the default)')
     parser.add_argument('--sources-json', default=str(REPO_ROOT / 'site' / 'data' / 'sources.json'),
                         help='Path to the built sources.json (default: %(default)s)')
     args = parser.parse_args()
@@ -286,6 +691,8 @@ def main() -> int:
         check_source_coverage(nodes, sources, failures, passes)
         if pin is not None:
             check_pin_consistency(pin, nodes, sources, failures, passes)
+        check_source_text_matches_checkout(lean_root, nodes, sources, failures, passes,
+                                           sample=args.sample)
 
     for p in passes:
         print(f'PASS: {p}')

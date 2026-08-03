@@ -244,6 +244,114 @@ check('source payload is lazy-loaded from data/sources.json by slug', async () =
   }
 });
 
+/* ==== notes#32: runtime payload provenance — the frontend joins nodes.json and
+   sources.json at load time, so a stale/swapped sources.json would attach the wrong Lean
+   text to the right declaration. The build-time gate cannot see that; this must. ==== */
+
+check('(#32) runtime payload provenance: pin match accepted, mismatch refused', async () => {
+  // One sequential check rather than four: check() starts every async body eagerly and they
+  // all share the global `state`, so four concurrent tests would race each other on
+  // state.data / state.sourcesPromise. Each scenario below sets up and calls loadSources
+  // with no await in between, so its setup is atomic with respect to the other tests.
+  const oldFetch = global.fetch;
+  const PIN_A = 'a'.repeat(40);
+  const PIN_B = 'b'.repeat(40);
+
+  const run = async (nodesPin, payload) => {
+    state.sources = null;
+    state.sourcesPromise = null;
+    state.sourcesPin = undefined;
+    state.data = nodesPin
+      ? { source_payload: 'sources.json', pin: nodesPin }
+      : { source_payload: 'sources.json' };
+    global.fetch = async () => ({ ok: true, json: async () => payload });
+    try {
+      return { value: await loadSourceFor({ slug: 'cap', has_source: true }), err: null };
+    } catch (e) {
+      return { value: null, err: e };
+    }
+  };
+
+  try {
+    // 1. Matching pin — accepted.
+    let r = await run(PIN_A, { pin: PIN_A, sources: { cap: 'theorem cap : True' } });
+    assert.strictEqual(r.err, null, 'a matching pin must not reject');
+    assert.strictEqual(r.value, 'theorem cap : True');
+
+    // 2. Mismatched pin — refused, and identifiable as a provenance failure rather than a
+    //    generic fetch error, so the UI can say why a retry will not help.
+    r = await run(PIN_A, { pin: PIN_B, sources: { cap: 'WRONG COMMIT SOURCE' } });
+    assert.ok(r.err, 'a mismatched pin must reject rather than resolve');
+    assert.ok(r.err.pinMismatch, 'the rejection must be identifiable as a pin mismatch');
+    assert.strictEqual(r.err.pinMismatch.expected, PIN_A);
+    assert.strictEqual(r.err.pinMismatch.got, PIN_B);
+    assert.notStrictEqual(r.value, 'WRONG COMMIT SOURCE',
+      'source from a payload that failed provenance must never be returned');
+
+    // 3. sources.json carrying no pin at all must not pass as "nothing to compare".
+    r = await run(PIN_A, { sources: { cap: 'theorem cap : True' } });
+    assert.ok(r.err && r.err.pinMismatch, 'a missing pin must not pass as "no mismatch"');
+    assert.strictEqual(r.err.pinMismatch.got, null);
+
+    // 4. An older payload with no pin in nodes.json still loads — the guard must not break
+    //    builds that predate pin stamping.
+    r = await run(null, { sources: { cap: 'theorem cap : True' } });
+    assert.strictEqual(r.err, null, 'a pin-less nodes.json must remain loadable');
+    assert.strictEqual(r.value, 'theorem cap : True');
+
+    // 5. ONE-SIDED absence must still be refused. `expected && …` used to disable the check
+    //    entirely when nodes.json had no pin, so a pin-less nodes.json would accept a
+    //    sources.json naming a concrete, different commit.
+    r = await run(null, { pin: PIN_B, sources: { cap: 'WRONG COMMIT SOURCE' } });
+    assert.ok(r.err && r.err.pinMismatch,
+      'a pin-less nodes.json must not accept a pinned sources.json');
+    assert.strictEqual(r.err.pinMismatch.expected, null);
+    assert.strictEqual(r.err.pinMismatch.got, PIN_B);
+
+    // 6. The CACHE is bound to the nodes pin. Loading under PIN_A then swapping nodes.json
+    //    for PIN_B must refetch — otherwise the old commit's source is served with no pin
+    //    comparison at all, because no fetch happens.
+    r = await run(PIN_A, { pin: PIN_A, sources: { cap: 'SOURCE-A' } });
+    assert.strictEqual(r.value, 'SOURCE-A');
+    state.data = { source_payload: 'sources.json', pin: PIN_B };
+    let refetched = 0;
+    global.fetch = async () => {
+      refetched += 1;
+      return { ok: true, json: async () => ({ pin: PIN_B, sources: { cap: 'SOURCE-B' } }) };
+    };
+    const afterSwap = await loadSourceFor({ slug: 'cap', has_source: true });
+    assert.strictEqual(refetched, 1, 'a changed nodes pin must invalidate the source cache');
+    assert.strictEqual(afterSwap, 'SOURCE-B',
+      'after a pin change the NEW commit\'s source must be served, not the cached old one');
+
+    // 7. A response superseded mid-flight must not overwrite the cache: if nodes.json
+    //    changed while a fetch was running, the older response landing later would publish
+    //    the OLD commit's source under the NEW pin, with no further comparison.
+    state.sources = null;
+    state.sourcesPromise = null;
+    state.sourcesPin = undefined;
+    state.data = { source_payload: 'sources.json', pin: PIN_A };
+    let releaseOld;
+    global.fetch = async () => ({
+      ok: true,
+      json: () => new Promise(res => {
+        releaseOld = () => res({ pin: PIN_A, sources: { cap: 'SOURCE-A' } });
+      }),
+    });
+    const inFlight = loadSourceFor({ slug: 'cap', has_source: true });
+    const fresh = await run(PIN_B, { pin: PIN_B, sources: { cap: 'SOURCE-B' } });
+    assert.strictEqual(fresh.value, 'SOURCE-B');
+    releaseOld();
+    await inFlight.catch(() => {});
+    assert.notStrictEqual(state.sources && state.sources.cap, 'SOURCE-A',
+      'a superseded in-flight response must not overwrite the newer cache');
+  } finally {
+    global.fetch = oldFetch;
+    state.sources = null;
+    state.sourcesPromise = null;
+  }
+});
+
 /* ==== notes#65: proof_status badge / banner — must not look like a proved theorem ==== */
 check('(e) proofStatusBadge renders nothing for the default verified status (absent/verified)', () => {
   assert.strictEqual(proofStatusBadge(undefined), null, 'no badge when proof_status is absent');
@@ -459,6 +567,45 @@ check('(h) renderAbout lists bibliography entries, shows citation/license metada
   const highlighted = appEl.querySelector('.ref-highlight');
   assert.ok(highlighted && highlighted.id === 'ref-rrs2016',
     'the id passed to renderAbout must be highlighted');
+});
+
+check('(#32) renderAbout links the source-side release attestation when the pin is a release', () => {
+  const appEl = document.getElementById('app');
+  const baseCitation = {
+    authors: ['Tomoki Uda'],
+    repository_code: 'https://github.com/uda-lab/leray-hopf-notes',
+    source_repository: 'https://github.com/uda-lab/leray-hopf',
+    source_commit: 'abc123deadbeef',
+  };
+
+  // With a release version present, the release tag must be linked — this is what lets a
+  // reader reach the full-build attestation for this exact commit.
+  appEl.innerHTML = '';
+  state.data = {
+    nodes: [], chapters: [], pin: 'abc123deadbeef', bibliography: {},
+    citation: Object.assign({}, baseCitation,
+      { source_version: '0.2.0', source_date_released: '2026-08-02' }),
+  };
+  renderAbout(appEl, null);
+  const releaseLink = Array.from(appEl.querySelectorAll('a'))
+    .find(a => a.getAttribute('href') === 'https://github.com/uda-lab/leray-hopf/releases/tag/v0.2.0');
+  assert.ok(releaseLink, 'the release tag must be linked when CITATION.cff carries a version');
+  assert.strictEqual(releaseLink.textContent, 'v0.2.0');
+  assert.ok(appEl.textContent.includes('2026-08-02'), 'the release date must be shown');
+
+  // Without a version — i.e. pinned to an untagged commit — no release link may be
+  // invented; the commit link alone remains.
+  appEl.innerHTML = '';
+  state.data = {
+    nodes: [], chapters: [], pin: 'abc123deadbeef', bibliography: {},
+    citation: Object.assign({}, baseCitation),
+  };
+  renderAbout(appEl, null);
+  const invented = Array.from(appEl.querySelectorAll('a'))
+    .find(a => (a.getAttribute('href') || '').includes('/releases/tag/'));
+  assert.ok(!invented, 'no release link may be guessed when the pin is not on a release tag');
+  assert.ok(Array.from(appEl.querySelectorAll('a')).some(a => a.textContent === 'abc123deadbeef'),
+    'the commit link must still be present');
 });
 
 /* ==== notes#72: accessibility — DAG toggle is a real, keyboard-operable control ==== */

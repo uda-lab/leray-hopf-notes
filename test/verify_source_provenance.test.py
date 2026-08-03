@@ -33,6 +33,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT_PATH = REPO_ROOT / "scripts" / "verify_source_provenance.py"
 
 
+# Enough lines in the fixture Foo.lean for every declaration any test asks for.
+FIXTURE_DECLS = 16
+
+
 def import_script(name: str):
     spec = importlib.util.spec_from_file_location(name, SCRIPT_PATH)
     assert spec and spec.loader
@@ -65,7 +69,12 @@ def make_pinned_repo(tmp: Path) -> tuple[Path, str]:
     git(root, "init", "-q")
     git(root, "config", "user.email", "test@example.com")
     git(root, "config", "user.name", "Test")
-    (root / "Foo.lean").write_text("theorem foo : True := trivial\n", encoding="utf-8")
+    # One line per fixture declaration, so make_payloads can quote real file ranges: the
+    # source_text check (notes#32, added after the adversarial review on PR #135) compares
+    # every embedded snippet against its file/line range in this checkout.
+    (root / "Foo.lean").write_text(
+        "".join(f"theorem decl{i} : True := trivial\n" for i in range(FIXTURE_DECLS)),
+        encoding="utf-8")
     git(root, "add", "Foo.lean")
     git(root, "commit", "-q", "-m", "init")
     sha = subprocess.run(
@@ -84,9 +93,18 @@ def write_json(path: Path, data) -> None:
 def make_payloads(sha: str, decl_count: int, source_count: int) -> tuple[dict, dict]:
     """A valid, internally-consistent (nodes.json, sources.json) pair reflecting the real
     build_site_data.py output shape: the first `source_count` of `decl_count` node slugs
-    are marked has_source:true and have a matching entry in sources.json's "sources" map."""
+    are marked has_source:true and have a matching entry in sources.json's "sources" map.
+
+    Each node also carries the identity fields the frontend dereferences without a guard
+    (`name`, `shortName`) and the `corpus` object the annotation tally is computed from —
+    a fixture thinner than the real payload would exercise a shape the site cannot render.
+    Each node also carries the file/line range it came from, and its sources.json entry is
+    the verbatim text of that range in the fixture checkout — otherwise the source_text
+    check would (correctly) reject these payloads as not matching the pinned source."""
     node_list = [
-        {"slug": f"decl{i}", "has_source": i < source_count}
+        {"slug": f"decl{i}", "name": f"decl{i}", "shortName": f"decl{i}", "kind": "theorem",
+         "has_source": i < source_count, "corpus": {},
+         "file": "Foo.lean", "startLine": i + 1, "endLine": i + 1}
         for i in range(decl_count)
     ]
     nodes = {
@@ -95,7 +113,8 @@ def make_payloads(sha: str, decl_count: int, source_count: int) -> tuple[dict, d
         "decl_count": decl_count,
         "nodes": node_list,
     }
-    sources_map = {f"decl{i}": f"source text {i}" for i in range(source_count)}
+    sources_map = {f"decl{i}": f"theorem decl{i} : True := trivial"
+                   for i in range(source_count)}
     sources = {
         "pin": sha,
         "source_count": source_count,
@@ -369,6 +388,312 @@ def test_missing_lean_root_fails() -> None:
     assert "does not exist" in out
 
 
+
+def test_tampered_source_text_fails() -> None:
+    """The four original checks are all bookkeeping — commit equality, cleanliness, counts,
+    keys — and a payload can satisfy every one while carrying text that commit never had.
+    Before the source_text check, exactly this payload passed the whole gate (adversarial
+    review, PR #135), and the provenance record written afterwards would have attested to it.
+    """
+    verify = import_script("verify_tampered")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 3, 3)
+        sources["sources"]["decl1"] = "TAMPERED SOURCE"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+    assert "decl1" in out, out
+    # The bookkeeping checks still pass — which is the point: they cannot see this.
+    assert "PASS: pin_match" in out and "PASS: pin_consistency" in out, out
+
+
+def test_missing_line_range_fails() -> None:
+    """A node marked has_source with no file/line range cannot be verified, so it must fail
+    rather than be skipped past."""
+    verify = import_script("verify_norange")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 2, 2)
+        del nodes["nodes"][0]["startLine"]
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+
+
+
+def test_source_path_escaping_checkout_fails() -> None:
+    """`lean_root / rel` is not confinement: pathlib lets an absolute `rel` replace the base
+    and `..` walk out of it. The builder resolves paths the same way, so a payload claiming
+    `file: /etc/hostname` would agree with the file it names and pass every check while the
+    artifact carried bytes from an unrelated runner file (adversarial review, PR #135)."""
+    verify = import_script("verify_escape")
+    for bad in ("/etc/hostname", "../../etc/hostname"):
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            lean_root, sha = make_pinned_repo(tmp)
+            nodes, sources = make_payloads(sha, 1, 1)
+            nodes["nodes"][0]["file"] = bad
+            sources["sources"]["decl0"] = "whatever"
+            code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+        assert code == 1, f"{bad} was accepted:\n{out}"
+        assert "outside the pinned checkout" in out, out
+
+
+
+def test_failure_diagnostics_are_redacted() -> None:
+    """This gate runs BEFORE the leak scan, so nothing downstream can mask its output. A
+    `file` field carrying a credential would be disclosed by the very diagnostic that
+    rejected it, into a public Actions log (adversarial review, PR #135)."""
+    verify = import_script("verify_redact")
+    secret = "ghp_" + "A" * 30
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = f"/workspace/{secret}/Foo.lean"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential leaked into the diagnostic:\n{out}"
+    assert "redacted:" in out, out
+
+
+
+def test_untracked_path_inside_checkout_fails() -> None:
+    """Physical containment is not enough: `.git/HEAD` resolves inside the checkout and
+    `git status --porcelain` never reports changes under `.git`, so git administrative
+    state could be attested as source from the pinned commit (adversarial review)."""
+    verify = import_script("verify_untracked")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = ".git/HEAD"
+        sources["sources"]["decl0"] = (lean_root / ".git" / "HEAD").read_text().rstrip("\n")
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "not a regular tracked file" in out, out
+
+
+def test_trailing_newline_tampering_fails() -> None:
+    """Normalising trailing newlines on both sides would let a payload differ from the
+    declared range and still be reported as byte-identical."""
+    verify = import_script("verify_newline")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        sources["sources"]["decl0"] += "\n\n"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+
+
+
+def test_invalid_line_range_fails() -> None:
+    """Python slicing is forgiving in exactly the wrong way: `startLine: 0, endLine: 0`
+    slices to the empty string and compares equal to an empty embedded snippet, so a
+    payload naming no real declaration range would pass (adversarial review)."""
+    verify = import_script("verify_range")
+    for start, end, embedded in ((0, 0, ""), (1, 10**7, "x"), (3, 1, "x")):
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            lean_root, sha = make_pinned_repo(tmp)
+            nodes, sources = make_payloads(sha, 1, 1)
+            nodes["nodes"][0]["startLine"] = start
+            nodes["nodes"][0]["endLine"] = end
+            sources["sources"]["decl0"] = embedded
+            code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+        assert code == 1, f"range {start}-{end} was accepted:\n{out}"
+        assert "invalid line range" in out, out
+
+
+
+def test_tracked_symlink_source_fails() -> None:
+    """A tracked SYMLINK (mode 120000) such as `Foo.lean -> .git/HEAD` appears in ls-tree,
+    resolves inside the checkout and leaves `git status` clean, so a name-only tracked check
+    would serve git administrative bytes under a legitimate-looking path (adversarial
+    review). Only regular blobs may be a source."""
+    verify = import_script("verify_symlink")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        root = tmp / "lean-root"
+        root.mkdir()
+        git(root, "init", "-q")
+        git(root, "config", "user.email", "test@example.com")
+        git(root, "config", "user.name", "Test")
+        (root / "Foo.lean").write_text("theorem decl0 : True := trivial\n", encoding="utf-8")
+        (root / "Link.lean").symlink_to(".git/HEAD")
+        git(root, "add", "-A")
+        git(root, "commit", "-q", "-m", "init")
+        sha = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"],
+                             check=True, capture_output=True, text=True).stdout.strip()
+        git(root, "checkout", "-q", "--detach", sha)
+
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = "Link.lean"
+        sources["sources"]["decl0"] = (root / ".git" / "HEAD").read_text().rstrip("\n")
+        code, out = run_main(verify, base_args(tmp, root, sha, nodes, sources))
+    assert code == 1, out
+    assert "not a regular tracked file" in out, out
+
+
+
+def test_boolean_line_numbers_fail() -> None:
+    """`isinstance(True, int)` is True in Python, so `startLine: true` would otherwise pass
+    the type check and select line 1 (adversarial review)."""
+    verify = import_script("verify_bool")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["startLine"] = True
+        nodes["nodes"][0]["endLine"] = True
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+
+
+
+def test_non_integer_counts_fail() -> None:
+    """`True` and `1.0` compare and len()-compare exactly like `1`, so malformed count
+    metadata passed every coverage comparison and was then copied verbatim into
+    build-provenance.json — attested as if it had been checked (adversarial review)."""
+    verify = import_script("verify_counts")
+    for label, value in (("boolean", True), ("float", 1.0), ("string", "1")):
+        # Node counts AND, separately, sources.json's own count. The sources-only case has
+        # to be isolated: setting all three at once lets the node check fire first and hide
+        # a missing sources.json check — which is exactly how that gap survived a round.
+        for where in ("nodes", "sources"):
+            with tempfile.TemporaryDirectory() as td:
+                tmp = Path(td)
+                lean_root, sha = make_pinned_repo(tmp)
+                nodes, sources = make_payloads(sha, 1, 1)
+                if where == "nodes":
+                    nodes["source_count"] = value
+                    nodes["decl_count"] = value
+                else:
+                    sources["source_count"] = value
+                code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+            assert code == 1, f"{label} counts in {where} were accepted:\n{out}"
+            assert "is not an integer" in out, out
+
+
+
+def test_payload_pin_diagnostics_are_redacted() -> None:
+    """This gate runs before the leak scan, so a credential-shaped `pin` in either payload
+    would be published by the very check that rejected it. A real 40-hex SHA must stay
+    readable, or "these two pins differ" says nothing (adversarial review)."""
+    verify = import_script("verify_pin_redact")
+    secret = "ghp_" + "A" * 30
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["pin"] = secret
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential-shaped pin leaked:\n{out}"
+    assert "redacted:" in out, out
+    # The legitimate SHA on the other side is still shown, so the message is usable.
+    assert sha in out, out
+
+
+
+def test_count_diagnostics_are_redacted() -> None:
+    """The count-type failure interpolates a payload-supplied value, and this gate runs
+    before the leak scan (adversarial review)."""
+    verify = import_script("verify_count_redact")
+    secret = "ghp_" + "A" * 30
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["source_count"] = secret
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential-shaped count leaked:\n{out}"
+    assert "is not an integer" in out, out
+
+
+
+def test_slug_set_diagnostics_are_redacted() -> None:
+    """The coverage mismatch prints the differing slug SETS, and a slug is payload text.
+    This gate runs before the leak scan (adversarial review — and a direct hit on a sweep
+    this PR had claimed to have completed but had not)."""
+    verify = import_script("verify_slug_redact")
+    secret = "ghp_" + "A" * 36
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["slug"] = secret
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential-shaped slug leaked:\n{out}"
+    assert "redacted:" in out, out
+
+
+
+def test_worktree_tampering_under_assume_unchanged_fails() -> None:
+    """`git status` stays clean when a path carries the `assume-unchanged` index bit, so a
+    modified worktree file would be compared against — and agree with — a payload the commit
+    never contained. Reading the blob from the object store closes that, and with it the
+    whole family of worktree-level tricks (adversarial review)."""
+    verify = import_script("verify_assume_unchanged")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        git(lean_root, "update-index", "--assume-unchanged", "Foo.lean")
+        (lean_root / "Foo.lean").write_text("theorem TAMPERED : False := sorry\n",
+                                            encoding="utf-8")
+        status = subprocess.run(["git", "-C", str(lean_root), "status", "--porcelain"],
+                                capture_output=True, text=True).stdout
+        assert status == "", f"fixture precondition: status must look clean, got {status!r}"
+
+        nodes, sources = make_payloads(sha, 1, 1)
+        sources["sources"]["decl0"] = "theorem TAMPERED : False := sorry"
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, f"worktree-tampered text was accepted:\n{out}"
+    assert "source_text" in out, out
+
+
+
+def test_boundary_whitespace_is_preserved() -> None:
+    """run_git().strip() is right for rev-parse/status output; applied to file content it
+    discards leading blank lines and trailing spaces, so the blob would no longer be
+    compared as the commit stores it (adversarial review)."""
+    verify = import_script("verify_ws")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        root = tmp / "lean-root"
+        root.mkdir()
+        git(root, "init", "-q")
+        git(root, "config", "user.email", "test@example.com")
+        git(root, "config", "user.name", "Test")
+        (root / "Foo.lean").write_text("\n\n  indented := 1   \nlast\n", encoding="utf-8")
+        git(root, "add", "-A")
+        git(root, "commit", "-q", "-m", "init")
+        sha = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"],
+                             check=True, capture_output=True, text=True).stdout.strip()
+        git(root, "checkout", "-q", "--detach", sha)
+
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = "Foo.lean"
+        nodes["nodes"][0]["startLine"] = 1
+        nodes["nodes"][0]["endLine"] = 3
+
+        sources["sources"]["decl0"] = "\n\n  indented := 1   "
+        code, out = run_main(verify, base_args(tmp, root, sha, nodes, sources))
+        assert code == 0, f"exact whitespace should be accepted:\n{out}"
+
+        sources["sources"]["decl0"] = "indented := 1"
+        code, out = run_main(verify, base_args(tmp, root, sha, nodes, sources))
+        assert code == 1, f"whitespace-stripped text must be rejected:\n{out}"
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -388,6 +713,21 @@ def main() -> None:
         test_has_source_slug_set_mismatch_fails,
         test_nodes_json_non_object_top_level_fails,
         test_missing_lean_root_fails,
+        test_tampered_source_text_fails,
+        test_missing_line_range_fails,
+        test_source_path_escaping_checkout_fails,
+        test_failure_diagnostics_are_redacted,
+        test_untracked_path_inside_checkout_fails,
+        test_trailing_newline_tampering_fails,
+        test_invalid_line_range_fails,
+        test_tracked_symlink_source_fails,
+        test_boolean_line_numbers_fail,
+        test_non_integer_counts_fail,
+        test_payload_pin_diagnostics_are_redacted,
+        test_count_diagnostics_are_redacted,
+        test_slug_set_diagnostics_are_redacted,
+        test_worktree_tampering_under_assume_unchanged_fails,
+        test_boundary_whitespace_is_preserved,
     ]
     for test in tests:
         test()

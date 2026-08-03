@@ -16,6 +16,8 @@ const state = {
   chapterTotals: new Map(),
   sources: null,           // slug -> verbatim Lean source, loaded lazily from data/sources.json
   sourcesPromise: null,
+  sourcesPin: undefined,   // notes#32: the nodes.json pin `sources` was fetched against
+
   trail: [],              // session navigation stack of decl slugs (breadcrumb)
 };
 
@@ -458,13 +460,49 @@ async function loadData() {
 }
 
 async function loadSources() {
+  // notes#32: the cache and any in-flight request are bound to the nodes payload they were
+  // made against. Without this, `state.sources` survives a reload that swapped nodes.json
+  // for a different commit, and the already-cached source — from the OLD commit — is handed
+  // out with no fetch and therefore no pin comparison at all.
+  const expected = (state.data && state.data.pin) || null;
+  if (state.sourcesPin !== expected) {
+    state.sources = null;
+    state.sourcesPromise = null;
+    state.sourcesPin = expected;
+  }
   if (state.sources) return state.sources;
   if (!state.sourcesPromise) {
     const sourcePayload = (state.data && state.data.source_payload) || 'sources.json';
     state.sourcesPromise = fetch('data/' + sourcePayload)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(payload => {
-        state.sources = (payload && payload.sources) || {};
+        // nodes.json and sources.json are fetched separately and joined here at runtime, so
+        // a stale or swapped sources.json would quietly attach the wrong Lean text to the
+        // right declaration — the one failure the build-time provenance gate cannot cover,
+        // because it happens in the browser. Refuse the payload unless its pin matches, and
+        // surface the mismatch instead of degrading to "no source available", which reads
+        // like a missing file.
+        //
+        // EXACT agreement, including one-sided absence. An earlier `expected && …` form
+        // disabled the check whenever nodes.json carried no pin, so a pin-less nodes.json
+        // would happily accept a sources.json that names a concrete, different commit.
+        // Both absent is the only pin-less case that passes — that is a pre-pin payload,
+        // where there is genuinely nothing to compare.
+        const got = (payload && payload.pin) || null;
+        if (got !== expected) {
+          const err = new Error(
+            'source payload pin mismatch: expected ' + expected + ', got ' + (got || '(none)'));
+          err.pinMismatch = { expected: expected, got: got || null };
+          throw err;
+        }
+        // A request that was superseded while in flight must not overwrite the cache: if
+        // nodes.json changed mid-fetch, `sourcesPin` already names the NEW pin, and letting
+        // this older response land would serve the old commit's source under the new pin
+        // with no further comparison. Return its own payload to this caller; do not publish
+        // it as the shared cache.
+        const resolved = (payload && payload.sources) || {};
+        if (state.sourcesPin !== expected) return resolved;
+        state.sources = resolved;
         return state.sources;
       })
       .catch(err => {
@@ -804,9 +842,22 @@ function renderDecl(app, slug) {
               text: `ソース本文が見つかりません。位置: ${node.file}:${node.startLine}–${node.endLine}`,
             }));
           }
-        }).catch(() => {
+        }).catch(err => {
           loaded = false;
           wrap.innerHTML = '';
+          if (err && err.pinMismatch) {
+            // Not a transient fetch failure: the payloads disagree about which commit they
+            // came from, so any source text shown would be untrustworthy. Say so plainly
+            // rather than inviting a retry that cannot help.
+            wrap.appendChild(el('p', {
+              class: 'filemeta source-pin-mismatch',
+              text: `ソース payload の provenance が一致しません（nodes.json: ${err.pinMismatch.expected} / `
+                + `sources.json: ${err.pinMismatch.got || '(なし)'}）。`
+                + `別のコミットのソースを表示する恐れがあるため、本文の表示を停止しました。位置: `
+                + `${node.file}:${node.startLine}–${node.endLine}`,
+            }));
+            return;
+          }
           wrap.appendChild(el('p', {
             class: 'filemeta',
             text: `ソース payload を読み込めませんでした。パネルを閉じて再度開くと再試行します。位置: ${node.file}:${node.startLine}–${node.endLine}`,
@@ -1278,6 +1329,26 @@ function renderAbout(app, highlightId) {
       el('a', { href: citation.source_repository, text: citation.source_repository }),
       pin ? el('span', {}, [' — pinned commit ', el('a', { class: 'mono', href: commitHref, text: pin })]) : null,
     ]));
+    // notes#32 item 11: link the source-side release attestation, so a reader can check
+    // the full-build evidence for this exact commit without this repo running a Lean build.
+    // Only rendered when CITATION.cff carries a version, which it does only while the pin
+    // sits on a release tag — otherwise there is no release page to point at.
+    if (citation.source_version) {
+      const tag = 'v' + citation.source_version;
+      citeList.appendChild(el('li', {}, [
+        'ソース側リリース: ',
+        el('a', {
+          href: `${citation.source_repository}/releases/tag/${tag}`,
+          text: tag,
+        }),
+        el('span', {
+          text: citation.source_date_released
+            ? `（${citation.source_date_released} 公開。full-build attestation と `
+              + `release-provenance.json はリリース資産として恒久保存されている）`
+            : '（full-build attestation はリリース資産として保存されている）',
+        }),
+      ]));
+    }
   }
   if (citation.license) {
     citeList.appendChild(el('li', { text: 'license: ' + [].concat(citation.license).join(', ')
