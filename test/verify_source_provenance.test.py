@@ -614,6 +614,24 @@ def test_count_diagnostics_are_redacted() -> None:
     assert "is not an integer" in out, out
 
 
+
+def test_slug_set_diagnostics_are_redacted() -> None:
+    """The coverage mismatch prints the differing slug SETS, and a slug is payload text.
+    This gate runs before the leak scan (adversarial review — and a direct hit on a sweep
+    this PR had claimed to have completed but had not)."""
+    verify = import_script("verify_slug_redact")
+    secret = "ghp_" + "A" * 36
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["slug"] = secret
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential-shaped slug leaked:\n{out}"
+    assert "redacted:" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -645,6 +663,7 @@ def main() -> None:
         test_non_integer_counts_fail,
         test_payload_pin_diagnostics_are_redacted,
         test_count_diagnostics_are_redacted,
+        test_slug_set_diagnostics_are_redacted,
     ]
     for test in tests:
         test()

@@ -390,8 +390,9 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
         extra = sorted(sources_slugs - has_source_slugs)[:5]
         failures.append(
             f'source_coverage: the set of node slugs with has_source:true does not match '
-            f'the "sources" object\'s keys (missing from sources.json: {missing}; present '
-            f'in sources.json but not marked has_source:true in nodes.json: {extra})'
+            f'the "sources" object\'s keys (missing from sources.json: '
+            f'{safe(sorted(missing))}; present in sources.json but not marked '
+            f'has_source:true in nodes.json: {safe(sorted(extra))})'
         )
         return
 
