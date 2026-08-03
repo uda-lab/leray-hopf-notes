@@ -481,6 +481,24 @@ def test_emit_refuses_when_sources_json_is_missing() -> None:
     check('no record is written for an incomplete payload', not wrote)
 
 
+
+def test_emit_rejects_malformed_pin() -> None:
+    """Equality is not enough: an empty or malformed PIN matched against an equally
+    malformed payload pin passes both checks, and the record then carries an invalid
+    `source.pin` and a commit URL resolving to nothing — authoritative-looking evidence
+    pointing nowhere (adversarial review)."""
+    for label, pin in (('empty', ''), ('too short', 'abc'), ('uppercase', 'A' * 40),
+                       ('non-hex', 'z' * 40)):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root, pin=pin)
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+            wrote = (data / 'build-provenance.json').exists()
+        check(f'emit rejects a malformed PIN: {label}', code != 0, out)
+        check(f'no record written for a malformed PIN: {label}', not wrote)
+
+
 def test_emit_refuses_pin_mismatch() -> None:
     """A provenance record that attests to the wrong commit is worse than none."""
     with tempfile.TemporaryDirectory() as td:
@@ -553,6 +571,7 @@ def main() -> None:
     test_emit_refuses_pin_mismatch()
     test_emit_refuses_sources_pin_mismatch()
     test_emit_refuses_when_sources_json_is_missing()
+    test_emit_rejects_malformed_pin()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()

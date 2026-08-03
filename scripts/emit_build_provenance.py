@@ -51,6 +51,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -60,6 +61,12 @@ DEFAULT_PIN_FILE = REPO_ROOT / 'extracted' / 'PIN'
 
 PROVENANCE_NAME = 'build-provenance.json'
 SUMS_NAME = 'SHA256SUMS'
+
+# Same shape the workflow's read-pin step and validate.py require. Equality alone is not
+# enough here: an empty or malformed PIN matched against an equally malformed payload pin
+# passes both checks, and the record then carries an invalid `source.pin` and a commit URL
+# that resolves to nothing — evidence that looks authoritative and points nowhere.
+PIN_PATTERN = re.compile(r'^[0-9a-f]{40}$')
 
 SOURCE_REPO = 'https://github.com/uda-lab/leray-hopf'
 SCHEMA_VERSION = 1
@@ -127,6 +134,11 @@ def main() -> int:
         return 1
 
     pin = pin_file.read_text(encoding='utf-8').strip()
+    if not PIN_PATTERN.match(pin):
+        print(f'ERROR: {pin_file} is not a 40-character lowercase-hex commit SHA: {pin!r} '
+              f'— refusing to write a provenance record naming an invalid commit',
+              file=sys.stderr)
+        return 1
 
     nodes_path = site_data / 'nodes.json'
     if not nodes_path.is_file():
