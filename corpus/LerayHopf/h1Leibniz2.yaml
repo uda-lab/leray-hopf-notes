@@ -1,10 +1,16 @@
 name: LerayHopf.h1Leibniz2
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $H^1$ の 2 因子に対する弱 Leibniz 則。複素 $L^2$ 場 $f,g$ がともに $H^{1,2}$ に属し、方向 $e_a$ の弱微分がそれぞれ $f_G,g_G$ で表されるとする。このとき任意の実数値 Schwartz テスト関数 $\varphi$ について次が成り立つ。
+
+  $$\int (\mathrm{Re}f)(\mathrm{Re}g)(\partial_a\varphi)\ =\ -\int\bigl((\mathrm{Re}f_G)(\mathrm{Re}g)+(\mathrm{Re}f)(\mathrm{Re}g_G)\bigr)\varphi$$
+
+  $f,g$ とその弱微分を Schwartz 列で近似し、Schwartz の水準の Leibniz 型部分積分を適用してから $L^2$ の極限へ移す。mathlib には 2 因子とも $H^1$ の積の法則が無いため、ここで構成している。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.h1Leibniz2`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    近似列を 4 本（$f$、$g$ とそれぞれの弱微分）同時に走らせ、3 因子の積の極限移行を Hölder 共役の対で正当化する必要がある。数学的内容は Leibniz 則 1 本だが、極限移行の下ごしらえが大半を占める。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/Analysis/WeakLeibniz.lean` の `LerayHopf.h1Leibniz2`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, schwartz, sobolev]

@@ -1,10 +1,10 @@
 name: LerayHopf.gradRe_add_ae
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  [[弱勾配成分|LerayHopf.gradComp_of_memH1]]の実部が、場の加法についてほとんど至るところ加法的であること。両方の場が [[$H^1$ 正則性|LerayHopf.memH1VF_R3]] を持つことを仮定する（和の $H^1$ 所属はそこから従う）。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.gradRe_add_ae`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.gradRe_add_ae`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, energy, convection]

@@ -1,10 +1,16 @@
 name: LerayHopf.galerkinCurve_halfNormSq_hasDerivAt
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Galerkin 曲線に沿った運動エネルギーの微分。非負の各時刻で、ノルム自乗の半分は粘性散逸の符号を変えたものを微分係数に持つ。
+
+  $$\frac{d}{ds}\Bigl(\tfrac12\lVert u(s)\rVert^2\Bigr)\Big|_{s=t}\ =\ -\,\Phi_\nu(u(t))$$
+
+  常微分方程式を曲線自身の値でテストすると、移流項が反対称性により消え、粘性項だけが残ることによる。エネルギー恒等式の微分形である。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinCurveBounds.lean` の `LerayHopf.galerkinCurve_halfNormSq_hasDerivAt`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    `LerayHopf/R3/GalerkinODE.lean` の `galerkin_energy_identity`（微分形）の複製。原本は別の入力型の上で述べられており、かつこのファイルの import 集合より下流にあるため、`GalerkinSolutionData_R3` の水準で置き直している。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/R3/GalerkinCurveBounds.lean` の `LerayHopf.galerkinCurve_halfNormSq_hasDerivAt`。
 chapter: ode
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, energy]

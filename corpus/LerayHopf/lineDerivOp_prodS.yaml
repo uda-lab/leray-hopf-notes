@@ -1,10 +1,12 @@
 name: LerayHopf.lineDerivOp_prodS
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Schwartz 関数の積に対する方向微分の古典的な Leibniz 則。方向 $v$ と点 $x$ を任意にとったとき、次が成り立つ。
+
+  $$\partial_v(fg)(x)\ =\ (\partial_v f)(x)\,g(x)+f(x)\,(\partial_v g)(x)$$
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.lineDerivOp_prodS`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/Analysis/WeakLeibniz.lean` の `LerayHopf.lineDerivOp_prodS`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, schwartz, sobolev]

@@ -1,10 +1,16 @@
 name: LerayHopf.exists_graphDenseSeq
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  グラフノルムに関する可分性の絞り込み。Schwartz ポテンシャルの列 $\psi$ を 1 本取って、次の 2 つを同時に満たすようにできる。
+
+  その curl 場の有限個ずつの張る空間の閉包が発散ゼロ部分空間を含むこと、および、**任意の** Schwartz ポテンシャルの curl 場が、$L^2$ でも各重み付き Fourier 成分でも同時に、この列のどれかで任意の精度に近似されること。
+
+  グラフ空間の可分性から可算な稠密列を取り、それを curl 場の族へ引き戻す。$L^2$ と粘性半ノルムを同時に押さえる近似が要るため、単なる $L^2$ 稠密性では足りない。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinBasisH1.lean` の `LerayHopf.exists_graphDenseSeq`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    2 つの結論を 1 本の列で同時に満たす必要があり、可分性から取った列に対して張る空間の稠密性と一様近似性をそれぞれ確かめる手順を踏む。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/R3/GalerkinBasisH1.lean` の `LerayHopf.exists_graphDenseSeq`。
 chapter: projections-galerkin
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, projections]

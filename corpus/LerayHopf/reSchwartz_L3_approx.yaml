@@ -1,10 +1,14 @@
 name: LerayHopf.reSchwartz_L3_approx
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  上の近似を、微分しない側について $L^3$ でも収束させた版。同じ仮定のもとで、$L^2$ での 2 つの収束に加えて、$\psi_n$ が場の実部へ $L^3$ でも収束するようにできる。
+
+  後段で 3 つの因子の積を扱うとき、Hölder の指数を合わせるために $L^2$ だけでは足りず、微分しない因子に $L^3$ の収束が要る。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.reSchwartz_L3_approx`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    多方向の近似列の実部を取る構成で、$L^3$ 収束は値の収束から別途導く。$L^2$ の 2 本と合わせて 3 つの収束を同時に満たす列であることが要点。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/Analysis/WeakLeibniz.lean` の `LerayHopf.reSchwartz_L3_approx`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, schwartz, sobolev]

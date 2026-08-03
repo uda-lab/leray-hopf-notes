@@ -1,10 +1,16 @@
 name: LerayHopf.divFree_L2test
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $H^1_\sigma$ の元の弱発散は、**任意の実 $L^2$ テスト**に対して消えること。$H^1$ 正則性を持ち[[発散ゼロ部分空間|LerayHopf.L2Sigma_R3]]に属する場 $u$ と、任意の $\theta\in L^2$ について次が成り立つ。
+
+  $$\sum_a\int(\mathrm{Re}\,\partial_a u_a)\,\theta\ =\ 0$$
+
+  Schwartz テストに対する結果を、$L^2$ における Schwartz 関数の稠密性と内積の連続性で任意の $L^2$ テストへ広げたもの。テスト関数の滑らかさを要求しない形にしておくことが、後段で可測な重みを掛けるときに効く。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.divFree_L2test`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    稠密性による延長のため、各項を実 $L^2$ 内積として書き直してから連続性を使う。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/R3/EnergyClassConvection.lean` の `LerayHopf.divFree_L2test`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, energy, convection]
