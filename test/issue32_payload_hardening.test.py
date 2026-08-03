@@ -550,28 +550,51 @@ def test_emit_requires_a_sources_map() -> None:
 
 
 
-def test_emit_cross_checks_the_sources_map_size() -> None:
-    """The map's presence says nothing: an empty or short map with the right pin would still
-    be attested as a complete build. The CI path has verify_source_provenance.py in front of
-    the emitter; the documented standalone command does not (adversarial review)."""
-    for label, entries, declared in (('empty map', {}, 1),
-                                     ('short map', {'a': 'x'}, 2)):
-        with tempfile.TemporaryDirectory() as td:
-            root = Path(td)
-            data = make_payload(root)
-            pin = (root / 'extracted' / 'PIN').read_text(encoding='utf-8').strip()
-            nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
-            nodes['source_count'] = declared
-            (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
-                                             encoding='utf-8')
-            (data / 'sources.json').write_text(
-                json.dumps({'pin': pin, 'sources': entries}), encoding='utf-8')
-            code, out = run(EMIT, '--site-data', str(data),
-                            '--pin-file', str(root / 'extracted' / 'PIN'))
-            wrote = (data / 'build-provenance.json').exists()
-        check(f'emit refuses a sources map that disagrees with the counts: {label}',
-              code != 0, out)
-        check(f'no record written for that payload: {label}', not wrote)
+def test_emit_delegates_coverage_checks_to_the_verifier() -> None:
+    """The emitter reuses verify_source_provenance.py's coverage rules instead of keeping a
+    second copy. Three review rounds found it re-deriving them one at a time — pin equality,
+    then the map's presence, then its size, then its keys — each fix leaving the next gap
+    open, and two copies of the same rules drift anyway.
+    """
+    pin = 'a' * 40
+
+    def payload(nodes_extra, sources_obj):
+        root = Path(tempfile.mkdtemp())
+        data = root / 'site' / 'data'
+        data.mkdir(parents=True)
+        (root / 'extracted').mkdir()
+        (root / 'extracted' / 'PIN').write_text(pin, encoding='utf-8')
+        nodes = {'pin': pin, 'has_source': True, 'source_count': 1, 'decl_count': 1,
+                 'nodes': [{'slug': 'x', 'has_source': True}]}
+        nodes.update(nodes_extra)
+        (data / 'nodes.json').write_text(json.dumps(nodes), encoding='utf-8')
+        (data / 'sources.json').write_text(json.dumps(sources_obj), encoding='utf-8')
+        (data / 'coverage.json').write_text('{}', encoding='utf-8')
+        return root, data
+
+    cases = {
+        'empty map': ({}, {'pin': pin, 'source_count': 1, 'sources': {}}),
+        'short map': ({'source_count': 2, 'decl_count': 2},
+                      {'pin': pin, 'source_count': 2, 'sources': {'x': 'y'}}),
+        'mismatched slugs': ({}, {'pin': pin, 'source_count': 1, 'sources': {'WRONG': 'y'}}),
+        'non-integer count': ({'source_count': '1'},
+                              {'pin': pin, 'source_count': '1', 'sources': {'x': 'y'}}),
+        'boolean count': ({'source_count': True},
+                          {'pin': pin, 'source_count': True, 'sources': {'x': 'y'}}),
+        'stale sources pin': ({}, {'pin': 'b' * 40, 'source_count': 1, 'sources': {'x': 'y'}}),
+    }
+    for label, (nodes_extra, sources_obj) in cases.items():
+        root, data = payload(nodes_extra, sources_obj)
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+        check(f'emit refuses a payload the coverage gate rejects: {label}', code != 0, out)
+        check(f'no record written: {label}', not wrote)
+
+    root, data = payload({}, {'pin': pin, 'source_count': 1, 'sources': {'x': 'y'}})
+    code, out = run(EMIT, '--site-data', str(data),
+                    '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('emit still accepts a coherent payload', code == 0, out)
 
 
 def test_emit_rejects_malformed_pin() -> None:
@@ -667,7 +690,7 @@ def main() -> None:
     test_emit_honours_per_node_source_claims()
     test_emit_requires_site_data_inside_site_root()
     test_emit_requires_a_sources_map()
-    test_emit_cross_checks_the_sources_map_size()
+    test_emit_delegates_coverage_checks_to_the_verifier()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()

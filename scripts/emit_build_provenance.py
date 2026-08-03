@@ -56,6 +56,11 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# The provenance gate owns the payload-coverage rules; this script reuses them rather than
+# keeping a second, drifting copy (see the call site below).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import verify_source_provenance as _verify  # noqa: E402
 DEFAULT_SITE_DATA = REPO_ROOT / 'site' / 'data'
 DEFAULT_PIN_FILE = REPO_ROOT / 'extracted' / 'PIN'
 
@@ -169,22 +174,20 @@ def main() -> int:
               file=sys.stderr)
         return 1
 
-    # sources.json must agree too. Checking only nodes.json would let a standalone run
-    # attest to the right commit while the source text shipped alongside came from another
-    # one — precisely the drift the frontend guard exists to catch at runtime, so the
-    # build-time record must not certify it.
+    # sources.json must agree too — and rather than reimplement the coverage rules here,
+    # reuse the gate that already owns them. Three rounds of review found this file
+    # re-deriving `verify_source_provenance.py`'s checks one at a time (pin equality, then
+    # the map's presence, then its size, then its keys), each time leaving the next gap
+    # open. Two copies of the same rules also drift. In CI the verifier runs immediately
+    # before this script; calling it here closes the documented standalone path with the
+    # same logic instead of an ever-growing imitation of it.
     sources_path = site_data / 'sources.json'
-    # A payload that claims embedded source must actually ship it. Skipping validation when
-    # the file is absent would let a standalone run attest to a payload whose source half is
-    # simply missing — the record would describe declarations whose text was never there.
-    node_list = nodes.get('nodes')
     claims_source = (
         bool(nodes.get('has_source'))
         or bool(nodes.get('source_count'))
-        # A per-node claim counts too: a payload can carry has_source:false at the top level
-        # while individual nodes claim embedded source, and those nodes' text has to exist.
-        or (isinstance(node_list, list)
-            and any(isinstance(n, dict) and n.get('has_source') for n in node_list))
+        or (isinstance(nodes.get('nodes'), list)
+            and any(isinstance(n, dict) and n.get('has_source')
+                    for n in nodes.get('nodes')))
     )
     if claims_source and not sources_path.is_file():
         print(f'ERROR: nodes.json claims embedded source (has_source='
@@ -192,38 +195,23 @@ def main() -> int:
               f'but {sources_path} is missing — refusing to attest to an incomplete payload',
               file=sys.stderr)
         return 1
+
     if sources_path.is_file():
         try:
             sources_doc = json.loads(sources_path.read_text(encoding='utf-8'))
-            sources_pin = sources_doc.get('pin')
         except json.JSONDecodeError as exc:
             print(f'ERROR: sources.json is not valid JSON: {exc}', file=sys.stderr)
             return 1
-        if sources_pin != pin:
-            print(f'ERROR: sources.json pin ({sources_pin!r}) does not match {pin_file} '
-                  f'({pin!r}) — refusing to attest to a payload whose two halves disagree',
-                  file=sys.stderr)
+        gate_failures: list[str] = []
+        gate_passes: list[str] = []
+        _verify.check_pin_consistency(pin, nodes, sources_doc, gate_failures, gate_passes)
+        _verify.check_source_coverage(nodes, sources_doc, gate_failures, gate_passes)
+        if gate_failures:
+            print('ERROR: the payload does not satisfy the provenance coverage checks, so '
+                  'there is nothing here worth attesting to:', file=sys.stderr)
+            for f in gate_failures:
+                print(f'  {f}', file=sys.stderr)
             return 1
-        # A pin alone is not a payload. A sources.json carrying the right pin but no
-        # `sources` object would be attested as a complete build while shipping no source
-        # text at all — the structure has to be checked, not just the label on it.
-        sources_map = sources_doc.get('sources')
-        if not isinstance(sources_map, dict):
-            print(f'ERROR: sources.json has no "sources" object (got '
-                  f'{type(sources_map).__name__}) — refusing to attest to a '
-                  f'payload that declares a pin but carries no source map', file=sys.stderr)
-            return 1
-        # And the map has to match what nodes.json claims. Its mere presence says nothing:
-        # an empty or short map with the right pin would still be attested as a complete
-        # build. verify_source_provenance.py makes this check for the CI path; the emitter
-        # repeats it because the documented standalone command has no such gate in front.
-        declared = nodes.get('source_count')
-        if isinstance(declared, int) and not isinstance(declared, bool):
-            if len(sources_map) != declared:
-                print(f'ERROR: sources.json carries {len(sources_map)} source entries but '
-                      f'nodes.json declares source_count={declared} — refusing to attest to '
-                      f'a payload whose halves disagree', file=sys.stderr)
-                return 1
 
     # Everything published — the artifact steps upload the whole site/ tree, not just the
     # data — except the two files this script itself produces.
