@@ -276,9 +276,14 @@ def main() -> int:
     for p in payload_files:
         rel_name = str(p.relative_to(site_root))
         if '\n' in rel_name or '\\' in rel_name:
+            # `unicode_escape` makes the name printable; it does not make it SAFE. A name
+            # like `data/ghp_AAAA…\noops.txt` reaches this message with the credential
+            # intact, and the emitter runs before the leak scan, so the rejection publishes
+            # what it rejected. Escaping and redacting are different jobs: escape first so
+            # the newline cannot forge log lines, then redact the result (codex round 15).
             print(f'ERROR: published filename contains a newline or backslash: '
-                  f'{rel_name.encode("unicode_escape").decode()!r} — refusing to write a '
-                  f'checksum file it would corrupt', file=sys.stderr)
+                  f'{_verify.safe(rel_name.encode("unicode_escape").decode())!r} — refusing '
+                  f'to write a checksum file it would corrupt', file=sys.stderr)
             return 1
 
     files_record = [

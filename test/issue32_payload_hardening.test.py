@@ -733,6 +733,67 @@ def test_emit_rejects_non_object_node_entries() -> None:
                   and not (data / 'SHA256SUMS').exists(), out)
 
 
+
+def test_no_emitter_diagnostic_path_leaks_a_credential() -> None:
+    """Every rejection path, not one per review round.
+
+    Three separate rounds found the same defect in a different diagnostic: the success
+    summary printed file names verbatim, the missing-sources message printed payload
+    metadata, and the unsafe-filename rejection printed an escaped name — `unicode_escape`
+    makes a name printable, not safe. The emitter runs BEFORE the leak scan, so each of
+    these publishes exactly what it is rejecting. This sweeps the paths as a table so the
+    next one is caught here rather than in round 16.
+    """
+    secret = 'ghp_' + 'A' * 30
+
+    def with_nodes(**overrides):
+        def build(root: Path, data: Path) -> None:
+            doc = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+            doc.update(overrides)
+            (data / 'nodes.json').write_text(json.dumps(doc, ensure_ascii=False),
+                                             encoding='utf-8')
+        return build
+
+    scenarios = (
+        ('a newline in a published filename',
+         lambda root, data: (root / 'site' / f'{secret}\noops.txt').write_text('x')),
+        ('a backslash in a published filename',
+         lambda root, data: (root / 'site' / f'{secret}\\oops.txt').write_text('x')),
+        ('a credential-shaped pin',
+         lambda root, data: (root / 'extracted' / 'PIN').write_text(secret)),
+        ('a credential-shaped source_count', with_nodes(source_count=secret)),
+        ('a credential-shaped annotated_count', with_nodes(annotated_count=secret)),
+        ('a credential-shaped decl_count', with_nodes(decl_count=secret)),
+        ('a credential-shaped slug in sources.json',
+         lambda root, data: (data / 'sources.json').write_text(
+             json.dumps({'pin': 'a' * 40, 'source_count': 1, 'sources': {secret: 'x'}}),
+             encoding='utf-8')),
+        ('a missing sources.json alongside a credential-shaped count',
+         lambda root, data: ((data / 'sources.json').unlink(),
+                             with_nodes(source_count=secret)(root, data))),
+    )
+    for label, build in scenarios:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            build(root, data)
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+        check(f'emit refuses: {label}', code != 0, out)
+        check(f'...without printing the credential: {label}', 'A' * 18 not in out, out)
+
+    # A credential-shaped name the emitter ACCEPTS must be redacted too — the success path
+    # is where this family started.
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        (root / 'site' / f'0-{secret}.txt').write_text('x', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('emit accepts the payload with an odd-looking name', code == 0, out)
+    check('...and the success summary redacts it too', 'A' * 18 not in out, out)
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1402,6 +1463,7 @@ def main() -> None:
     test_emit_accepts_a_real_source_less_build()
     test_emit_validates_annotated_count_against_the_nodes()
     test_emit_rejects_non_object_node_entries()
+    test_no_emitter_diagnostic_path_leaks_a_credential()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()
