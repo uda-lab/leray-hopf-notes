@@ -549,6 +549,31 @@ def test_emit_requires_a_sources_map() -> None:
     check('no record written for a source-less payload', not wrote)
 
 
+
+def test_emit_cross_checks_the_sources_map_size() -> None:
+    """The map's presence says nothing: an empty or short map with the right pin would still
+    be attested as a complete build. The CI path has verify_source_provenance.py in front of
+    the emitter; the documented standalone command does not (adversarial review)."""
+    for label, entries, declared in (('empty map', {}, 1),
+                                     ('short map', {'a': 'x'}, 2)):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            pin = (root / 'extracted' / 'PIN').read_text(encoding='utf-8').strip()
+            nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+            nodes['source_count'] = declared
+            (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                             encoding='utf-8')
+            (data / 'sources.json').write_text(
+                json.dumps({'pin': pin, 'sources': entries}), encoding='utf-8')
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+            wrote = (data / 'build-provenance.json').exists()
+        check(f'emit refuses a sources map that disagrees with the counts: {label}',
+              code != 0, out)
+        check(f'no record written for that payload: {label}', not wrote)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -642,6 +667,7 @@ def main() -> None:
     test_emit_honours_per_node_source_claims()
     test_emit_requires_site_data_inside_site_root()
     test_emit_requires_a_sources_map()
+    test_emit_cross_checks_the_sources_map_size()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()

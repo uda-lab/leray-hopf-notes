@@ -207,11 +207,23 @@ def main() -> int:
         # A pin alone is not a payload. A sources.json carrying the right pin but no
         # `sources` object would be attested as a complete build while shipping no source
         # text at all — the structure has to be checked, not just the label on it.
-        if not isinstance(sources_doc.get('sources'), dict):
+        sources_map = sources_doc.get('sources')
+        if not isinstance(sources_map, dict):
             print(f'ERROR: sources.json has no "sources" object (got '
-                  f'{type(sources_doc.get("sources")).__name__}) — refusing to attest to a '
+                  f'{type(sources_map).__name__}) — refusing to attest to a '
                   f'payload that declares a pin but carries no source map', file=sys.stderr)
             return 1
+        # And the map has to match what nodes.json claims. Its mere presence says nothing:
+        # an empty or short map with the right pin would still be attested as a complete
+        # build. verify_source_provenance.py makes this check for the CI path; the emitter
+        # repeats it because the documented standalone command has no such gate in front.
+        declared = nodes.get('source_count')
+        if isinstance(declared, int) and not isinstance(declared, bool):
+            if len(sources_map) != declared:
+                print(f'ERROR: sources.json carries {len(sources_map)} source entries but '
+                      f'nodes.json declares source_count={declared} — refusing to attest to '
+                      f'a payload whose halves disagree', file=sys.stderr)
+                return 1
 
     # Everything published — the artifact steps upload the whole site/ tree, not just the
     # data — except the two files this script itself produces.
