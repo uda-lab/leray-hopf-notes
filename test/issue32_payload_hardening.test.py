@@ -358,6 +358,37 @@ def test_scan_covers_generated_files_anywhere_in_the_tree() -> None:
         check(f'scan covers a generated file: {label}', code != 0, out)
 
 
+
+def test_scan_fails_on_undecodable_generated_file() -> None:
+    """A generated file with an unexpected extension that does not decode is not "binary,
+    therefore harmless" — it is a file this gate could not inspect, shipping in the
+    published tree (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        data = make_payload(Path(td))
+        (data / 'weird.dat').write_bytes(b'\xff\xfe\x00binary')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('scan refuses a generated file it cannot decode', code != 0, out)
+    check('the failure says the file ships unscanned', 'unscanned' in out, out)
+
+
+def test_emitter_pin_diagnostics_are_redacted() -> None:
+    """Same family as the verifier's safe_pin: the emitter also prints payload-derived pins,
+    and packaging automation runs it directly (adversarial review)."""
+    secret = 'ghp_' + 'A' * 32
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+        nodes['pin'] = secret
+        (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                         encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('emit refuses a credential-shaped pin', code != 0, out)
+    check('the emitter diagnostic does not print it verbatim', 'A' * 18 not in out, out)
+    check('the emitter diagnostic redacts it', 'redacted:' in out, out)
+
+
 def test_scan_requires_core_payloads() -> None:
     with tempfile.TemporaryDirectory() as td:
         data = make_payload(Path(td))
@@ -813,6 +844,8 @@ def main() -> None:
     test_scan_requires_core_payloads()
     test_scan_covers_files_added_later()
     test_scan_covers_generated_files_anywhere_in_the_tree()
+    test_scan_fails_on_undecodable_generated_file()
+    test_emitter_pin_diagnostics_are_redacted()
     test_emit_writes_record_and_sums()
     test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()

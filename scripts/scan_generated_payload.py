@@ -344,8 +344,14 @@ def main() -> int:
             continue
         try:
             scannable.append((rel, path.read_text(encoding='utf-8')))
-        except (UnicodeDecodeError, OSError):
-            continue  # binary or unreadable: nothing textual to leak
+        except (UnicodeDecodeError, OSError) as exc:
+            # Fail closed. A generated file with an unexpected extension that does not
+            # decode is not "binary, therefore harmless" — it is a file this gate could not
+            # inspect, shipping in the published tree. Known binary payload types are
+            # excluded by suffix above; anything else reaching here is unexplained.
+            failures.append(
+                f'{rel}: generated file could not be read as UTF-8 text '
+                f'({type(exc).__name__}) — it ships unscanned, so publication is refused')
 
     for name, text in scannable:
         hits = scan_text(name, text)

@@ -152,7 +152,8 @@ def main() -> int:
 
     pin = pin_file.read_text(encoding='utf-8').strip()
     if not PIN_PATTERN.match(pin):
-        print(f'ERROR: {pin_file} is not a 40-character lowercase-hex commit SHA: {pin!r} '
+        print(f'ERROR: {pin_file} is not a 40-character lowercase-hex commit SHA: '
+              f'{_verify.safe_pin(pin)} '
               f'— refusing to write a provenance record naming an invalid commit',
               file=sys.stderr)
         return 1
@@ -174,7 +175,8 @@ def main() -> int:
     # no provenance file.
     payload_pin = nodes.get('pin')
     if payload_pin != pin:
-        print(f'ERROR: nodes.json pin ({payload_pin!r}) does not match {pin_file} ({pin!r}) '
+        print(f'ERROR: nodes.json pin ({_verify.safe_pin(payload_pin)}) does not match '
+              f'{pin_file} ({_verify.safe_pin(pin)}) '
               f'— refusing to write a provenance record for a mismatched payload',
               file=sys.stderr)
         return 1
