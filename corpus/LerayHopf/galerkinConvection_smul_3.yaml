@@ -7,6 +7,6 @@ proof_ja: |
 gap:
   level: none
   note: |
-    同上。
+    実部と複素スカラーの交換 `re_ofReal_mul` が要の一行。
 chapter: limit-passage
 tags: [convection, galerkin, torus]
