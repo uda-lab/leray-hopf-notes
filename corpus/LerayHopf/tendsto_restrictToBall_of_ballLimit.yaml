@@ -1,10 +1,12 @@
 name: LerayHopf.tendsto_restrictToBall_of_ballLimit
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  球への制限の収束が、より小さい球へ引き継がれること。全空間の $L^2$ ベクトル場 $g$ が、半径 $k$ の球上の元 $g_k$ とその球の上でほとんど至るところ一致するとし、点列の半径 $k$ への制限が $g_k$ に収束するとする。このとき任意の実数 $R\le k$ について、同じ点列の半径 $R$ への制限は $g$ の半径 $R$ への制限に収束する。
+
+  半径 $R$ へのさらなる制限が連続であることと、制限の合成が半径について整合することを合わせて得られる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SpatialCompactness.lean` の `LerayHopf.tendsto_restrictToBall_of_ballLimit`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第8波（コンパクト性エンジン 4 モジュール: `SpatialCompactness` / `SpacetimePrecompact` / `ArzelaAscoliTime` / `Bochner.StepFunctionCompactness`）で手書き化。抽出元: `LerayHopf/R3/SpatialCompactness.lean` の `LerayHopf.tendsto_restrictToBall_of_ballLimit`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, compactness, spatial-compactness]

@@ -1,10 +1,14 @@
 name: LerayHopf.totallyBounded_restrictToBall_toLp_range
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  球へ制限した Galerkin 曲線の族が、時間区間上の $L^2$ 空間の中で全有界であること。粘性係数と時間長はいずれも正とする。曲線の族は $L^2$ に属することと、各時刻で球への制限に一致することを仮定として受け取る。任意の $\varepsilon$ に対し、時間の分割を十分細かく取れば、各曲線は良い標本点から作った階段曲線の $\varepsilon$ 近傍に入る。階段曲線の作る集合はコンパクトなので全有界であり、一様近似によって全有界性が元の族へ移る。
+
+  これは時空コンパクト性の主張の第一段であり、球の半径 $k$ を固定したうえでの結論である。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SpacetimePrecompact.lean` の `LerayHopf.totallyBounded_restrictToBall_toLp_range`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    曲線の族 $f$ を抽象的に受け取り、球への制限との一致を仮定として別に渡す形になっている。これは階段近似の誤差評価との照合を構文的に済ませ、型検査の負荷を抑えるための構成である。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第8波（コンパクト性エンジン 4 モジュール: `SpatialCompactness` / `SpacetimePrecompact` / `ArzelaAscoliTime` / `Bochner.StepFunctionCompactness`）で手書き化。抽出元: `LerayHopf/R3/SpacetimePrecompact.lean` の `LerayHopf.totallyBounded_restrictToBall_toLp_range`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, compactness, galerkin]

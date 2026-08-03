@@ -1,10 +1,16 @@
 name: LerayHopf.stepCurve_apply
 tier: gloss
 statement_ja: |
-  この補助項目は、Bochner 時間層で、弱時間微分、時間軟化、可測性、または時間方向のコンパクト性を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  [[階段曲線|LerayHopf.stepCurve]]の値。分割数 $m$ が正のとき、時刻 $t$ での値は次の番号に対応する標本点の値である。
+
+  $$\min\bigl(\lfloor t\,m/T\rfloor_{\mathbb N},\ m-1\bigr)$$
+
+  ここで $\lfloor\cdot\rfloor_{\mathbb N}$ は負の値を $0$ に切り詰める自然数値の床であり、$\min$ によって番号は最後の標本に丸められる。
+
+  主張が課しているのは分割数の正値性だけで、時間長 $T$ と時刻 $t$ には条件がない。時間長が正で $t$ が $[0,T]$ にあるときには上の番号は $t$ を含む区画の番号に一致するが、$T=0$ や区間の外の $t$ に対しても値はこの番号で定まる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/Bochner/StepFunctionCompactness.lean` の `LerayHopf.stepCurve_apply`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第8波（コンパクト性エンジン 4 モジュール: `SpatialCompactness` / `SpacetimePrecompact` / `ArzelaAscoliTime` / `Bochner.StepFunctionCompactness`）で手書き化。抽出元: `LerayHopf/Bochner/StepFunctionCompactness.lean` の `LerayHopf.stepCurve_apply`。
 chapter: bochner
-tags: [private-helper, generated]
+tags: [private-helper, compactness, bochner]

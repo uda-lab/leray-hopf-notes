@@ -2,10 +2,14 @@ name: LerayHopf.measurable_natFloor_real
 file: LerayHopf/Bochner/StepFunctionCompactness.lean
 tier: gloss
 statement_ja: |
-  この補助項目は、Bochner 時間層で、弱時間微分、時間軟化、可測性、または時間方向のコンパクト性を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  実数に対する自然数値の床函数は可測である。この床は、非負の実数に対してはそれ以下の最大の自然数を返し、**負の実数に対しては $0$ を返す**（負の数以下の自然数は存在しないため、切り詰める規約になっている）。
+
+  値域が可算なので、各値の逆像が可測集合であることを見れば足りる。$0$ の逆像は $1$ 未満の実数全体であり、負の実数もすべてここに含まれる。$0$ でない $n$ の逆像は $n$ 以上 $n+1$ 未満の区間である。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/Bochner/StepFunctionCompactness.lean` の `LerayHopf.measurable_natFloor_real`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    同名の宣言が `LerayHopf/R3/SpacetimePrecompact.lean` にも複製として存在する。名前が衝突するため corpus 側は whole-slug のファイル名と `file` フィールドで区別している。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第8波（コンパクト性エンジン 4 モジュール: `SpatialCompactness` / `SpacetimePrecompact` / `ArzelaAscoliTime` / `Bochner.StepFunctionCompactness`）で手書き化。抽出元: `LerayHopf/Bochner/StepFunctionCompactness.lean` の `LerayHopf.measurable_natFloor_real`。
 chapter: bochner
-tags: [private-helper, generated]
+tags: [private-helper, compactness, bochner]

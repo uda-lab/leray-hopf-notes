@@ -2,10 +2,12 @@ name: LerayHopf.continuous_restrictToBall'
 file: LerayHopf/R3/SpacetimePrecompact.lean
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  半径を固定した球への制限は連続である。$1$-Lipschitz であることから直ちに従う。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/SpacetimePrecompact.lean` の `LerayHopf.continuous_restrictToBall'`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    `LerayHopf/R3/AubinLionsLimitPassage.lean` の `private` 宣言の複製。同名の宣言が `LerayHopf/R3/ArzelaAscoliTime.lean` にも存在するため、corpus 側は whole-slug のファイル名と `file` フィールドで区別している。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第8波（コンパクト性エンジン 4 モジュール: `SpatialCompactness` / `SpacetimePrecompact` / `ArzelaAscoliTime` / `Bochner.StepFunctionCompactness`）で手書き化。抽出元: `LerayHopf/R3/SpacetimePrecompact.lean` の `LerayHopf.continuous_restrictToBall'`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, compactness, spatial-compactness]

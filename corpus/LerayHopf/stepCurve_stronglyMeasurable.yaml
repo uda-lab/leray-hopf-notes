@@ -1,10 +1,10 @@
 name: LerayHopf.stepCurve_stronglyMeasurable
 tier: gloss
 statement_ja: |
-  この補助項目は、Bochner 時間層で、弱時間微分、時間軟化、可測性、または時間方向のコンパクト性を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  分割数が正のとき、階段曲線は強可測である。時刻から標本番号への写像が可測であり、標本番号から値への写像は定義域が可算なので強可測だからである。両者の合成として得られる。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/Bochner/StepFunctionCompactness.lean` の `LerayHopf.stepCurve_stronglyMeasurable`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第8波（コンパクト性エンジン 4 モジュール: `SpatialCompactness` / `SpacetimePrecompact` / `ArzelaAscoliTime` / `Bochner.StepFunctionCompactness`）で手書き化。抽出元: `LerayHopf/Bochner/StepFunctionCompactness.lean` の `LerayHopf.stepCurve_stronglyMeasurable`。
 chapter: bochner
-tags: [private-helper, generated]
+tags: [private-helper, compactness, bochner]
