@@ -1,10 +1,16 @@
 name: LerayHopf.eLpNorm_six_toReal_le_energy
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  $L^6$ ノルムの評価を、拡張実数値から実数値へ移したもの。仮定は 2 つある。定数 $C_6$ が非負であること、および、ベクトル場の各成分が Schwartz 関数で代表されるとき各成分の $L^6$ ノルムが $C_6\sqrt{V_1}$ 以下であることが拡張実数値の不等式として成り立つことである。このとき、代表されているベクトル場と成分族について、同じ評価が実数値として成り立つ。
+
+  $$\bigl\lVert\psi_i\bigr\rVert_{L^6}\ \le\ C_6\sqrt{V_1}$$
+
+  移行を正当化しているのは右辺の非負性であり、$C_6$ の非負性はそのために仮定されている。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.eLpNorm_six_toReal_le_energy`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    拡張実数値のノルムを実数値に落とす単調性と `ENNReal.toReal_ofReal` の適用が本体で、数学的内容は評価そのものではなく値域の移行にある。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第7波（`TrilinearEstimate.lean`＋`GalerkinTrilinearBound.lean` クラスタ）で手書き化。抽出元: `LerayHopf/R3/GalerkinTrilinearBound.lean` の `LerayHopf.eLpNorm_six_toReal_le_energy`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, energy]
