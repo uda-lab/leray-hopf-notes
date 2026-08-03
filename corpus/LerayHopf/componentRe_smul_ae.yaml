@@ -1,7 +1,7 @@
 name: LerayHopf.componentRe_smul_ae
 tier: gloss
 statement_ja: |
-  同じ実部が、実スカラー倍についてほとんど至るところ斉次であること。
+  複素化した成分射影の実部が、実スカラー倍についてほとんど至るところ斉次であること。ベクトル場を実数 $c$ 倍してから第 $j$ 成分の実部を取ったものは、先に実部を取ってから $c$ 倍したものとほとんど至るところ一致する。
 gap:
   level: none
 provenance: |

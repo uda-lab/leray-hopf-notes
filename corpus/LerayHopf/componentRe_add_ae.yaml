@@ -1,7 +1,7 @@
 name: LerayHopf.componentRe_add_ae
 tier: gloss
 statement_ja: |
-  複素化した成分射影の実部が、場の加法についてほとんど至るところ加法的であること。
+  複素化した成分射影の実部が、場の加法についてほとんど至るところ加法的であること。2 つのベクトル場の和の第 $j$ 成分の実部は、それぞれの第 $j$ 成分の実部の和とほとんど至るところ一致する。
 gap:
   level: none
 provenance: |
