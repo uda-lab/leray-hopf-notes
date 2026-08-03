@@ -154,6 +154,9 @@ LEGITIMATE_PROBES = {
     'five-component 192.168': '192.168.1.2.3 も同様。',
     'address glued to a word': 'バージョン 10.0.0.5beta を参照。',
     'address glued by underscore': '識別子 10.0.0.5_foo を用いる。',
+    'semver prerelease suffix': 'バージョン 10.0.0.5-beta を参照。',
+    'semver build metadata': 'バージョン 10.0.0.5+meta を参照。',
+    'over-long AIza token': 'AIza' + 'a' * 40 + ' は鍵ではない。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
 }
 
