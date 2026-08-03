@@ -23,6 +23,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from urllib.parse import unquote
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 BUILD = REPO_ROOT / 'scripts' / 'build_static_pages.py'
@@ -117,24 +118,89 @@ def test_sitemap_has_no_lastmod() -> None:
     check('no lastmod is emitted', not list(root.iter(f'{ns}lastmod')))
 
 
-def test_slug_encoding_matches_the_url() -> None:
-    """Non-ASCII and apostrophes are percent-encoded so the directory name and the URL in
-    the canonical are the same string — if they diverge, the canonical points at a 404."""
+def test_url_and_directory_are_distinct_representations() -> None:
+    """A server percent-DECODES a request path before resolving it.
+
+    The first version of this generator stored the already-encoded text on disk
+    (`LerayHopf.crossWithI%CE%BE`) and emitted the same string as the URL. The server then
+    looked for a directory named `…ξ`, which did not exist: every canonical and sitemap URL
+    for the 24 slugs needing encoding returned 404, and only the double-encoded form
+    reached the page. The two representations are therefore checked as a decode
+    relationship, never as string equality — the equality check is what let this through.
+    """
     slugs = ['LerayHopf.crossWithIξ', "LerayHopf.H1Sigma'", 'LerayHopf.plain']
     with tempfile.TemporaryDirectory() as td:
         site = make_site(Path(td), [node(s) for s in slugs])
         run(BUILD, '--site', str(site))
         got = pages(site)
-    check('non-ASCII slug is percent-encoded',
-          'LerayHopf.crossWithI%CE%BE' in got, str(sorted(got)))
-    check('apostrophe slug is percent-encoded',
-          'LerayHopf.H1Sigma%27' in got, str(sorted(got)))
-    check('an already-safe slug is left alone', 'LerayHopf.plain' in got, str(sorted(got)))
-    for segment, html_text in got.items():
+    check('the directory keeps the declaration\'s own characters',
+          'LerayHopf.crossWithIξ' in got and "LerayHopf.H1Sigma'" in got, str(sorted(got)))
+    check('nothing is stored percent-encoded on disk',
+          not any('%' in name for name in got), str(sorted(got)))
+    for directory, html_text in got.items():
         m = re.search(r'<link rel="canonical" href="([^"]+)">', html_text)
-        check(f'canonical present for {segment}', m is not None, html_text[:300])
-        check(f'canonical path equals the directory for {segment}',
-              m.group(1).endswith(f'/decl/{segment}/'), m.group(1))
+        check(f'canonical present for {directory}', m is not None, html_text[:300])
+        emitted = m.group(1)
+        tail = emitted.split('/decl/')[1].rstrip('/')
+        check(f'the emitted URL decodes to the directory for {directory}',
+              unquote(tail) == directory, f'{emitted} -> {unquote(tail)!r} != {directory!r}')
+    check('a non-ASCII slug is encoded in the URL even though the directory is not',
+          '/decl/LerayHopf.crossWithI%CE%BE/' in got['LerayHopf.crossWithIξ'],
+          got['LerayHopf.crossWithIξ'][:400])
+
+
+def test_every_emitted_url_resolves_over_http() -> None:
+    """The property that actually matters, checked against a real server rather than
+    inferred from string shapes: fetch every URL the sitemap advertises and require 200.
+
+    This is the check that would have caught the encoding defect above. A comparison
+    between two strings the generator itself produced could not.
+    """
+    import http.server
+    import socketserver
+    import threading
+    import urllib.error
+    import urllib.request
+
+    slugs = ['LerayHopf.crossWithIξ', "LerayHopf.H1Sigma'", 'LerayHopf.plain',
+             'LerayHopf.StageData', 'LerayHopf.stageData', 'LerayHopf.Bochner.IsWeakTimeDerivℝ']
+    with tempfile.TemporaryDirectory() as td:
+        site = make_site(Path(td), [node(s) for s in slugs])
+        run(BUILD, '--site', str(site), '--base-url', 'http://127.0.0.1/')
+        sitemap = (site / 'sitemap.xml').read_text(encoding='utf-8')
+        locs = re.findall(r'<loc>([^<]+)</loc>', sitemap)
+
+        class Quiet(http.server.SimpleHTTPRequestHandler):
+            def log_message(self, *_args):  # keep CI output to the checks themselves
+                pass
+
+        handler = lambda *a, **k: Quiet(*a, directory=str(site), **k)  # noqa: E731
+        with socketserver.TCPServer(('127.0.0.1', 0), handler) as httpd:
+            port = httpd.server_address[1]
+            thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+            thread.start()
+            try:
+                statuses = []
+                for loc in locs:
+                    url = loc.replace('http://127.0.0.1/', f'http://127.0.0.1:{port}/')
+                    try:
+                        statuses.append((loc, urllib.request.urlopen(url, timeout=5).getcode()))
+                    except urllib.error.HTTPError as exc:
+                        statuses.append((loc, exc.code))
+                    except Exception as exc:  # noqa: BLE001 - any failure is "does not resolve"
+                        # Broad on purpose: an unencoded non-ASCII URL raises
+                        # UnicodeEncodeError before any request is sent. That is exactly the
+                        # defect this test exists for, and it must surface as a reported
+                        # failure with the offending URL, not as a bare traceback.
+                        statuses.append((loc, f'{type(exc).__name__}: {exc}'))
+            finally:
+                httpd.shutdown()
+                thread.join(timeout=5)
+
+    check('the sitemap lists the root and every declaration',
+          len(locs) == len(slugs) + 1, str(locs))
+    dead = [(loc, code) for loc, code in statuses if code != 200]
+    check('every URL the sitemap advertises resolves', not dead, str(dead[:4]))
 
 
 def test_case_insensitive_collisions_get_distinct_paths() -> None:
@@ -269,7 +335,8 @@ def main() -> None:
     test_emits_one_page_per_declaration()
     test_output_is_deterministic()
     test_sitemap_has_no_lastmod()
-    test_slug_encoding_matches_the_url()
+    test_url_and_directory_are_distinct_representations()
+    test_every_emitted_url_resolves_over_http()
     test_case_insensitive_collisions_get_distinct_paths()
     test_stale_pages_are_removed()
     test_prose_is_escaped_and_math_survives()

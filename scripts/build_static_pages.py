@@ -38,10 +38,10 @@ Path segments
 A slug is a Lean declaration name; it is *not* automatically a safe path segment. Three
 hazards are handled explicitly rather than hoped away:
 
-* **Non-ASCII.** Nine slugs carry `ℝ`, `ξ` or `ₗ`. They are percent-encoded (UTF-8, upper
-  hex) so the directory name and the URL are the same string.
-* **Apostrophes.** Fifteen slugs end in `'` (`H1Sigma'`). Also percent-encoded — legal in
-  a path, but not worth the quoting hazard in shell and HTML.
+* **Non-ASCII and apostrophes.** Nine slugs carry `ℝ`, `ξ` or `ₗ`; fifteen end in `'`.
+  The DIRECTORY keeps those characters and the URL percent-encodes them — the two are
+  different strings, because a server decodes the path before resolving it. Making them
+  identical is a way to emit URLs that 404 (see `url_segment`).
 * **Case-insensitive collisions.** `LerayHopf.StageData` and `LerayHopf.stageData` differ
   only in case, as do the `_R3` pair. On a case-insensitive filesystem (macOS, Windows)
   one would silently overwrite the other, so *which* page survived would depend on the
@@ -70,38 +70,51 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SITE = REPO_ROOT / 'site'
 DEFAULT_BASE_URL = 'https://uda-lab.github.io/leray-hopf-notes/'
 
-# Characters kept verbatim in a path segment. Everything else is percent-encoded.
-SAFE_SEGMENT_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-_'
+# Characters that cannot appear in a directory name on the platforms this repo is cloned
+# on. A slug carrying one is refused rather than mangled: silently rewriting an identifier
+# would make the page's address unpredictable from the declaration name.
+UNUSABLE_IN_DIR_NAME = frozenset('/\\<>:"|?*' + ''.join(chr(c) for c in range(0x20)) + '\x7f')
 
 # How much of the first prose paragraph goes into <meta name="description">.
 DESCRIPTION_LIMIT = 200
 
 
-def encode_segment(slug: str) -> str:
-    """Percent-encode a slug into a path segment, keeping the URL and the directory equal."""
-    return quote(slug, safe=SAFE_SEGMENT_CHARS)
+def url_segment(directory: str) -> str:
+    """The URL form of a directory name.
+
+    These are two DIFFERENT strings and conflating them was a real defect: an HTTP server
+    percent-DECODES a request path before resolving it, so storing the already-encoded text
+    on disk (`LerayHopf.crossWithI%CE%BE`) and emitting that same text in the URL made the
+    server look for a directory named `…ξ`, which does not exist — every canonical and
+    sitemap URL for the 24 slugs needing encoding returned 404, and only the double-encoded
+    `%25CE%25BE` form reached the page. The directory keeps the declaration's own
+    characters; the URL is derived from it here.
+    """
+    return quote(directory, safe='')
 
 
 def segment_map(slugs: list[str]) -> dict[str, str]:
-    """slug -> path segment, with case-insensitive collisions disambiguated.
+    """slug -> DIRECTORY NAME, with case-insensitive collisions disambiguated.
+
+    The directory keeps the declaration's own characters (including `ξ` and `\'`); the URL
+    that points at it is derived by `url_segment`. See that function for why the two must
+    not be the same string.
 
     The suffix is applied to every member of a colliding group, never to "the second one
     seen": a rule that depends on iteration order would make the output depend on the order
     of `nodes.json`, and the point of this map is that it does not.
     """
-    encoded = {slug: encode_segment(slug) for slug in slugs}
     folded: dict[str, list[str]] = {}
-    for slug, seg in encoded.items():
-        folded.setdefault(seg.lower(), []).append(slug)
+    for slug in slugs:
+        folded.setdefault(slug.lower(), []).append(slug)
     out: dict[str, str] = {}
     for group in folded.values():
         if len(group) == 1:
-            slug = group[0]
-            out[slug] = encoded[slug]
+            out[group[0]] = group[0]
             continue
         for slug in group:
             digest = hashlib.sha256(slug.encode('utf-8')).hexdigest()[:8]
-            out[slug] = f'{encoded[slug]}~{digest}'
+            out[slug] = f'{slug}~{digest}'
     return out
 
 
@@ -166,7 +179,7 @@ def render_page(node: dict, segment: str, base_url: str, pin: str) -> str:
     paragraphs = prose_paragraphs(statement)
     summary = truncate(plain_text(paragraphs[0])) if paragraphs else (
         truncate(plain_text(node.get('doc') or '')) or f'{name} の宣言ページ。')
-    canonical = f'{base_url}decl/{segment}/'
+    canonical = f'{base_url}decl/{url_segment(segment)}/'
     title = f'{short} — leray-hopf-notes'
     esc = lambda s: html.escape(s, quote=True)  # noqa: E731
 
@@ -239,7 +252,7 @@ def render_sitemap(entries: list[tuple[str, str]], base_url: str) -> str:
     lines.append('  </url>')
     for _slug, segment in entries:
         lines.append('  <url>')
-        lines.append(f'    <loc>{html.escape(base_url, quote=False)}decl/{segment}/</loc>')
+        lines.append(f'    <loc>{html.escape(base_url, quote=False)}decl/{url_segment(segment)}/</loc>')
         lines.append('  </url>')
     lines.append('</urlset>')
     return '\n'.join(lines) + '\n'
@@ -273,6 +286,12 @@ def main() -> int:
     for node in nodes:
         if not isinstance(node, dict) or not node.get('slug'):
             print('ERROR: nodes.json contains an entry with no slug', file=sys.stderr)
+            return 1
+        bad = sorted(UNUSABLE_IN_DIR_NAME.intersection(str(node['slug'])))
+        if bad:
+            print(f'ERROR: slug cannot be used as a directory name '
+                  f'(contains {[hex(ord(c)) for c in bad]}): '
+                  f'{str(node["slug"])!r}', file=sys.stderr)
             return 1
 
     # Stale output goes before anything is written: a declaration removed upstream must not
