@@ -1,10 +1,16 @@
 name: LerayHopf.stokes_abs_le
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  帯域制限されたテスト場に対する Stokes 形式の $L^2$ 有界性。$w$ がレベル $n_0$ の射影で不変なら、$w$ にのみ依存する非負定数 $C$ が存在して、任意の場 $v$ について次が成り立つ。
+
+  $$|S(v,w)|\ \le\ C\,\lVert v\rVert$$
+
+  $C$ は Fourier 箱の上の有限和として具体的に取れる。上の有限和表示に三角不等式と各係数の作用素ノルム評価を適用して得られる。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusLimitPassage.lean` の `LerayHopf.stokes_abs_le`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    同じ主張が `LerayHopf/Torus/TraceEnergy.lean` にも `stokes_abs_le'` として置かれている（`private` による複製）。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/LimitPassage.lean` の `LerayHopf.stokes_abs_le`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, torus, limit-passage]

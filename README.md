@@ -38,6 +38,7 @@ scripts/          ツール群（Lean ビルド不要、数秒で完走）
   coverage.py          章別・tier 別・proof_status 別カバレッジ集計
   build_site_data.py   decls.json ⋈ corpus → site/data/nodes.json + sources.json
   build_static_pages.py 宣言ごとの静的ページ + sitemap.xml（クローラ向けの実パス）
+  lean_binders.py      Lean 宣言の binder 抽出（corpus の仮定記述と型を突き合わせる監査用）
   workpacket.py        翻訳作業パケット生成
   glossary_lint.py     用語集違反チェック
   prose_lint.py        表記規則チェック（段落・数式内 Lean 識別子・非対応記法）

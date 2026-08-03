@@ -1,10 +1,12 @@
 name: LerayHopf.galerkin_visc_cont
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Galerkin 曲線に沿った粘性散逸が $[0,\infty)$ 上で連続であること。帯域制限により有限和に落ちることから従う。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusViscousLimit.lean` の `LerayHopf.galerkin_visc_cont`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    `LerayHopf/Torus/TraceEnergy.lean` の `private` な `galerkin_viscous_continuousOn` の再証明である。`private` は import 境界を越えて見えないため、同じ主張をこのファイル内で `viscousFormSq_bandlim` 経由で立て直している。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/ViscousLimit.lean` の `LerayHopf.galerkin_visc_cont`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, torus, energy]

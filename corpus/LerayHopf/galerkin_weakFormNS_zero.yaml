@@ -1,10 +1,16 @@
 name: LerayHopf.galerkin_weakFormNS_zero
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Galerkin 近似解が弱形式を厳密に満たすこと。粘性係数と時間長を正とし、時間の試験関数 $\psi$ は台が $(0,T)$ に収まる $C^1$ 級とする。テスト場 $w$ は[[Galerkin テスト|LerayHopf.IsGalerkinTest]]であって、あるレベル $n_0$ の射影で不変とする。このとき $n\ge n_0$ なる各レベルで、弱形式の被積分関数は $[0,T]$ 上で積分するとちょうど $0$ になる。
+
+  $$\int_0^T\Bigl(-\langle u_n(t),w\rangle\,\psi'(t)+\psi(t)\bigl(\nu\,S(u_n(t),w)+b(u_n(t),u_n(t),w)\bigr)\Bigr)dt\ =\ 0$$
+
+  各時刻の常微分方程式に $\psi$ を掛けて積分し、時間微分の項を部分積分で移す。境界項が消えるのは $\psi$ が両端で $0$ になるからである。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusLimitPassage.lean` の `LerayHopf.galerkin_weakFormNS_zero`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    レベルの引き上げ（$n_0$ で不変なテストが $n\ge n_0$ でも不変であること）を経てから常微分方程式を各時刻で適用する必要があり、その射影の昇格と部分積分の可積分性の確認が証明の大半を占める。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/LimitPassage.lean` の `LerayHopf.galerkin_weakFormNS_zero`。
 chapter: limit-passage
-tags: [private-helper, generated]
+tags: [private-helper, torus, limit-passage]

@@ -88,6 +88,9 @@ jobs:
       - name: Site data size report CLI regression tests
         run: python3 test/site_data_size_report.test.py
 
+      - name: Lean binder extractor tests (notes#74 audit tooling)
+        run: python3 test/lean_binders.test.py
+
       - name: Prerendered declaration page tests (notes#73)
         run: python3 test/issue73_static_pages.test.py
 

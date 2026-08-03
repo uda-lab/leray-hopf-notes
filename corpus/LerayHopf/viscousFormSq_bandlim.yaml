@@ -1,10 +1,16 @@
 name: LerayHopf.viscousFormSq_bandlim
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  帯域制限された場に対して、粘性形式が Fourier 箱の上の有限和に落ちること。場がレベル $n$ の射影で不変なら次が成り立つ。
+
+  $$\nu\sum_j\sum_{k\in\text{箱}}(2\pi)^2\lVert k\rVert^2\,\bigl\lVert\hat u_j(k)\bigr\rVert^2$$
+
+  箱の外で Fourier 係数が消えることによる。
 gap:
-  level: mild
+  level: none
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusViscousLimit.lean` の `LerayHopf.viscousFormSq_bandlim`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    `LerayHopf/Torus/TraceEnergy.lean` の `private` な `stokes_boxSum` を経由せずに済ませるために、このファイル内に置かれている。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第9波（Torus 極限移行チェーン: `ConvectionExtension` → `LimitPassage` → `TraceEnergy` → `ViscousLimit`）で手書き化。抽出元: `LerayHopf/Torus/ViscousLimit.lean` の `LerayHopf.viscousFormSq_bandlim`。
 chapter: energy
-tags: [private-helper, generated]
+tags: [private-helper, torus, energy]
