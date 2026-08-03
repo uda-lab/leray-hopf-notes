@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   三重線形形式の第 3 引数を Galerkin テスト空間に制限した部分加群 $L^2_\sigma \otimes \mathcal{G}$。
 proof_ja: |
-  同様に汎用構成の特殊化である。
+  汎用のテンソル積部分加群の構成をテスト張り空間 $\mathcal{G}$ で特殊化する。ここでは右側の因子を $\mathcal{G}$ に取る。
 gap:
   level: none
   note: |

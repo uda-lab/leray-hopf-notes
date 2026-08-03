@@ -3,10 +3,10 @@ tier: full
 statement_ja: |
   Galerkin 移流形式の第三引数の加法性。
 proof_ja: |
-  同様である。
+  係数の加法性で被和項を分配し、有限和を分ける（すべて有限和なので収束の問題はない）。
 gap:
   level: none
   note: |
-    同上。
+    [[Galerkin 移流形式|LerayHopf.galerkinConvection]] は周波数箱上の有限和なので、多重線形性は純粋に代数的。
 chapter: limit-passage
 tags: [convection, galerkin, torus]
