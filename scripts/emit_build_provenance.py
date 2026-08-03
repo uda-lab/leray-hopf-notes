@@ -129,6 +129,13 @@ def main() -> int:
     if not site_root.is_dir():
         print(f'ERROR: site root not found: {site_root}', file=sys.stderr)
         return 1
+    # The payload being validated must be part of the tree being hashed. Otherwise the
+    # record would attest to counts and pins read from one directory while the digests
+    # describe an entirely different one.
+    if not site_data.is_relative_to(site_root):
+        print(f'ERROR: --site-data ({site_data}) is not inside --site-root ({site_root}) '
+              f'— the validated payload must be part of the hashed tree', file=sys.stderr)
+        return 1
     if not pin_file.is_file():
         print(f'ERROR: pin file not found: {pin_file}', file=sys.stderr)
         return 1

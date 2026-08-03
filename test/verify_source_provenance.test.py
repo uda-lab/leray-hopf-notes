@@ -559,16 +559,22 @@ def test_non_integer_counts_fail() -> None:
     build-provenance.json — attested as if it had been checked (adversarial review)."""
     verify = import_script("verify_counts")
     for label, value in (("boolean", True), ("float", 1.0), ("string", "1")):
-        with tempfile.TemporaryDirectory() as td:
-            tmp = Path(td)
-            lean_root, sha = make_pinned_repo(tmp)
-            nodes, sources = make_payloads(sha, 1, 1)
-            nodes["source_count"] = value
-            nodes["decl_count"] = value
-            sources["source_count"] = value
-            code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
-        assert code == 1, f"{label} counts were accepted:\n{out}"
-        assert "is not an integer" in out, out
+        # Node counts AND, separately, sources.json's own count. The sources-only case has
+        # to be isolated: setting all three at once lets the node check fire first and hide
+        # a missing sources.json check — which is exactly how that gap survived a round.
+        for where in ("nodes", "sources"):
+            with tempfile.TemporaryDirectory() as td:
+                tmp = Path(td)
+                lean_root, sha = make_pinned_repo(tmp)
+                nodes, sources = make_payloads(sha, 1, 1)
+                if where == "nodes":
+                    nodes["source_count"] = value
+                    nodes["decl_count"] = value
+                else:
+                    sources["source_count"] = value
+                code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+            assert code == 1, f"{label} counts in {where} were accepted:\n{out}"
+            assert "is not an integer" in out, out
 
 
 def main() -> None:

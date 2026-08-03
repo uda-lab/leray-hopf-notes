@@ -334,6 +334,14 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
         return
 
     sources_source_count = sources.get('source_count')
+    if not (sources_source_count is None
+            or (isinstance(sources_source_count, int)
+                and not isinstance(sources_source_count, bool))):
+        failures.append(
+            f'source_coverage: sources.json source_count is not an integer: '
+            f'{sources_source_count!r} ({type(sources_source_count).__name__})'
+        )
+        return
     if sources_source_count is None:
         failures.append('source_coverage: sources.json is missing source_count')
         return

@@ -149,6 +149,8 @@ LEGITIMATE_PROBES = {
     'three-component version': 'バージョン 10.2.3 で導入された。',
     'out-of-range dotted value': '10.999.999.999 は住所ではない。',
     'octet 256': '10.256.0.1 も同様である。',
+    'five-component dotted value': '10.1.2.3.4 は住所ではない。',
+    'five-component 192.168': '192.168.1.2.3 も同様。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
 }
 
@@ -507,6 +509,23 @@ def test_emit_honours_per_node_source_claims() -> None:
     check('no record written for that payload', not wrote)
 
 
+
+def test_emit_requires_site_data_inside_site_root() -> None:
+    """The validated payload must be part of the hashed tree, or the record attests to
+    counts and pins from one directory while the digests describe another."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        other = root / 'unrelated'
+        other.mkdir()
+        (other / 'index.html').write_text('<!doctype html>', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data), '--site-root', str(other),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+    check('emit refuses a --site-data outside --site-root', code != 0, out)
+    check('no record written in that case', not wrote)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -598,6 +617,7 @@ def main() -> None:
     test_emit_refuses_when_sources_json_is_missing()
     test_emit_rejects_malformed_pin()
     test_emit_honours_per_node_source_claims()
+    test_emit_requires_site_data_inside_site_root()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()

@@ -118,13 +118,15 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # needed only two further octets, so an ordinary three-component version string such as
     # `10.2.3` was classified as a private address and would have blocked publication —
     # a false positive of exactly the kind that gets a gate switched off.
-    # Octets are range-checked (0-255). Without that, dotted values such as
+    # Octets are range-checked (0-255), and the trailing guard rejects a match that is only
+    # a PREFIX of a longer dotted value: `10.1.2.3.4` is not an address, and treating it as
+    # one blocks publication on ordinary dotted data. Without that, dotted values such as
     # `10.999.999.999` or `10.256.0.1` — which cannot be addresses at all — would block
     # publication: the same false-positive class as the earlier `10.2.3` version string.
     ('private IPv4 address',
      re.compile(r'\b(?:10(?:\.' + _OCTET + r'){3}'
                 r'|192\.168(?:\.' + _OCTET + r'){2}'
-                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.' + _OCTET + r'){2})\b')),
+                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.' + _OCTET + r'){2})(?!\.?\d)')),
     # Assignment shapes: a credential-ish key, then a long opaque value. The quote is
     # optional and may be backslash-escaped, because these files are JSON — an embedded
     # `api_key: "…"` is stored as `api_key: \"…\"`, and requiring a bare quote character
