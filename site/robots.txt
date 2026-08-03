@@ -1,8 +1,9 @@
-# notes#73: baseline robots.txt. No `Sitemap:` directive yet — per-declaration URLs are
-# still hash fragments of this single document (see the "page metadata" comment block in
-# app.js), so a sitemap listing them would not give crawlers anything a sitemap is meant
-# to give: independently fetchable, indexable pages. Add `Sitemap:` once prerendered
-# per-declaration static routes exist and the Pages base URL is finalized (#32 Phase B /
-# #62 rename), not before.
+# notes#73: per-declaration pages are prerendered at real paths (site/decl/<segment>/),
+# so a sitemap now has something to list: independently fetchable, indexable documents
+# rather than fragments of one page. The hash routes (`#/decl/<slug>`) still work and are
+# unchanged — the static pages are additive (owner decision 2026-08-03) — but they are not
+# listed here, because a crawler never receives a fragment.
 User-agent: *
 Allow: /
+
+Sitemap: https://uda-lab.github.io/leray-hopf-notes/sitemap.xml
