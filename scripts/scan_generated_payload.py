@@ -312,16 +312,21 @@ def redact_all(fragment: str) -> str:
 
 
 def _tracked_files(site_root: Path) -> set[str] | None:
-    """Paths git tracks under `site_root`, or None when that cannot be determined.
+    """Paths COMMITTED under `site_root`, or None when that cannot be determined.
+
+    "Tracked" here means "present in HEAD", not `git ls-files`. The index is mutable during
+    a build: a step that writes `site/debug.txt` and runs `git add` makes `ls-files` report
+    it as tracked, while it is in no commit and so cannot be in the modified set either —
+    it would fall through both halves of the predicate and be published unscanned (codex
+    round 11). Nothing reviewed it, which is precisely the condition this gate exists for.
+    Reading HEAD is also what `_modified_files` compares against, so one listing now decides
+    both halves rather than two sources that can disagree.
 
     None means "treat everything as generated" — failing towards scanning more, since the
     alternative is silently skipping files this gate exists to inspect.
     """
-    proc = subprocess.run(['git', '-C', str(site_root), 'ls-files'],
-                          capture_output=True, text=True)
-    if proc.returncode != 0:
-        return None
-    return set(proc.stdout.splitlines())
+    blobs = _committed_blobs(site_root)
+    return None if blobs is None else set(blobs)
 
 
 def _git_blob_sha1(data: bytes) -> str:

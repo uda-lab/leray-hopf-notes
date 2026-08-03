@@ -299,6 +299,65 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
                       f'range in the pinned checkout{failures_note}')
 
 
+def check_payload_structure(nodes: dict, failures: list[str], passes: list[str],
+                            label: str = 'payload_structure') -> None:
+    """The invariants nodes.json must satisfy on its OWN, with or without embedded sources.
+
+    Separated out because a source-less payload used to skip validation entirely: with no
+    sources.json to cross-check against, `decl_count: "1"` and an empty `nodes` array were
+    copied straight into build-provenance.json and attested (codex round 11). Coverage
+    against sources.json is a stronger claim layered on top of these, not a precondition
+    for making any claim at all.
+
+    `label` names the caller's check in the failure text, so `check_source_coverage` keeps
+    reporting under its own name while sharing this one definition. The alternative —
+    a second copy of these rules for the source-less path — is what let the emitter and the
+    verifier drift apart in the first place.
+    """
+    source_count = nodes.get('source_count')
+    decl_count = nodes.get('decl_count')
+    if source_count is None or decl_count is None:
+        failures.append(
+            f'{label}: nodes.json is missing source_count and/or decl_count')
+        return
+    # Counts must be genuine integers. `True` and `1.0` compare and `len()`-compare exactly
+    # like `1`, so malformed count metadata would pass every comparison below and then be
+    # copied verbatim into build-provenance.json — attested as if it had been checked.
+    # (`isinstance(True, int)` is True in Python, hence the explicit bool exclusion.)
+    counts = [('nodes.json source_count', source_count), ('nodes.json decl_count', decl_count)]
+    if nodes.get('annotated_count') is not None:
+        counts.append(('nodes.json annotated_count', nodes.get('annotated_count')))
+    for count_label, value in counts:
+        if isinstance(value, bool) or not isinstance(value, int):
+            failures.append(
+                f'{label}: {count_label} is not an integer: {safe(value)} '
+                f'({type(value).__name__})')
+            return
+    if source_count < 0 or decl_count < 0:
+        failures.append(
+            f'{label}: negative counts in nodes.json (source_count={source_count}, '
+            f'decl_count={decl_count})')
+        return
+    if source_count > decl_count:
+        failures.append(
+            f'{label}: source_count ({source_count}) exceeds decl_count '
+            f'({decl_count}) — impossible for a valid build; nodes.json is internally '
+            f'inconsistent')
+        return
+    node_list = nodes.get('nodes')
+    if not isinstance(node_list, list):
+        failures.append(f'{label}: nodes.json "nodes" field is missing or not a list')
+        return
+    if len(node_list) != decl_count:
+        failures.append(
+            f'{label}: nodes.json declares decl_count={decl_count} but its '
+            f'"nodes" array has {len(node_list)} entries')
+        return
+    passes.append(
+        f'{label}: decl_count == len("nodes") == {decl_count}, counts well-typed, '
+        f'source_count ({source_count}) within range')
+
+
 def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passes: list[str]) -> None:
     """source_count == decl_count (zero misses), cross-checked against sources.json's own
     declared count, its actual "sources" object, and the has_source:true node slugs — so a
@@ -312,6 +371,15 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
     field passed as long as the declared counts matched — fail-open exactly where this gate is
     supposed to be fail-closed.
     """
+    # The payload-only invariants (count types, node-array length, has_source tally) live in
+    # check_payload_structure so the emitter can apply them to a source-less payload too.
+    # Re-deriving them here is what let them drift apart in the first place.
+    structure_failures: list[str] = []
+    check_payload_structure(nodes, structure_failures, [], label='source_coverage')
+    if structure_failures:
+        failures.extend(structure_failures)
+        return
+
     source_count = nodes.get('source_count')
     decl_count = nodes.get('decl_count')
     if source_count is None or decl_count is None:

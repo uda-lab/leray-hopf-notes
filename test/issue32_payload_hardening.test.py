@@ -524,6 +524,87 @@ def test_scope_fails_towards_scanning_when_git_is_unavailable() -> None:
     check('a leak outside site/data is caught with no git available', code != 0, out)
 
 
+
+def test_scan_covers_files_staged_but_never_committed() -> None:
+    """`git add` during a build makes `git ls-files` call a new file tracked while it is in
+    no commit — so it is in neither the tracked-and-reviewed set nor the modified set, and
+    falls through the predicate unscanned. Tracked status is read from HEAD, not the mutable
+    index (codex round 11)."""
+    import subprocess as sp
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        site = data.parent
+        (site / 'app.js').write_text('// reviewed\n', encoding='utf-8')
+        for args in (('init', '-q'), ('config', 'user.email', 't@e'),
+                     ('config', 'user.name', 'T'), ('add', '-A'),
+                     ('commit', '-q', '-m', 'i')):
+            sp.run(['git', '-C', str(root), *args], check=True, capture_output=True)
+        (site / 'debug.txt').write_text('GH_TOKEN=ghp_' + 'A' * 30 + '\n', encoding='utf-8')
+        sp.run(['git', '-C', str(root), 'add', 'site/debug.txt'],
+               check=True, capture_output=True)
+
+        # Precondition: the index really does call it tracked. Without this the test could
+        # pass because the staging never took effect.
+        listed = sp.run(['git', '-C', str(site), 'ls-files'],
+                        capture_output=True, text=True).stdout.split()
+        check('git ls-files calls the staged file tracked', 'debug.txt' in listed, str(listed))
+
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a staged-but-uncommitted file IS scanned', code != 0, out)
+    check('the staged finding withholds the credential', 'A' * 18 not in out, out)
+
+
+def test_emit_validates_structure_of_a_source_less_payload() -> None:
+    """With no sources.json to cross-check against, the emitter used to skip every
+    structural check and copy the counts into an authoritative-looking record. Coverage is a
+    stronger claim layered on top of structure, not the precondition for checking anything
+    (codex round 11)."""
+    scenarios = (
+        ('a string decl_count', {'decl_count': '1'}),
+        ('a boolean count', {'decl_count': True}),
+        ('a negative count', {'decl_count': -1}),
+        ('an empty nodes array against decl_count=1', {'nodes': []}),
+    )
+    for label, overrides in scenarios:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+            # A source-LESS payload: nothing claims embedded source, so sources.json is
+            # legitimately absent and the coverage path is not reached at all.
+            nodes['has_source'] = False
+            nodes['source_count'] = 0
+            for node in nodes['nodes']:
+                node['has_source'] = False
+            nodes.update(overrides)
+            (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                             encoding='utf-8')
+            (data / 'sources.json').unlink()
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+            check(f'emit refuses a source-less payload with {label}', code != 0, out)
+            check(f'no provenance record is left behind for {label}',
+                  not (data / 'build-provenance.json').exists(), out)
+
+    # The well-formed source-less payload must still be accepted, or the check above would
+    # be passing by refusing everything.
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+        nodes['has_source'] = False
+        nodes['source_count'] = 0
+        for node in nodes['nodes']:
+            node['has_source'] = False
+        (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                         encoding='utf-8')
+        (data / 'sources.json').unlink()
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('a well-formed source-less payload is still accepted', code == 0, out)
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1181,6 +1262,8 @@ def main() -> None:
     test_scan_covers_tracked_files_modified_by_the_build()
     test_scan_ignores_index_flags_that_hide_modifications()
     test_scope_fails_towards_scanning_when_git_is_unavailable()
+    test_scan_covers_files_staged_but_never_committed()
+    test_emit_validates_structure_of_a_source_less_payload()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()

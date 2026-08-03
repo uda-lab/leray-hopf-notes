@@ -188,6 +188,21 @@ def main() -> int:
     # open. Two copies of the same rules also drift. In CI the verifier runs immediately
     # before this script; calling it here closes the documented standalone path with the
     # same logic instead of an ever-growing imitation of it.
+    # Structure first, and UNCONDITIONALLY. A source-less payload has no sources.json to
+    # cross-check against, which is not a reason to attest to it unchecked: `decl_count:
+    # "1"` with an empty `nodes` array was previously copied straight into the record
+    # (codex round 11). Coverage against sources.json is a stronger claim layered on top,
+    # not the precondition for making any claim at all.
+    structure_failures: list[str] = []
+    structure_passes: list[str] = []
+    _verify.check_payload_structure(nodes, structure_failures, structure_passes)
+    if structure_failures:
+        print('ERROR: nodes.json is not internally consistent, so there is nothing here '
+              'worth attesting to:', file=sys.stderr)
+        for failure in structure_failures:
+            print(f'  {failure}', file=sys.stderr)
+        return 1
+
     source_text_verified = False
     sources_path = site_data / 'sources.json'
     claims_source = (
