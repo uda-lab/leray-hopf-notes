@@ -23,6 +23,12 @@ The comparison is on the `contains-sorry` VALUE, not on the presence of the fiel
 schema also permits `verified`, `scaffold`, `retired` and `invalid-statement`, and a test
 keyed on presence would fail the first time any of those is set for an unrelated entry.
 
+SCOPE: this pins declarations whose OWN proof body contains a literal `sorry`. Declarations
+that merely DEPEND on one are out of scope here and are tracked in notes#146 — the schema
+says `contains-sorry` also covers "via a sorry-dependent private helper", but `decls.json`'s
+`uses` does not record private helpers, so that closure cannot be computed reliably from the
+data this repo has.
+
 Run: python3 test/issue74_proof_status_preserved.test.py
 """
 
