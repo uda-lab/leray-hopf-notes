@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   Galerkin 移流形式の第三引数の実斉次性。
 proof_ja: |
-  同様である。
+  係数の斉次性で複素スカラーを括り出し、四重の有限和の外へ移してから実部との交換で実スカラーに戻す。
 gap:
   level: none
   note: |

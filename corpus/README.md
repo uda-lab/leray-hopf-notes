@@ -125,7 +125,7 @@ pre-commit / CI で機械チェックする。D1・D2 の Lean 名・D5 は**ハ
 上の積分」のような後置詞用法を大量に拾う。検出したうえで目で選別すること。
 
 ```sh
-python3 - "$f" <<'EOF' | grep -nE '同じ|上の|上記|前述|こちら|など'
+python3 - "$f" <<'EOF' | grep -nE '同じ|上の|上記|前述|こちら|など|同様|同上|前掲'
 import sys, yaml
 d = yaml.safe_load(open(sys.argv[1], encoding='utf-8'))
 print(d.get('statement_ja') or '')
@@ -133,6 +133,10 @@ print(d.get('proof_ja') or '')
 print((d.get('gap') or {}).get('note') or '')
 EOF
 ```
+
+検出語には **`同様` / `同上` / `前掲` を必ず含める** — 「同様である。」だけの証明文は
+参照先を持たない後方参照であり、D4 違反として最も見落としやすい形（実際に 5 件が
+初回の掃き取りを通過した）。
 
 （`sed` で `statement_ja` から `gap:` までを切り出す形では **`gap.note` が読まれない** —
 本規約は `gap.note` にも適用されるので、3 フィールドを明示的に取ること。）

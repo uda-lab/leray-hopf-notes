@@ -3,7 +3,7 @@ tier: full
 statement_ja: |
   Galerkin 移流形式の第二引数の加法性。
 proof_ja: |
-  同様に係数の加法性と有限和の分配で従う。
+  係数の加法性で被和項を分配し、有限和を分ける（すべて有限和なので収束の問題はない）。
 gap:
   level: none
   note: |
