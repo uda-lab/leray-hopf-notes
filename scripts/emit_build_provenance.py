@@ -247,6 +247,18 @@ def main() -> int:
         print(f'ERROR: no publishable files found under {site_root}', file=sys.stderr)
         return 1
 
+    # A newline or backslash in a name would produce a SHA256SUMS that `sha256sum -c`
+    # cannot parse — the file would read as two entries, or as an escaped one. Nothing in a
+    # static site legitimately needs such a name, so refuse rather than emit a broken
+    # checksum file that still looks authoritative.
+    for p in payload_files:
+        rel_name = str(p.relative_to(site_root))
+        if '\n' in rel_name or '\\' in rel_name:
+            print(f'ERROR: published filename contains a newline or backslash: '
+                  f'{rel_name.encode("unicode_escape").decode()!r} — refusing to write a '
+                  f'checksum file it would corrupt', file=sys.stderr)
+            return 1
+
     files_record = [
         {'name': str(p.relative_to(site_root)), 'bytes': p.stat().st_size,
          'sha256': sha256_of(p)}

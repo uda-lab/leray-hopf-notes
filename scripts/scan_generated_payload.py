@@ -240,6 +240,21 @@ def _tracked_files(site_root: Path) -> set[str] | None:
     return set(proc.stdout.splitlines())
 
 
+def _modified_files(site_root: Path) -> set[str]:
+    """Tracked paths under `site_root` whose content differs from HEAD.
+
+    Being tracked is not the same as being unchanged: a build step that rewrites a tracked
+    file (say `app.js`) produces content nobody reviewed, and classifying it as "committed,
+    therefore reviewed" would skip exactly the case this gate cares about. `--relative`
+    matters — `ls-files` reports paths relative to the current directory while `diff` reports
+    them from the repo root unless asked otherwise.
+    """
+    proc = subprocess.run(
+        ['git', '-C', str(site_root), 'diff', '--name-only', '--relative', 'HEAD', '--', '.'],
+        capture_output=True, text=True)
+    return set(proc.stdout.splitlines()) if proc.returncode == 0 else set()
+
+
 def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
     """A short, fully-redacted window around a hit — enough to locate it, not to leak it.
 
@@ -352,16 +367,27 @@ def main() -> int:
     # commands. A build step dropping a new file anywhere in the tree is untracked, so it
     # is still covered.
     tracked = _tracked_files(site_root)
+    modified = _modified_files(site_root)
     scannable = []
     for path in sorted(site_root.rglob('*')):
         if not path.is_file():
             continue
         rel = str(path.relative_to(site_root))
         # `tracked is None` means git could not tell us — scan it, per _tracked_files.
-        generated = rel.startswith('data/') or tracked is None or rel not in tracked
+        generated = (rel.startswith('data/') or tracked is None
+                     or rel not in tracked or rel in modified)
         if not generated:
-            # Committed files — index.html, app.js, the vendored KaTeX bundle and its
-            # fonts — are reviewed in PRs and are not this gate's subject.
+            # Committed AND unmodified files — index.html, app.js, the vendored KaTeX
+            # bundle and its fonts — are reviewed in PRs and are not this gate's subject.
+            continue
+
+        if '\n' in rel or '\\' in rel:
+            # A newline or backslash in a published filename breaks the `sha256sum -c`
+            # format the provenance record depends on, and has no legitimate use in a
+            # static site. Refuse rather than emit a checksum file that cannot be parsed.
+            failures.append(
+                f'{redact_all(rel.encode("unicode_escape").decode())}: published filename '
+                f'contains a newline or backslash — refused (it would corrupt SHA256SUMS)')
             continue
 
         # The NAME is payload too: a build writing `site/data/ghp_…json` publishes the

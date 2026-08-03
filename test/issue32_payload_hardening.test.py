@@ -418,6 +418,53 @@ def test_diagnostics_never_expose_credentials_by_any_route() -> None:
           'cannot be inspected' in out, out)
 
 
+
+def test_scan_covers_tracked_files_modified_by_the_build() -> None:
+    """Being tracked is not the same as being unchanged: a build step rewriting a tracked
+    file produces content nobody reviewed, and "committed, therefore reviewed" would skip
+    exactly the case this gate cares about (adversarial review)."""
+    import subprocess as sp
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        site = data.parent
+        (site / 'app.js').write_text('// reviewed\n', encoding='utf-8')
+        for args in (('init', '-q'), ('config', 'user.email', 't@e'),
+                     ('config', 'user.name', 'T'), ('add', '-A'),
+                     ('commit', '-q', '-m', 'i')):
+            sp.run(['git', '-C', str(root), *args], check=True, capture_output=True)
+
+        # Unmodified tracked file with a path-shaped string: not this gate's subject.
+        (site / 'app.js').write_text('// reviewed\n', encoding='utf-8')
+        code, out = run(SCAN, '--site-data', str(data))
+        check('an unmodified tracked file is not scanned', code == 0, out)
+
+        # The build rewrites it — now it must be scanned.
+        (site / 'app.js').write_text('const p = "/home/vscode/leaked/path/";\n',
+                                     encoding='utf-8')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a tracked file modified during the build IS scanned', code != 0, out)
+
+
+def test_unsafe_published_filenames_are_refused() -> None:
+    """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
+    parse, and nothing in a static site legitimately needs one (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        try:
+            (data / 'bad\nname.json').write_text('{}', encoding='utf-8')
+        except OSError:
+            return  # filesystem refuses such names; nothing to check here
+        scan_code, scan_out = run(SCAN, '--site-data', str(data))
+        emit_code, emit_out = run(EMIT, '--site-data', str(data),
+                                  '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+    check('scan refuses a newline in a published filename', scan_code != 0, scan_out)
+    check('emit refuses to write a checksum file it would corrupt', emit_code != 0, emit_out)
+    check('no record written for an unsafe filename', not wrote)
+
+
 def test_scan_requires_core_payloads() -> None:
     with tempfile.TemporaryDirectory() as td:
         data = make_payload(Path(td))
@@ -876,6 +923,8 @@ def main() -> None:
     test_scan_fails_on_undecodable_generated_file()
     test_emitter_pin_diagnostics_are_redacted()
     test_diagnostics_never_expose_credentials_by_any_route()
+    test_scan_covers_tracked_files_modified_by_the_build()
+    test_unsafe_published_filenames_are_refused()
     test_emit_writes_record_and_sums()
     test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()
