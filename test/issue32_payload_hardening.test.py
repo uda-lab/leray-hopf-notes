@@ -156,6 +156,8 @@ LEGITIMATE_PROBES = {
     'address glued by underscore': '識別子 10.0.0.5_foo を用いる。',
     'semver prerelease suffix': 'バージョン 10.0.0.5-beta を参照。',
     'semver build metadata': 'バージョン 10.0.0.5+meta を参照。',
+    'dot-suffixed identifier': '識別子 10.0.0.5.beta を参照。',
+    'dotted hostname-like value': '値 192.168.1.2.example を参照。',
     'over-long AIza token': 'AIza' + 'a' * 40 + ' は鍵ではない。',
     'over-long AKIA identifier': 'AKIA' + 'C' * 17 + ' は識別子である。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
