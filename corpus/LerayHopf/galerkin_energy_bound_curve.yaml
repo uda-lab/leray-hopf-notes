@@ -1,10 +1,14 @@
 name: LerayHopf.Torus.galerkin_energy_bound_curve
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  **一様エネルギー評価。** 粘性係数を正とし、曲線が初期時刻で初期値の射影に一致し、各非負時刻でベクトル場を微分係数に持つとする。このとき非負の各時刻で運動エネルギーは初期値のそれを超えない。
+
+  $$\tfrac12\lVert c(t)\rVert^2\ \le\ \tfrac12\lVert P_n u_0\rVert^2$$
+
+  エネルギー恒等式の右辺が非正であることから、単調非増加として従う。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusGalerkinODESolve.lean` の `LerayHopf.Torus.galerkin_energy_bound_curve`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第11波（Torus モード/Galerkin 連鎖: `AubinLionsAssembly` → `ModeTail` → `ModeCompactness` → `GalerkinODESolve`）で手書き化。抽出元: `LerayHopf/Torus/GalerkinODESolve.lean` の `LerayHopf.Torus.galerkin_energy_bound_curve`。
 chapter: ode
-tags: [private-helper, generated]
+tags: [private-helper, torus, ode]

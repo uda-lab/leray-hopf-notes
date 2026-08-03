@@ -1,10 +1,14 @@
 name: LerayHopf.integral_sq_sub_tendsto_zero_of_galSeq
 tier: gloss
 statement_ja: |
-  この補助項目は、三次元トーラス上の Galerkin 構成、対流項、エネルギー評価、または極限移行を扱うための局所的な命題である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  **Aubin–Lions 組み立ての中核。** 取り出した Galerkin 部分列が、極限曲線へ時空間の $L^2$ で強収束すること。仮定は 5 つある — 粘性係数と時間長が正であること、極限曲線が $[0,T]$ 上で初期値のノルムに一様に押さえられること、極限曲線がほとんど至るところ強可測であること、部分列が各時刻で極限曲線へ弱収束すること、そして各切断レベルで射影した曲線が収束していることである。
+
+  各時刻での差を「射影した部分」と「切断の裾」に分け、前者はモード切断の水準での収束から、後者は 2 つの裾評価から押さえる。切断レベル $N$ について $\varepsilon$ を挟み込む議論で、両者を同時に小さくする。
 gap:
   level: mild
   note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/TorusAubinLionsAssembly.lean` の `LerayHopf.integral_sq_sub_tendsto_zero_of_galSeq`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+    結論の形は下流の組み立て補題が要求する入力にそのまま合わせてある。射影と裾への分解に平行四辺形型の評価を使い、レベル $N$ と添字 $n$ の 2 重の極限を $\varepsilon$ 挟み込みで処理する。
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第11波（Torus モード/Galerkin 連鎖: `AubinLionsAssembly` → `ModeTail` → `ModeCompactness` → `GalerkinODESolve`）で手書き化。抽出元: `LerayHopf/Torus/AubinLionsAssembly.lean` の `LerayHopf.integral_sq_sub_tendsto_zero_of_galSeq`。
 chapter: compactness
-tags: [private-helper, generated]
+tags: [private-helper, torus, compactness]
