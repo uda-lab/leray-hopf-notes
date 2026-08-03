@@ -318,7 +318,7 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
                          ('nodes.json decl_count', decl_count)):
         if isinstance(value, bool) or not isinstance(value, int):
             failures.append(
-                f'source_coverage: {label} is not an integer: {value!r} '
+                f'source_coverage: {label} is not an integer: {safe(value)} '
                 f'({type(value).__name__})'
             )
             return
@@ -356,7 +356,7 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
                 and not isinstance(sources_source_count, bool))):
         failures.append(
             f'source_coverage: sources.json source_count is not an integer: '
-            f'{sources_source_count!r} ({type(sources_source_count).__name__})'
+            f'{safe(sources_source_count)} ({type(sources_source_count).__name__})'
         )
         return
     if sources_source_count is None:

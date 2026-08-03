@@ -91,10 +91,12 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('OpenAI-style key', re.compile(r'\bsk-(?:proj-|svcacct-|admin-)?[A-Za-z0-9_-]{20,}')),
     # Both long-term (AKIA) and STS temporary (ASIA) key ids: a temporary key's
     # accompanying secret and session token are opaque, so this prefix is often the
-    # only recognisable marker in the whole credential set.
+    # only recognisable marker in the whole credential set. The body is exactly 16 chars,
+    # so the token must end there — `\b` cannot say that (a longer uppercase identifier
+    # continues without a boundary), and omitting the guard matched its prefix.
     # No trailing \b: a key id butted directly against another token (`AKIA…sk-…`) has no
     # word boundary after it, and the fixed 16-char body already pins the length.
-    ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}')),
+    ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}(?![0-9A-Z])')),
     # A key's body is exactly 35 chars. `\b` cannot express that (a body ending in `-`
     # gives no word boundary before a JSON delimiter, so the anchor missed those keys), and
     # dropping the anchor alone would let the rule match the first 35 chars of a LONGER

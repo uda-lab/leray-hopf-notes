@@ -597,6 +597,23 @@ def test_payload_pin_diagnostics_are_redacted() -> None:
     assert sha in out, out
 
 
+
+def test_count_diagnostics_are_redacted() -> None:
+    """The count-type failure interpolates a payload-supplied value, and this gate runs
+    before the leak scan (adversarial review)."""
+    verify = import_script("verify_count_redact")
+    secret = "ghp_" + "A" * 30
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["source_count"] = secret
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "A" * 20 not in out, f"credential-shaped count leaked:\n{out}"
+    assert "is not an integer" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -627,6 +644,7 @@ def main() -> None:
         test_boolean_line_numbers_fail,
         test_non_integer_counts_fail,
         test_payload_pin_diagnostics_are_redacted,
+        test_count_diagnostics_are_redacted,
     ]
     for test in tests:
         test()

@@ -194,7 +194,8 @@ def main() -> int:
         return 1
     if sources_path.is_file():
         try:
-            sources_pin = json.loads(sources_path.read_text(encoding='utf-8')).get('pin')
+            sources_doc = json.loads(sources_path.read_text(encoding='utf-8'))
+            sources_pin = sources_doc.get('pin')
         except json.JSONDecodeError as exc:
             print(f'ERROR: sources.json is not valid JSON: {exc}', file=sys.stderr)
             return 1
@@ -202,6 +203,14 @@ def main() -> int:
             print(f'ERROR: sources.json pin ({sources_pin!r}) does not match {pin_file} '
                   f'({pin!r}) — refusing to attest to a payload whose two halves disagree',
                   file=sys.stderr)
+            return 1
+        # A pin alone is not a payload. A sources.json carrying the right pin but no
+        # `sources` object would be attested as a complete build while shipping no source
+        # text at all — the structure has to be checked, not just the label on it.
+        if not isinstance(sources_doc.get('sources'), dict):
+            print(f'ERROR: sources.json has no "sources" object (got '
+                  f'{type(sources_doc.get("sources")).__name__}) — refusing to attest to a '
+                  f'payload that declares a pin but carries no source map', file=sys.stderr)
             return 1
 
     # Everything published — the artifact steps upload the whole site/ tree, not just the

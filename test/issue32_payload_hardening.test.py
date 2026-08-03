@@ -157,6 +157,7 @@ LEGITIMATE_PROBES = {
     'semver prerelease suffix': 'バージョン 10.0.0.5-beta を参照。',
     'semver build metadata': 'バージョン 10.0.0.5+meta を参照。',
     'over-long AIza token': 'AIza' + 'a' * 40 + ' は鍵ではない。',
+    'over-long AKIA identifier': 'AKIA' + 'C' * 17 + ' は識別子である。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
 }
 
@@ -532,6 +533,22 @@ def test_emit_requires_site_data_inside_site_root() -> None:
     check('no record written in that case', not wrote)
 
 
+
+def test_emit_requires_a_sources_map() -> None:
+    """A pin alone is not a payload: a sources.json with the right pin but no `sources`
+    object would be attested as a complete build while shipping no source text."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        pin = (root / 'extracted' / 'PIN').read_text(encoding='utf-8').strip()
+        (data / 'sources.json').write_text(json.dumps({'pin': pin}), encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+    check('emit refuses a sources.json with no sources map', code != 0, out)
+    check('no record written for a source-less payload', not wrote)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -624,6 +641,7 @@ def main() -> None:
     test_emit_rejects_malformed_pin()
     test_emit_honours_per_node_source_claims()
     test_emit_requires_site_data_inside_site_root()
+    test_emit_requires_a_sources_map()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()
