@@ -552,6 +552,25 @@ def test_boolean_line_numbers_fail() -> None:
     assert "source_text" in out, out
 
 
+
+def test_non_integer_counts_fail() -> None:
+    """`True` and `1.0` compare and len()-compare exactly like `1`, so malformed count
+    metadata passed every coverage comparison and was then copied verbatim into
+    build-provenance.json — attested as if it had been checked (adversarial review)."""
+    verify = import_script("verify_counts")
+    for label, value in (("boolean", True), ("float", 1.0), ("string", "1")):
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            lean_root, sha = make_pinned_repo(tmp)
+            nodes, sources = make_payloads(sha, 1, 1)
+            nodes["source_count"] = value
+            nodes["decl_count"] = value
+            sources["source_count"] = value
+            code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+        assert code == 1, f"{label} counts were accepted:\n{out}"
+        assert "is not an integer" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -580,6 +599,7 @@ def main() -> None:
         test_invalid_line_range_fails,
         test_tracked_symlink_source_fails,
         test_boolean_line_numbers_fail,
+        test_non_integer_counts_fail,
     ]
     for test in tests:
         test()

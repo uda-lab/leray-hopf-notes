@@ -293,6 +293,18 @@ def check_source_coverage(nodes: dict, sources: dict, failures: list[str], passe
             'source_coverage: nodes.json is missing source_count and/or decl_count'
         )
         return
+    # Counts must be genuine integers. `True` and `1.0` compare and `len()`-compare exactly
+    # like `1`, so malformed count metadata would pass every comparison below and then be
+    # copied verbatim into build-provenance.json — attested as if it had been checked.
+    # (`isinstance(True, int)` is True in Python, hence the explicit bool exclusion.)
+    for label, value in (('nodes.json source_count', source_count),
+                         ('nodes.json decl_count', decl_count)):
+        if isinstance(value, bool) or not isinstance(value, int):
+            failures.append(
+                f'source_coverage: {label} is not an integer: {value!r} '
+                f'({type(value).__name__})'
+            )
+            return
     if source_count > decl_count:
         failures.append(
             f'source_coverage: source_count ({source_count}) exceeds decl_count '
