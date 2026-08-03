@@ -370,6 +370,16 @@ def main() -> int:
     modified = _modified_files(site_root)
     scannable = []
     for path in sorted(site_root.rglob('*')):
+        if path.is_symlink():
+            # What gets published is the TARGET's content, which can be generated or
+            # attacker-influenced while the link itself stays tracked and unmodified — so
+            # neither "tracked" nor "unchanged" says anything about what ships. Nothing in
+            # a static site needs one; refuse rather than reason about where it points.
+            failures.append(
+                f'{redact_all(str(path.relative_to(site_root)))}: symlink in the published '
+                f'tree — refused (what ships is its target, which this gate cannot vouch '
+                f'for from the link alone)')
+            continue
         if not path.is_file():
             continue
         rel = str(path.relative_to(site_root))

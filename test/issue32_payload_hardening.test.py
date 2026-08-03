@@ -465,6 +465,22 @@ def test_unsafe_published_filenames_are_refused() -> None:
     check('no record written for an unsafe filename', not wrote)
 
 
+
+def test_symlinks_in_the_published_tree_are_refused() -> None:
+    """What ships is the TARGET's content, which can be generated or attacker-influenced
+    while the link itself stays tracked and unmodified — so neither "tracked" nor
+    "unchanged" says anything about what is published (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        target = root / 'outside.txt'
+        target.write_text('/home/vscode/leaked/path/', encoding='utf-8')
+        (data.parent / 'link.txt').symlink_to(target)
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a symlink in the published tree is refused', code != 0, out)
+    check('the refusal names the symlink', 'symlink' in out, out)
+
+
 def test_scan_requires_core_payloads() -> None:
     with tempfile.TemporaryDirectory() as td:
         data = make_payload(Path(td))
@@ -925,6 +941,7 @@ def main() -> None:
     test_diagnostics_never_expose_credentials_by_any_route()
     test_scan_covers_tracked_files_modified_by_the_build()
     test_unsafe_published_filenames_are_refused()
+    test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()
     test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()
