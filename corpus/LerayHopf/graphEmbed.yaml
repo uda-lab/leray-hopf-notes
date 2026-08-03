@@ -1,10 +1,10 @@
 name: LerayHopf.graphEmbed
 tier: gloss
 statement_ja: |
-  この補助項目は、全空間上の Galerkin 構成、Fourier 解析、コンパクト性、または極限移行を扱うための局所的な定義である。親となる公開定理の証明では、抽出された型が示す中間段階を切り出して再利用する役割を持つ。
+  Schwartz ポテンシャルを、その curl 場と[[重み付き Fourier 成分|LerayHopf.weightedFourierComponent]]の組へ送る埋め込み。積空間での距離が、$L^2$ の誤差と粘性半ノルムの誤差の**両方**を同時に押さえる形になっている。$H^1$ のグラフノルムで近似を測るための道具。
 gap:
-  level: mild
-  note: |
-    Wave 4 の private gloss として追加。抽出元は `LerayHopf/R3/GalerkinBasisH1.lean` の `LerayHopf.graphEmbed`。必要に応じて、親となる公開定理の証明を精読する段階で full へ格上げする。
+  level: none
+provenance: |
+  Wave 4 の private gloss 機械生成テンプレートから、issue #74 第10波（H¹ Leibniz → エネルギー類移流 → Galerkin 曲線/基底: `WeakLeibniz` → `EnergyClassConvection` → `GalerkinCurveBounds` / `GalerkinBasisH1`）で手書き化。抽出元: `LerayHopf/R3/GalerkinBasisH1.lean` の `LerayHopf.graphEmbed`。
 chapter: projections-galerkin
-tags: [private-helper, generated]
+tags: [private-helper, galerkin, projections]
