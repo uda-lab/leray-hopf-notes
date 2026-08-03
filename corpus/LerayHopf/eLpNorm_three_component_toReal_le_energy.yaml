@@ -1,7 +1,7 @@
 name: LerayHopf.eLpNorm_three_component_toReal_le_energy
 tier: gloss
 statement_ja: |
-  $L^3$ ノルムの補間評価。$C_6$ の非負性と、上と同じ拡張実数値での $L^6$ の仮定を置く。このとき、各成分が Schwartz 関数で代表されるベクトル場 $u$ について、各成分の $L^3$ ノルムが $u$ の $L^2$ ノルムと粘性散逸形式で押さえられる。
+  $L^3$ ノルムの補間評価。$C_6$ の非負性と、各成分の $L^6$ ノルムが $C_6\sqrt{V_1}$ 以下であることが拡張実数値の不等式として成り立つという仮定を置く。このとき、各成分が Schwartz 関数で代表されるベクトル場 $u$ について、各成分の $L^3$ ノルムが $u$ の $L^2$ ノルムと粘性散逸形式で押さえられる。
 
   $$\bigl\lVert\psi_a\bigr\rVert_{L^3}\ \le\ \sqrt{C_6}\,\lVert u\rVert^{1/2}\,V_1^{1/4}$$
 

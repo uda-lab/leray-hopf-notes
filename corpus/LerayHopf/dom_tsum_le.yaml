@@ -1,7 +1,7 @@
 name: LerayHopf.TorusConvectionExtension.dom_tsum_le
 tier: full
 statement_ja: |
-  上界を与える非負関数の総和の評価：同じ仮定のもとで
+  上界を与える非負関数の総和の評価：$u,v$ が任意の $L^2$ 場、$w$ が Galerkin テスト関数という仮定のもとで
 
   $$\sum_{k, l} W_c(-(k+l))\, \lVert \hat f_U(k) \rVert\, \lVert \hat f_V(l) \rVert \;\le\; \Bigl( \sum_{m \in B_n} W_c(m) \Bigr) \cdot (\ell^2 \text{ 量の積}).$$
 proof_ja: |

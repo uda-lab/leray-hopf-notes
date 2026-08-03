@@ -10,5 +10,7 @@ gap:
   level: mild
   note: |
     成分ごとの複素化のため、自然言語の「実数値性の保存」が、共役作用素 `conjL2C` の不動点と対称な箱をめぐる明示的な議論として展開される。係数の反射 `mFourierCoeff3_conjL2C` と箱の対称性 `neg_mem_fourierBox` から結論する。
+provenance: |
+  2 層ポリシー（public=full / private=gloss）の例外として `tier: full` を維持する。本宣言は `private` だが、`Torus/VelocityGalerkin.lean` のモジュール docstring が「bridge lemma D-32b」として名指しし、実数値性が Galerkin 射影を通過するという設計上の要をなす。自然言語では一行の主張が、成分ごとの複素化のために共役の不動点と箱の対称性をめぐる議論に化けるため、gloss の 1–3 行では役割を説明しきれない。昇格条項（数学的に重いもの、issue #107）による維持であり、`convBLTw` 等 5 件と同じ扱いである。
 chapter: projections-galerkin
 tags: [galerkin, real-valuedness, conjugation]

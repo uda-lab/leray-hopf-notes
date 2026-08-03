@@ -1,7 +1,7 @@
 name: LerayHopf.strong_trace_of_props
 tier: gloss
 statement_ja: |
-  初期値に対する**強い**トレース。時間長の正値性と、上と同じ 3 つの仮定（ノルムの一様上界・時刻 $0$ での値・Galerkin テストごとの Lipschitz 性）のもとで、$t\to 0^+$ で $v(t)$ は初期値へノルムの意味で収束する。
+  初期値に対する**強い**トレース。時間長の正値性と、次の 3 つの仮定（曲線のノルムが初期値のノルム以下であること・時刻 $0$ での値が初期値であること・任意の Galerkin テストとの内積が Lipschitz であること）のもとで、$t\to 0^+$ で $v(t)$ は初期値へノルムの意味で収束する。
 
   $$\lVert v(t)-u_0\rVert^2\ =\ \lVert v(t)\rVert^2-2\langle v(t),u_0\rangle+\lVert u_0\rVert^2\ \le\ 2\lVert u_0\rVert^2-2\langle v(t),u_0\rangle$$
 

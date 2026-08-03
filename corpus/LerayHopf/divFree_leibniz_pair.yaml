@@ -1,7 +1,11 @@
 name: LerayHopf.divFree_leibniz_pair
 tier: gloss
 statement_ja: |
-  発散ゼロの場に対する Leibniz 型の対の関係。上と同じ弱い発散ゼロの仮定のもとで、2 つの Schwartz 関数 $f,g$ に対し次が成り立つ。
+  発散ゼロの場に対する Leibniz 型の対の関係。仮定は、任意の Schwartz テスト関数 $\varphi$ について次が成り立つという弱い意味での発散ゼロである。
+
+  $$\sum_a\int \psi_{u,a}\,(\partial_a\varphi)\ =\ 0$$
+
+  このとき 2 つの Schwartz 関数 $f,g$ に対し次が成り立つ。
 
   $$\sum_a\int \psi_{u,a}\,(\partial_a f)\,g\ +\ \sum_a\int \psi_{u,a}\,f\,(\partial_a g)\ =\ 0$$
 
