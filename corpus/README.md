@@ -124,9 +124,18 @@ pre-commit / CI で機械チェックする。D1・D2 の Lean 名・D5 は**ハ
 機械検出はできるが、**そのまま鵜呑みにはできない** — 「$\mathbb{R}^3$ 上の作用素」「$(0,b]$
 上の積分」のような後置詞用法を大量に拾う。検出したうえで目で選別すること。
 
+```sh
+python3 - "$f" <<'EOF' | grep -nE '同じ|上の|上記|前述|こちら|など'
+import sys, yaml
+d = yaml.safe_load(open(sys.argv[1], encoding='utf-8'))
+print(d.get('statement_ja') or '')
+print(d.get('proof_ja') or '')
+print((d.get('gap') or {}).get('note') or '')
+EOF
 ```
-sed -n '/statement_ja/,/^gap:/p' <file> | grep -E '同じ|上の|上記|前述|こちら|など'
-```
+
+（`sed` で `statement_ja` から `gap:` までを切り出す形では **`gap.note` が読まれない** —
+本規約は `gap.note` にも適用されるので、3 フィールドを明示的に取ること。）
 
 （notes#74 の第 10・11・12 波と #146 で、この形の指摘を繰り返し受けた。書いた直後に掃くのが
 最も安い。）
