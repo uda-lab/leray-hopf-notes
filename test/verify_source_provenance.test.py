@@ -95,11 +95,15 @@ def make_payloads(sha: str, decl_count: int, source_count: int) -> tuple[dict, d
     build_site_data.py output shape: the first `source_count` of `decl_count` node slugs
     are marked has_source:true and have a matching entry in sources.json's "sources" map.
 
+    Each node also carries the identity fields the frontend dereferences without a guard
+    (`name`, `shortName`) and the `corpus` object the annotation tally is computed from —
+    a fixture thinner than the real payload would exercise a shape the site cannot render.
     Each node also carries the file/line range it came from, and its sources.json entry is
     the verbatim text of that range in the fixture checkout — otherwise the source_text
     check would (correctly) reject these payloads as not matching the pinned source."""
     node_list = [
-        {"slug": f"decl{i}", "has_source": i < source_count,
+        {"slug": f"decl{i}", "name": f"decl{i}", "shortName": f"decl{i}", "kind": "theorem",
+         "has_source": i < source_count, "corpus": {},
          "file": "Foo.lean", "startLine": i + 1, "endLine": i + 1}
         for i in range(decl_count)
     ]

@@ -367,6 +367,39 @@ def check_payload_structure(nodes: dict, failures: list[str], passes: list[str],
             f'{safe(type(node_list[malformed[0]]).__name__)})')
         return
 
+    # "Is an object" was still not a check on the CONTENT: `nodes: [{}]` satisfied every
+    # count and got a provenance record for a payload the site cannot render — search calls
+    # `n.name.toLowerCase()` with no guard (codex round 16).
+    #
+    # The required set is deliberately not a full schema. It is exactly the fields something
+    # depends on: those the frontend dereferences unguarded, and those the counts above are
+    # computed from — a tally over `corpus` and `has_source` means nothing if either can be
+    # absent or the wrong type. Attesting to a payload is a claim that it is usable, and a
+    # claim that broad has to rest on the fields that decide it.
+    for index, node in enumerate(node_list):
+        for field, ok, expected in (
+                ('slug', lambda v: isinstance(v, str) and v, 'a non-empty string'),
+                ('name', lambda v: isinstance(v, str) and v, 'a non-empty string'),
+                ('shortName', lambda v: isinstance(v, str), 'a string'),
+                ('kind', lambda v: isinstance(v, str), 'a string'),
+                ('file', lambda v: isinstance(v, str), 'a string'),
+                ('startLine', lambda v: isinstance(v, int) and not isinstance(v, bool),
+                 'an integer'),
+                ('endLine', lambda v: isinstance(v, int) and not isinstance(v, bool),
+                 'an integer'),
+                ('has_source', lambda v: isinstance(v, bool), 'a boolean'),
+                ('corpus', lambda v: isinstance(v, dict), 'a JSON object')):
+            if field not in node:
+                failures.append(
+                    f'{label}: nodes.json node at index {index} is missing the required '
+                    f'field "{field}"')
+                return
+            if not ok(node[field]):
+                failures.append(
+                    f'{label}: nodes.json node at index {index} field "{field}" must be '
+                    f'{expected}, got {safe(type(node[field]).__name__)}')
+                return
+
     # annotated_count is summary metadata copied verbatim into build-provenance.json, so
     # "it is an integer" is not enough: `-1` and `decl_count + 1` are both well-typed and
     # both impossible. `build_site_data.py` computes it as the number of nodes with a

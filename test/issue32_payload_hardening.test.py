@@ -69,8 +69,12 @@ def make_payload(root: Path, *, pin: str = 'a' * 40, extra_prose: str | None = N
     """A minimal but structurally faithful site/data directory."""
     data = root / 'site' / 'data'
     data.mkdir(parents=True, exist_ok=True)
+    # The full field set a real node carries: the frontend dereferences `name` and
+    # `shortName` with no guard, and the count checks are computed from `corpus` and
+    # `has_source`, so a thinner fixture would exercise a payload the site cannot render.
     node = {
-        'slug': 'LerayHopf.foo', 'name': 'LerayHopf.foo', 'file': node_file,
+        'slug': 'LerayHopf.foo', 'name': 'LerayHopf.foo', 'shortName': 'foo',
+        'kind': 'theorem', 'file': node_file,
         'startLine': 1, 'endLine': 2, 'has_source': True,
         'corpus': {'statement_ja': extra_prose or '主張。'},
     }
@@ -794,6 +798,56 @@ def test_no_emitter_diagnostic_path_leaks_a_credential() -> None:
     check('...and the success summary redacts it too', 'A' * 18 not in out, out)
 
 
+
+def test_emit_requires_the_fields_something_depends_on() -> None:
+    """`nodes: [{}]` is an object, satisfies every count, and gets a provenance record for a
+    payload the site cannot render — search calls `n.name.toLowerCase()` with no guard
+    (codex round 16). "Is an object" was a check on the container, not the content.
+
+    The required set is not a full schema: it is the fields the frontend dereferences
+    unguarded plus the ones the counts are computed from. Both directions are pinned — a
+    node missing any of them is refused, and a node carrying exactly them is accepted, so
+    the check cannot pass by rejecting everything.
+    """
+    required = {'slug': 'LerayHopf.foo', 'name': 'LerayHopf.foo', 'shortName': 'foo',
+                'kind': 'theorem', 'file': 'LerayHopf/R3/Foo.lean',
+                'startLine': 1, 'endLine': 2, 'has_source': False, 'corpus': {}}
+
+    def emit_with(node: object) -> tuple[int, str, bool]:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            doc = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+            doc.update(nodes=[node], decl_count=1, annotated_count=0,
+                       source_count=0, has_source=False)
+            (data / 'nodes.json').write_text(json.dumps(doc, ensure_ascii=False),
+                                             encoding='utf-8')
+            (data / 'sources.json').write_text(
+                json.dumps({'pin': doc['pin'], 'source_count': 0, 'sources': {}}),
+                encoding='utf-8')
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+            return code, out, (data / 'build-provenance.json').exists()
+
+    code, out, wrote = emit_with({})
+    check('emit refuses an empty node object', code != 0, out)
+    check('no record is written for an empty node object', not wrote, out)
+
+    for field in sorted(required):
+        code, out, wrote = emit_with({k: v for k, v in required.items() if k != field})
+        check(f'emit refuses a node missing "{field}"', code != 0, out)
+        check(f'no record is written for a node missing "{field}"', not wrote, out)
+
+    for field, bad in (('slug', ''), ('name', ''), ('startLine', True),
+                       ('has_source', 'yes'), ('corpus', [])):
+        code, out, wrote = emit_with({**required, field: bad})
+        check(f'emit refuses a node whose "{field}" has the wrong shape', code != 0, out)
+
+    code, out, wrote = emit_with(dict(required))
+    check('emit accepts a node carrying exactly the required fields', code == 0, out)
+    check('and writes the record for it', wrote, out)
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1126,7 +1180,10 @@ def test_emit_delegates_coverage_checks_to_the_verifier() -> None:
         (root / 'extracted').mkdir()
         (root / 'extracted' / 'PIN').write_text(pin, encoding='utf-8')
         nodes = {'pin': pin, 'has_source': True, 'source_count': 1, 'decl_count': 1,
-                 'nodes': [{'slug': 'x', 'has_source': True}]}
+                 'annotated_count': 0,
+                 'nodes': [{'slug': 'x', 'name': 'x', 'shortName': 'x', 'kind': 'theorem',
+                            'file': 'Foo.lean', 'startLine': 1, 'endLine': 1,
+                            'has_source': True, 'corpus': {}}]}
         nodes.update(nodes_extra)
         (data / 'nodes.json').write_text(json.dumps(nodes), encoding='utf-8')
         (data / 'sources.json').write_text(json.dumps(sources_obj), encoding='utf-8')
@@ -1464,6 +1521,7 @@ def main() -> None:
     test_emit_validates_annotated_count_against_the_nodes()
     test_emit_rejects_non_object_node_entries()
     test_no_emitter_diagnostic_path_leaks_a_credential()
+    test_emit_requires_the_fields_something_depends_on()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()
