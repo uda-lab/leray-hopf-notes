@@ -313,8 +313,12 @@ def main() -> int:
 
     print(f'Wrote {provenance_path.name} and {sums_path.name} for PIN {pin} '
           f'({len(files_record)} published files under {site_root})')
+    # Published FILE NAMES are payload-controlled (build_site_data.py derives some from
+    # declaration names) and this step runs BEFORE the leak scan, so a credential-shaped
+    # name that sorts into this sample would reach the public Actions log via the very
+    # summary that precedes its rejection. Same redactor as the scanner.
     for f in files_record[:6]:
-        print(f'  {f["sha256"][:16]}…  {f["name"]} ({f["bytes"]} bytes)')
+        print(f'  {f["sha256"][:16]}…  {_verify.safe(f["name"])} ({f["bytes"]} bytes)')
     if len(files_record) > 6:
         print(f'  … and {len(files_record) - 6} more')
     if record['ci'] is None:

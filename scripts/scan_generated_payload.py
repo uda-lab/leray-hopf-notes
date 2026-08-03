@@ -163,6 +163,11 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
      re.compile(r'(?i)(?:^|[^A-Za-z0-9])(?:[A-Za-z0-9]+[_-])*'
                 r'(?:api[_-]?key|access[_-]?token|client[_-]?secret|passwd|password|token|'
                 r'secret)'
+                # A JSON/YAML key is QUOTED: `{"password":"…"}` puts a closing quote between
+                # the name and the separator, and json.dumps of a nested document escapes it
+                # to `\\"`. Without this the most ordinary shape a generated JSON payload
+                # could carry a credential in would pass the gate.
+                r'(?:\\?["\'])?'
                 r'\s*[:=]\s*\\?["\']?[A-Za-z0-9/+=._-]{16,}')),
 
     # --- local filesystem paths --------------------------------------------------

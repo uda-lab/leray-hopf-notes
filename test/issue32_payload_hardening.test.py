@@ -111,6 +111,11 @@ LEAK_PROBES = {
     'credential assignment': 'api_key: "' + 'D' * 20 + '"',
     'prefixed credential name': 'DATABASE_PASSWORD=' + 'D' * 20,
     'prefixed token name': 'GH_TOKEN=' + 'D' * 20,
+    # The most ordinary shape a generated JSON payload could carry a credential in: a
+    # quoted key. Embedded in prose here, json.dumps escapes it to {\"password\":\"…\"},
+    # so this probe pins the escaped form; the raw form is pinned separately below.
+    'quoted JSON credential key': '{"password":"' + 'E' * 20 + '"}',
+    'quoted JSON key with spaces': '{"api_key" : "' + 'F' * 20 + '"}',
     'Windows path (uppercase drive)': r'C:\Users\bob\notes',
     'Windows path (lowercase drive)': r'c:\Users\bob\secret.txt',
     'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
@@ -163,6 +168,8 @@ LEGITIMATE_PROBES = {
     'over-long AIza token': 'AIza' + 'a' * 40 + ' は鍵ではない。',
     'over-long AKIA identifier': 'AKIA' + 'C' * 17 + ' は識別子である。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
+    'quoted key with a short value': 'JSON では {"password":"short"} と書く。',
+    'quoted word in prose': '「token」という語の意味を説明する。',
 }
 
 
@@ -832,6 +839,40 @@ def test_emit_redacts_missing_source_diagnostics() -> None:
           'A' * 18 not in out, out)
 
 
+
+def test_quoted_credential_key_matches_unescaped() -> None:
+    """A raw JSON file (not a credential embedded in prose) puts an unescaped closing quote
+    between the key and the separator. The prose probes only exercise the escaped form, so
+    the raw one is pinned directly against the pattern (codex round 6)."""
+    sys.path.insert(0, str(REPO_ROOT / 'scripts'))
+    import scan_generated_payload as scanner
+    pattern = dict(scanner.LEAK_PATTERNS)['credential assignment']
+    for label, text, want in (
+            ('raw JSON key', '{"password":"' + 'E' * 20 + '"}', True),
+            ('raw YAML quoted key', '"client_secret": ' + "'" + 'F' * 20 + "'", True),
+            ('single-quoted key', "{'passwd':'" + 'G' * 20 + "'}", True),
+            ('short value', '{"password":"short"}', False),
+            ('prose mention', 'password という語を含む散文。', False)):
+        check(f'quoted credential key: {label}', bool(pattern.search(text)) is want, text)
+
+
+def test_emit_redacts_published_file_names() -> None:
+    """Published file names are payload-controlled and the emitter runs BEFORE the leak
+    scan, so a credential-shaped name in the printed sample would reach the public Actions
+    log via the summary that precedes its rejection (codex round 6)."""
+    secret = 'ghp_' + 'A' * 30
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        # Sorts first, so it lands inside the six-entry sample the emitter prints.
+        (root / 'site' / f'0-{secret}.txt').write_text('x', encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('emit succeeds on the payload', code == 0, out)
+    check('the credential-shaped file name is not printed', secret not in out, out)
+    check('a redaction placeholder is printed instead', '‹redacted:' in out, out)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -961,6 +1002,8 @@ def main() -> None:
     test_scan_fails_on_undecodable_generated_file()
     test_emitter_pin_diagnostics_are_redacted()
     test_emit_redacts_missing_source_diagnostics()
+    test_quoted_credential_key_matches_unescaped()
+    test_emit_redacts_published_file_names()
     test_diagnostics_never_expose_credentials_by_any_route()
     test_scan_covers_tracked_files_modified_by_the_build()
     test_unsafe_published_filenames_are_refused()
