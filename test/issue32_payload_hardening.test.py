@@ -221,6 +221,10 @@ def test_adjacent_credentials_are_fully_redacted() -> None:
         # the opaque-run scrub, and cropping through it used to leave a sub-threshold
         # fragment the scrub no longer recognised.
         'body split by a delimiter': 'password=' + 'A' * 20 + '.' + 'B' * 24,
+        # Each sub-run below the opaque-run threshold, separated by delimiters the run
+        # charset excludes — only consuming the whole value as one match covers this.
+        'body split into sub-threshold runs':
+            'password=' + 'A' * 20 + '.' + 'B' * 19 + '_' + 'C' * 19,
     }
     for label, payload in cases.items():
         with tempfile.TemporaryDirectory() as td:
@@ -482,6 +486,27 @@ def test_emit_refuses_when_sources_json_is_missing() -> None:
 
 
 
+
+def test_emit_honours_per_node_source_claims() -> None:
+    """A payload can carry has_source:false at the top level while individual nodes claim
+    embedded source; those nodes' text still has to exist (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+        nodes['has_source'] = False
+        nodes['source_count'] = 0
+        nodes['nodes'][0]['has_source'] = True
+        (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                         encoding='utf-8')
+        (data / 'sources.json').unlink()
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        wrote = (data / 'build-provenance.json').exists()
+    check('emit refuses when a NODE claims source but sources.json is gone', code != 0, out)
+    check('no record written for that payload', not wrote)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -572,6 +597,7 @@ def main() -> None:
     test_emit_refuses_sources_pin_mismatch()
     test_emit_refuses_when_sources_json_is_missing()
     test_emit_rejects_malformed_pin()
+    test_emit_honours_per_node_source_claims()
     test_emit_clears_stale_outputs()
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()

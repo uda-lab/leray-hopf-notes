@@ -170,7 +170,15 @@ def main() -> int:
     # A payload that claims embedded source must actually ship it. Skipping validation when
     # the file is absent would let a standalone run attest to a payload whose source half is
     # simply missing — the record would describe declarations whose text was never there.
-    claims_source = bool(nodes.get('has_source')) or bool(nodes.get('source_count'))
+    node_list = nodes.get('nodes')
+    claims_source = (
+        bool(nodes.get('has_source'))
+        or bool(nodes.get('source_count'))
+        # A per-node claim counts too: a payload can carry has_source:false at the top level
+        # while individual nodes claim embedded source, and those nodes' text has to exist.
+        or (isinstance(node_list, list)
+            and any(isinstance(n, dict) and n.get('has_source') for n in node_list))
+    )
     if claims_source and not sources_path.is_file():
         print(f'ERROR: nodes.json claims embedded source (has_source='
               f'{nodes.get("has_source")!r}, source_count={nodes.get("source_count")!r}) '

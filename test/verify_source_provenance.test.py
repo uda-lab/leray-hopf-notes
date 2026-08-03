@@ -536,6 +536,22 @@ def test_tracked_symlink_source_fails() -> None:
     assert "not a regular tracked file" in out, out
 
 
+
+def test_boolean_line_numbers_fail() -> None:
+    """`isinstance(True, int)` is True in Python, so `startLine: true` would otherwise pass
+    the type check and select line 1 (adversarial review)."""
+    verify = import_script("verify_bool")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        lean_root, sha = make_pinned_repo(tmp)
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["startLine"] = True
+        nodes["nodes"][0]["endLine"] = True
+        code, out = run_main(verify, base_args(tmp, lean_root, sha, nodes, sources))
+    assert code == 1, out
+    assert "source_text" in out, out
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -563,6 +579,7 @@ def main() -> None:
         test_trailing_newline_tampering_fails,
         test_invalid_line_range_fails,
         test_tracked_symlink_source_fails,
+        test_boolean_line_numbers_fail,
     ]
     for test in tests:
         test()

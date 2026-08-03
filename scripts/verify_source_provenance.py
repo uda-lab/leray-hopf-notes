@@ -220,7 +220,12 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
             mismatches.append(f'{safe(slug)}: marked has_source but absent from sources.json')
             continue
         rel, start, end = node.get('file'), node.get('startLine'), node.get('endLine')
-        if not rel or not isinstance(start, int) or not isinstance(end, int):
+        # `isinstance(True, int)` is True in Python, so a JSON `startLine: true` would
+        # otherwise pass and select line 1.
+        def is_line_no(x: object) -> bool:
+            return isinstance(x, int) and not isinstance(x, bool)
+
+        if not rel or not is_line_no(start) or not is_line_no(end):
             mismatches.append(f'{safe(slug)}: missing file/startLine/endLine for verification')
             continue
         if escapes_checkout(rel):
