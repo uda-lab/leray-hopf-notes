@@ -75,6 +75,17 @@ DEFAULT_SITE_DATA = REPO_ROOT / 'site' / 'data'
 # "not there, so nothing to scan" is exactly how a scan silently stops covering things.
 REQUIRED_PAYLOADS = ('nodes.json', 'sources.json', 'coverage.json')
 
+# Findings whose surrounding context must never be printed. For a credential, the label
+# already says what was found and the filename says where — the window adds nothing a
+# reader needs, while every delimiter a value class happens to exclude is another way for
+# part of the secret to survive redaction and reach a public log. Four review rounds were
+# spent widening character classes to chase that; withholding the context ends the family.
+CREDENTIAL_LABELS = frozenset({
+    'GitHub token', 'OpenAI-style key', 'AWS access key id', 'Google API key',
+    'Slack token', 'Slack webhook URL', 'PEM private key', 'Bearer credential', 'JWT',
+    'credentials in URL', 'secret in query parameter', 'credential assignment',
+})
+
 # A single IPv4 octet, 0-255.
 _OCTET = r'(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)'
 
@@ -243,7 +254,13 @@ def scan_text(label: str, text: str) -> list[str]:
     findings = []
     for name, pattern in LEAK_PATTERNS:
         for m in pattern.finditer(text):
-            findings.append(f'{label}: {name}: …{excerpt(text, m.start(), m.end())}…')
+            if name in CREDENTIAL_LABELS:
+                # No context at all — see CREDENTIAL_LABELS. Offset is enough to locate it.
+                findings.append(
+                    f'{label}: {name}: {m.end() - m.start()} chars at offset {m.start()} '
+                    f'(value withheld)')
+            else:
+                findings.append(f'{label}: {name}: …{excerpt(text, m.start(), m.end())}…')
     return findings
 
 

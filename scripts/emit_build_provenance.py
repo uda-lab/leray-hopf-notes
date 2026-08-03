@@ -113,6 +113,9 @@ def main() -> int:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--site-data', default=str(DEFAULT_SITE_DATA))
     parser.add_argument('--pin-file', default=str(DEFAULT_PIN_FILE))
+    parser.add_argument('--lean-root', default=None,
+                        help='pinned leray-hopf checkout; when given, embedded source text '
+                             'is verified against it before the record is written')
     parser.add_argument('--site-root', default=None,
                         help='published tree to hash (default: the parent of --site-data)')
     args = parser.parse_args()
@@ -183,6 +186,7 @@ def main() -> int:
     # open. Two copies of the same rules also drift. In CI the verifier runs immediately
     # before this script; calling it here closes the documented standalone path with the
     # same logic instead of an ever-growing imitation of it.
+    source_text_verified = False
     sources_path = site_data / 'sources.json'
     claims_source = (
         bool(nodes.get('has_source'))
@@ -208,6 +212,11 @@ def main() -> int:
         gate_passes: list[str] = []
         _verify.check_pin_consistency(pin, nodes, sources_doc, gate_failures, gate_passes)
         _verify.check_source_coverage(nodes, sources_doc, gate_failures, gate_passes)
+        source_text_verified = False
+        if args.lean_root:
+            _verify.check_source_text_matches_checkout(
+                Path(args.lean_root), nodes, sources_doc, gate_failures, gate_passes)
+            source_text_verified = not gate_failures
         if gate_failures:
             print('ERROR: the payload does not satisfy the provenance coverage checks, so '
                   'there is nothing here worth attesting to:', file=sys.stderr)
@@ -255,6 +264,10 @@ def main() -> int:
             'has_source': nodes.get('has_source'),
             'proof_status_counts': nodes.get('proof_status_counts'),
         },
+        # Says what was actually checked. Without --lean-root the embedded text cannot be
+        # compared to the pinned commit, and a record that stayed silent about that would
+        # imply a guarantee it never made. CI always passes it.
+        'source_text_verified': source_text_verified,
         'files': files_record,
         'ci': ci_context(),
     }

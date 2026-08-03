@@ -215,7 +215,10 @@ def test_findings_do_not_leak_neighbouring_secrets() -> None:
     check('two adjacent credentials are still detected', code != 0, out)
     check('no credential body appears verbatim in the diagnostics',
           'A' * 20 not in out and 'B' * 20 not in out, out)
-    check('the diagnostic shows a redaction placeholder instead', 'redacted:' in out, out)
+    # Credential findings now withhold context entirely; non-credential findings still show
+    # a redacted window. Either way the body must not appear.
+    check('the diagnostic withholds the value rather than showing it',
+          'value withheld' in out or 'redacted:' in out, out)
 
 
 
@@ -236,6 +239,8 @@ def test_adjacent_credentials_are_fully_redacted() -> None:
         # charset excludes — only consuming the whole value as one match covers this.
         'body split into sub-threshold runs':
             'password=' + 'A' * 20 + '.' + 'B' * 19 + '_' + 'C' * 19,
+        # A delimiter outside the value class entirely — the case that kept recurring.
+        'body split by a colon': 'password=' + 'A' * 20 + ':' + 'B' * 24,
     }
     for label, payload in cases.items():
         with tempfile.TemporaryDirectory() as td:
@@ -247,6 +252,42 @@ def test_adjacent_credentials_are_fully_redacted() -> None:
         check(f'adjacent credentials detected: {label}', code != 0, out)
         check(f'no credential body printed verbatim: {label}',
               not any(ch * 15 in out for ch in 'ABCD'), out)
+
+
+
+def test_credential_findings_withhold_context() -> None:
+    """Credential findings print no surrounding context at all.
+
+    Four review rounds went to widening character classes so that a tail split by some
+    delimiter would still be redacted. The label already says what was found and the
+    filename says where, so the window buys nothing a reader needs — withholding it ends
+    the family instead of chasing the next delimiter.
+    """
+    for label, payload in (('colon', 'password=' + 'A' * 20 + ':' + 'B' * 24),
+                           ('semicolon', 'api_key=' + 'A' * 20 + ';' + 'B' * 24),
+                           ('pipe', 'password=' + 'A' * 20 + '|' + 'B' * 24)):
+        with tempfile.TemporaryDirectory() as td:
+            data = make_payload(Path(td), extra_prose=payload)
+            code, out = run(SCAN, '--site-data', str(data))
+        check(f'credential finding detected: {label}', code != 0, out)
+        check(f'no credential body in the diagnostic: {label}',
+              not any(ch * 15 in out for ch in 'AB'), out)
+        check(f'the diagnostic says the value was withheld: {label}',
+              'value withheld' in out, out)
+
+
+def test_record_states_whether_source_text_was_verified() -> None:
+    """Without --lean-root the embedded text cannot be compared to the pinned commit, and a
+    record that stayed silent would imply a guarantee it never made."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        check('emit succeeds without --lean-root', code == 0, out)
+        record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+    check('the record says source text was NOT verified',
+          record['source_text_verified'] is False, repr(record.get('source_text_verified')))
 
 
 def test_scan_rejects_scaffold_source() -> None:
@@ -717,6 +758,8 @@ def main() -> None:
     test_documented_limits_stay_documented()
     test_findings_do_not_leak_neighbouring_secrets()
     test_adjacent_credentials_are_fully_redacted()
+    test_credential_findings_withhold_context()
+    test_record_states_whether_source_text_was_verified()
     test_scan_rejects_scaffold_source()
     test_scaffold_diagnostic_is_redacted()
     test_scan_requires_core_payloads()

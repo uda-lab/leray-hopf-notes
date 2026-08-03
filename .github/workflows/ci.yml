@@ -213,7 +213,7 @@ jobs:
         # the one thing that must never be attested-around — an unverified payload — while
         # letting the size-breach path keep its evidence.
         if: ${{ !cancelled() && steps.verify-provenance.conclusion == 'success' }}
-        run: python3 scripts/emit_build_provenance.py
+        run: python3 scripts/emit_build_provenance.py --lean-root leray-hopf
 
       - name: Scan generated payload for leaks (notes#32)
         # The published payload embeds verbatim Lean source and the whole corpus, so it is
