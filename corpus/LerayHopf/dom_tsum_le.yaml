@@ -1,7 +1,7 @@
 name: LerayHopf.TorusConvectionExtension.dom_tsum_le
 tier: full
 statement_ja: |
-  上界を与える非負関数の総和の評価：同じ仮定のもとで
+  上界を与える非負関数の総和の評価：$f_U,f_V$ を任意の複素 $L^2$ 元、$W_c$ を格子上の実数値関数とし、$W_c$ が至るところ非負で、$n$ の Fourier 箱の外で消えるとする。このとき
 
   $$\sum_{k, l} W_c(-(k+l))\, \lVert \hat f_U(k) \rVert\, \lVert \hat f_V(l) \rVert \;\le\; \Bigl( \sum_{m \in B_n} W_c(m) \Bigr) \cdot (\ell^2 \text{ 量の積}).$$
 proof_ja: |
