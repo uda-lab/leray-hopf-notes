@@ -65,6 +65,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -201,6 +202,10 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
 # saying which declaration failed.
 OPAQUE_RUN = re.compile(r'[A-Za-z0-9+=-]{20,}')
 
+# Binary payloads carry no scannable text (vendored KaTeX fonts, images).
+BINARY_SUFFIXES = frozenset({'.woff', '.woff2', '.ttf', '.eot', '.otf', '.png', '.jpg',
+                             '.jpeg', '.gif', '.webp', '.ico', '.pdf', '.zip', '.gz'})
+
 # Declaration source must never come from a scaffold module.
 SCAFFOLD_MODULE = re.compile(r'(?:^|/)Scratch/')
 
@@ -220,6 +225,19 @@ def redact_all(fragment: str) -> str:
     # leave a long opaque tail when a credential's body contains a character its pattern's
     # class excludes.
     return OPAQUE_RUN.sub(lambda m: f'‹redacted:{len(m.group(0))} chars›', fragment)
+
+
+def _tracked_files(site_root: Path) -> set[str] | None:
+    """Paths git tracks under `site_root`, or None when that cannot be determined.
+
+    None means "treat everything as generated" — failing towards scanning more, since the
+    alternative is silently skipping files this gate exists to inspect.
+    """
+    proc = subprocess.run(['git', '-C', str(site_root), 'ls-files'],
+                          capture_output=True, text=True)
+    if proc.returncode != 0:
+        return None
+    return set(proc.stdout.splitlines())
 
 
 def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
@@ -297,16 +315,39 @@ def main() -> int:
         print('      Run scripts/build_site_data.py first.', file=sys.stderr)
         return 1
 
-    # Scan every JSON file that will ship, not just the three core ones: anything dropped
-    # into site/data gets published, so a scan restricted to a fixed list would silently
-    # stop covering each new payload (build-provenance.json, size-report.json, …).
+    # Scan every text file in the PUBLISHED TREE, not just site/data/*.json. The artifact
+    # steps upload all of site/, so a build step dropping `site/data/debug.txt` or a nested
+    # file would ship unscanned — and a scan restricted to a fixed list or one extension
+    # silently stops covering each new payload.
+    site_root = site_data.parent
     present = sorted(p.name for p in site_data.glob('*.json'))
     for name in REQUIRED_PAYLOADS:
         if name not in present:
             failures.append(f'{name}: required payload file is missing from {site_data}')
 
-    for name in present:
-        text = (site_data / name).read_text(encoding='utf-8')
+    # What counts as "generated": everything under site/data (whatever its extension or
+    # nesting), plus any file elsewhere in the tree that git does not track. Committed files
+    # — index.html, app.js, the vendored KaTeX bundle and its README — are reviewed in PRs
+    # and are not this gate's subject; scanning them flags legitimate content, and
+    # `site/vendor/VENDORED.md` really does document `/tmp` paths in its re-vendoring
+    # commands. A build step dropping a new file anywhere in the tree is untracked, so it
+    # is still covered.
+    tracked = _tracked_files(site_root)
+    scannable = []
+    for path in sorted(site_root.rglob('*')):
+        if not path.is_file() or path.suffix.lower() in BINARY_SUFFIXES:
+            continue
+        rel = str(path.relative_to(site_root))
+        # `tracked is None` means git could not tell us — scan it, per _tracked_files.
+        generated = rel.startswith('data/') or tracked is None or rel not in tracked
+        if not generated:
+            continue
+        try:
+            scannable.append((rel, path.read_text(encoding='utf-8')))
+        except (UnicodeDecodeError, OSError):
+            continue  # binary or unreadable: nothing textual to leak
+
+    for name, text in scannable:
         hits = scan_text(name, text)
         if hits:
             failures.extend(hits)

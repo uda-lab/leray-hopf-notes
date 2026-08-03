@@ -339,6 +339,25 @@ def test_scaffold_diagnostic_is_redacted() -> None:
     check('the scaffold diagnostic shows a redaction placeholder', 'redacted:' in out, out)
 
 
+
+def test_scan_covers_generated_files_anywhere_in_the_tree() -> None:
+    """The artifact steps publish all of site/, so a build step dropping a non-JSON or
+    nested file would otherwise ship unscanned. Committed source is excluded — it is
+    reviewed in PRs, and site/vendor/VENDORED.md legitimately documents /tmp paths in its
+    re-vendoring commands, which a whole-tree scan flagged six times (adversarial review).
+    """
+    for label, rel in (('non-JSON in site/data', 'data/debug.txt'),
+                       ('nested under site/data', 'data/nested/x.txt'),
+                       ('untracked elsewhere in the tree', 'debug.txt')):
+        with tempfile.TemporaryDirectory() as td:
+            data = make_payload(Path(td))
+            target = data.parent / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text('/home/vscode/leaked/path/', encoding='utf-8')
+            code, out = run(SCAN, '--site-data', str(data))
+        check(f'scan covers a generated file: {label}', code != 0, out)
+
+
 def test_scan_requires_core_payloads() -> None:
     with tempfile.TemporaryDirectory() as td:
         data = make_payload(Path(td))
@@ -793,6 +812,7 @@ def main() -> None:
     test_scaffold_diagnostic_is_redacted()
     test_scan_requires_core_payloads()
     test_scan_covers_files_added_later()
+    test_scan_covers_generated_files_anywhere_in_the_tree()
     test_emit_writes_record_and_sums()
     test_emit_records_ci_context_when_in_ci()
     test_emit_covers_every_published_file()

@@ -656,6 +656,40 @@ def test_worktree_tampering_under_assume_unchanged_fails() -> None:
     assert "source_text" in out, out
 
 
+
+def test_boundary_whitespace_is_preserved() -> None:
+    """run_git().strip() is right for rev-parse/status output; applied to file content it
+    discards leading blank lines and trailing spaces, so the blob would no longer be
+    compared as the commit stores it (adversarial review)."""
+    verify = import_script("verify_ws")
+    with tempfile.TemporaryDirectory() as td:
+        tmp = Path(td)
+        root = tmp / "lean-root"
+        root.mkdir()
+        git(root, "init", "-q")
+        git(root, "config", "user.email", "test@example.com")
+        git(root, "config", "user.name", "Test")
+        (root / "Foo.lean").write_text("\n\n  indented := 1   \nlast\n", encoding="utf-8")
+        git(root, "add", "-A")
+        git(root, "commit", "-q", "-m", "init")
+        sha = subprocess.run(["git", "-C", str(root), "rev-parse", "HEAD"],
+                             check=True, capture_output=True, text=True).stdout.strip()
+        git(root, "checkout", "-q", "--detach", sha)
+
+        nodes, sources = make_payloads(sha, 1, 1)
+        nodes["nodes"][0]["file"] = "Foo.lean"
+        nodes["nodes"][0]["startLine"] = 1
+        nodes["nodes"][0]["endLine"] = 3
+
+        sources["sources"]["decl0"] = "\n\n  indented := 1   "
+        code, out = run_main(verify, base_args(tmp, root, sha, nodes, sources))
+        assert code == 0, f"exact whitespace should be accepted:\n{out}"
+
+        sources["sources"]["decl0"] = "indented := 1"
+        code, out = run_main(verify, base_args(tmp, root, sha, nodes, sources))
+        assert code == 1, f"whitespace-stripped text must be rejected:\n{out}"
+
+
 def main() -> None:
     tests = [
         test_all_checks_pass,
@@ -689,6 +723,7 @@ def main() -> None:
         test_count_diagnostics_are_redacted,
         test_slug_set_diagnostics_are_redacted,
         test_worktree_tampering_under_assume_unchanged_fails,
+        test_boundary_whitespace_is_preserved,
     ]
     for test in tests:
         test()

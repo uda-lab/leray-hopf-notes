@@ -154,6 +154,18 @@ def check_clean_detached(lean_root: Path, failures: list[str], passes: list[str]
     passes.append('clean_detached: --lean-root checkout is clean and HEAD is detached')
 
 
+def git_show_raw(lean_root: Path, spec: str) -> str | None:
+    """`git show <spec>` WITHOUT the whitespace stripping run_git applies.
+
+    run_git().strip() is right for `rev-parse`/`status` output; applied to file content it
+    silently discards leading blank lines and trailing spaces, so a blob would no longer be
+    compared as the commit stores it.
+    """
+    proc = subprocess.run(['git', '-C', str(lean_root), 'show', spec],
+                          capture_output=True, text=True)
+    return proc.stdout if proc.returncode == 0 else None
+
+
 def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: dict,
                                        failures: list[str], passes: list[str],
                                        sample: int = 0) -> None:
@@ -214,8 +226,8 @@ def check_source_text_matches_checkout(lean_root: Path, nodes: dict, sources: di
         has to enforce by hand.
         """
         if rel not in file_cache:
-            code_, out_, _err = run_git(lean_root, 'show', f'HEAD:{rel}')
-            file_cache[rel] = out_.splitlines() if code_ == 0 else None
+            blob = git_show_raw(lean_root, f'HEAD:{rel}')
+            file_cache[rel] = blob.splitlines() if blob is not None else None
         return file_cache[rel]
 
     def escapes_checkout(rel: str) -> bool:
