@@ -121,6 +121,7 @@ LEAK_PROBES = {
     'system path /etc': '/etc/passwd',
     'system path /opt': '/opt/private/config',
     'system path /var': '/var/lib/app/token',
+    'Google API key ending in hyphen': 'AIza' + 'a' * 34 + '-',
     'Slack app-level token': 'xapp-1-A1234567890-1234567890-abcdefABCDEF1234567890abcdef',
     'Slack webhook URL': 'https://hooks.slack.com/services/T0000/B0000/abcdefghijklmnop',
     'secret in query parameter': 'https://api.example.com/v1?token=' + 'Z' * 32,
@@ -151,6 +152,8 @@ LEGITIMATE_PROBES = {
     'octet 256': '10.256.0.1 も同様である。',
     'five-component dotted value': '10.1.2.3.4 は住所ではない。',
     'five-component 192.168': '192.168.1.2.3 も同様。',
+    'address glued to a word': 'バージョン 10.0.0.5beta を参照。',
+    'address glued by underscore': '識別子 10.0.0.5_foo を用いる。',
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
 }
 

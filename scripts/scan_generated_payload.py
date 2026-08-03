@@ -95,7 +95,10 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # No trailing \b: a key id butted directly against another token (`AKIA…sk-…`) has no
     # word boundary after it, and the fixed 16-char body already pins the length.
     ('AWS access key id', re.compile(r'\bA[KS]IA[0-9A-Z]{16}')),
-    ('Google API key', re.compile(r'\bAIza[0-9A-Za-z_-]{35}\b')),
+    # No trailing \b: the 35-char body may end in `-`, and a hyphen followed by a JSON
+    # delimiter gives no word boundary, so the anchor made the rule miss those keys
+    # entirely. The fixed length is what bounds the match.
+    ('Google API key', re.compile(r'\bAIza[0-9A-Za-z_-]{35}')),
     # Bot/user (`xox…`) and app-level (`xapp-`) tokens, plus incoming-webhook URLs, which
     # are themselves the credential.
     ('Slack token', re.compile(r'\bxox[abprs]-[0-9A-Za-z-]{10,}|\bxapp-[0-9A-Za-z-]{10,}')),
@@ -120,13 +123,15 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # a false positive of exactly the kind that gets a gate switched off.
     # Octets are range-checked (0-255), and the trailing guard rejects a match that is only
     # a PREFIX of a longer dotted value: `10.1.2.3.4` is not an address, and treating it as
-    # one blocks publication on ordinary dotted data. Without that, dotted values such as
+    # one blocks publication on ordinary dotted data. The second guard rejects a match glued
+    # to a word (`10.0.0.5beta`, `10.0.0.5_foo`), while still allowing a real address at the
+    # end of a sentence (`10.0.0.5.`). Without that, dotted values such as
     # `10.999.999.999` or `10.256.0.1` — which cannot be addresses at all — would block
     # publication: the same false-positive class as the earlier `10.2.3` version string.
     ('private IPv4 address',
      re.compile(r'\b(?:10(?:\.' + _OCTET + r'){3}'
                 r'|192\.168(?:\.' + _OCTET + r'){2}'
-                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.' + _OCTET + r'){2})(?!\.?\d)')),
+                r'|172\.(?:1[6-9]|2\d|3[01])(?:\.' + _OCTET + r'){2})(?!\.?\d)(?![A-Za-z_])')),
     # Assignment shapes: a credential-ish key, then a long opaque value. The quote is
     # optional and may be backslash-escaped, because these files are JSON — an embedded
     # `api_key: "…"` is stored as `api_key: \"…\"`, and requiring a bare quote character
