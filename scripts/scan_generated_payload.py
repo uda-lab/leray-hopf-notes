@@ -48,6 +48,18 @@ completeness. It will not catch a credential that carries no recognisable marker
   shape-identical to any other hostname. Catching it would need a site-specific allowlist
   of public domains, which is a different tool from a pattern scan.
 
+Deliberate over-matches
+-----------------------
+
+One shape is reported that is not a leak: a SHORT credential inside a JSON document that is
+itself nested in a JSON string (`{\\"password\\":\\"short\\",\\"x\\":\\"y\\"}`). There, `\\"` is the
+value delimiter, but in an ordinary JSON file the same two characters are an escaped quote
+inside the value — the two encodings are indistinguishable in raw text. Reading `\\"` as a
+delimiter drops every real password containing a quote, so it is read as content, and the
+nested-document case can run into its neighbours to reach the length floor. The failure
+direction is a blocked build rather than a published credential, and the shape does not
+occur in this payload (zero hits across the tree).
+
 Every pattern below was verified to produce zero hits on a real source-enabled build before
 being added — a rule that fires on legitimate content is worse than no rule, because the
 first person it inconveniences will simply switch the gate off.
@@ -120,14 +132,16 @@ _CREDENTIAL_SEPARATOR = r'(?:\\?["\'])?\s*[:=]\s*'
 # and whitespace — while keeping everything a real password or base64/hex secret uses.
 # Non-ASCII is excluded on purpose: Japanese prose has no spaces to break a bare run at.
 #
-# The quoted branch must not treat `\\"` as ordinary content. json.dumps of a nested
-# document encodes every quote that way, so `{\\"password\\":\\"short\\",\\"x\\":\\"y\\"}` would
-# otherwise reach the length floor by running THROUGH the escaped quotes into its
-# neighbours and report a five-character password as a credential. In that encoding `\\"`
-# IS the terminator, so only escapes of other characters count as content.
+# `\\"` is AMBIGUOUS in raw text and no regex can resolve it: in an ordinary JSON file it
+# is an escaped quote INSIDE the value (`{"password":"abc\\"def…"}`), while in a JSON
+# document nested inside a JSON string it is the value's DELIMITER. Reading it as the
+# delimiter — as this branch did for one round — silently drops every real password
+# containing a quote, which is a false NEGATIVE in a publication gate. It is therefore
+# read as content, the ordinary-file convention. The cost is stated below under
+# "Deliberate over-matches"; a gate resolves ambiguity toward reporting.
 _CREDENTIAL_VALUE = (r'(?:'
-                     r'\\?"(?:[^"\\\n]|\\[^"\n]){16,}?\\?"'
-                     r"|\\?'(?:[^'\\\n]|\\[^'\n]){16,}?\\?'"
+                     r'\\?"(?:[^"\\\n]|\\.){16,}?\\?"'
+                     r"|\\?'(?:[^'\\\n]|\\.){16,}?\\?'"
                      r'|[A-Za-z0-9!@#$%^&*\-_=+\[\]:.?/~]{16,}'
                      r')')
 

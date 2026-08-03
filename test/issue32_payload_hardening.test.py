@@ -121,6 +121,7 @@ LEAK_PROBES = {
     'suffixed credential name (Stripe)': 'STRIPE_SECRET_KEY="' + 'B' * 20 + '"',
     'password with early punctuation': '{"password":"abc!defghijklmnopqrst"}',
     'bare password with punctuation': 'password=p@ssw0rd!Long#Enough99',
+    'password containing an escaped quote': '{"password":"abc\\"defghijklmnopqrstuvwxyz"}',
     'Windows path (uppercase drive)': r'C:\Users\bob\notes',
     'Windows path (lowercase drive)': r'c:\Users\bob\secret.txt',
     'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
@@ -175,7 +176,6 @@ LEGITIMATE_PROBES = {
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
     'quoted key with a short value': 'JSON では {"password":"short"} と書く。',
     'quoted word in prose': '「token」という語の意味を説明する。',
-    'short password among dense JSON': '設定は {"password":"short","x":"y","z":"w"} である。',
     'minified JS destructuring': 'コードは ,token:o}=e;switch(n){case のように縮小される。',
     'minified JS property table': '"op-token":1,spacing:1,textord:1};function を含む。',
     'English sentence after a colon': 'password: please make it long enough for safety',
@@ -902,6 +902,9 @@ def test_credential_name_compounds_and_values() -> None:
         ('{"password":"abc!defghijklmnopqrst"}', True),
         ('password=p@ssw0rd!Long#Enough99', True),
         ('AWS_SECRET_ACCESS_KEY=abc/def+ghi=jklmnopqrs', True),
+        # an escaped quote is CONTENT in an ordinary JSON file; reading it as the value
+        # delimiter drops every real password containing a quote
+        (r'{"password":"abc\"defghijklmnopqrstuvwxyz"}', True),
         # a short password must not reach the floor by running into its neighbours
         ('{"password":"short","x":"y","z":"w"}', False),
         ('{"password":"short"}', False),
@@ -915,6 +918,28 @@ def test_credential_name_compounds_and_values() -> None:
     for text, want in matrix:
         check(f'credential matrix ({"leak" if want else "clean"}): {text[:44]}',
               bool(pattern.search(text)) is want, text)
+
+
+
+def test_nested_json_short_credential_is_a_documented_over_match() -> None:
+    """`\\"` cannot be disambiguated in raw text: escaped quote inside a value in an ordinary
+    JSON file, value delimiter in a JSON document nested inside a JSON string. It is read as
+    content, so the nested case can run into its neighbours and report a short password.
+
+    This is pinned as an over-match, not hidden: the module docstring promises exactly this
+    failure direction, and a silent change either way should break a test. The unescaped
+    form of the same document must stay clean — the concession is the nested encoding only.
+    """
+    sys.path.insert(0, str(REPO_ROOT / 'scripts'))
+    import scan_generated_payload as scanner
+    pattern = dict(scanner.LEAK_PATTERNS)['credential assignment']
+    nested = r'{\"password\":\"short\",\"x\":\"y\",\"z\":\"w\"}'
+    check('nested-JSON short credential is reported (documented over-match)',
+          bool(pattern.search(nested)), nested)
+    check('the ordinary-file form of the same document stays clean',
+          not pattern.search('{"password":"short","x":"y","z":"w"}'))
+    check('the docstring discloses the over-match',
+          'Deliberate over-matches' in (scanner.__doc__ or ''))
 
 
 def test_credential_pattern_terminates_on_adversarial_input() -> None:
@@ -1060,6 +1085,7 @@ def main() -> None:
     test_emit_redacts_missing_source_diagnostics()
     test_quoted_credential_key_matches_unescaped()
     test_credential_name_compounds_and_values()
+    test_nested_json_short_credential_is_a_documented_over_match()
     test_credential_pattern_terminates_on_adversarial_input()
     test_emit_redacts_published_file_names()
     test_diagnostics_never_expose_credentials_by_any_route()
