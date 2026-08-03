@@ -109,6 +109,8 @@ LEAK_PROBES = {
     'assistant session URL': 'https://claude.ai/code/session_016UU',
     'agent config dir': '/home/x/.claude/projects/foo',
     'credential assignment': 'api_key: "' + 'D' * 20 + '"',
+    'prefixed credential name': 'DATABASE_PASSWORD=' + 'D' * 20,
+    'prefixed token name': 'GH_TOKEN=' + 'D' * 20,
     'Windows path (uppercase drive)': r'C:\Users\bob\notes',
     'Windows path (lowercase drive)': r'c:\Users\bob\secret.txt',
     'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
@@ -810,6 +812,26 @@ def test_emit_delegates_coverage_checks_to_the_verifier() -> None:
     check('emit still accepts a coherent payload', code == 0, out)
 
 
+
+def test_emit_redacts_missing_source_diagnostics() -> None:
+    """The missing-sources.json message interpolates payload-supplied metadata, and the
+    emitter runs before any leak scan (adversarial review)."""
+    secret = 'ghp_' + 'A' * 30
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+        nodes['source_count'] = secret
+        (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                         encoding='utf-8')
+        (data / 'sources.json').unlink()
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('emit refuses the incomplete payload', code != 0, out)
+    check('the diagnostic does not print the credential-shaped count',
+          'A' * 18 not in out, out)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -938,6 +960,7 @@ def main() -> None:
     test_scan_covers_generated_files_anywhere_in_the_tree()
     test_scan_fails_on_undecodable_generated_file()
     test_emitter_pin_diagnostics_are_redacted()
+    test_emit_redacts_missing_source_diagnostics()
     test_diagnostics_never_expose_credentials_by_any_route()
     test_scan_covers_tracked_files_modified_by_the_build()
     test_unsafe_published_filenames_are_refused()

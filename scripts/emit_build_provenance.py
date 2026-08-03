@@ -199,7 +199,8 @@ def main() -> int:
     )
     if claims_source and not sources_path.is_file():
         print(f'ERROR: nodes.json claims embedded source (has_source='
-              f'{nodes.get("has_source")!r}, source_count={nodes.get("source_count")!r}) '
+              f'{_verify.safe(nodes.get("has_source"))}, '
+              f'source_count={_verify.safe(nodes.get("source_count"))}) '
               f'but {sources_path} is missing — refusing to attest to an incomplete payload',
               file=sys.stderr)
         return 1

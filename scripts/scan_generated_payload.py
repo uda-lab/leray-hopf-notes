@@ -153,12 +153,16 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # optional and may be backslash-escaped, because these files are JSON — an embedded
     # `api_key: "…"` is stored as `api_key: \"…\"`, and requiring a bare quote character
     # made this pattern miss the very shape it exists to catch. The 16-char opaque-value
-    # floor is what keeps it off prose that merely contains the word "password". The value
+    # floor is what keeps it off prose that merely contains the word "password". An optional
+    # prefix is allowed because conventional names are prefixed (`DATABASE_PASSWORD`,
+    # `GH_TOKEN`) and `\b` does not fire between `_` and the keyword. The value
     # class includes `.` and `_` so a body split by those delimiters is consumed as ONE
     # match and redacted whole — otherwise each sub-run can fall under the opaque-run
     # threshold and survive verbatim in the diagnostic.
     ('credential assignment',
-     re.compile(r'(?i)\b(?:api[_-]?key|access[_-]?token|client[_-]?secret|passwd|password)'
+     re.compile(r'(?i)(?:^|[^A-Za-z0-9])(?:[A-Za-z0-9]+[_-])*'
+                r'(?:api[_-]?key|access[_-]?token|client[_-]?secret|passwd|password|token|'
+                r'secret)'
                 r'\s*[:=]\s*\\?["\']?[A-Za-z0-9/+=._-]{16,}')),
 
     # --- local filesystem paths --------------------------------------------------
