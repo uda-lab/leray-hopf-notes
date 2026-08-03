@@ -88,6 +88,9 @@ jobs:
       - name: Site data size report CLI regression tests
         run: python3 test/site_data_size_report.test.py
 
+      - name: Prerendered declaration page tests (notes#73)
+        run: python3 test/issue73_static_pages.test.py
+
       - name: Source provenance gate regression tests (notes#32)
         run: python3 test/verify_source_provenance.test.py
 
@@ -166,6 +169,13 @@ jobs:
           # leray-hopf checkout above.
           python3 scripts/build_site_data.py --lean-root leray-hopf
 
+      - name: Prerender per-declaration pages and sitemap (notes#73)
+        # Must run BEFORE the size report, the provenance emitter and the leak scan: the
+        # report is what measures these pages, the emitter is what puts their digests in
+        # SHA256SUMS, and the scan is what inspects them before upload. They are generated
+        # (gitignored), so the scan sees them as untracked and therefore in scope.
+        run: python3 scripts/build_static_pages.py
+
       - name: Verify source provenance (notes#32 fail-closed gate)
         id: verify-provenance
         # Independently re-checks the leray-hopf checkout against extracted/PIN via git
@@ -176,10 +186,13 @@ jobs:
         run: python3 scripts/verify_source_provenance.py --lean-root leray-hopf
 
       - name: Generate size report
-        # notes#29: hard failure ceiling (20 MiB raw / 6 MiB gzip) is a backstop against a
-        # misconfiguration/regression, not a growth blocker — it sits ~2x above the 10 MiB/
-        # 3 MiB warning thresholds, itself already well above current usage (~3.2 MB raw /
-        # 604 KB gzip at 1,339 decls). `set -o pipefail` so a non-zero exit from the report
+        # notes#29 + notes#73: the ceiling (32 MiB raw / 12 MiB gzip) is a backstop against
+        # a misconfiguration/regression, not a growth blocker — it sits ~2x above the
+        # 16 MiB/6 MiB warning thresholds, themselves above current usage (8.5 MiB raw /
+        # 3.0 MiB gzip at 1,425 decls). Both now measure the PUBLISHED TREE (site/**),
+        # widened from site/data when the prerendered declaration pages were added: a
+        # budget that skipped them would report "within budget" while the deployed artifact
+        # grew unchecked. `set -o pipefail` so a non-zero exit from the report
         # script (piped into `tee`) actually fails this step instead of being swallowed by
         # tee's own exit code. The report's exit status is captured in `status` rather than
         # left to fail the script outright, so the step summary still gets the report (most
@@ -188,7 +201,7 @@ jobs:
           set -o pipefail
           status=0
           python3 scripts/site_data_size_report.py --json site/data/size-report.json \
-            --fail-raw-mib 20 --fail-gzip-mib 6 | tee size-report.md || status=$?
+            --fail-raw-mib 32 --fail-gzip-mib 12 | tee size-report.md || status=$?
           cat size-report.md >> "$GITHUB_STEP_SUMMARY"
           exit "$status"
 

@@ -29,11 +29,15 @@ extracted/        機械抽出 JSON（leray-hopf の warm ビルドから生成�
 site/             純静的ビューア（実装済み — vanilla JS SPA、ビルド不要・フレームワーク不要）
   data/           生成物（gitignored）。nodes.json / sources.json は build_site_data.py が、
                   coverage.json は coverage.py が生成する
+  decl/           生成物（gitignored）。宣言ごとの prerendered ページ。
+                  build_static_pages.py が nodes.json から生成する（notes#73）
+  sitemap.xml     生成物（gitignored）。同スクリプトが decl/ の全ページを列挙する
 scripts/          ツール群（Lean ビルド不要、数秒で完走）
   count_decls.py       名前 universe 生成（fallback）
   validate.py          YAML スキーマ検査 + corpus ⊆ universe
   coverage.py          章別・tier 別・proof_status 別カバレッジ集計
   build_site_data.py   decls.json ⋈ corpus → site/data/nodes.json + sources.json
+  build_static_pages.py 宣言ごとの静的ページ + sitemap.xml（クローラ向けの実パス）
   workpacket.py        翻訳作業パケット生成
   glossary_lint.py     用語集違反チェック
   prose_lint.py        表記規則チェック（段落・数式内 Lean 識別子・非対応記法）
@@ -62,6 +66,8 @@ scripts/prose_lint.py      → 表記規則チェック
 scripts/coverage.py        → site/data/coverage.json
          ↓
 scripts/build_site_data.py → site/data/nodes.json + site/data/sources.json
+         ↓
+scripts/build_static_pages.py → site/decl/<slug>/index.html + site/sitemap.xml
          ↓
 site/  (静的ビューア — 任意の静的サーバで配信、ビルド不要)
 ```

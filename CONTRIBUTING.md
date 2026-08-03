@@ -81,6 +81,7 @@ template 側には §9 の実施有無を確認するチェック項目のみを
 | `extracted/PIN` | コミット済み | 抽出元 leray-hopf コミット SHA |
 | `corpus/**/*.yaml` | コミット済み・内容をレビュー済み | 人手執筆・レビュー（§2） |
 | `site/data/*.json`（`nodes.json` / `sources.json` / `coverage.json`） | **gitignored・生成物** | `scripts/build_site_data.py` / `scripts/coverage.py`。フレッシュ clone 後は存在せず、必ず自分でビルドする（`site/README.md`）。Phase A では CI が生成し workflow artifact としてのみ公開、Pages へはデプロイしない |
+| `site/decl/**` / `site/sitemap.xml` | **gitignored・生成物** | `scripts/build_static_pages.py`。宣言ごとの prerendered ページ（notes#73）。ハッシュルート `#/decl/<slug>` は変更せず、実パスを追加するもの |
 | `docs/` / `README.md` / `corpus/README.md` 等 | コミット済み・手動保守 | 本書のような人手ドキュメント |
 
 ## 7. 履歴文書（migration ledger）の archive 規約

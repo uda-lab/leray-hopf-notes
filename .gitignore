@@ -8,3 +8,9 @@ site/data/*.json
 # generated per build (the digests change with every payload), so it must not be committed
 # — a checked-in copy would go stale immediately and invite `sha256sum -c` failures.
 site/data/SHA256SUMS
+
+# notes#73: prerendered per-declaration pages and the sitemap listing them. Generated from
+# site/data/nodes.json by scripts/build_static_pages.py on every build (1425 pages), so a
+# committed copy would go stale the moment a declaration or its gloss changed.
+site/decl/
+site/sitemap.xml

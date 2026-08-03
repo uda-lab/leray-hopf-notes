@@ -22,10 +22,51 @@ import argparse
 # reaching into a hardcoded relative path / literal buried inside main().
 SITE_DATA_DIR = Path("site/data")
 
+
+def site_root() -> Path:
+    """The published tree — everything the deploy step uploads, not just the JSON payload.
+
+    Derived from SITE_DATA_DIR rather than being its own constant so that a caller (or a
+    test) that repoints the data directory moves the tree with it; two independent paths
+    would silently measure two different builds.
+    """
+    return SITE_DATA_DIR.parent
+
+
+def published_tree_sizes(root: Path) -> Dict[str, int]:
+    """Raw and gzip totals over every file under `root`, dotfiles included.
+
+    notes#73 widened this from `site/data` to the whole tree: the per-declaration pages
+    added there are ~1425 files of HTML that ship with every deploy, so a budget that
+    measured only the JSON payload would report "within budget" while the artifact grew
+    without limit. Gzip is summed per file, matching how the payload table has always been
+    computed — it slightly over-counts against a single archive, in the safe direction.
+    """
+    raw = gzip_total = 0
+    if not root.exists():
+        return {"raw": 0, "gzip": 0, "files": 0}
+    files = 0
+    for path in sorted(root.rglob("*")):
+        if path.is_symlink() or not path.is_file():
+            continue
+        sizes = get_file_sizes(path)
+        raw += sizes["raw"]
+        gzip_total += sizes["gzip"]
+        files += 1
+    return {"raw": raw, "gzip": gzip_total, "files": files}
+
 # Warning thresholds (visibility only — these never fail the script; see
 # --fail-raw-mib/--fail-gzip-mib below for the opt-in hard ceiling).
-WARN_RAW_BYTES = 10 * 1024 * 1024
-WARN_GZIP_BYTES = 3 * 1024 * 1024
+#
+# notes#73 recalibrated these. They now gate the PUBLISHED TREE, not the JSON payload:
+# adding 1425 prerendered declaration pages took the deployed artifact to 8.5 MiB raw /
+# 3.0 MiB gzip, which the previous payload-scale line (10 MiB / 3 MiB) would have tripped
+# on the day it landed. A threshold that fires on a healthy build teaches everyone to
+# ignore it. Measured slope is ~6.2 KiB raw / ~2.2 KiB gzip per declaration, so these
+# leave room for roughly another thousand declarations before warning, and the hard
+# ceiling CI passes stays at 2x the warning as before.
+WARN_RAW_BYTES = 16 * 1024 * 1024
+WARN_GZIP_BYTES = 6 * 1024 * 1024
 
 
 def get_file_sizes(path: Path) -> Dict[str, int]:
@@ -175,8 +216,14 @@ def main():
     sources_sizes = get_file_sizes(sources_path)
     coverage_sizes = get_file_sizes(coverage_path)
     
-    total_raw = nodes_sizes["raw"] + sources_sizes["raw"] + coverage_sizes["raw"]
-    total_gzip = nodes_sizes["gzip"] + sources_sizes["gzip"] + coverage_sizes["gzip"]
+    payload_raw = nodes_sizes["raw"] + sources_sizes["raw"] + coverage_sizes["raw"]
+    payload_gzip = nodes_sizes["gzip"] + sources_sizes["gzip"] + coverage_sizes["gzip"]
+
+    # What actually ships. The thresholds below are applied to this, not to the payload
+    # alone (notes#73): the prerendered pages are part of every deploy.
+    published = published_tree_sizes(site_root())
+    total_raw = published["raw"] or payload_raw
+    total_gzip = published["gzip"] or payload_gzip
     
     # Count declarations
     decl_count = 0
@@ -208,6 +255,11 @@ def main():
             "raw": total_raw,
             "gzip": total_gzip,
         },
+        "payload_total": {
+            "raw": payload_raw,
+            "gzip": payload_gzip,
+        },
+        "published_tree": published,
         "slopes": {
             "raw_per_decl": total_raw / decl_count if decl_count > 0 else 0,
             "gzip_per_decl": total_gzip / decl_count if decl_count > 0 else 0,
@@ -242,8 +294,18 @@ def main():
     print(f"| nodes.json | {format_bytes(nodes_sizes['raw'])} | {format_bytes(nodes_sizes['gzip'])} |")
     print(f"| sources.json | {format_bytes(sources_sizes['raw'])} | {format_bytes(sources_sizes['gzip'])} |")
     print(f"| coverage.json | {format_bytes(coverage_sizes['raw'])} | {format_bytes(coverage_sizes['gzip'])} |")
-    print(f"| **Total** | **{format_bytes(total_raw)}** | **{format_bytes(total_gzip)}** |")
+    print(f"| **payload total** | **{format_bytes(payload_raw)}** | **{format_bytes(payload_gzip)}** |")
     print()
+
+    print("## Published Tree\n")
+    print(f"Everything under `{site_root()}` that the deploy step uploads "
+          f"({published['files']} files, prerendered declaration pages included).\n")
+    print("| Scope | Raw | Gzip |")
+    print("|-------|-----|------|")
+    print(f"| **published total** | **{format_bytes(published['raw'])}** "
+          f"| **{format_bytes(published['gzip'])}** |")
+    print()
+    print("Budget thresholds below apply to the published total.\n")
     
     print("## Per-Declaration Slopes\n")
     if decl_count > 0:
