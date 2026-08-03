@@ -116,10 +116,17 @@ _OCTET = r'(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)'
 # narrower form. Both sides are consumed here so it stops recurring. Repetition is
 # BOUNDED: nested quantifiers over an unbounded run are how a scanner becomes a
 # denial-of-service on the build it guards. Eight segments covers every real name.
-_CREDENTIAL_NAME = (r'(?:[A-Za-z0-9]+[_-]){0,8}'
+# Segments are NOT required to be separated: `databasePassword` and `githubToken` are as
+# ordinary in generated JSON as `DATABASE_PASSWORD`, and a pattern built out of `[_-]`
+# joins excludes every camelCase key. A flat character-class run also removes the nested
+# quantifier the segment form needed bounding against — this cannot backtrack at all.
+# `authorization` is in the keyword list so `{"Authorization":"Bearer …"}` is reached by
+# the same quoting machinery as every other key, rather than by a second implementation of
+# it inside the Bearer rule.
+_CREDENTIAL_NAME = (r'[A-Za-z0-9_-]{0,64}'
                     r'(?:api[_-]?key|access[_-]?token|client[_-]?secret|passwd|password|'
-                    r'token|secret)'
-                    r'(?:[_-][A-Za-z0-9]+){0,8}')
+                    r'authorization|token|secret)'
+                    r'[A-Za-z0-9_-]{0,64}')
 
 # A JSON/YAML key is QUOTED — `{"password":"…"}` puts a closing quote between the name and
 # the separator, and json.dumps of a nested document escapes it to `\"`.
@@ -195,7 +202,12 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     ('Slack webhook URL',
      re.compile(r'https://hooks\.slack\.com/services/[A-Za-z0-9/_-]{10,}')),
     ('PEM private key', re.compile(r'-----BEGIN [A-Z ]*PRIVATE KEY-----')),
-    ('Bearer credential', re.compile(r'(?i)\bauthorization\s*:\s*bearer\s+[A-Za-z0-9._-]{20,}')),
+    # The separator is shared with the credential-assignment rule rather than re-spelled:
+    # a JSON header is `{"Authorization":"Bearer …"}`, and this rule used to require both
+    # sides unquoted, which is not how a generated payload writes a header.
+    ('Bearer credential',
+     re.compile(r'(?i)\bauthorization' + _CREDENTIAL_SEPARATOR +
+                r'\\?["\']?bearer\s+[A-Za-z0-9._-]{20,}')),
     ('JWT', re.compile(r'\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}')),
     # Credentials embedded in a URL's userinfo — covers `postgres://user:pw@host/db`,
     # `https://user:token@host/…`, and the rest of that family in one rule.
@@ -241,7 +253,12 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
                 _CREDENTIAL_SEPARATOR + _CONFIG_LINE_VALUE +
                 r'|'
                 # anywhere else: quoted, or bare up to a code/prose separator
-                r'(?:^|[^A-Za-z0-9])' + _CREDENTIAL_NAME +
+                # A `.` before the name makes it a PROPERTY, not a config key:
+                # `.nextToken=this.gullet.expandNextToken` in minified JavaScript is
+                # camelCase-identical to `githubToken=…` and was the one false positive
+                # camelCase support introduced. A real key is preceded by a structural
+                # delimiter — start of line, `{`, `,`, whitespace or a quote.
+                r'(?:^|[^A-Za-z0-9.])' + _CREDENTIAL_NAME +
                 _CREDENTIAL_SEPARATOR + _CREDENTIAL_VALUE +
                 r')')),
 

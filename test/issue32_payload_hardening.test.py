@@ -122,6 +122,9 @@ LEAK_PROBES = {
     'password with early punctuation': '{"password":"abc!defghijklmnopqrst"}',
     'bare password with punctuation': 'password=p@ssw0rd!Long#Enough99',
     'password containing an escaped quote': '{"password":"abc\\"defghijklmnopqrstuvwxyz"}',
+    'quoted Bearer authorization header': '{"Authorization":"Bearer abcdefghijklmnopqrstuvwxyz"}',
+    'camelCase credential key': '{"databasePassword":"abcdefghijklmnopqrst"}',
+    'camelCase token key': '{"githubToken":"' + 'c' * 20 + '"}',
     'Windows path (uppercase drive)': r'C:\Users\bob\notes',
     'Windows path (lowercase drive)': r'c:\Users\bob\secret.txt',
     'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
@@ -701,6 +704,35 @@ def test_emit_validates_annotated_count_against_the_nodes() -> None:
     check('emit refuses a payload whose nodes lost their annotations', code != 0, out)
 
 
+
+def test_emit_rejects_non_object_node_entries() -> None:
+    """The count tallies filter on `isinstance(n, dict)`, which reads a `null` entry as
+    "present but unannotated" — so `nodes: [null]` with decl_count 1 and annotated_count 0
+    satisfied every count and got a provenance record for a payload the frontend cannot
+    consume. A tally that skips malformed entries is not a check on them (codex round 14)."""
+    for label, entry in (('null', None), ('a string', 'LerayHopf.foo'), ('a list', [])):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+            nodes['nodes'] = [entry]
+            nodes['decl_count'] = 1
+            nodes['annotated_count'] = 0
+            nodes['source_count'] = 0
+            nodes['has_source'] = False
+            (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                             encoding='utf-8')
+            (data / 'sources.json').write_text(
+                json.dumps({'pin': nodes['pin'], 'source_count': 0, 'sources': {}}),
+                encoding='utf-8')
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+            check(f'emit refuses a nodes array containing {label}', code != 0, out)
+            check(f'no record or digest file is left behind for {label}',
+                  not (data / 'build-provenance.json').exists()
+                  and not (data / 'SHA256SUMS').exists(), out)
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1149,6 +1181,13 @@ def test_credential_name_compounds_and_values() -> None:
         ('x=1\nPASSWORD=abc;defghijklmnopqrst\ny=2', True),
         # ...but a line-anchored Japanese sentence is still prose, not a value
         ('token: これは行頭から始まる日本語の長い説明文である', False),
+        # camelCase compounds: no `_`/`-` to key off, which excluded every one of them
+        ('{"databasePassword":"abcdefghijklmnopqrst"}', True),
+        ('{"githubToken":"' + 'c' * 20 + '"}', True),
+        ('databasePassword=' + 'd' * 20, True),
+        ('{"Authorization":"Bearer abcdefghijklmnopqrstuvwxyz"}', True),
+        # ...but a `.` before the name makes it a property access, not a config key
+        ('.nextToken=this.gullet.expandNextToken', False),
         # a short password must not reach the floor by running into its neighbours
         ('{"password":"short","x":"y","z":"w"}', False),
         ('{"password":"short"}', False),
@@ -1362,6 +1401,7 @@ def main() -> None:
     test_emit_validates_structure_of_a_source_less_payload()
     test_emit_accepts_a_real_source_less_build()
     test_emit_validates_annotated_count_against_the_nodes()
+    test_emit_rejects_non_object_node_entries()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()

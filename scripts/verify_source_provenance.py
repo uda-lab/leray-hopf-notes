@@ -354,6 +354,19 @@ def check_payload_structure(nodes: dict, failures: list[str], passes: list[str],
             f'"nodes" array has {len(node_list)} entries')
         return
 
+    # Every entry must be an object BEFORE the array is used for any tally. The counts below
+    # filter on `isinstance(n, dict)`, which silently reads a `null` entry as "present but
+    # unannotated" — so `nodes: [null]` with decl_count 1 and annotated_count 0 satisfied
+    # every count and got a provenance record for a payload the frontend cannot consume
+    # (codex round 14). A tally that skips malformed entries is not a check on them.
+    malformed = [i for i, n in enumerate(node_list) if not isinstance(n, dict)]
+    if malformed:
+        failures.append(
+            f'{label}: nodes.json "nodes" contains {len(malformed)} entry/entries that are '
+            f'not JSON objects (first at index {malformed[0]}: '
+            f'{safe(type(node_list[malformed[0]]).__name__)})')
+        return
+
     # annotated_count is summary metadata copied verbatim into build-provenance.json, so
     # "it is an integer" is not enough: `-1` and `decl_count + 1` are both well-typed and
     # both impossible. `build_site_data.py` computes it as the number of nodes with a
