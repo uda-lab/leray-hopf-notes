@@ -11,6 +11,8 @@ backs passed for the wrong reason:
   `gg t := ‖u(t) − u(τ(cell t))‖` truncated it to nothing.
 * wave 9: same split, but truncated by a NAMED ARGUMENT `(𝕜 := ℝ)` written inside a
   binder — the narrower form of the same defect.
+* wave 9 review: a line comment in the header (`-- assumptions:`) had its colon read as
+  the conclusion delimiter — the same silent-nothing outcome from a third direction.
 
 Both regressions are pinned below. A verification tool whose green output is trusted has to
 have a demonstrated failure case of its own.
@@ -63,6 +65,37 @@ def test_named_argument_inside_a_binder() -> None:
           'hInt' in got, str(got))
 
 
+
+def test_line_comment_containing_a_colon() -> None:
+    """wave 9 review regression: a colon inside a comment was read as the conclusion."""
+    src = '''private theorem f -- assumptions:
+    (h : P) : P := by trivial'''
+    got = binders(src)
+    check('a line comment with a colon does not blind the extractor', got == ['h'], str(got))
+
+
+def test_block_comment_in_the_header() -> None:
+    src = '''private theorem g /- note: uses := here -/ (a : ℕ) (ha : 0 < a) : True := by trivial'''
+    got = binders(src)
+    check('a block comment with a colon and := is ignored', got == ['a', 'ha'], str(got))
+
+
+def test_nested_block_comments() -> None:
+    """Lean block comments nest; a non-greedy regex would stop at the first `-/`."""
+    src = '''private theorem h /- outer /- inner : -/ still comment : -/ (x : ℕ) : True := by trivial'''
+    got = binders(src)
+    check('nested block comments are consumed as one', got == ['x'], str(got))
+
+
+def test_grouped_binder_names_are_split() -> None:
+    """`(x y : α)` is ordinary Lean; returning the string "x y" makes a by-name lookup
+    miss both variables."""
+    src = '''private theorem k (u v : L2VF) (hu hv : P u) : True := by trivial'''
+    got = binders(src)
+    check('grouped binders yield one name per variable',
+          got == ['u', 'v', 'hu', 'hv'], str(got))
+
+
 def test_stops_at_the_conclusion() -> None:
     """Binders end at the top-level `:`; parenthesised types in the conclusion are not binders."""
     src = '''private theorem qux (u : L2VF) (hu : P u) :
@@ -86,6 +119,10 @@ def main() -> None:
     test_plain_binders()
     test_docstring_containing_assignment()
     test_named_argument_inside_a_binder()
+    test_line_comment_containing_a_colon()
+    test_block_comment_in_the_header()
+    test_nested_block_comments()
+    test_grouped_binder_names_are_split()
     test_stops_at_the_conclusion()
     test_implicit_and_instance_binders_are_not_collected_as_hypotheses()
     test_no_declaration_yields_nothing()

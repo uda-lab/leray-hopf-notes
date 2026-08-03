@@ -1,7 +1,7 @@
 name: LerayHopf.viscousFormSq_eq_viscousEnn_toReal
 tier: gloss
 statement_ja: |
-  粘性係数が非負で[[拡張非負実数値の粘性和|LerayHopf.viscousEnn]]が有限のとき、実数値の粘性形式は拡張実数値版の実部分に一致する。値域を移すためだけの補題で、可測性を拡張実数値の側から実数値の側へ運ぶのに使う。
+  粘性係数が非負で[[拡張非負実数値の粘性和|LerayHopf.viscousEnn]]が有限のとき、実数値の粘性形式はその値を実数へ移したものに一致する。拡張非負実数の値を、有限であることを使って実数として読み替えるだけの補題であり、可測性を拡張実数値の側から実数値の側へ運ぶのに使う。
 gap:
   level: none
 provenance: |
