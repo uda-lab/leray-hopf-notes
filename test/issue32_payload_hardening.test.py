@@ -660,6 +660,47 @@ def test_emit_accepts_a_real_source_less_build() -> None:
             (data / 'sources.json').write_text(json.dumps(stub), encoding='utf-8')
 
 
+
+def test_emit_validates_annotated_count_against_the_nodes() -> None:
+    """annotated_count is summary metadata copied verbatim into the provenance record, so
+    "it is an integer" is not enough: `-1` and `decl_count + 1` are both well-typed and both
+    impossible. It must equal the tally the builder computes it from — the number of nodes
+    with a truthy `corpus` — or the record attests to a count that no longer describes the
+    payload (codex round 13)."""
+    scenarios = (
+        ('negative', lambda n: -1),
+        ('greater than decl_count', lambda n: n['decl_count'] + 1),
+        ('off by one against the nodes', lambda n: n['annotated_count'] - 1),
+    )
+    for label, value_of in scenarios:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+            nodes['annotated_count'] = value_of(nodes)
+            (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                             encoding='utf-8')
+            code, out = run(EMIT, '--site-data', str(data),
+                            '--pin-file', str(root / 'extracted' / 'PIN'))
+        check(f'emit refuses annotated_count {label}', code != 0, out)
+        check(f'no record is written for annotated_count {label}',
+              not (data / 'build-provenance.json').exists(), out)
+
+    # A node losing its annotation without the count following must be caught from the
+    # other direction too — otherwise only the count field is really being checked.
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        nodes = json.loads((data / 'nodes.json').read_text(encoding='utf-8'))
+        for node in nodes['nodes']:
+            node['corpus'] = {}
+        (data / 'nodes.json').write_text(json.dumps(nodes, ensure_ascii=False),
+                                         encoding='utf-8')
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+    check('emit refuses a payload whose nodes lost their annotations', code != 0, out)
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1320,6 +1361,7 @@ def main() -> None:
     test_scan_covers_files_staged_but_never_committed()
     test_emit_validates_structure_of_a_source_less_payload()
     test_emit_accepts_a_real_source_less_build()
+    test_emit_validates_annotated_count_against_the_nodes()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()

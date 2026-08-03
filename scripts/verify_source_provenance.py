@@ -353,9 +353,31 @@ def check_payload_structure(nodes: dict, failures: list[str], passes: list[str],
             f'{label}: nodes.json declares decl_count={decl_count} but its '
             f'"nodes" array has {len(node_list)} entries')
         return
+
+    # annotated_count is summary metadata copied verbatim into build-provenance.json, so
+    # "it is an integer" is not enough: `-1` and `decl_count + 1` are both well-typed and
+    # both impossible. `build_site_data.py` computes it as the number of nodes with a
+    # truthy `corpus`, so that tally is what it has to equal — checking only the range
+    # would still attest to a count that no longer describes the payload.
+    annotated_count = nodes.get('annotated_count')
+    if annotated_count is not None:
+        if not 0 <= annotated_count <= decl_count:
+            failures.append(
+                f'{label}: nodes.json annotated_count ({annotated_count}) is outside '
+                f'0..decl_count ({decl_count}) — impossible for a valid build')
+            return
+        annotated = sum(1 for n in node_list if isinstance(n, dict) and n.get('corpus'))
+        if annotated != annotated_count:
+            failures.append(
+                f'{label}: nodes.json declares annotated_count={annotated_count} but '
+                f'{annotated} node(s) carry corpus annotations')
+            return
+
     passes.append(
         f'{label}: decl_count == len("nodes") == {decl_count}, counts well-typed, '
-        f'source_count ({source_count}) within range')
+        f'source_count ({source_count}) and annotated_count '
+        f'({annotated_count if annotated_count is not None else "absent"}) consistent '
+        f'with the nodes array')
 
 
 def check_empty_source_stub(nodes: dict, sources: dict,
