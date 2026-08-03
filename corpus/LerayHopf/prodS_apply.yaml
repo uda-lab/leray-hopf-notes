@@ -1,7 +1,7 @@
 name: LerayHopf.prodS_apply
 tier: gloss
 statement_ja: |
-  上の積の各点での値は、もとの 2 つの関数のその点での値の積に等しい。
+  [[Schwartz 関数の点ごとの積|LerayHopf.prodS]]の各点での値は、もとの 2 つの関数のその点での値の積に等しい。
 gap:
   level: none
 provenance: |

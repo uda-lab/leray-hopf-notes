@@ -1,7 +1,7 @@
 name: LerayHopf.reS_apply
 tier: gloss
 statement_ja: |
-  上の実部の各点での値は、もとの関数のその点での値の実部に等しい。
+  [[複素 Schwartz 関数の実部|LerayHopf.reS]]の各点での値は、もとの関数のその点での値の実部に等しい。
 gap:
   level: none
 provenance: |

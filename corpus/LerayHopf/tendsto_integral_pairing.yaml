@@ -5,7 +5,7 @@ statement_ja: |
 
   $$\int c\,k_n\ \longrightarrow\ \int c\,k_0$$
 
-  上の弱 Leibniz 則で、Schwartz 近似から極限へ移るときに使う。
+  [[$H^1$ の 2 因子に対する弱 Leibniz 則|LerayHopf.h1Leibniz2]]で、Schwartz 近似から極限へ移るときに使う。
 gap:
   level: none
 provenance: |
