@@ -75,6 +75,7 @@ exits 0 with a per-check PASS line otherwise.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -297,19 +298,65 @@ def _tracked_files(site_root: Path) -> set[str] | None:
     return set(proc.stdout.splitlines())
 
 
-def _modified_files(site_root: Path) -> set[str]:
-    """Tracked paths under `site_root` whose content differs from HEAD.
+def _git_blob_sha1(data: bytes) -> str:
+    """git's object name for a blob: sha1 over `blob <len>\\0` + content."""
+    return hashlib.sha1(b'blob %d\x00' % len(data) + data).hexdigest()
+
+
+def _committed_blobs(site_root: Path) -> dict[str, str] | None:
+    """Path → committed blob sha for every regular file HEAD records under `site_root`.
+
+    Entries that are not regular files (symlinks, gitlinks) are omitted, so a tracked path
+    that became one of those is never treated as committed-and-unchanged.
+    """
+    proc = subprocess.run(['git', '-C', str(site_root), 'ls-tree', '-r', 'HEAD', '--', '.'],
+                          capture_output=True, text=True)
+    if proc.returncode != 0:
+        return None
+    blobs: dict[str, str] = {}
+    for line in proc.stdout.splitlines():
+        meta, _, path = line.partition('\t')
+        parts = meta.split()
+        if len(parts) == 3 and parts[0] in ('100644', '100755') and parts[1] == 'blob':
+            blobs[path] = parts[2]
+    return blobs
+
+
+def _modified_files(site_root: Path) -> set[str] | None:
+    """Tracked paths under `site_root` whose worktree bytes differ from the committed blob.
 
     Being tracked is not the same as being unchanged: a build step that rewrites a tracked
     file (say `app.js`) produces content nobody reviewed, and classifying it as "committed,
-    therefore reviewed" would skip exactly the case this gate cares about. `--relative`
-    matters — `ls-files` reports paths relative to the current directory while `diff` reports
-    them from the repo root unless asked otherwise.
+    therefore reviewed" would skip exactly the case this gate cares about.
+
+    This compares CONTENT, not `git diff`, because `git diff` can be told to lie. A step
+    running before this one can mark a tracked path
+    `git update-index --assume-unchanged` (or `--skip-worktree`) and then overwrite it:
+    git then reports no difference by design — those flags mean "stop looking at the
+    worktree" — the path drops out of the generated set, and the rewritten bytes are
+    published by a green scan. Detecting the flags instead of the content would be weaker:
+    it enumerates the ways git can be told to look away, and there is no reason to believe
+    that list is closed. Hashing the bytes never consults the index at all.
+
+    None means "could not determine" — the caller treats everything as generated, per
+    `_tracked_files`. Returning an empty set on failure would fail OPEN: no path would look
+    modified, so every tracked file would be skipped.
     """
-    proc = subprocess.run(
-        ['git', '-C', str(site_root), 'diff', '--name-only', '--relative', 'HEAD', '--', '.'],
-        capture_output=True, text=True)
-    return set(proc.stdout.splitlines()) if proc.returncode == 0 else set()
+    blobs = _committed_blobs(site_root)
+    if blobs is None:
+        return None
+    modified: set[str] = set()
+    for rel, sha in blobs.items():
+        path = site_root / rel
+        try:
+            if path.is_symlink() or not path.is_file():
+                modified.add(rel)
+                continue
+            if _git_blob_sha1(path.read_bytes()) != sha:
+                modified.add(rel)
+        except OSError:
+            modified.add(rel)
+    return modified
 
 
 def excerpt(text: str, start: int, end: int, width: int = 40) -> str:
@@ -441,7 +488,7 @@ def main() -> int:
             continue
         rel = str(path.relative_to(site_root))
         # `tracked is None` means git could not tell us — scan it, per _tracked_files.
-        generated = (rel.startswith('data/') or tracked is None
+        generated = (rel.startswith('data/') or tracked is None or modified is None
                      or rel not in tracked or rel in modified)
         if not generated:
             # Committed AND unmodified files — index.html, app.js, the vendored KaTeX

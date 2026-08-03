@@ -465,6 +465,65 @@ def test_scan_covers_tracked_files_modified_by_the_build() -> None:
     check('a tracked file modified during the build IS scanned', code != 0, out)
 
 
+
+def test_scan_ignores_index_flags_that_hide_modifications() -> None:
+    """`git update-index --assume-unchanged` / `--skip-worktree` tell git to stop looking at
+    the worktree, so `git diff` reports a rewritten tracked file as unchanged. A build step
+    can set the flag and then overwrite the file; scoping on `git diff` would drop it from
+    the generated set and publish the bytes behind a green scan (codex round 9).
+
+    The scope predicate therefore compares CONTENT against the committed blob and never
+    consults the index. Both flags are exercised: detecting flags one at a time is what
+    this test exists to prevent.
+    """
+    import subprocess as sp
+    for flag in ('--assume-unchanged', '--skip-worktree'):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            data = make_payload(root)
+            site = data.parent
+            (site / 'app.js').write_text('// reviewed\n', encoding='utf-8')
+            for args in (('init', '-q'), ('config', 'user.email', 't@e'),
+                         ('config', 'user.name', 'T'), ('add', '-A'),
+                         ('commit', '-q', '-m', 'i')):
+                sp.run(['git', '-C', str(root), *args], check=True, capture_output=True)
+            sp.run(['git', '-C', str(site), 'update-index', flag, 'app.js'],
+                   check=True, capture_output=True)
+            (site / 'app.js').write_text('const t = "ghp_' + 'A' * 30 + '";\n',
+                                         encoding='utf-8')
+
+            # Precondition: git really is hiding it. If this stops holding, the test below
+            # would pass for the wrong reason.
+            hidden = sp.run(['git', '-C', str(site), 'diff', '--name-only',
+                             '--relative', 'HEAD', '--', '.'],
+                            capture_output=True, text=True).stdout.strip()
+            check(f'git diff hides the rewrite under {flag}', hidden == '', hidden)
+
+            code, out = run(SCAN, '--site-data', str(data))
+        check(f'the planted credential is still caught under {flag}', code != 0, out)
+        check(f'the finding does not print the credential under {flag}',
+              'A' * 18 not in out, out)
+
+
+def test_scope_fails_towards_scanning_when_git_is_unavailable() -> None:
+    """`_modified_files` returning an empty set on failure would fail OPEN: nothing would
+    look modified, so every tracked file would be skipped. It returns None, and the caller
+    treats an undetermined scope as "everything is generated"."""
+    sys.path.insert(0, str(REPO_ROOT / 'scripts'))
+    import scan_generated_payload as scanner
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)          # no git repository here at all
+        check('modified scope is undetermined, not empty',
+              scanner._modified_files(data.parent) is None)
+        check('tracked scope is undetermined too',
+              scanner._tracked_files(data.parent) is None)
+        (data.parent / 'app.js').write_text('const t = "ghp_' + 'A' * 30 + '";\n',
+                                            encoding='utf-8')
+        code, out = run(SCAN, '--site-data', str(data))
+    check('a leak outside site/data is caught with no git available', code != 0, out)
+
+
 def test_unsafe_published_filenames_are_refused() -> None:
     """A newline or backslash in a name produces a SHA256SUMS that `sha256sum -c` cannot
     parse, and nothing in a static site legitimately needs one (adversarial review)."""
@@ -1090,6 +1149,8 @@ def main() -> None:
     test_emit_redacts_published_file_names()
     test_diagnostics_never_expose_credentials_by_any_route()
     test_scan_covers_tracked_files_modified_by_the_build()
+    test_scan_ignores_index_flags_that_hide_modifications()
+    test_scope_fails_towards_scanning_when_git_is_unavailable()
     test_unsafe_published_filenames_are_refused()
     test_symlinks_in_the_published_tree_are_refused()
     test_emit_writes_record_and_sums()
