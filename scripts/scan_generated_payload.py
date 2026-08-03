@@ -90,6 +90,47 @@ CREDENTIAL_LABELS = frozenset({
 # A single IPv4 octet, 0-255.
 _OCTET = r'(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)'
 
+# A credential NAME is a compound and the keyword can sit anywhere inside it:
+# `DATABASE_PASSWORD`, `GH_TOKEN`, `AWS_SECRET_ACCESS_KEY`, `STRIPE_SECRET_KEY`. Review
+# spent two rounds widening one side at a time — prefix, then suffix — which is this
+# codebase's recurring failure mode: a fix for a shape reintroduces the shape in a
+# narrower form. Both sides are consumed here so it stops recurring. Repetition is
+# BOUNDED: nested quantifiers over an unbounded run are how a scanner becomes a
+# denial-of-service on the build it guards. Eight segments covers every real name.
+_CREDENTIAL_NAME = (r'(?:[A-Za-z0-9]+[_-]){0,8}'
+                    r'(?:api[_-]?key|access[_-]?token|client[_-]?secret|passwd|password|'
+                    r'token|secret)'
+                    r'(?:[_-][A-Za-z0-9]+){0,8}')
+
+# A JSON/YAML key is QUOTED — `{"password":"…"}` puts a closing quote between the name and
+# the separator, and json.dumps of a nested document escapes it to `\"`.
+_CREDENTIAL_SEPARATOR = r'(?:\\?["\'])?\s*[:=]\s*'
+
+# The VALUE is whatever was assigned, not an initial run of some convenient class. Real
+# passwords contain punctuation (`abc!defghijklmnopqrst`), and a class of
+# [A-Za-z0-9/+=._-] stops dead at the `!` — three characters short of the length floor.
+#
+# The two branches exist to keep prose and code out. A quoted value runs to its closing
+# quote. A bare one runs to the first character no password would contain.
+#
+# "Printable ASCII minus whitespace" was the obvious bare class and it is wrong: minified
+# JavaScript is one long run of it, so `,token:o}=e;switch(n){case` scores as a credential
+# and `site/vendor/katex/katex.min.js` would block its own build. The class below therefore
+# omits the characters that SEPARATE tokens in code and prose — `{}()<>;,\`|\\`, the quotes,
+# and whitespace — while keeping everything a real password or base64/hex secret uses.
+# Non-ASCII is excluded on purpose: Japanese prose has no spaces to break a bare run at.
+#
+# The quoted branch must not treat `\\"` as ordinary content. json.dumps of a nested
+# document encodes every quote that way, so `{\\"password\\":\\"short\\",\\"x\\":\\"y\\"}` would
+# otherwise reach the length floor by running THROUGH the escaped quotes into its
+# neighbours and report a five-character password as a credential. In that encoding `\\"`
+# IS the terminator, so only escapes of other characters count as content.
+_CREDENTIAL_VALUE = (r'(?:'
+                     r'\\?"(?:[^"\\\n]|\\[^"\n]){16,}?\\?"'
+                     r"|\\?'(?:[^'\\\n]|\\[^'\n]){16,}?\\?'"
+                     r'|[A-Za-z0-9!@#$%^&*\-_=+\[\]:.?/~]{16,}'
+                     r')')
+
 # (label, compiled pattern). Ordered roughly by severity.
 LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # --- credentials -------------------------------------------------------------
@@ -160,15 +201,8 @@ LEAK_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     # match and redacted whole — otherwise each sub-run can fall under the opaque-run
     # threshold and survive verbatim in the diagnostic.
     ('credential assignment',
-     re.compile(r'(?i)(?:^|[^A-Za-z0-9])(?:[A-Za-z0-9]+[_-])*'
-                r'(?:api[_-]?key|access[_-]?token|client[_-]?secret|passwd|password|token|'
-                r'secret)'
-                # A JSON/YAML key is QUOTED: `{"password":"…"}` puts a closing quote between
-                # the name and the separator, and json.dumps of a nested document escapes it
-                # to `\\"`. Without this the most ordinary shape a generated JSON payload
-                # could carry a credential in would pass the gate.
-                r'(?:\\?["\'])?'
-                r'\s*[:=]\s*\\?["\']?[A-Za-z0-9/+=._-]{16,}')),
+     re.compile(r'(?i)(?:^|[^A-Za-z0-9])' + _CREDENTIAL_NAME +
+                _CREDENTIAL_SEPARATOR + _CREDENTIAL_VALUE)),
 
     # --- local filesystem paths --------------------------------------------------
     ('home directory path', re.compile(r'/home/[A-Za-z0-9._-]+/')),

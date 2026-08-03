@@ -22,6 +22,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -116,6 +117,10 @@ LEAK_PROBES = {
     # so this probe pins the escaped form; the raw form is pinned separately below.
     'quoted JSON credential key': '{"password":"' + 'E' * 20 + '"}',
     'quoted JSON key with spaces': '{"api_key" : "' + 'F' * 20 + '"}',
+    'suffixed credential name (AWS)': 'AWS_SECRET_ACCESS_KEY=' + 'A' * 20,
+    'suffixed credential name (Stripe)': 'STRIPE_SECRET_KEY="' + 'B' * 20 + '"',
+    'password with early punctuation': '{"password":"abc!defghijklmnopqrst"}',
+    'bare password with punctuation': 'password=p@ssw0rd!Long#Enough99',
     'Windows path (uppercase drive)': r'C:\Users\bob\notes',
     'Windows path (lowercase drive)': r'c:\Users\bob\secret.txt',
     'JWT': 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.' + 'x' * 43,
@@ -170,6 +175,11 @@ LEGITIMATE_PROBES = {
     'section number': '第 172.16 節ではなく 172.16 章を参照。',
     'quoted key with a short value': 'JSON では {"password":"short"} と書く。',
     'quoted word in prose': '「token」という語の意味を説明する。',
+    'short password among dense JSON': '設定は {"password":"short","x":"y","z":"w"} である。',
+    'minified JS destructuring': 'コードは ,token:o}=e;switch(n){case のように縮小される。',
+    'minified JS property table': '"op-token":1,spacing:1,textord:1};function を含む。',
+    'English sentence after a colon': 'password: please make it long enough for safety',
+    'Japanese sentence after a colon': 'password: これはとても長い日本語の説明文であって値ではない',
 }
 
 
@@ -873,6 +883,52 @@ def test_emit_redacts_published_file_names() -> None:
     check('a redaction placeholder is printed instead', '‹redacted:' in out, out)
 
 
+
+def test_credential_name_compounds_and_values() -> None:
+    """The credential rule was widened one side at a time across three review rounds — key
+    quoting, then name prefixes, then name suffixes and the value class. Each fix left the
+    same shape reachable in a narrower form, so both sides are pinned here as a matrix
+    rather than as one more instance (codex round 7)."""
+    sys.path.insert(0, str(REPO_ROOT / 'scripts'))
+    import scan_generated_payload as scanner
+    pattern = dict(scanner.LEAK_PATTERNS)['credential assignment']
+    matrix = (
+        # keyword mid-compound: prefix AND suffix around it
+        ('AWS_SECRET_ACCESS_KEY=' + 'A' * 20, True),
+        ('STRIPE_SECRET_KEY="' + 'B' * 20 + '"', True),
+        ('DATABASE_PASSWORD=' + 'D' * 20, True),
+        ('GH_TOKEN=' + 'D' * 20, True),
+        # a value is whatever was assigned, punctuation and all
+        ('{"password":"abc!defghijklmnopqrst"}', True),
+        ('password=p@ssw0rd!Long#Enough99', True),
+        ('AWS_SECRET_ACCESS_KEY=abc/def+ghi=jklmnopqrs', True),
+        # a short password must not reach the floor by running into its neighbours
+        ('{"password":"short","x":"y","z":"w"}', False),
+        ('{"password":"short"}', False),
+        # minified JS is one long run of printable ASCII; it is not a credential
+        (',token:o}=e;switch(n){case', False),
+        ('"op-token":1,spacing:1,textord:1};function', False),
+        # prose breaks at its first space, in either language
+        ('password: please make it long enough for safety', False),
+        ('password: これはとても長い日本語の説明文であって値ではない', False),
+    )
+    for text, want in matrix:
+        check(f'credential matrix ({"leak" if want else "clean"}): {text[:44]}',
+              bool(pattern.search(text)) is want, text)
+
+
+def test_credential_pattern_terminates_on_adversarial_input() -> None:
+    """Bounded repetition, not `*`: nested quantifiers over an unbounded identifier run are
+    how a scanner becomes a denial-of-service on the build it guards."""
+    sys.path.insert(0, str(REPO_ROOT / 'scripts'))
+    import scan_generated_payload as scanner
+    pattern = dict(scanner.LEAK_PATTERNS)['credential assignment']
+    start = time.monotonic()
+    pattern.search('A_' * 4000 + 'B' * 4000)
+    check('credential pattern does not backtrack catastrophically',
+          time.monotonic() - start < 1.0)
+
+
 def test_emit_rejects_malformed_pin() -> None:
     """Equality is not enough: an empty or malformed PIN matched against an equally
     malformed payload pin passes both checks, and the record then carries an invalid
@@ -1003,6 +1059,8 @@ def main() -> None:
     test_emitter_pin_diagnostics_are_redacted()
     test_emit_redacts_missing_source_diagnostics()
     test_quoted_credential_key_matches_unescaped()
+    test_credential_name_compounds_and_values()
+    test_credential_pattern_terminates_on_adversarial_input()
     test_emit_redacts_published_file_names()
     test_diagnostics_never_expose_credentials_by_any_route()
     test_scan_covers_tracked_files_modified_by_the_build()
