@@ -614,6 +614,45 @@ def test_emit_rejects_malformed_pin() -> None:
         check(f'no record written for a malformed PIN: {label}', not wrote)
 
 
+
+def test_sha256sums_covers_the_provenance_record() -> None:
+    """Only a file containing its OWN digest is a self-reference. Leaving the record out of
+    SHA256SUMS made it the one published file a verifier could not detect a change to — a
+    poor property for the artifact whose whole job is to be evidence (adversarial review)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        data = make_payload(root)
+        site = data.parent
+        code, out = run(EMIT, '--site-data', str(data),
+                        '--pin-file', str(root / 'extracted' / 'PIN'))
+        check('emit succeeds', code == 0, out)
+
+        sums = (data / 'SHA256SUMS').read_text(encoding='utf-8')
+        check('SHA256SUMS lists the provenance record',
+              'data/build-provenance.json' in sums, sums)
+        check('SHA256SUMS does not list itself', 'data/SHA256SUMS' not in sums, sums)
+
+        record = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        names = {f['name'] for f in record['files']}
+        check("the record's own file list still excludes itself",
+              'data/build-provenance.json' not in names and 'data/SHA256SUMS' not in names,
+              repr(sorted(names)))
+
+        clean = subprocess.run(['sha256sum', '-c', 'data/SHA256SUMS'], cwd=site,
+                               capture_output=True, text=True)
+        check('verification passes on an untouched tree', clean.returncode == 0,
+              clean.stdout + clean.stderr)
+
+        # Tamper with the record itself — the case that was previously undetectable.
+        doc = json.loads((data / 'build-provenance.json').read_text(encoding='utf-8'))
+        doc['tampered'] = True
+        (data / 'build-provenance.json').write_text(json.dumps(doc), encoding='utf-8')
+        tampered = subprocess.run(['sha256sum', '-c', 'data/SHA256SUMS'], cwd=site,
+                                  capture_output=True, text=True)
+    check('verification detects tampering with the provenance record',
+          tampered.returncode != 0, tampered.stdout + tampered.stderr)
+
+
 def test_emit_refuses_pin_mismatch() -> None:
     """A provenance record that attests to the wrong commit is worse than none."""
     with tempfile.TemporaryDirectory() as td:
@@ -695,6 +734,7 @@ def main() -> None:
     test_emit_clears_stale_outputs_on_early_return()
     test_emit_hashes_the_whole_published_tree()
     test_emit_hashes_dotfiles()
+    test_sha256sums_covers_the_provenance_record()
     test_emitted_record_passes_the_scan()
     test_release_link_suppressed_on_citation_pin_mismatch()
     print(f'\nAll {len(CHECKS)} notes#32 payload-hardening checks passed.')

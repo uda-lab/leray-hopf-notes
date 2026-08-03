@@ -110,7 +110,8 @@ Verification needs nothing but the deployed site:
 cd site && sha256sum -c data/SHA256SUMS
 ```
 
-The record excludes itself and `SHA256SUMS` from its own file list, refuses to write at
+`SHA256SUMS` covers the provenance record too, so a change to the evidence itself is
+detectable; the record's own file list excludes itself and `SHA256SUMS`, refuses to write at
 all if either `nodes.json`'s or `sources.json`'s pin disagrees with `extracted/PIN` — a
 record attesting to the wrong commit would be worse than none — and clears any previous
 run's record and digests first, so stale evidence cannot survive a refusal in a reused

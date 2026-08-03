@@ -26,8 +26,10 @@ Design notes
   KaTeX bundle as well as `site/data/*.json`. Hashing only the data would leave the code
   that renders it unverifiable while the README claimed otherwise — the digests here are
   therefore taken over `site/**`, with paths relative to `site/`.
-* **The record excludes itself and SHA256SUMS.** A file cannot contain its own digest, and
-  a checksum file that lists itself is a self-reference an auditor has to special-case.
+* **The record's own `files` list excludes itself and SHA256SUMS** — a file cannot contain
+  its own digest. `SHA256SUMS`, however, *does* cover the record: listing another file is
+  not self-reference, and leaving it out would make the provenance record the one published
+  file a verifier could not detect a change to.
 * **Stale outputs are removed before anything else.** A workspace reused across builds
   would otherwise keep the previous run's record and digests when this run refuses to
   write, leaving evidence that describes a payload that is no longer there.
@@ -262,9 +264,17 @@ def main() -> int:
         json.dumps(record, ensure_ascii=False, indent=2, sort_keys=False) + '\n',
         encoding='utf-8')
 
+    # SHA256SUMS covers the provenance record too. Only a file containing its OWN digest is
+    # a self-reference — SHA256SUMS listing build-provenance.json is not, and without it the
+    # record is the one published file `sha256sum -c` could not detect a change to, which is
+    # a poor property for the artifact whose whole job is to be evidence. The record is
+    # therefore written first, then hashed into the digest file.
     sums_path = site_data / SUMS_NAME
-    sums_path.write_text(
-        ''.join(f'{f["sha256"]}  {f["name"]}\n' for f in files_record), encoding='utf-8')
+    provenance_rel = str(provenance_path.relative_to(site_root))
+    sums_lines = [f'{f["sha256"]}  {f["name"]}\n' for f in files_record]
+    sums_lines.append(f'{sha256_of(provenance_path)}  {provenance_rel}\n')
+    sums_path.write_text(''.join(sorted(sums_lines, key=lambda l: l.split('  ', 1)[1])),
+                         encoding='utf-8')
 
     print(f'Wrote {provenance_path.name} and {sums_path.name} for PIN {pin} '
           f'({len(files_record)} published files under {site_root})')
