@@ -3479,7 +3479,7 @@
    "LerayHopf.R3NSForms",
    "LerayHopf.R3NSForms.core",
    "LerayHopf.r3Domain"]},
- {"startLine": 315,
+ {"startLine": 333,
   "signature":
   "∀ (𝔊 : LerayHopf.R3GalerkinScheme) (g : LerayHopf.ConvectionGap 𝔊), Nonempty (LerayHopf.R3NSForms 𝔊)",
   "private": false,
@@ -3487,7 +3487,7 @@
   "kind": "theorem",
   "id": "LerayHopf.R3NSForms_of_gap",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 438,
+  "endLine": 450,
   "doc":
   "**G2. The conditional concrete `R3NSForms` — a genuine derivation.**\n\nGiven the isolated `ConvectionGap 𝔊` (a total `b`, its extension `b_extends`, the\nalgebraic trilinear witness `b_multilinear`, antisymmetry `b_antisymm_gap`, fixed-test\nbilinear continuity `b_cont_fixedTest`, and density `schwartz_dense`), a genuine\n`R3NSForms 𝔊` exists.  Each `R3NSForms` field is obtained as follows:\n\n- `b_add_{1,2,3}` — from `g.b_multilinear`: obtain `B`, rewrite `g.b _ _ _ = B _ _ _`, close\n                  by `B`'s `map_add` in the respective slot.  **No continuity, no density**;\n                  works for *arbitrary* `u v w : L²_σ` — this is exactly what the false\n                  `b_cont` was (wrongly) needed for, supplied honestly by `b_multilinear`;\n- `b_smul_{1,2,3}` — same, via `B`'s `map_smul`;\n- `b_antisymm`  — directly from `g.b_antisymm_gap` (asserted over arbitrary `L²_σ`); it is\n                  the honest residual of the missing operator, **not** derived from\n                  continuity;\n- `b_bound`     — from `convFormSchwartz_bound` (Tier S): take the constant `C` at the\n                  *given* Schwartz `w`; `g.b_extends` turns `|g.b u v w|` into\n                  `|convFormSchwartz …| ≤ C‖u‖‖v‖` on the Schwartz class, then\n                  `g.b_cont_fixedTest w hw` (slots 1,2 at fixed `w`) + `g.schwartz_dense`\n                  + continuity of `‖·‖` extend it to all `u v : L²_σ`;\n- `b_galerkin`  — from `convFormSchwartz_eq_witness` (Tier S) via `g.b_extends`.\n\nSo `ConvectionGap` does *not* hand over the *quantitative* `R3NSForms` content ready-made:\nthe bound and the pin are derived from the Tier-S lemmas through `b_extends` /\n`b_cont_fixedTest`; only the algebraic trilinear/antisymmetry content (`b_multilinear`,\n`b_antisymm_gap`) is asserted, as the honest residual of the missing weak operator.\nDischarging `ConvectionGap` later (when the weak-`(u·∇)v` extension calculus lands)\ndischarges `r3_NSForms_exist` for free, with no edit to `SolutionInterfaces.lean`: the\n`convFormSchwartz_eq_witness` pin through `b_extends` pins the result to the canonical\nconvection formula (non-triviality is a scope-of-guarantee note, not a separately formalized\nfact — see issue #153). ",
   "deps":
@@ -4977,7 +4977,7 @@
   "doc":
   "**General du-Bois-Reymond against Hermitian Schwartz tests.**  A locally integrable\n`f : ℝ³ → ℂ` that integrates to zero against every *Hermitian* Schwartz symbol\n(`G(-ξ) = conj(G ξ)`) vanishes a.e.\n\nSame even/odd reduction as the forward direction of `mem_sigma_iff_fourier_transverse`, but\nthe parity assignment is mirrored: for a real smooth compactly-supported test `g`, the\neven part `gE = g + g∘neg` complexifies to a *Hermitian* symbol directly, while `i·gO`\n(`gO = g − g∘neg`) is Hermitian; both feed the hypothesis, and `2g = gE + gO`. ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 1418,
+ {"startLine": 1427,
   "signature":
   "(𝔊 : LerayHopf.R3GalerkinScheme) →\n  (F : LerayHopf.R3NSForms 𝔊) →\n    (ν : ℝ) →\n      0 < ν →\n        (T : ℝ) →\n          0 < T →\n            (u₀ : ↥LerayHopf.L2Sigma_R3) →\n              (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData_R3 𝔊 F ν u₀ n) →\n                LerayHopf.LocalRellichInput →\n                  (κ : ℕ → ℕ) → StrictMono κ → LerayHopf.AubinLionsPackage_R3 𝔊 F ν T u₀ galSeq κ",
   "private": false,
@@ -4985,7 +4985,7 @@
   "kind": "def",
   "id": "LerayHopf.aubinLionsPackage_R3_of_timeCompactness",
   "file": "LerayHopf/R3/AubinLionsLimitPassage.lean",
-  "endLine": 1555,
+  "endLine": 1564,
   "doc":
   "**Aubin–Lions package on ℝ³ from the isolated time-compactness input (CLOSED).**\n\nProduces `aubin_lions_R3`'s conclusion (`AubinLionsPackage_R3`), conditional on P3's local\nspatial compactness (via `LocalRellichInput`).  The time-compactness extraction is supplied\nUNCONDITIONALLY by `galerkinSpaceTimeExtraction_R3` (no separate `TimeCompactnessInput` modulus\nhypothesis — it is absorbed into that single axiom).  The conclusion type is exactly\n`AubinLionsPackage_R3 𝔊 F ν T u₀ galSeq` (matching the `aubin_lions_R3` binder list,\n`SolutionInterfaces.lean:444–460`).\n\nASSEMBLY: the genuine spatial half is PROVED axiom-free (the `steklovAvg_spatial_extraction`\nchain). The single irreducible LOCAL Bochner-time compactness extraction (one subsequence `φ` + a\nmeasurable limit curve `u` with per-ball `restrictToBall R` a.e.-in-time `L²` convergence) is\nsupplied by `galerkinSpaceTimeExtraction_R3` (theorem, issue #44, proved; resting on the two\nthinner axioms `galerkin_spacetime_precompact_R3` + `galerkin_weakLimit_R3` — local, no tightness,\nno global-`L²` claim, genuinely weaker/thinner than `aubin_lions_R3`). From that\nextraction this constructor assembles every field axiom-free:\n* `φ`, `φ_mono`, `u` — directly from the extraction;\n* `u_aestronglyMeasurable` — the extraction's measurability conjunct;\n* `strong_convergence` — for each ball `R`, the extraction already delivers the per-ball\n  ball-restricted differences converging to `0` a.e. in `t`, dominated by the constant\n  `2‖u₀‖` on the finite window `[0,T]` (via `galerkin_norm_le_u0`); dominated convergence in `L²`\n  (`tendsto_Lp_of_tendsto_ae`) gives the `eLpNorm`-in-time convergence.\n\nThis is a `noncomputable def` (not a `theorem`) because `AubinLionsPackage_R3` is a `Type`\n(a data-carrying structure), not a `Prop` — mirroring the `aubin_lions_R3` axiom shape. ",
   "deps":
@@ -6035,7 +6035,7 @@
    "LerayHopf.convSummand",
    "LerayHopf.haarTorus3",
    "LerayHopf.memH1VF"]},
- {"startLine": 1287,
+ {"startLine": 1309,
   "signature":
   "LerayHopf.CurlSchwartzDense →\n  ∀ (u : ↥LerayHopf.L2Sigma_R3),\n    ∃ s, (∀ (n : ℕ), LerayHopf.IsSchwartzDivFree_R3 (s n)) ∧ Filter.Tendsto s Filter.atTop (nhds u)",
   "private": false,
@@ -6043,7 +6043,7 @@
   "kind": "theorem",
   "id": "LerayHopf.convectionGap_schwartz_dense",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 1299,
+  "endLine": 1321,
   "doc":
   "**P2 (scaffold-only).** Packaging of the density result as the `schwartz_dense`\nfield shape used by `ConvectionGap`.\n\nThis is a definitional wrapper around P1; useful as a named entry point for future\n`ConvectionGap` instance construction once the five operator-extension fields are available.\n\nUsed as: `convectionGap_schwartz_dense curlSchwartzDense_holds` gives the density\nneeded for `ConvectionGap.schwartz_dense`. ",
   "deps":
@@ -6160,7 +6160,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2VF_ofComponents",
    "LerayHopf.curlSchwartz"]},
- {"startLine": 524,
+ {"startLine": 536,
   "signature":
   "∀ (ψ : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ), LerayHopf.IsSchwartzDivFree_R3 ⟨LerayHopf.curlSchwartzL2 ψ, ⋯⟩",
   "private": false,
@@ -6168,7 +6168,7 @@
   "kind": "theorem",
   "id": "LerayHopf.curlSchwartzL2_isSchwartzDivFree_R3",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 533,
+  "endLine": 545,
   "doc":
   "**H4.** For any Schwartz potential `ψ : Fin 3 → 𝓢(Domain3, ℝ)`, the curl field\n`⟨curlSchwartzL2 ψ, curlSchwartzL2_mem_sigma ψ⟩ : L2Sigma_R3` is `IsSchwartzDivFree_R3`.\n\nProof: `curlSchwartz_isSchwartz ψ` supplies Schwartz witnesses `curlSchwartz ψ j` for each\ncomponent, matching exactly the `L2VF_projComponent_R3` via `curlSchwartzL2_projComponent`. ",
   "deps":
@@ -7038,7 +7038,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.extendReindexedFamily",
    "LerayHopf.haarTorus3"]},
- {"startLine": 749,
+ {"startLine": 761,
   "signature":
   "∀ {𝔊 : LerayHopf.R3GalerkinScheme} (F : LerayHopf.R3NSForms 𝔊) (w : ↥LerayHopf.L2Sigma_R3),\n  LerayHopf.IsSchwartzDivFree_R3 w → Continuous fun p => F.b p.1 p.2 w",
   "private": false,
@@ -7046,7 +7046,7 @@
   "kind": "theorem",
   "id": "LerayHopf.fb_continuous_fixedTest",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 827,
+  "endLine": 839,
   "doc":
   "`F.b (·) (·) w` is jointly `L²`-continuous at a fixed Schwartz `w` — from the bilinear bound\n`b_bound` (`|F.b u v w| ≤ Cb·‖u‖·‖v‖`) together with bilinearity (`b_add`, `b_smul`).  Proved by\nthe standard bounded-bilinear ⇒ continuous estimate on the difference\n`F.b u v w − F.b u₀ v₀ w = F.b (u−u₀) v w + F.b u₀ (v−v₀) w`. ",
   "deps":
@@ -7056,7 +7056,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.R3GalerkinScheme",
    "LerayHopf.R3NSForms"]},
- {"startLine": 875,
+ {"startLine": 887,
   "signature":
   "∀ {𝔊 : LerayHopf.R3GalerkinScheme} (F : LerayHopf.R3NSForms 𝔊) (w : ↥LerayHopf.L2Sigma_R3)\n  (ψw : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ),\n  (∀ (j : Fin 3), (LerayHopf.L2VF_projComponent_R3 j) ↑w = (ψw j).toLp 2 MeasureTheory.volume) →\n    ∀ (f g : ↥LerayHopf.L2Sigma_R3), F.b f g w = LerayHopf.antisymmIntegral✝ ψw ⋯ ↑f ↑g",
   "private": false,
@@ -7064,7 +7064,7 @@
   "kind": "theorem",
   "id": "LerayHopf.fb_eq_antisymmIntegral",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 904,
+  "endLine": 916,
   "doc":
   "**Step 1 (conjunct-2 atom b): the integral representation `F.b f g w = antisymmIntegral`.**\nDensity extension of `fb_eq_antisymmIntegral_schwartz` using joint `L²`-continuity of both sides\n(`fb_continuous_fixedTest`; `antisymmIntegral_continuous`). ",
   "deps":
@@ -7076,7 +7076,7 @@
    "LerayHopf.R3NSForms",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.antisymmIntegral",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.lineDerivOp_schwartz_memLp_top"]},
- {"startLine": 834,
+ {"startLine": 846,
   "signature":
   "∀ {𝔊 : LerayHopf.R3GalerkinScheme} (F : LerayHopf.R3NSForms 𝔊) (w : ↥LerayHopf.L2Sigma_R3)\n  (ψw : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ),\n  (∀ (j : Fin 3), (LerayHopf.L2VF_projComponent_R3 j) ↑w = (ψw j).toLp 2 MeasureTheory.volume) →\n    ∀ (f' g' : ↥LerayHopf.L2Sigma_R3),\n      LerayHopf.IsSchwartzDivFree_R3 f' →\n        LerayHopf.IsSchwartzDivFree_R3 g' → F.b f' g' w = LerayHopf.antisymmIntegral✝ ψw ⋯ ↑f' ↑g'",
   "private": false,
@@ -7084,7 +7084,7 @@
   "kind": "theorem",
   "id": "LerayHopf.fb_eq_antisymmIntegral_schwartz",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 868,
+  "endLine": 880,
   "doc":
   "The Schwartz-pair agreement: for Schwartz-div-free `f', g'`, `F.b f' g' w` equals the\nantisymmetric integral.  `b_galerkin` rewrites `F.b` to `convIntegralSchwartz`, then\n`convIntegralSchwartz_divFree_eq` gives the IBP'd integral, which matches `antisymmIntegral`'s\ninner-product integrands a.e. ",
   "deps":
@@ -7097,7 +7097,7 @@
    "LerayHopf.R3NSForms",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.antisymmIntegral",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.lineDerivOp_schwartz_memLp_top"]},
- {"startLine": 1151,
+ {"startLine": 1173,
   "signature":
   "∀ {𝔊 : LerayHopf.R3GalerkinScheme} (F : LerayHopf.R3NSForms 𝔊) (w : ↥LerayHopf.L2Sigma_R3),\n  LerayHopf.IsSchwartzDivFree_R3 w →\n    ∀ (un : ℕ → ↥LerayHopf.L2Sigma_R3) (u : ↥LerayHopf.L2Sigma_R3) (M : ℝ),\n      0 ≤ M →\n        (∀ (n : ℕ), ‖↑(un n)‖ ≤ M) →\n          ‖↑u‖ ≤ M →\n            (∀ (k : ℕ),\n                Filter.Tendsto (fun n => LerayHopf.restrictToBall ↑k ↑(un n)) Filter.atTop\n                  (nhds (LerayHopf.restrictToBall ↑k ↑u))) →\n              Filter.Tendsto (fun n => F.b (un n) (un n) w) Filter.atTop (nhds (F.b u u w))",
   "private": false,
@@ -7105,7 +7105,7 @@
   "kind": "theorem",
   "id": "LerayHopf.fb_tendsto_of_perball",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 1283,
+  "endLine": 1305,
   "doc":
   "**Per-ball convergence of F.b (atom b of WeakFormNS passage).**\n\nFor a Schwartz-div-free test `w` with witnesses `ψw`, if `uₙ → u` in L²(B_R) for every\nradius R (per-ball convergence) with uniform L² bound `‖uₙ‖ ≤ M`, then\n`F.b(uₙ, uₙ, w) → F.b(u, u, w)`.\n\n**Method.** After applying `fb_eq_antisymmIntegral` and unfolding `antisymmIntegral`, each\n(i, a)-term is `inner (comp_a uₙ) (mulBddR φ_{a,i} (comp_i uₙ))`.  The bilinear difference\nsplits into:\n- TERM A `= inner (comp_a (uₙ - u)) (mulBddR φ (comp_i uₙ))`: ε/3 split via\n  `schwartz_ball_tail_decay` for the `‖x‖>R` tail and per-ball for the `‖x‖≤R` ball;\n- TERM B `= inner (comp_a u) (mulBddR φ (comp_i (uₙ - u)))`: self-adjointness +\n  scalar ball-tail ε/3 argument (tail of FIXED element → 0, ball uses per-ball). ",
   "deps":
@@ -8983,7 +8983,7 @@
   "doc":
   "**A2 `gns_L6_cc1_R3` [must-prove].**\nThe Gagliardo–Nirenberg–Sobolev inequality for `C¹` compactly-supported functions on ℝ³\nwith values in a finite-dimensional normed real vector space `F`.\n\n`eLpNorm u 6 volume ≤ C * eLpNorm (fderiv ℝ u) 2 volume`\n\nwhere `C := SNormLESNormFDerivOfEqConst F (volume : Measure Domain3) 2` is the\nmathlib GNS constant (independent of `u`, depending only on `F` and the measure on ℝ³).\n\n**Proof plan (for prover pass):** Direct application of\n`MeasureTheory.eLpNorm_le_eLpNorm_fderiv_of_eq` at:\n- `E := Domain3` (`FiniteDimensional ℝ`, `finrank ℝ Domain3 = 3`)\n- `p := (2 : NNReal)`, `p' := (6 : NNReal)` in the NNReal signature\n- `hp' : (6 : ℝ)⁻¹ = (2 : ℝ)⁻¹ - (3 : ℝ)⁻¹` (= `1/6 = 1/2 - 1/3`, by `norm_num`)\n- `hp : 1 ≤ (2 : NNReal)` (by `norm_num`)\n- `hn : 0 < finrank ℝ Domain3` (= `0 < 3`)\n\nThe μ in `eLpNorm_le_eLpNorm_fderiv_of_eq` is any `IsAddHaarMeasure`, satisfied by\n`volume : Measure Domain3` via `measureSpaceOfInnerProductSpace`. ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 800,
+ {"startLine": 823,
   "signature":
   "∀ (f : ↥LerayHopf.L2C_R3),\n  TemperedDistribution.MemSobolev 1 2 (MeasureTheory.Lp.toTemperedDistribution f) →\n    MeasureTheory.MemLp (↑↑f) 6 MeasureTheory.volume",
   "private": false,
@@ -8991,7 +8991,7 @@
   "kind": "theorem",
   "id": "LerayHopf.gns_L6_of_memH1_R3",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 905,
+  "endLine": 928,
   "doc":
   "**A3 `gns_L6_of_memH1_R3` [PROVED sorry-free].**\nIf a complex-valued `L²(ℝ³; ℂ)` function `f` lies in the Sobolev space `H^{1,2}(ℝ³; ℂ)`\n(i.e. `TemperedDistribution.MemSobolev 1 2 (f : 𝓢'(Domain3, ℂ))` via the\n`Lp.instCoeDep` coercion in `TemperedDistribution.lean:178`), then `f ∈ L⁶(ℝ³; ℂ)`.\n\nConclusion: `MemLp (⇑f) 6 (volume : Measure Domain3)`, where `⇑f : Domain3 → ℂ` is the\na.e. representative of `f : L2C_R3 = Lp ℂ 2 (volume : Measure Domain3)`.\n\n**Proof.**\n1. Extract the Sobolev representative `f' ∈ L²` with `smulLeftCLM (1+‖·‖²)^(1/2) (𝓕 f) = f'`,\n   giving `⇑(𝓕 f) =ᵐ wInv • f'` (`fourier_ae_eq_wInv_smul`).\n2. Take a Schwartz sequence `ηₙ.toLp 2 → f'` (`denseRange_toLpCLM`) and set the Schwartz\n   approximants `φₙ := 𝓕⁻¹(smulLeftCLM wInv ηₙ)`, so `𝓕 φₙ ξ = wInv ξ • ηₙ ξ` and\n   `∫(1+‖ξ‖²)‖𝓕φₙ‖² = ‖ηₙ.toLp‖²`.\n3. `gns_L6_schwartz` + `eLpNorm_fderiv_le_weighted` give `eLpNorm φₙ 6 ≤ C·2π·‖ηₙ.toLp‖`,\n   uniformly `≤ C·2π·M` with `M := ‖f'‖+1` (since `‖ηₙ.toLp‖ → ‖f'‖`).\n4. `φₙ.toLp → f` in L² (Fourier isometry + the bounded multiplier `mulBdd wInv`); extract an\n   a.e.-convergent subsequence and apply Fatou (`Lp.eLpNorm_le_of_ae_tendsto`) to get\n   `eLpNorm ⇑f 6 ≤ C·2π·M < ∞`, hence `MemLp (⇑f) 6`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
@@ -9589,7 +9589,7 @@
   "doc":
   "The volume of the closed ball `B_R ⊆ ℝ³` is finite (it is compact in a proper space), so the\nrestricted measure `volume.restrict B_R` is a finite measure: needed to invoke\n`Lp.norm_le_of_ae_bound` for the sup→L² transfer. ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 460,
+ {"startLine": 472,
   "signature":
   "∀ (u v : ↥LerayHopf.L2Sigma_R3),\n  LerayHopf.IsSchwartzDivFree_R3 u → LerayHopf.IsSchwartzDivFree_R3 v → LerayHopf.IsSchwartzDivFree_R3 (u + v)",
   "private": false,
@@ -9597,7 +9597,7 @@
   "kind": "theorem",
   "id": "LerayHopf.isSchwartzDivFree_add",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 479,
+  "endLine": 491,
   "doc":
   "**H1.** The sum of two `IsSchwartzDivFree_R3` fields is again `IsSchwartzDivFree_R3`.\n\nProof: if `u` has Schwartz witnesses `ψu` and `v` has witnesses `ψv`, then\n`u + v` has witnesses `(fun j => ψu j + ψv j)`, because `toLp` is additive a.e.\nand `L2VF_projComponent_R3` is linear. ",
   "deps":
@@ -9605,7 +9605,7 @@
    "LerayHopf.IsSchwartzDivFree_R3",
    "LerayHopf.L2Sigma_R3",
    "LerayHopf.L2VF_R3"]},
- {"startLine": 501,
+ {"startLine": 513,
   "signature":
   "∀ {ι : Type u_1} (s : Finset ι) (f : ι → ℝ) (v : ι → ↥LerayHopf.L2Sigma_R3),\n  (∀ i ∈ s, LerayHopf.IsSchwartzDivFree_R3 (v i)) → LerayHopf.IsSchwartzDivFree_R3 (∑ i ∈ s, f i • v i)",
   "private": false,
@@ -9613,7 +9613,7 @@
   "kind": "theorem",
   "id": "LerayHopf.isSchwartzDivFree_linearCombination",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 520,
+  "endLine": 532,
   "doc":
   "**H3.** A finite ℝ-linear combination of `IsSchwartzDivFree_R3` fields is\n`IsSchwartzDivFree_R3`.\n\nFollows by induction from H1 and H2 (scalar multiplication preserves the class, and the\nclass is closed under addition). ",
   "deps":
@@ -9621,7 +9621,7 @@
    "LerayHopf.IsSchwartzDivFree_R3",
    "LerayHopf.L2Sigma_R3",
    "LerayHopf.L2VF_R3"]},
- {"startLine": 483,
+ {"startLine": 495,
   "signature":
   "∀ (c : ℝ) (u : ↥LerayHopf.L2Sigma_R3), LerayHopf.IsSchwartzDivFree_R3 u → LerayHopf.IsSchwartzDivFree_R3 (c • u)",
   "private": false,
@@ -9629,7 +9629,7 @@
   "kind": "theorem",
   "id": "LerayHopf.isSchwartzDivFree_smul",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 497,
+  "endLine": 509,
   "doc":
   "**H2.** A scalar multiple of an `IsSchwartzDivFree_R3` field is again `IsSchwartzDivFree_R3`.\n\nProof: if `u` has witnesses `ψu` then `c • u` has witnesses `(fun j => c • ψu j)`. ",
   "deps":
@@ -9972,7 +9972,7 @@
   "doc":
   "If `u, v ∈ L2VF_R3` both satisfy `memH1VF_R3`, then so does `u + v`.\n\nProof: `L2VF_projComponentC_R3 j` is ℝ-linear, so the j-th component of `u + v` equals\nthe sum of the j-th components of `u` and `v`. Then `MemSobolev.add` closes the goal. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2VF_R3", "LerayHopf.memH1VF_R3"]},
- {"startLine": 958,
+ {"startLine": 981,
   "signature":
   "∀ {v : ↥LerayHopf.L2Sigma_R3}, LerayHopf.IsSchwartzDivFree_R3 v → LerayHopf.memH1VF_R3 ↑v",
   "private": false,
@@ -9980,7 +9980,7 @@
   "kind": "theorem",
   "id": "LerayHopf.memH1VF_R3_of_isSchwartzDivFree",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 966,
+  "endLine": 989,
   "doc":
   "**A4 helper.** Every `IsSchwartzDivFree_R3` field has `H¹` regularity (`memH1VF_R3`).\n\nA thin corollary of `memH1VF_R3_of_schwartz_components`: `IsSchwartzDivFree_R3 v` unfolds to\nexactly the component-witness hypothesis at `u := (v : L2VF_R3)` (the divergence-free content\nof `v : L2Sigma_R3` is not used). ",
   "deps":
@@ -9989,7 +9989,7 @@
    "LerayHopf.L2Sigma_R3",
    "LerayHopf.L2VF_R3",
    "LerayHopf.memH1VF_R3"]},
- {"startLine": 925,
+ {"startLine": 948,
   "signature":
   "∀ (u : ↥LerayHopf.L2VF_R3),\n  (∃ φ, ∀ (j : Fin 3), (LerayHopf.L2VF_projComponent_R3 j) u = (φ j).toLp 2 MeasureTheory.volume) →\n    LerayHopf.memH1VF_R3 u",
   "private": false,
@@ -9997,7 +9997,7 @@
   "kind": "theorem",
   "id": "LerayHopf.memH1VF_R3_of_schwartz_components",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 956,
+  "endLine": 979,
   "doc":
   "**A4 helper, component-witness form.** A field with Schwartz component representatives\nhas `H¹` regularity (`memH1VF_R3`) — the same argument as `memH1VF_R3_of_isSchwartzDivFree`,\nbut stated on the raw component witness (no `L2Sigma_R3`/div-free wrapper): the divergence-free\nhypothesis is never used in the proof, only the Schwartz-component data.\n\nEach real component is `(ψ j).toLp 2 volume` for a Schwartz `ψ j : 𝓢(Domain3, ℝ)`; the\ncomplex component projection `L2VF_projComponentC_R3 j` then equals `toLp` of the postcomposed\nSchwartz function `(ψ j).postcompCLM RCLike.ofRealCLM : 𝓢(Domain3, ℂ)`, and\n`memSobolev_of_eq_schwartz_toLp` finishes. ",
   "deps":
@@ -10185,7 +10185,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.gradComp_of_memH1",
    "LerayHopf.memH1VF_R3"]},
- {"startLine": 1257,
+ {"startLine": 1301,
   "signature":
   "∀ (w : ↥LerayHopf.L2VF_R3),\n  (∀ (j : Fin 3),\n      ∫⁻ (ξ : LerayHopf.Domain3),\n          ENNReal.ofReal\n            ((2 * Real.pi) ^ 2 * ‖ξ‖ ^ 2 *\n              ‖↑↑(FourierTransform.fourier ((LerayHopf.L2VF_projComponentC_R3 j) w)) ξ‖ ^ 2) <\n        ⊤) →\n    LerayHopf.memH1VF_R3 w",
   "private": false,
@@ -10193,7 +10193,7 @@
   "kind": "theorem",
   "id": "LerayHopf.memSobolev_of_finite_weightedFourier_R3",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1336,
+  "endLine": 1380,
   "doc":
   "**H¹ membership from finite weighted-Fourier integral.**\nIf for each component `j : Fin 3` the lower Lebesgue integral\n`∫⁻ ξ, (2π)²‖ξ‖² ‖𝓕(projⱼ w) ξ‖² dξ` is finite, then `w` lies in `H¹(ℝ³; ℝ³)`,\ni.e. `memH1VF_R3 w`.\n\n**Proof plan (for prover pass):**\nFor each `j`, finiteness of the lintegral gives `MemLp (fun ξ => wPosC ξ • (𝓕(projⱼ w) ξ)) 2`:\n- `‖wPosC ξ‖² · ‖𝓕(projⱼ w) ξ‖² = (1+‖ξ‖²) · ‖𝓕(projⱼ w) ξ‖²`\n  `≤ ‖𝓕(projⱼ w) ξ‖² + (1/(2π)²) · (2π)²‖ξ‖²‖𝓕(projⱼ w) ξ‖²`,\n  so `∫⁻ ‖wPosC ξ • (𝓕(projⱼ w) ξ)‖² < ∞` by the hypothesis plus `𝓕(projⱼ w) ∈ L²`.\n- `MemLp ... 2` gives via `ae_eq_of_integral_contDiff_smul_eq` + `locallyIntegrable_wPosC_smul`\n  that `smulLeftCLM ℂ wPosC (𝓕 (projⱼ w)) = f'` for some `f' ∈ L²` (the `wPosC_eq_smulLeftCLM_weight`\n  reconciliation as in `gns_L6_of_memH1_R3`).\n- Apply `memSobolev_iff_exists_smulLeftCLM_fourier.mpr` to conclude `MemSobolev 1 2 (projⱼ w)`.\n- Universally quantify over `j` to obtain `memH1VF_R3 w`. ",
   "deps":
@@ -10812,7 +10812,7 @@
    "LerayHopf.haarTorus3",
    "LerayHopf.mFourierCoeff3",
    "LerayHopf.velocityProjection_n"]},
- {"startLine": 762,
+ {"startLine": 794,
   "signature":
   "∀ (ν : ℝ), 0 ≤ ν → ∀ (u : ↥LerayHopf.L2VF), ENNReal.ofReal (LerayHopf.viscousFormSq ν u) ≤ LerayHopf.viscousEnn ν u",
   "private": false,
@@ -10820,7 +10820,7 @@
   "kind": "theorem",
   "id": "LerayHopf.ofReal_viscousFormSq_le",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 788,
+  "endLine": 820,
   "doc":
   "The real viscous form is dominated by the honest ENNReal sum (equality on the\nsummable set; the junk-`0` collapse only helps the inequality). ",
   "deps":
@@ -11323,7 +11323,7 @@
   "doc":
   "The complexification `schwartzC f` evaluates pointwise as the real-to-complex coercion of\n`f`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.schwartzC"]},
- {"startLine": 602,
+ {"startLine": 614,
   "signature":
   "LerayHopf.CurlSchwartzDense →\n  ∀ (u : ↥LerayHopf.L2Sigma_R3),\n    ∃ s, (∀ (n : ℕ), LerayHopf.IsSchwartzDivFree_R3 (s n)) ∧ Filter.Tendsto s Filter.atTop (nhds u)",
   "private": false,
@@ -11331,7 +11331,7 @@
   "kind": "theorem",
   "id": "LerayHopf.schwartzDivFree_dense_of_curlDense",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 634,
+  "endLine": 646,
   "doc":
   "Given curl-Schwartz density (`CurlSchwartzDense`), every `u ∈ L2Sigma_R3` is a limit of a\nsequence of divergence-free Schwartz test fields — i.e. `IsSchwartzDivFree_R3` is dense in\n`L2Sigma_R3`, transported from the curl-Schwartz span's closure via `IsSchwartzComp`. ",
   "deps":
@@ -11380,7 +11380,7 @@
   "doc":
   "**(P2) Schwartz Hermitian preimage extraction (must-prove — item 11 in the plan).**\n\nIf `h : 𝓢(ℝ³, ℂ)` is anti-Hermitian in the sense `h(-ξ) = -conj(h(ξ))` (i.e. `h` is an\nanti-Hermitian Schwartz symbol, exactly the kind produced by `testSymbol φ` for real `φ`),\nthen there exists `φ : 𝓢(ℝ³, ℝ)` such that `testSymbol φ = h`.\n\n**Constructibility sketch** (no Mathlib PR needed — all primitives present):\n- Let `g = (2πi)⁻¹ • h` (Hermitian: `g(-ξ) = conj(g(ξ))`).\n- Let `Ψ : 𝓢(ℝ³, ℂ)` be the Schwartz inverse Fourier transform `𝓕⁻ g`\n  (`FourierTransform.fourierCLE.symm` applied to `g`).\n- Since `g` is Hermitian, `Ψ` is real-valued: use `fourier_ofReal_reflect_eq_conj` (proved,\n  P1 above) to establish that `𝓕⁻ g` is real-valued, so `Im Ψ = 0`.\n- Extract the real Schwartz function `φ := Ψ.postcompCLM reCLM`\n  (via `SchwartzMap.postcompCLM (RCLike.reCLM : ℂ →L[ℝ] ℝ)`, which gives `φ ξ = Re(Ψ ξ)`).\n- Verify `testSymbol φ = h`:\n  `testSymbol φ ξ = conj((2πi) · 𝓕(schwartzC φ)(ξ))`.\n  Since `Ψ` is real-valued, `schwartzC φ = schwartzC (Re Ψ) = Ψ` (as Schwartz maps).\n  Then `𝓕(Ψ) = 𝓕(𝓕⁻ g) = g` by `FourierInvPair`, and `conj((2πi)·g) = h` by definition of `g`.\n\nKey Mathlib decls: `SchwartzMap.postcompCLM`, `Complex.conjCLE`, `RCLike.reCLM`,\n`FourierTransform.fourierCLE` (symm), `FourierInvPair`,\n`fourier_ofReal_reflect_eq_conj` (item 9, proved above). ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.testSymbol"]},
- {"startLine": 1196,
+ {"startLine": 1240,
   "signature":
   "∀ (f : ↥LerayHopf.L2C_R3) (m : LerayHopf.Domain3),\n  TemperedDistribution.MemSobolev 1 2 (MeasureTheory.Lp.toTemperedDistribution f) →\n    ∃ g,\n      ∃ (_ :\n        LineDeriv.lineDerivOp m (MeasureTheory.Lp.toTemperedDistribution f) =\n          MeasureTheory.Lp.toTemperedDistribution g),\n        ∃ φ,\n          Filter.Tendsto (fun n => (φ n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f) ∧\n            Filter.Tendsto (fun n => (LineDeriv.lineDerivOp m (φ n)).toLp 2 MeasureTheory.volume) Filter.atTop (nhds g)",
   "private": false,
@@ -11388,11 +11388,11 @@
   "kind": "theorem",
   "id": "LerayHopf.schwartz_h1_gradConv",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1212,
+  "endLine": 1256,
   "doc":
   "**Brick-1 (per-direction).** For `f : L2C_R3` in `H^{1,2}` and a fixed direction `m`, there\nis a Schwartz sequence converging in L² to `f` whose `m`-directional derivatives converge in L²\nto the weak derivative `∂_m (f : 𝓢')`. Derived from the `m`-uniform engine\n`schwartz_h1_gradConv_aux`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
- {"startLine": 1230,
+ {"startLine": 1274,
   "signature":
   "∀ (f : ↥LerayHopf.L2C_R3),\n  TemperedDistribution.MemSobolev 1 2 (MeasureTheory.Lp.toTemperedDistribution f) →\n    ∃ φ,\n      Filter.Tendsto (fun n => (φ n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f) ∧\n        ∀ (m : LerayHopf.Domain3),\n          ∃ g,\n            ∃ (_ :\n              LineDeriv.lineDerivOp m (MeasureTheory.Lp.toTemperedDistribution f) =\n                MeasureTheory.Lp.toTemperedDistribution g),\n              Filter.Tendsto (fun n => (LineDeriv.lineDerivOp m (φ n)).toLp 2 MeasureTheory.volume) Filter.atTop\n                (nhds g)",
   "private": false,
@@ -11400,7 +11400,7 @@
   "kind": "theorem",
   "id": "LerayHopf.schwartz_h1_gradConv_multi",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1244,
+  "endLine": 1288,
   "doc":
   "**B6 export.** A single Schwartz sequence converges in `L²` to `f ∈ H^{1,2}` and,\nsimultaneously for every direction `m`, has directional-derivative sequence converging in `L²`\nto the weak derivative `∂_m f` — the multi-directional strengthening of `schwartz_h1_gradConv`\n(see the section note above for the construction). ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
@@ -12410,7 +12410,7 @@
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain",
    "LerayHopf.viscousFormSq"]},
- {"startLine": 1148,
+ {"startLine": 1180,
   "signature":
   "∀ (F : LerayHopf.Torus3NSForms) (ν : ℝ),\n  0 < ν →\n    ∀ (T : ℝ),\n      0 < T →\n        ∀ (u₀ : ↥LerayHopf.L2Sigma) (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData F ν u₀ n) (κ : ℕ → ℕ),\n          StrictMono κ →\n            ∀ (alPkg : LerayHopf.AubinLionsPackage F ν T u₀ galSeq κ),\n              (∀ᵐ (t : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T), LerayHopf.memH1VF ↑(alPkg.u t)) ∧\n                  IntervalIntegrable (fun s => LerayHopf.viscousFormSq ν ↑(alPkg.u s)) MeasureTheory.volume 0 T →\n                ∃ u,\n                  (∀ᵐ (t : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T), u t = alPkg.u t) ∧\n                    LerayHopf.WeakFormNS ν T (LerayHopf.torus3Evolution F) u ∧\n                      (∀ (t : ℝ),\n                          0 ≤ t →\n                            t ≤ T →\n                              1 / 2 * ‖↑(u t)‖ ^ 2 + ∫ (s : ℝ) in 0..t, LerayHopf.viscousFormSq ν ↑(u s) ≤\n                                1 / 2 * ‖↑u₀‖ ^ 2) ∧\n                        Filter.Tendsto (fun t => ↑(u t)) (nhdsWithin 0 (Set.Ici 0)) (nhds ↑u₀) ∧\n                          ((∀ᵐ (t : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T),\n                                LerayHopf.memH1VF ↑(u t)) ∧\n                              IntervalIntegrable (fun s => LerayHopf.viscousFormSq ν ↑(u s)) MeasureTheory.volume 0 T) ∧\n                            ∃ ρ,\n                              StrictMono ρ ∧\n                                ∀ t ∈ Set.Icc 0 T,\n                                  ∀ (z : ↥LerayHopf.L2VF),\n                                    Filter.Tendsto (fun k => inner ℝ (↑((galSeq (κ (alPkg.φ (ρ k)))).u t)) z)\n                                      Filter.atTop (nhds (inner ℝ (↑(u t)) z))",
   "private": false,
@@ -12418,7 +12418,7 @@
   "kind": "theorem",
   "id": "LerayHopf.torus_galerkin_limit_passage_of_energyClass",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 1218,
+  "endLine": 1250,
   "doc":
   "**Torus limit passage — the good-representative existential**, matching the conclusion\nof the project axiom `galerkin_limit_passage` byte-for-byte, PROVED from the trace+energy\npillar, GIVEN the energy-class conjunct (4) for the raw Aubin–Lions limit `alPkg.u`\n(a.e. `memH1VF` + integrable dissipation on `[0, T]`; supplied by the separate\nviscous-limit development).  Conjuncts (0)/(1)/(3) are produced by the weakly-continuous\nrepresentative construction of this file; conjunct (2) transfers from\n`torus_weakFormNS_of_strongConvergence` through the a.e.-equality (the WeakFormNS\nintegrals only see a.e. values); conjunct (4) transfers from `h4` the same way. ",
   "deps":
@@ -12960,14 +12960,14 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.velocitySpan"]},
- {"startLine": 755,
+ {"startLine": 787,
   "signature": "ℝ → ↥LerayHopf.L2VF → ENNReal",
   "private": false,
   "name": "LerayHopf.viscousEnn",
   "kind": "def",
   "id": "LerayHopf.viscousEnn",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 760,
+  "endLine": 792,
   "doc":
   "The **honest ENNReal viscous sum** (no real-tsum junk-`0` collapse off `H¹`):\n`∑'_{(j,k)} ofReal (ν · (2π)² |k|² ‖ûⱼ(k)‖²)` over the product index. ",
   "deps":
@@ -12978,7 +12978,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.mFourierCoeff3"]},
- {"startLine": 790,
+ {"startLine": 822,
   "signature":
   "∀ (ν : ℝ),\n  0 ≤ ν →\n    ∀ (n : ℕ) (u : ↥LerayHopf.L2VF),\n      (LerayHopf.velocityProjection_n n) u = u → LerayHopf.viscousEnn ν u = ENNReal.ofReal (LerayHopf.viscousFormSq ν u)",
   "private": false,
@@ -12986,7 +12986,7 @@
   "kind": "theorem",
   "id": "LerayHopf.viscousEnn_eq_ofReal_of_bandlimited",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 834,
+  "endLine": 866,
   "doc":
   "For a band-limited field the honest ENNReal sum EQUALS `ofReal` of the real viscous\nform: both collapse to the same finite `fourierBox` sum. ",
   "deps":
@@ -12997,7 +12997,7 @@
    "LerayHopf.velocityProjection_n",
    "LerayHopf.viscousEnn",
    "LerayHopf.viscousFormSq"]},
- {"startLine": 836,
+ {"startLine": 868,
   "signature":
   "∀ (ν : ℝ) (v : ↥LerayHopf.L2VF) (vk : ℕ → ↥LerayHopf.L2VF),\n  Filter.Tendsto vk Filter.atTop (nhds v) →\n    LerayHopf.viscousEnn ν v ≤ Filter.liminf (fun k => LerayHopf.viscousEnn ν (vk k)) Filter.atTop",
   "private": false,
@@ -13005,7 +13005,7 @@
   "kind": "theorem",
   "id": "LerayHopf.viscousEnn_lsc",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 872,
+  "endLine": 904,
   "doc":
   "**Spatial lower semicontinuity of the honest viscous sum** under strong `L2VF`\nconvergence: per-coefficient continuity + finite-subsum exhaustion (`tsum = ⨆ Finset`). ",
   "deps":
@@ -13262,7 +13262,7 @@
    "LerayHopf.R3NSForms",
    "LerayHopf.Time",
    "LerayHopf.stokesTestPairing_R3"]},
- {"startLine": 1226,
+ {"startLine": 1235,
   "signature":
   "∀ (𝔊 : LerayHopf.R3GalerkinScheme) (F : LerayHopf.R3NSForms 𝔊) (ν : ℝ),\n  0 < ν →\n    ∀ (T : ℝ),\n      0 < T →\n        ∀ (u₀ : ↥LerayHopf.L2Sigma_R3) (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData_R3 𝔊 F ν u₀ n) (κ : ℕ → ℕ),\n          StrictMono κ →\n            ∀ (alPkg : LerayHopf.AubinLionsPackage_R3 𝔊 F ν T u₀ galSeq κ),\n              LerayHopf.R3TestApproxH1 𝔊 → LerayHopf.WeakFormNS ν T (LerayHopf.r3Evolution 𝔊 F) alPkg.u",
   "private": false,
@@ -13270,7 +13270,7 @@
   "kind": "theorem",
   "id": "LerayHopf.weakFormNS_limit_passage",
   "file": "LerayHopf/R3/AubinLionsLimitPassage.lean",
-  "endLine": 1408,
+  "endLine": 1417,
   "doc":
   "**WeakFormNS limit passage (conjunct 2 of `galerkin_limit_passage_R3`).**\n\nThe Aubin–Lions limit curve `alPkg.u` satisfies the distributional Navier–Stokes weak equation\n`WeakFormNS ν T (r3Evolution 𝔊 F) alPkg.u`.  This is exactly the second conjunct of the\n`galerkin_limit_passage_R3` axiom (taking the good representative `u := alPkg.u`), and the\n`weak_eq_limit` field of `GalerkinCompactnessPackageFull_R3`.\n\nThe W2 test-extension proof (issue #4 PR-4) threads `htest : R3TestApproxH1 𝔊` to approximate\nthe arbitrary Schwartz test by Galerkin tests in the `L² + √V₁` graph seminorm, then squeezes\nthe difference of the weak-form functionals via `bForm_limit_convection_bound` (nonlinear),\n`stokesTestPairing_abs_le` (viscous), and `abs_real_inner_le_norm` (kinetic). ",
   "deps":
@@ -15472,6 +15472,19 @@
    "LerayHopf.Time",
    "LerayHopf.r3Domain",
    "LerayHopf.stokesTestPairing_R3"]},
+ {"startLine": 1064,
+  "signature":
+  "∀ {α : Type u_1} [inst : MeasurableSpace α] {μ : MeasureTheory.Measure α} {f g h : α → ℝ},\n  MeasureTheory.Integrable f μ →\n    MeasureTheory.Integrable g μ →\n      MeasureTheory.Integrable h μ →\n        ∫ (t : α), f t + g t + h t ∂μ = ∫ (t : α), f t ∂μ + ∫ (t : α), g t ∂μ + ∫ (t : α), h t ∂μ",
+  "private": true,
+  "name": "LerayHopf.integral_add₃",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.AubinLionsLimitPassage.0.LerayHopf.integral_add₃",
+  "file": "LerayHopf/R3/AubinLionsLimitPassage.lean",
+  "endLine": 1078,
+  "doc":
+  "**Textbook step (splitting a three-term integral).**  For integrable `f`, `g`, `h`,\n\n  `∫ (f + g + h) = ∫ f + ∫ g + ∫ h`.\n\nMathlib's `integral_add` is binary, so a three-way split otherwise takes two chained rewrites\nwhose statements must each repeat the full integrand. Stated once here, it collapses that pair\ninto a single application. In `weakFormNS_limit_diff_bound` the three terms are the kinetic,\nviscous and convective pieces of the weak-form difference. ",
+  "deps": []},
  {"startLine": 421,
   "signature":
   "∀ (T : ℝ), 0 ≤ T → ∀ (g : ℝ → ℝ), ∫ (t : ℝ) in 0..T, g t = ∫ (t : ℝ), g t ∂LerayHopf.restrictAvgMeasure✝ T",
@@ -15700,7 +15713,7 @@
    "LerayHopf.stokesTestPairing_R3",
    "LerayHopf.viscousFormSq_R3",
    "_private.LerayHopf.R3.AubinLionsLimitPassage.0.LerayHopf.restrictAvgMeasure"]},
- {"startLine": 1064,
+ {"startLine": 1080,
   "signature":
   "∀ (𝔊 : LerayHopf.R3GalerkinScheme) (F : LerayHopf.R3NSForms 𝔊) (ν : ℝ),\n  0 < ν →\n    ∀ (T : ℝ) (u₀ : ↥LerayHopf.L2Sigma_R3) (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData_R3 𝔊 F ν u₀ n)\n      (κ : ℕ → ℕ),\n      StrictMono κ →\n        ∀ (alPkg : LerayHopf.AubinLionsPackage_R3 𝔊 F ν T u₀ galSeq κ) (ψ : ℝ → ℝ) (M Mψ Mψ' : ℝ),\n          0 ≤ Mψ →\n            0 ≤ Mψ' →\n              (∀ t ∈ Set.Icc 0 T, ‖ψ t‖ ≤ Mψ) →\n                (∀ t ∈ Set.Icc 0 T, ‖deriv ψ t‖ ≤ Mψ') →\n                  (∀ᵐ (t : LerayHopf.Time) ∂LerayHopf.restrictAvgMeasure✝ T, ‖↑(alPkg.u t)‖ ≤ M) →\n                    (∀ᵐ (t : LerayHopf.Time) ∂LerayHopf.restrictAvgMeasure✝ T, LerayHopf.memH1VF_R3 ↑(alPkg.u t)) →\n                      (∀ᵐ (t : ℝ) ∂LerayHopf.restrictAvgMeasure✝ T, t ∈ Set.Icc 0 T) →\n                        ((LerayHopf.restrictAvgMeasure✝ T) Set.univ).toReal = T →\n                          MeasureTheory.Integrable (fun t => √(LerayHopf.viscousFormSq_R3 1 ↑(alPkg.u t)))\n                              (LerayHopf.restrictAvgMeasure✝ T) →\n                            ∫ (t : ℝ), √(LerayHopf.viscousFormSq_R3 1 ↑(alPkg.u t)) ∂LerayHopf.restrictAvgMeasure✝ T ≤\n                                T + ν⁻¹ * (1 / 2 * M ^ 2) →\n                              ∀ (Kb : ℝ),\n                                (∀ (z : ↥LerayHopf.L2Sigma_R3),\n                                    LerayHopf.IsSchwartzDivFree_R3 z →\n                                      MeasureTheory.Integrable (fun t => F.b (alPkg.u t) (alPkg.u t) z)\n                                          (LerayHopf.restrictAvgMeasure✝ T) ∧\n                                        ∫ (t : ℝ), ‖F.b (alPkg.u t) (alPkg.u t) z‖ ∂LerayHopf.restrictAvgMeasure✝ T ≤\n                                          Kb * √(LerayHopf.viscousFormSq_R3 1 ↑z)) →\n                                  (∀ (y : ↥LerayHopf.L2Sigma_R3),\n                                      LerayHopf.IsSchwartzDivFree_R3 y →\n                                        MeasureTheory.Integrable\n                                          (fun t =>\n                                            -inner ℝ ↑(alPkg.u t) ↑y * deriv ψ t +\n                                              ψ t *\n                                                (ν * LerayHopf.stokesTestPairing_R3 ↑(alPkg.u t) ↑y +\n                                                  F.b (alPkg.u t) (alPkg.u t) y))\n                                          (LerayHopf.restrictAvgMeasure✝ T)) →\n                                    ∀ (z : ↥LerayHopf.L2Sigma_R3),\n                                      LerayHopf.IsSchwartzDivFree_R3 z →\n                                        |∫ (t : ℝ),\n                                              -inner ℝ ↑(alPkg.u t) ↑z * deriv ψ t +\n                                                ψ t *\n                                                  (ν * LerayHopf.stokesTestPairing_R3 ↑(alPkg.u t) ↑z +\n                                                    F.b (alPkg.u t) (alPkg.u t) z) ∂LerayHopf.restrictAvgMeasure✝ T| ≤\n                                          M * Mψ' * T * ‖↑z‖ +\n                                            (Mψ * ν * (T + ν⁻¹ * (1 / 2 * M ^ 2)) + Mψ * Kb) *\n                                              √(LerayHopf.viscousFormSq_R3 1 ↑z)",
   "private": true,
@@ -15709,7 +15722,7 @@
   "id":
   "_private.LerayHopf.R3.AubinLionsLimitPassage.0.LerayHopf.weakFormNS_limit_diff_bound",
   "file": "LerayHopf/R3/AubinLionsLimitPassage.lean",
-  "endLine": 1221,
+  "endLine": 1230,
   "doc":
   "**The `Φ`-difference bound `|Φ(z)| ≤ A‖z‖ + B√V₁(z)` (W2 step 2).** For any Schwartz\ndivergence-free test `z`, the weak-form functional `Φ(z) = ∫₀ᵀ G z` is controlled by\n`A := M·Mψ'·T` on the kinetic slot (`abs_real_inner_le_norm`) and `B := Mψ·ν·(T+ν⁻¹·½M²) + Mψ·Kb`\non the viscous+convection slot (`stokesTestPairing_abs_le` + `hKb`), via the pointwise a.e. norm\nbound on `G z t` integrated against the dominating function. This is the difference-bound step\nconsumed by the vanishing-squeeze argument (`hRHS0`/`hmain`) in `weakFormNS_limit_passage`. ",
   "deps":
@@ -16505,21 +16518,34 @@
    "LerayHopf.R3.ConvectionExtension.schwartzSpan",
    "_private.LerayHopf.R3.ConvectionExtension.0.LerayHopf.R3.ConvectionExtension.spanToH1",
    "_private.LerayHopf.R3.ConvectionExtension.0.LerayHopf.R3.ConvectionExtension.vfOf"]},
- {"startLine": 537,
+ {"startLine": 549,
   "signature": "↥LerayHopf.L2VF_R3 → Prop",
   "private": true,
   "name": "LerayHopf.IsSchwartzComp",
   "kind": "def",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.IsSchwartzComp",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 553,
+  "endLine": 565,
   "doc":
   "**P1 (main deliverable).** Given `CurlSchwartzDense`, every element of `L2Sigma_R3` is\nan L²-limit of `IsSchwartzDivFree_R3` fields.\n\nProof route:\n1. `CurlSchwartzDense` says `L2Sigma_R3 ≤ closure (span (range curlSchwartzL2))` (in `L2VF_R3`).\n2. Any `u ∈ L2Sigma_R3` lies in the `topologicalClosure` of `span (range curlSchwartzL2)`.\n3. By `mem_closure_iff_seq_limit`, there exist finite linear combinations of\n   `curlSchwartzL2` fields converging to `u` in `L2VF_R3`.\n4. Each such combination, lifted to `L2Sigma_R3` via the submodule's closedness, is\n   `IsSchwartzDivFree_R3` by H3 + H4.\n5. Convergence in `L2Sigma_R3` (subspace topology = subtype topology) follows from\n   convergence in `L2VF_R3`. ",
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2VF_projComponent_R3"]},
- {"startLine": 697,
+ {"startLine": 315,
+  "signature":
+  "∀ {f a b : ℕ → ℝ} {L A B C : ℝ},\n  Filter.Tendsto f Filter.atTop (nhds L) →\n    Filter.Tendsto a Filter.atTop (nhds A) →\n      Filter.Tendsto b Filter.atTop (nhds B) → (∀ (n : ℕ), |f n| ≤ C * a n * b n) → |L| ≤ C * A * B",
+  "private": true,
+  "name": "LerayHopf.abs_le_mul_of_tendsto",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.abs_le_mul_of_tendsto",
+  "file": "LerayHopf/R3/ConvectionForm.lean",
+  "endLine": 331,
+  "doc":
+  "**Textbook step (a product bound passes to the limit).**  If `f n → L`, `a n → A`,\n`b n → B`, and `|f n| ≤ C * a n * b n` for every `n`, then `|L| ≤ C * A * B`.\n\nThis is the density-extension move stated without any convection content: a bound known only on\na dense subclass is transported to the whole space by taking limits along approximating\nsequences. In `R3NSForms_of_gap` the sequences are Schwartz approximants supplied by\n`ConvectionGap.schwartz_dense`, `f` is the trilinear form at a fixed test vector (continuous by\n`b_cont_fixedTest`), and `a`, `b` are the two argument norms. ",
+  "deps": []},
+ {"startLine": 709,
   "signature":
   "(ψw : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ) →\n  (∀ (a i : Fin 3),\n      MeasureTheory.MemLp\n        (fun x => ((LineDeriv.lineDerivOpCLM ℝ (SchwartzMap LerayHopf.Domain3 ℝ) (EuclideanSpace.single a 1)) (ψw i)) x)\n        ⊤ MeasureTheory.volume) →\n    ↥LerayHopf.L2VF_R3 → ↥LerayHopf.L2VF_R3 → ℝ",
   "private": true,
@@ -16527,7 +16553,7 @@
   "kind": "def",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.antisymmIntegral",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 708,
+  "endLine": 720,
   "doc":
   "The fixed-`w` antisymmetric integral form `Ψ_w(f,g) = -∑_{i,a} ∫ fₐ·gᵢ·(∂ₐψwᵢ)`, written via\n`L²` inner products so its joint continuity in `(f,g)` is immediate. ",
   "deps":
@@ -16535,7 +16561,7 @@
    "LerayHopf.L2VF_R3",
    "LerayHopf.L2VF_projComponent_R3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 710,
+ {"startLine": 722,
   "signature":
   "∀ (ψw : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ)\n  (hbdd :\n    ∀ (a i : Fin 3),\n      MeasureTheory.MemLp\n        (fun x => ((LineDeriv.lineDerivOpCLM ℝ (SchwartzMap LerayHopf.Domain3 ℝ) (EuclideanSpace.single a 1)) (ψw i)) x)\n        ⊤ MeasureTheory.volume),\n  Continuous fun p => LerayHopf.antisymmIntegral✝ ψw hbdd p.1 p.2",
   "private": true,
@@ -16544,14 +16570,14 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.antisymmIntegral_continuous",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 725,
+  "endLine": 737,
   "doc":
   "`antisymmIntegral` is jointly `L²`-continuous in `(f, g)`: a finite sum of inner products\n`⟪comp_a f, mulBddR (∂ψw) (comp_i g)⟫`, each continuous (component CLMs ∘ `mulBddR` continuous ∘\n`inner` continuous). ",
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2VF_R3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.antisymmIntegral"]},
- {"startLine": 920,
+ {"startLine": 932,
   "signature":
   "∀ (j : Fin 3) (v : EuclideanSpace ℝ (Fin 3)), |(EuclideanSpace.proj j) v| ≤ ‖v‖",
   "private": true,
@@ -16560,11 +16586,11 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.euclidean_proj_le_norm_CF",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 931,
+  "endLine": 943,
   "doc":
   "j-th coordinate of a vector in `EuclideanSpace ℝ (Fin 3)` is bounded by the norm.\nCauchy–Schwarz: `|proj_j v| = |⟪single j 1, v⟫| ≤ ‖single j 1‖ · ‖v‖ = ‖v‖`. ",
   "deps": []},
- {"startLine": 564,
+ {"startLine": 576,
   "signature":
   "∀ {x y : ↥LerayHopf.L2VF_R3},\n  LerayHopf.IsSchwartzComp✝ x → LerayHopf.IsSchwartzComp✝ y → LerayHopf.IsSchwartzComp✝ (x + y)",
   "private": true,
@@ -16572,13 +16598,13 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.isSchwartzComp_add",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 572,
+  "endLine": 584,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2VF_R3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.IsSchwartzComp"]},
- {"startLine": 555,
+ {"startLine": 567,
   "signature":
   "∀ (ψ : Fin 3 → SchwartzMap LerayHopf.Domain3 ℝ), LerayHopf.IsSchwartzComp✝ (LerayHopf.curlSchwartzL2 ψ)",
   "private": true,
@@ -16587,13 +16613,13 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.isSchwartzComp_curlSchwartzL2",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 557,
+  "endLine": 569,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.curlSchwartzL2",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.IsSchwartzComp"]},
- {"startLine": 584,
+ {"startLine": 596,
   "signature":
   "∀ {x : ↥LerayHopf.L2VF_R3}, x ∈ Submodule.span ℝ (Set.range LerayHopf.curlSchwartzL2) → LerayHopf.IsSchwartzComp✝ x",
   "private": true,
@@ -16602,14 +16628,14 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.isSchwartzComp_of_mem_span",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 593,
+  "endLine": 605,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2VF_R3",
    "LerayHopf.curlSchwartzL2",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.IsSchwartzComp"]},
- {"startLine": 574,
+ {"startLine": 586,
   "signature":
   "∀ (c : ℝ) {x : ↥LerayHopf.L2VF_R3}, LerayHopf.IsSchwartzComp✝ x → LerayHopf.IsSchwartzComp✝ (c • x)",
   "private": true,
@@ -16617,26 +16643,26 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.isSchwartzComp_smul",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 581,
+  "endLine": 593,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2VF_R3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.IsSchwartzComp"]},
- {"startLine": 559,
+ {"startLine": 571,
   "signature": "LerayHopf.IsSchwartzComp✝ 0",
   "private": true,
   "name": "LerayHopf.isSchwartzComp_zero",
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.isSchwartzComp_zero",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 562,
+  "endLine": 574,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2VF_R3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.IsSchwartzComp"]},
- {"startLine": 727,
+ {"startLine": 739,
   "signature":
   "∀ (ψ : SchwartzMap LerayHopf.Domain3 ℝ) (a : Fin 3),\n  MeasureTheory.MemLp\n    (fun x => ((LineDeriv.lineDerivOpCLM ℝ (SchwartzMap LerayHopf.Domain3 ℝ) (EuclideanSpace.single a 1)) ψ) x) ⊤\n    MeasureTheory.volume",
   "private": true,
@@ -16645,11 +16671,11 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.lineDerivOp_schwartz_memLp_top",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 736,
+  "endLine": 748,
   "doc":
   "A bounded multiplier `∂ₐψwᵢ` is `MemLp ⊤` (it is a Schwartz function, hence `L^∞`). ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 647,
+ {"startLine": 659,
   "signature":
   "(h : LerayHopf.Domain3 → ℝ) →\n  MeasureTheory.MemLp h ⊤ MeasureTheory.volume →\n    ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume) → ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume)",
   "private": true,
@@ -16657,11 +16683,11 @@
   "kind": "def",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 652,
+  "endLine": 664,
   "doc":
   "Multiplication of a real `L²` element by an essentially bounded real function, landing in\n`L²` (local builder; only its `coeFn` and an `L²`-Lipschitz bound are needed). ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 654,
+ {"startLine": 666,
   "signature":
   "∀ (h : LerayHopf.Domain3 → ℝ) (hh : MeasureTheory.MemLp h ⊤ MeasureTheory.volume)\n  (a : ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume)),\n  ↑↑(LerayHopf.mulBddR✝ h hh a) =ᵐ[MeasureTheory.volume] fun x => h x * ↑↑a x",
   "private": true,
@@ -16669,12 +16695,12 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR_coeFn",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 659,
+  "endLine": 671,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 682,
+ {"startLine": 694,
   "signature":
   "∀ (h : LerayHopf.Domain3 → ℝ) (hh : MeasureTheory.MemLp h ⊤ MeasureTheory.volume),\n  Continuous fun a => LerayHopf.mulBddR✝ h hh a",
   "private": true,
@@ -16682,12 +16708,12 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR_continuous",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 695,
+  "endLine": 707,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 958,
+ {"startLine": 993,
   "signature":
   "∀ (φs : SchwartzMap LerayHopf.Domain3 ℝ) (hφ : MeasureTheory.MemLp ⇑φs ⊤ MeasureTheory.volume) (j : Fin 3)\n  (fn : ℕ → ↥LerayHopf.L2VF_R3) (M : ℝ),\n  0 ≤ M →\n    (∀ (n : ℕ), ‖fn n‖ ≤ M) →\n      (∀ (k : ℕ), Filter.Tendsto (fun n => LerayHopf.restrictToBall (↑k) (fn n)) Filter.atTop (nhds 0)) →\n        Filter.Tendsto (fun n => ‖LerayHopf.mulBddR✝ (⇑φs) hφ ((LerayHopf.L2VF_projComponent_R3 j) (fn n))‖)\n          Filter.atTop (nhds 0)",
   "private": true,
@@ -16696,7 +16722,7 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR_projComp_norm_tendsto_CF",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 1128,
+  "endLine": 1150,
   "doc":
   "**Key convergence lemma.** Schwartz φ, component `j`, sequence `fn : ℕ → L2VF_R3`\nwith uniform bound `‖fn n‖ ≤ M` and per-ball convergence `restrictToBall k (fn n) → 0`\nfor every `k : ℕ`. Then `‖mulBddR (⇑φs) hφ (L2VF_projComponent_R3 j (fn n))‖ → 0`.\n\nProof sketch: split the norm-sq into ball and tail integrals, bound each by ε/2. ",
   "deps":
@@ -16706,7 +16732,7 @@
    "LerayHopf.L2ballR3",
    "LerayHopf.restrictToBall",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 1130,
+ {"startLine": 1152,
   "signature":
   "∀ (h : LerayHopf.Domain3 → ℝ) (hh : MeasureTheory.MemLp h ⊤ MeasureTheory.volume)\n  (f g : ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume)),\n  inner ℝ f (LerayHopf.mulBddR✝ h hh g) = inner ℝ (LerayHopf.mulBddR✝ h hh f) g",
   "private": true,
@@ -16714,13 +16740,13 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR_self_adjoint",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 1144,
+  "endLine": 1166,
   "doc":
   "Self-adjointness of real pointwise multiplication: `⟨f, h·g⟩ = ⟨h·f, g⟩`\nin `Lp ℝ 2 volume`.\n\nBoth sides equal `∫ x, (↑f x) * h x * (↑g x) ∂μ` via `MeasureTheory.L2.inner_def`,\n`mulBddR_coeFn`, and the identity `inner ℝ a b = a * b` for real scalars. ",
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 674,
+ {"startLine": 686,
   "signature":
   "∀ (h : LerayHopf.Domain3 → ℝ) (hh : MeasureTheory.MemLp h ⊤ MeasureTheory.volume)\n  (a a' : ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume)),\n  LerayHopf.mulBddR✝ h hh a' - LerayHopf.mulBddR✝ h hh a = LerayHopf.mulBddR✝ h hh (a' - a)",
   "private": true,
@@ -16728,12 +16754,12 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR_sub",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 680,
+  "endLine": 692,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 933,
+ {"startLine": 945,
   "signature":
   "∀ (φ : LerayHopf.Domain3 → ℝ) (hφ : MeasureTheory.MemLp φ ⊤ MeasureTheory.volume)\n  (g : ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume)),\n  ‖LerayHopf.mulBddR✝ φ hφ g‖ ^ 2 = ∫ (x : LerayHopf.Domain3), (φ x * ↑↑g x) ^ 2",
   "private": true,
@@ -16741,13 +16767,13 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.normSq_mulBddR_CF",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 943,
+  "endLine": 955,
   "doc":
   "`‖mulBddR φ hφ g‖² = ∫ (φ x · g x)²`. Via `real_inner_self_eq_norm_sq`,\n`L2.inner_def`, and `mulBddR_coeFn`. ",
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 661,
+ {"startLine": 673,
   "signature":
   "∀ (h : LerayHopf.Domain3 → ℝ) (hh : MeasureTheory.MemLp h ⊤ MeasureTheory.volume)\n  (a : ↥(MeasureTheory.Lp ℝ 2 MeasureTheory.volume)),\n  ‖LerayHopf.mulBddR✝ h hh a‖ ≤ (MeasureTheory.eLpNorm h ⊤ MeasureTheory.volume).toReal * ‖a‖",
   "private": true,
@@ -16755,12 +16781,12 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.norm_mulBddR_le",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 672,
+  "endLine": 684,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.mulBddR"]},
- {"startLine": 908,
+ {"startLine": 920,
   "signature":
   "∀ (φ : SchwartzMap LerayHopf.Domain3 ℝ) {ε : ℝ}, 0 < ε → ∃ R₀, 0 < R₀ ∧ ∀ (x : LerayHopf.Domain3), R₀ < ‖x‖ → ‖φ x‖ < ε",
   "private": true,
@@ -16769,11 +16795,11 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.schwartz_ball_tail_decay",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 918,
+  "endLine": 930,
   "doc":
   "Schwartz tail decay: for any Schwartz map φ on Domain3 and ε > 0, there is R₀ > 0\nwith |φ(x)| < ε whenever ‖x‖ > R₀. Follows from `SchwartzMap.tendsto_cocompact`. ",
   "deps": ["LerayHopf.Domain3"]},
- {"startLine": 596,
+ {"startLine": 608,
   "signature":
   "Submodule.span ℝ (Set.range LerayHopf.curlSchwartzL2) ≤ LerayHopf.L2Sigma_R3",
   "private": true,
@@ -16782,13 +16808,26 @@
   "id":
   "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.span_curlSchwartzL2_le_L2Sigma",
   "file": "LerayHopf/R3/ConvectionForm.lean",
-  "endLine": 600,
+  "endLine": 612,
   "doc": null,
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2Sigma_R3",
    "LerayHopf.L2VF_R3",
    "LerayHopf.curlSchwartzL2"]},
+ {"startLine": 965,
+  "signature":
+  "∀ (j : Fin 3) {Φ a : ℝ},\n  0 ≤ Φ → ‖a‖ ≤ Φ → ∀ (v : EuclideanSpace ℝ (Fin 3)), (a * (EuclideanSpace.proj j) v) ^ 2 ≤ Φ ^ 2 * ‖v‖ ^ 2",
+  "private": true,
+  "name": "LerayHopf.sq_mul_euclidean_proj_le",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.ConvectionForm.0.LerayHopf.sq_mul_euclidean_proj_le",
+  "file": "LerayHopf/R3/ConvectionForm.lean",
+  "endLine": 986,
+  "doc":
+  "**Textbook step (bounded multiplier times a coordinate).**  If `‖a‖ ≤ Φ` then, for every\nvector `v`, the squared product of `a` with the `j`-th coordinate of `v` is bounded by\n`Φ² ‖v‖²`:\n\n  `(a · proj j v)² ≤ Φ² ‖v‖²`.\n\nTwo elementary facts combined: `|a| ≤ Φ` squares to `a² ≤ Φ²`, and a single coordinate never\nexceeds the norm, `|proj j v| ≤ ‖v‖` (`euclidean_proj_le_norm_CF`). Applied pointwise a.e.\nunder the ball integral in `mulBddR_projComp_norm_tendsto_CF`, where `a` is the bounded cutoff\n`φs x` and `v` is the field value. ",
+  "deps": []},
  {"startLine": 476,
   "signature":
   "∀ u ∈ LerayHopf.L2Sigma_R3,\n  ∀ (h : SchwartzMap LerayHopf.Domain3 ℂ),\n    (∀ (ξ : LerayHopf.Domain3), h (-ξ) = -(starRingEnd ℂ) (h ξ)) →\n      ∫ (ξ : LerayHopf.Domain3), h ξ * LerayHopf.transverseDefect✝ u ξ = 0",
@@ -19194,7 +19233,7 @@
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.cutoff"]},
- {"startLine": 1008,
+ {"startLine": 1031,
   "signature":
   "∀ (m ξ : LerayHopf.Domain3), |LerayHopf.mLD✝ m ξ| ≤ 2 * Real.pi * ‖m‖",
   "private": true,
@@ -19202,7 +19241,7 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.abs_mLD_le",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1034,
+  "endLine": 1057,
   "doc": "The line-derivative multiplier is bounded by `2π‖m‖`. ",
   "deps":
   ["LerayHopf.Domain3",
@@ -19414,6 +19453,19 @@
   "endLine": 511,
   "doc": "`(eLpNorm v 2)² = ofReal (∫ ‖v x‖²)` for `MemLp v 2`. ",
   "deps": ["LerayHopf.Domain3"]},
+ {"startLine": 701,
+  "signature":
+  "∀ (f' : ↥LerayHopf.L2C_R3), ∃ η, Filter.Tendsto (fun n => (η n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f')",
+  "private": true,
+  "name": "LerayHopf.exists_schwartz_seq_toLp_tendsto",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.exists_schwartz_seq_toLp_tendsto",
+  "file": "LerayHopf/R3/SobolevEmbedding.lean",
+  "endLine": 720,
+  "doc":
+  "**Textbook step (Schwartz density in `L²`, sequence form).**  Every `f' : L2C_R3` is the\n`L²`-limit of a sequence of Schwartz functions.\n\nThis is `SchwartzMap.denseRange_toLpCLM` repackaged from a `DenseRange` statement into the\nsequence form the approximation arguments actually consume, via `mem_closure_iff_seq_limit`\nand `choose`. No Sobolev or Fourier content enters. ",
+  "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
  {"startLine": 248,
   "signature":
   "∀ (R : ℝ) (x : LerayHopf.Domain3),\n  fderiv ℝ (LerayHopf.cutoff✝ R) x = fderiv ℝ (↑LerayHopf.cutoffBump✝) ((1 / R) • x) ∘SL LerayHopf.scaleCLM✝ R",
@@ -19446,7 +19498,7 @@
    "LerayHopf.L2C_R3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wInv",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wPosC"]},
- {"startLine": 1036,
+ {"startLine": 1059,
   "signature":
   "∀ (m : LerayHopf.Domain3), Function.HasTemperateGrowth (LerayHopf.mLD✝ m)",
   "private": true,
@@ -19455,7 +19507,7 @@
   "id":
   "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.hasTemperateGrowth_mLD",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1047,
+  "endLine": 1070,
   "doc":
   "The line-derivative multiplier has temperate growth (product of the polynomial-growth\ninner-product factor and the temperate `wInv`). ",
   "deps":
@@ -19500,6 +19552,19 @@
   "doc":
   "`(1 + ‖ξ‖²)·‖g ξ‖²` is integrable for a Schwartz `g` (Schwartz decay dominates the quadratic\nweight): dominated by `C·((1+‖ξ‖²)·‖g ξ‖)` where `C := ‖g‖_∞`. ",
   "deps": ["LerayHopf.Domain3"]},
+ {"startLine": 1090,
+  "signature":
+  "∀ (m : LerayHopf.Domain3) (φ : ℕ → SchwartzMap LerayHopf.Domain3 ℂ) (f g : ↥LerayHopf.L2C_R3),\n  Filter.Tendsto (fun n => (φ n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f) →\n    Filter.Tendsto (fun n => (LineDeriv.lineDerivOp m (φ n)).toLp 2 MeasureTheory.volume) Filter.atTop (nhds g) →\n      LineDeriv.lineDerivOp m (MeasureTheory.Lp.toTemperedDistribution f) = MeasureTheory.Lp.toTemperedDistribution g",
+  "private": true,
+  "name": "LerayHopf.lineDeriv_toTemperedDistribution_eq_of_tendsto",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.lineDeriv_toTemperedDistribution_eq_of_tendsto",
+  "file": "LerayHopf/R3/SobolevEmbedding.lean",
+  "endLine": 1146,
+  "doc":
+  "**Textbook step (distributional derivative of an `L²` limit).**  If Schwartz functions\n`φ n` converge to `f` in `L²` and their `m`-th line derivatives `∂_{m} (φ n)` converge to `g`\nin `L²`, then the distributional derivative of `f` is `g`:\n`∂_{m} (f : 𝓢') = (g : 𝓢')`.\n\nThe argument is uniqueness of limits in the Hausdorff space `𝓢'`: both\n`n ↦ ∂_{m} ((φ n).toLp : 𝓢')` and `n ↦ ((∂_{m} (φ n)).toLp : 𝓢')` are the SAME sequence — the\nSchwartz `lineDerivOp` commutes with `toTemperedDistributionCLM` — while the first converges to\n`∂_{m} (f : 𝓢')` and the second to `(g : 𝓢')`, both by continuity of the embedding `L² ↪ 𝓢'`.\n\nOnly the two `L²` convergences are assumed; no Sobolev membership and no Fourier machinery\nenter, which is what lets the gradient-convergence step apply it per direction `m`. ",
+  "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
  {"startLine": 630,
   "signature":
   "∀ (g : ↥LerayHopf.L2C_R3), MeasureTheory.LocallyIntegrable (fun ξ => LerayHopf.wPosC✝ ξ • ↑↑g ξ) MeasureTheory.volume",
@@ -19515,20 +19580,20 @@
   ["LerayHopf.Domain3",
    "LerayHopf.L2C_R3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wPosC"]},
- {"startLine": 1002,
+ {"startLine": 1025,
   "signature": "LerayHopf.Domain3 → LerayHopf.Domain3 → ℝ",
   "private": true,
   "name": "LerayHopf.mLD",
   "kind": "def",
   "id": "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.mLD",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1006,
+  "endLine": 1029,
   "doc":
   "**Brick-1 helper.** The bounded Fourier multiplier `mLD m ξ := 2π·⟨ξ,m⟩·wInv ξ` for the\nweak directional derivative in direction `m`. Its modulus is bounded by `2π‖m‖`\n(`|2π⟨ξ,m⟩|·wInv ξ ≤ 2π‖m‖` since `|⟨ξ,m⟩| ≤ ‖ξ‖‖m‖` and `‖ξ‖·wInv ξ ≤ 1`). ",
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wInv"]},
- {"startLine": 1049,
+ {"startLine": 1072,
   "signature":
   "∀ (m : LerayHopf.Domain3), MeasureTheory.MemLp (fun ξ => ↑(LerayHopf.mLD✝ m ξ)) ⊤ MeasureTheory.volume",
   "private": true,
@@ -19537,7 +19602,7 @@
   "id":
   "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.memLp_top_ofReal_mLD",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1056,
+  "endLine": 1079,
   "doc": "The complexified line-derivative multiplier is bounded in `L^∞`. ",
   "deps":
   ["LerayHopf.Domain3",
@@ -19556,7 +19621,7 @@
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wInv"]},
- {"startLine": 909,
+ {"startLine": 932,
   "signature":
   "∀ (g : ↥LerayHopf.L2C_R3) (φ : SchwartzMap LerayHopf.Domain3 ℂ),\n  g = φ.toLp 2 MeasureTheory.volume → TemperedDistribution.MemSobolev 1 2 (MeasureTheory.Lp.toTemperedDistribution g)",
   "private": true,
@@ -19565,7 +19630,7 @@
   "id":
   "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.memSobolev_of_eq_schwartz_toLp",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 923,
+  "endLine": 946,
   "doc":
   "**A4 helper.** If a complex `L²`-class `g : L2C_R3` is the `toLp` of a Schwartz function\n`φ : 𝓢(Domain3, ℂ)`, then it lies in the Sobolev space `H^{1,2}` as a tempered distribution.\n\nThis is the \"Schwartz ⊂ H¹\" bridge: `((φ.toLp 2 volume) : 𝓢') = (φ : 𝓢')` by\n`Lp.toTemperedDistribution_toLp_eq`, and every Schwartz function is in every Sobolev space by\n`SchwartzMap.memSobolev`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
@@ -19636,7 +19701,7 @@
   "deps":
   ["LerayHopf.Domain3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.scaleCLM"]},
- {"startLine": 1067,
+ {"startLine": 1148,
   "signature":
   "∀ (f : ↥LerayHopf.L2C_R3) (η : ℕ → SchwartzMap LerayHopf.Domain3 ℂ) (f' : ↥LerayHopf.L2C_R3)\n  (φ : ℕ → SchwartzMap LerayHopf.Domain3 ℂ),\n  Filter.Tendsto (fun n => (η n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f') →\n    (∀ (n : ℕ) (ξ : LerayHopf.Domain3), (FourierTransform.fourier (φ n)) ξ = ↑(LerayHopf.wInv✝ ξ) • (η n) ξ) →\n      Filter.Tendsto (fun n => (φ n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f) →\n        ∀ (m : LerayHopf.Domain3),\n          ∃ g,\n            ∃ (_ :\n              LineDeriv.lineDerivOp m (MeasureTheory.Lp.toTemperedDistribution f) =\n                MeasureTheory.Lp.toTemperedDistribution g),\n              Filter.Tendsto (fun n => (LineDeriv.lineDerivOp m (φ n)).toLp 2 MeasureTheory.volume) Filter.atTop\n                (nhds g)",
   "private": true,
@@ -19645,14 +19710,14 @@
   "id":
   "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.schwartz_gradConv_of_valueConv",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1178,
+  "endLine": 1222,
   "doc":
   "**Gradient-convergence step (per direction `m`).**  Given the value-convergent Schwartz\nsequence `φ` from the previous step (exposed via `η`/`f'`/the pointwise Fourier formula\n`hFφ_pt`), the `m`-directional derivatives `(∂_m φ n).toLp` converge in L² to a limit `g`\nthat agrees with the weak derivative `∂_m (f : 𝓢')`. ",
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2C_R3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wInv"]},
- {"startLine": 1180,
+ {"startLine": 1224,
   "signature":
   "∀ (f : ↥LerayHopf.L2C_R3),\n  TemperedDistribution.MemSobolev 1 2 (MeasureTheory.Lp.toTemperedDistribution f) →\n    ∃ φ,\n      Filter.Tendsto (fun n => (φ n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f) ∧\n        ∀ (m : LerayHopf.Domain3),\n          ∃ g,\n            ∃ (_ :\n              LineDeriv.lineDerivOp m (MeasureTheory.Lp.toTemperedDistribution f) =\n                MeasureTheory.Lp.toTemperedDistribution g),\n              Filter.Tendsto (fun n => (LineDeriv.lineDerivOp m (φ n)).toLp 2 MeasureTheory.volume) Filter.atTop\n                (nhds g)",
   "private": true,
@@ -19661,11 +19726,11 @@
   "id":
   "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.schwartz_h1_gradConv_aux",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 1194,
+  "endLine": 1238,
   "doc":
   "Assembly: the value-convergence step feeds its witnesses into the gradient-convergence\nstep for every direction `m`. ",
   "deps": ["LerayHopf.Domain3", "LerayHopf.L2C_R3"]},
- {"startLine": 701,
+ {"startLine": 741,
   "signature":
   "∀ (f : ↥LerayHopf.L2C_R3),\n  TemperedDistribution.MemSobolev 1 2 (MeasureTheory.Lp.toTemperedDistribution f) →\n    ∃ η f' φ,\n      Filter.Tendsto (fun n => (η n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f') ∧\n        (∀ (n : ℕ) (ξ : LerayHopf.Domain3), (FourierTransform.fourier (φ n)) ξ = ↑(LerayHopf.wInv✝ ξ) • (η n) ξ) ∧\n          Filter.Tendsto (fun n => (φ n).toLp 2 MeasureTheory.volume) Filter.atTop (nhds f)",
   "private": true,
@@ -19674,13 +19739,26 @@
   "id":
   "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.schwartz_seq_valueConv_of_memSobolev",
   "file": "LerayHopf/R3/SobolevEmbedding.lean",
-  "endLine": 796,
+  "endLine": 819,
   "doc":
   "**Value-convergence step.**  A direction-independent Schwartz sequence `φ n :=\n𝓕⁻ (smulLeftCLM wInv (η n))`, built from a Schwartz approximant `η n → f'` of the Sobolev\nrepresentative `f'` of `f`, converges to `f` itself in L² (verbatim A3 Steps 0–2 + 6). Also\nexposes `η`, `f'`, and the pointwise Fourier formula for `φ` in terms of `η`, since consumers\n(the gradient-convergence step below, and `gns_L6_of_memH1_R3`) need all three — not just the\nabstract `φ n.toLp → f` fact. ",
   "deps":
   ["LerayHopf.Domain3",
    "LerayHopf.L2C_R3",
    "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.wInv"]},
+ {"startLine": 722,
+  "signature":
+  "∀ {E : Type u_1} {F : Type u_2} [inst : NormedAddCommGroup E] [inst_1 : NormedAddCommGroup F] {a : ℕ → E} {x : E}\n  {b : ℕ → F} {y : F},\n  (∀ (n : ℕ), ‖b n - y‖ ≤ ‖a n - x‖) → Filter.Tendsto a Filter.atTop (nhds x) → Filter.Tendsto b Filter.atTop (nhds y)",
+  "private": true,
+  "name": "LerayHopf.tendsto_of_norm_sub_le_of_tendsto",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.R3.SobolevEmbedding.0.LerayHopf.tendsto_of_norm_sub_le_of_tendsto",
+  "file": "LerayHopf/R3/SobolevEmbedding.lean",
+  "endLine": 739,
+  "doc":
+  "**Textbook step (convergence dominated by a convergent sequence).**  If `‖b n - y‖` is\nbounded by `‖a n - x‖` for every `n` and `a n → x`, then `b n → y`.\n\nStated over arbitrary normed additive groups, with the two sequences allowed to live in\n*different* spaces: at the call site `a` is the Schwartz approximation of the Sobolev\nrepresentative `f'` and `b` is its Fourier-inverse image converging to `f`, so no\nSobolev-specific structure is involved — only the squeeze. ",
+  "deps": []},
  {"startLine": 309,
   "signature":
   "∀ (R : ℝ) (φ : SchwartzMap LerayHopf.Domain3 ℂ), ContDiff ℝ 1 fun x => LerayHopf.cutoff✝ R x • φ x",
@@ -22218,7 +22296,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain"]},
- {"startLine": 918,
+ {"startLine": 950,
   "signature":
   "∀ (F : LerayHopf.Torus3NSForms) (ν : ℝ),\n  0 < ν →\n    ∀ (u₀ : ↥LerayHopf.L2Sigma) (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData F ν u₀ n) (κ : ℕ → ℕ),\n      StrictMono κ →\n        ∀ {T : ℝ} (alPkg : LerayHopf.AubinLionsPackage F ν T u₀ galSeq κ) (ρ : ℕ → ℕ)\n          (v : LerayHopf.Time → ↥LerayHopf.L2Sigma) (t : ℝ),\n          0 ≤ t →\n            t ≤ T →\n              (∀ᵐ (s : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T), v s = alPkg.u s) →\n                (∀ᵐ (s : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T),\n                    Filter.Tendsto (fun k => ↑((galSeq (κ (alPkg.φ (ρ k)))).u s)) Filter.atTop (nhds ↑(alPkg.u s))) →\n                  IntervalIntegrable (fun s => LerayHopf.viscousFormSq ν ↑(v s)) MeasureTheory.volume 0 T →\n                    ∫ (s : ℝ) in 0..t, LerayHopf.viscousFormSq ν ↑(v s) ≤\n                      Filter.liminf\n                        (fun k => ∫ (s : ℝ) in 0..t, LerayHopf.viscousFormSq ν ↑((galSeq (κ (alPkg.φ (ρ k)))).u s))\n                        Filter.atTop",
   "private": true,
@@ -22227,7 +22305,7 @@
   "id":
   "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.dissipation_liminf_le_of_aeTendsto",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 1049,
+  "endLine": 1081,
   "doc":
   "**Dissipation step.**  A.e. spatial lower-semicontinuity of the viscous form\n(`viscousEnn_lsc`) plus Fatou's lemma bounds the weak limit's dissipation integral on\n`[0, t]` by the `liminf` of the Galerkin approximants' dissipation integrals. ",
   "deps":
@@ -22245,7 +22323,7 @@
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain",
    "LerayHopf.viscousFormSq"]},
- {"startLine": 1051,
+ {"startLine": 1083,
   "signature":
   "∀ (a b : ℕ → ℝ) (E X Y : ℝ),\n  (∀ (k : ℕ), a k + b k ≤ E) →\n    (∀ (k : ℕ), 0 ≤ a k) →\n      (∀ (k : ℕ), 0 ≤ b k) →\n        (∀ (k : ℕ), a k ≤ E) →\n          (∀ (k : ℕ), b k ≤ E) → X ≤ Filter.liminf a Filter.atTop → Y ≤ Filter.liminf b Filter.atTop → X + Y ≤ E",
   "private": true,
@@ -22254,11 +22332,11 @@
   "id":
   "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.energyBudget_liminf_assembly",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 1092,
+  "endLine": 1124,
   "doc":
   "**Energy-budget assembly step.**  Fully generic real-sequence lemma: liminf\nsuperadditivity (`le_liminf_add`) combined with the per-index energy budget `a k + b k ≤ E`\nturns a `liminf`-bound on each of two terms into a bound on their sum.  Consumes only\n`hab`/`ha0`/`hb0`/`haE`/`hbE` (the per-approximant energy inequality and its consequences)\nand `hkin`/`hdiss` (the two `liminf` bounds from the kinetic and dissipation steps) — no\nGalerkin/Torus-specific data. ",
   "deps": []},
- {"startLine": 1094,
+ {"startLine": 1126,
   "signature":
   "∀ (F : LerayHopf.Torus3NSForms) (ν : ℝ),\n  0 < ν →\n    ∀ (T : ℝ),\n      0 < T →\n        ∀ (u₀ : ↥LerayHopf.L2Sigma) (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData F ν u₀ n) (κ : ℕ → ℕ),\n          StrictMono κ →\n            ∀ (alPkg : LerayHopf.AubinLionsPackage F ν T u₀ galSeq κ) (v : LerayHopf.Time → ↥LerayHopf.L2Sigma)\n              (ρ : ℕ → ℕ),\n              (∀ᵐ (t : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T), v t = alPkg.u t) →\n                (∀ᵐ (t : LerayHopf.Time) ∂MeasureTheory.volume.restrict (Set.Icc 0 T),\n                    Filter.Tendsto (fun k => ↑((galSeq (κ (alPkg.φ (ρ k)))).u t)) Filter.atTop (nhds ↑(alPkg.u t))) →\n                  (∀ t ∈ Set.Icc 0 T,\n                      ∀ (z : ↥LerayHopf.L2VF),\n                        Filter.Tendsto (fun k => inner ℝ (↑((galSeq (κ (alPkg.φ (ρ k)))).u t)) z) Filter.atTop\n                          (nhds (inner ℝ (↑(v t)) z))) →\n                    IntervalIntegrable (fun s => LerayHopf.viscousFormSq ν ↑(v s)) MeasureTheory.volume 0 T →\n                      ∀ (t : ℝ),\n                        0 ≤ t →\n                          t ≤ T →\n                            1 / 2 * ‖↑(v t)‖ ^ 2 + ∫ (s : ℝ) in 0..t, LerayHopf.viscousFormSq ν ↑(v s) ≤\n                              1 / 2 * ‖↑u₀‖ ^ 2",
   "private": true,
@@ -22267,7 +22345,7 @@
   "id":
   "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.energy_ineq_of_representative",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 1143,
+  "endLine": 1175,
   "doc":
   "**Conjunct (1): `∀t` energy inequality for the good representative.**\nKinetic term by squared-norm weak-lsc at every `t`; dissipation term by the a.e.\nspatial lsc of `viscousEnn` + Fatou in time; combined against the Galerkin energy\nidentity via liminf superadditivity.\n\nThe hypothesis `hInt` (integrable dissipation of `v` on `[0, T]`) keeps this statement\nhonest — without it the real interval integral would junk-collapse to `0` in the\nnon-integrable regime and the inequality would hold vacuously there (Codex P2 finding).\nThe capstone discharges `hInt` from the energy-class conjunct (4) via a.e.-invariance.\n\nSetup + three named steps (`kineticEnergy_liminf_le_of_weakTendsto`,\n`dissipation_liminf_le_of_aeTendsto`, `energyBudget_liminf_assembly`) + assembly. ",
   "deps":
@@ -22414,7 +22492,20 @@
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain",
    "LerayHopf.viscousFormSq"]},
- {"startLine": 876,
+ {"startLine": 597,
+  "signature":
+  "∀ {b : ℕ → ℝ} {C : ℝ}, (∀ (k : ℕ), b k ≤ C) → Filter.IsCoboundedUnder (fun x1 x2 => x1 ≥ x2) Filter.atTop b",
+  "private": true,
+  "name": "LerayHopf.isCoboundedUnder_ge_atTop_of_le",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.isCoboundedUnder_ge_atTop_of_le",
+  "file": "LerayHopf/Torus/TraceEnergy.lean",
+  "endLine": 605,
+  "doc":
+  "**Textbook step (liminf of a nonnegative, uniformly bounded sequence).**  A real sequence\nthat is bounded above by a constant is `liminf`-cobounded from below along `atTop`.\n\nSeparated out because it is pure filter bookkeeping: no Navier–Stokes content enters, only the\nexistence of a uniform upper bound. ",
+  "deps": []},
+ {"startLine": 908,
   "signature":
   "∀ (F : LerayHopf.Torus3NSForms) (ν : ℝ) (u₀ : ↥LerayHopf.L2Sigma)\n  (galSeq : (n : ℕ) → LerayHopf.GalerkinSolutionData F ν u₀ n) (κ : ℕ → ℕ),\n  StrictMono κ →\n    ∀ {T : ℝ} (alPkg : LerayHopf.AubinLionsPackage F ν T u₀ galSeq κ) (ρ : ℕ → ℕ)\n      (v : LerayHopf.Time → ↥LerayHopf.L2Sigma) (t : ℝ),\n      0 ≤ t →\n        t ∈ Set.Icc 0 T →\n          (∀ s ∈ Set.Icc 0 T,\n              ∀ (z : ↥LerayHopf.L2VF),\n                Filter.Tendsto (fun k => inner ℝ (↑((galSeq (κ (alPkg.φ (ρ k)))).u s)) z) Filter.atTop\n                  (nhds (inner ℝ (↑(v s)) z))) →\n            1 / 2 * ‖↑(v t)‖ ^ 2 ≤\n              Filter.liminf (fun k => 1 / 2 * ‖↑((galSeq (κ (alPkg.φ (ρ k)))).u t)‖ ^ 2) Filter.atTop",
   "private": true,
@@ -22423,7 +22514,7 @@
   "id":
   "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.kineticEnergy_liminf_le_of_weakTendsto",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 916,
+  "endLine": 948,
   "doc":
   "**Kinetic-energy step.**  Squared-norm weak-lower-semicontinuity of the Galerkin\napproximants at a fixed time `t`: the weak limit's kinetic energy at `t` is bounded by the\n`liminf` of the approximants' kinetic energies, via `normSq_le_liminf_of_inner_tendsto`\nagainst the uniform Galerkin `H`-bound `torus_galerkin_norm_le_u0`. ",
   "deps":
@@ -22440,6 +22531,31 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain"]},
+ {"startLine": 607,
+  "signature":
+  "∀ {b : ℕ → ℝ} {C : ℝ}, (∀ (k : ℕ), 0 ≤ b k) → (∀ (k : ℕ), b k ≤ C) → 0 ≤ Filter.liminf b Filter.atTop",
+  "private": true,
+  "name": "LerayHopf.liminf_nonneg_atTop_of_nonneg_of_le",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.liminf_nonneg_atTop_of_nonneg_of_le",
+  "file": "LerayHopf/Torus/TraceEnergy.lean",
+  "endLine": 618,
+  "doc":
+  "**Textbook step (nonnegativity passes to the liminf).**  A nonnegative real sequence that is\nalso bounded above has nonnegative `liminf` along `atTop`.\n\nThe upper bound is not decoration: without coboundedness `Filter.liminf` of an unbounded-below\nsequence is not controlled by the pointwise bound, so both hypotheses are load-bearing. In\n`dissipation_liminf_le_of_aeTendsto` the sequence is the Galerkin dissipation integrals, whose\nuniform upper bound is the Galerkin energy inequality. ",
+  "deps": []},
+ {"startLine": 620,
+  "signature": "∀ (c ε : ℝ), 0 ≤ c → 0 ≤ ε → c * (ε / (4 * (c + 1))) ≤ ε / 4",
+  "private": true,
+  "name": "LerayHopf.mul_div_four_mul_add_one_le",
+  "kind": "theorem",
+  "id":
+  "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.mul_div_four_mul_add_one_le",
+  "file": "LerayHopf/Torus/TraceEnergy.lean",
+  "endLine": 641,
+  "doc":
+  "**Textbook step (ε/4 budget against an unknown constant).**  For a nonnegative constant `c`\nand a nonnegative budget `ε`,\n\n  `c · (ε / (4 (c + 1))) ≤ ε / 4`.\n\nThe `+1` keeps the denominator non-degenerate at `c = 0` and bounds the constant by the\ndenominator, `c ≤ c + 1`; that non-strict step is what the proof uses to land on `ε / 4`.\n\nUsed twice in `weak_trace_inner` with two different unknown constants — the `H`-bound `M` of the\ninitial datum and the Lipschitz constant `L` of the chosen Galerkin test — so that each of the\nthree ε/4 pieces of the trace estimate can be budgeted before its constant is known. Compare\n`mul_div_two_mul_add_one_lt` in `LerayHopf/R3/FrechetKolmogorov.lean`, the `ε/2` sibling of this\nstep. ",
+  "deps": []},
  {"startLine": 269,
   "signature":
   "∀ (F : LerayHopf.Torus3NSForms) (ν : ℝ) (u₀ : ↥LerayHopf.L2Sigma) (n : ℕ) (gs : LerayHopf.GalerkinSolutionData F ν u₀ n)\n  (w : ↥LerayHopf.L2Sigma),\n  (LerayHopf.velocityProjection_n n) ↑w = ↑w →\n    ∀ (t : ℝ),\n      0 ≤ t →\n        HasDerivAt (fun s => inner ℝ ↑(gs.u s) ↑w)\n          (-(ν * LerayHopf.stokesTestPairing ↑(gs.u t) ↑w + F.b (gs.u t) (gs.u t) w)) t",
@@ -22530,7 +22646,7 @@
    "LerayHopf.mFourierCoeff3",
    "LerayHopf.stokesTestPairing",
    "LerayHopf.velocityProjection_n"]},
- {"startLine": 708,
+ {"startLine": 740,
   "signature":
   "∀ (T : ℝ),\n  0 < T →\n    ∀ (u₀ : ↥LerayHopf.L2Sigma) (v : LerayHopf.Time → ↥LerayHopf.L2Sigma),\n      (∀ t ∈ Set.Icc 0 T, ‖↑(v t)‖ ≤ ‖↑u₀‖) →\n        v 0 = u₀ →\n          (∀ (w : ↥LerayHopf.L2Sigma),\n              LerayHopf.IsGalerkinTest w →\n                ∃ L,\n                  0 ≤ L ∧ ∀ s ∈ Set.Icc 0 T, ∀ t ∈ Set.Icc 0 T, |inner ℝ ↑(v t) ↑w - inner ℝ ↑(v s) ↑w| ≤ L * |t - s|) →\n            Filter.Tendsto (fun t => ↑(v t)) (nhdsWithin 0 (Set.Ici 0)) (nhds ↑u₀)",
   "private": true,
@@ -22539,7 +22655,7 @@
   "id":
   "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.strong_trace_of_props",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 751,
+  "endLine": 783,
   "doc":
   "**Conjunct (3): strong initial trace.**  The weakly-continuous representative attains\n`u₀` strongly at `0⁺`: weak trace (above) + the uniform bound `‖v(t)‖ ≤ ‖u₀‖` + the\nnorm-expansion `‖v(t) − u₀‖² = ‖v(t)‖² − 2⟪v(t), u₀⟫ + ‖u₀‖² ≤ 2‖u₀‖² − 2⟪v(t), u₀⟫ → 0`. ",
   "deps":
@@ -22575,7 +22691,7 @@
    "LerayHopf.VelocityValue",
    "LerayHopf.haarTorus3",
    "LerayHopf.torusDomain"]},
- {"startLine": 597,
+ {"startLine": 643,
   "signature":
   "∀ (T : ℝ),\n  0 < T →\n    ∀ (u₀ : ↥LerayHopf.L2Sigma) (v : LerayHopf.Time → ↥LerayHopf.L2Sigma),\n      (∀ t ∈ Set.Icc 0 T, ‖↑(v t)‖ ≤ ‖↑u₀‖) →\n        v 0 = u₀ →\n          (∀ (w : ↥LerayHopf.L2Sigma),\n              LerayHopf.IsGalerkinTest w →\n                ∃ L,\n                  0 ≤ L ∧ ∀ s ∈ Set.Icc 0 T, ∀ t ∈ Set.Icc 0 T, |inner ℝ ↑(v t) ↑w - inner ℝ ↑(v s) ↑w| ≤ L * |t - s|) →\n            Filter.Tendsto (fun t => inner ℝ ↑(v t) ↑u₀) (nhdsWithin 0 (Set.Ici 0)) (nhds (inner ℝ ↑u₀ ↑u₀))",
   "private": true,
@@ -22583,7 +22699,7 @@
   "kind": "theorem",
   "id": "_private.LerayHopf.Torus.TraceEnergy.0.LerayHopf.weak_trace_inner",
   "file": "LerayHopf/Torus/TraceEnergy.lean",
-  "endLine": 706,
+  "endLine": 738,
   "doc":
   "**Weak initial trace against `u₀`:** `⟪v(t), u₀⟫ → ⟪u₀, u₀⟫` as `t → 0⁺`, from the\nper-Galerkin-test Lipschitz continuity, the endpoint value `v 0 = u₀`, band-limited\napproximation of `u₀`, and the uniform `H`-bound (ε/3 argument). ",
   "deps":

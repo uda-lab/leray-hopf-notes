@@ -355,3 +355,81 @@ commit へ repin する際は削除すること（`commit` が抽出元の正で
 
 display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は
 引き続き休眠・非更新。
+
+## 追記 7: v0.2.1 リリース repin（PIN 2a06790 → e704400、leray-hopf#239）
+
+`uda-lab/leray-hopf` の v0.2.1 リリースへの追随。`dev/v0.2.1` が **true merge commit**
+PR #240 で `main` へ昇格し（親は `2a06790` = v0.2.0 リリースコミットと `61755f6` =
+ブランチ tip）、その SHA `e704400` にタグ `v0.2.1` が付いた。追記 6 に続き、
+本 repin でも PIN はリリースタグ上の commit を指す。
+
+upstream 差分は 5 commit（#154 Wave 3–6 = `3bb3568` / `c6bc21c` / `6d63d04` /
+`4c65483`、docs = `61755f6`）とマージコミット。Lean ソースの差分は 4 ファイル:
+
+```
+$ git diff --name-only 2a06790 e704400 -- '*.lean'
+LerayHopf/R3/AubinLionsLimitPassage.lean
+LerayHopf/R3/ConvectionForm.lean
+LerayHopf/R3/SobolevEmbedding.lean
+LerayHopf/Torus/TraceEnergy.lean
+```
+
+`lake exe extract_notes` 再実行（`61755f6` の worktree 上。`.lake/packages` は hardlink
+共有、`.lake/build` は donor `8b3160c` から実コピーして seed。donor の tree は
+`4c65483` と byte-identical で、`4c65483..61755f6` は `docs/build-and-checks.md` しか
+触らないため olean は完全一致で、リビルドは発生しなかった。マージコミットの tree も
+`61755f6` と一致するため、抽出結果はマージコミットに対するものとして正である）:
+抽出宣言数 1,425 → 1,434。`decl_diff.py` による分類:
+
+| 区分 | 件数 | 内容 | corpus 側対応 |
+|---|---|---|---|
+| 新設 | 9 | Wave 3–6 が切り出した private textbook-step 補題 | gloss エントリ 9 件を新設 |
+| 削除 | 0 | — | — |
+| ファイル移動・改名 | 0 | — | — |
+| 可視性変更 | 0 | — | — |
+| signature text 変更 | 0 | — | — |
+
+**public 宣言は 837 → 837 で不変**であり、`signature_changed` も 0 である。すなわち
+リリースが主張する「公開宣言リストは v0.2.0 と byte-identical」は、notes 側の独立な
+抽出でも裏が取れている。universe が 9 増えるのは、抽出器が private 宣言も含めて
+すべての LerayHopf モジュール宣言を出力し、可視性を `private` フィールドで表すため
+である（`extracted/README.md`）。「private 補題の抽出だけなので universe 不変」は
+成り立たない。
+
+### 新設 9 件（すべて private・すべて gloss tier）
+
+| 宣言 | 抽出元ファイル | Wave / PR | chapter |
+|---|---|---|---|
+| `isCoboundedUnder_ge_atTop_of_le` | `Torus/TraceEnergy.lean` | Wave 3 / #234 | energy |
+| `liminf_nonneg_atTop_of_nonneg_of_le` | `Torus/TraceEnergy.lean` | Wave 3 / #234 | energy |
+| `mul_div_four_mul_add_one_le` | `Torus/TraceEnergy.lean` | Wave 3 / #234 | energy |
+| `exists_schwartz_seq_toLp_tendsto` | `R3/SobolevEmbedding.lean` | Wave 4 / #235 | compactness |
+| `lineDeriv_toTemperedDistribution_eq_of_tendsto` | `R3/SobolevEmbedding.lean` | Wave 4 / #235 | compactness |
+| `tendsto_of_norm_sub_le_of_tendsto` | `R3/SobolevEmbedding.lean` | Wave 4 / #235 | compactness |
+| `abs_le_mul_of_tendsto` | `R3/ConvectionForm.lean` | Wave 5 / #236 | limit-passage |
+| `sq_mul_euclidean_proj_le` | `R3/ConvectionForm.lean` | Wave 5 / #236 | limit-passage |
+| `integral_add₃` | `R3/AubinLionsLimitPassage.lean` | Wave 6 / #237 | limit-passage |
+
+chapter と tags は各抽出元ファイルの既存 private helper の慣行に合わせた。
+9 件を追加したことで注釈カバレッジは 1,434/1,434 = 100% に戻る。追加しなければ
+`validate.py` は通る（corpus ⊆ universe は保たれる）が、カバレッジが 1,425/1,434 =
+99.4% に落ちる。
+
+### `mul_div_four_mul_add_one_le` と追記 6 の overclaim 履歴
+
+本補題は追記 6 で扱った `mul_div_two_mul_add_one_lt`（`R3/FrechetKolmogorov.lean`）の
+$\varepsilon/4$ 版の姉妹である。追記 6 に記録したとおり、姉妹補題の doc comment は
+leray-hopf#229 で二段階に修正されており、二次の誤りは「証明が $c/(c+1)<1$ を用いて
+狭義の評価を示す」と述べた点にあった。本補題の主張は等号を許す $\le\varepsilon/4$ で
+あり、証明が経由する段も等号を許す $c\le c+1$ である。gloss は同型の overclaim を
+持ち込まないようその形で述べてある。
+
+### CITATION.cff
+
+`references[0].commit` を `e704400` に更新し、PIN が引き続きリリースタグ上に乗るため
+`version` を `"0.2.1"`、`date-released` を `2026-08-08` に更新した。この 2 フィールドが
+**PIN がリリースタグの commit と一致している間だけ**有効であるという追記 6 の但し書きは
+そのまま有効である。
+
+display-name 衝突は 2 組 4 宣言のまま不変。`extracted/names-fallback.json` は
+引き続き休眠・非更新。

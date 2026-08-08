@@ -1,0 +1,14 @@
+name: LerayHopf.integral_add₃
+tier: gloss
+statement_ja: |
+  **三項の積分を分ける。** 可積分な $f,g,h$ に対して次が成り立つ。
+
+  $$\int (f+g+h)\,d\mu=\int f\,d\mu+\int g\,d\mu+\int h\,d\mu$$
+
+  mathlib の `integral_add` は二項なので、三項の分割は書き換えを二回鎖状につなぐことになり、そのたびに被積分関数全体を書き下す必要がある。一度述べておけばその二段が一回の適用に畳まれる。適用先の `weakFormNS_limit_diff_bound` では、三項は弱形式の差の運動エネルギー項・粘性項・移流項である。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 6（PR #237）で `AubinLionsLimitPassage.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/AubinLionsLimitPassage.lean` の `LerayHopf.integral_add₃`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: limit-passage
+tags: [private-helper, aubin-lions, textbook-step]

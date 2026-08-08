@@ -1,0 +1,12 @@
+name: LerayHopf.exists_schwartz_seq_toLp_tendsto
+tier: gloss
+statement_ja: |
+  **$L^2$ における Schwartz 関数の稠密性（列の形）。** 任意の $f'\in L^2_{\mathbb C}(\mathbb R^3)$ に対し、Schwartz 関数の列 $\eta_n$ であって $\eta_n\to f'$（$L^2$ 収束）となるものが存在する。
+
+  `SchwartzMap.denseRange_toLpCLM` を `DenseRange` の形から、近似の議論が実際に使う列の形へ、`mem_closure_iff_seq_limit` と選択によって述べ直したものである。Sobolev の内容も Fourier の内容も入らない。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 4（PR #235）で `R3/SobolevEmbedding.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/SobolevEmbedding.lean` の `LerayHopf.exists_schwartz_seq_toLp_tendsto`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: compactness
+tags: [private-helper, sobolev-embedding, textbook-step]

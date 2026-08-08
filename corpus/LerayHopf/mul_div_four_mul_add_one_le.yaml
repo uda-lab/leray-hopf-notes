@@ -1,0 +1,20 @@
+name: LerayHopf.mul_div_four_mul_add_one_le
+tier: gloss
+statement_ja: |
+  **未知の定数に対する $\varepsilon/4$ の割り当て。** 非負の定数 $c$ と非負の許容量 $\varepsilon$ に対して次が成り立つ。
+
+  $$c\cdot\frac{\varepsilon}{4(c+1)}\le\frac{\varepsilon}{4}$$
+
+  分母の $+1$ は二つの役割をもつ。$c=0$ でも分母が退化しないことと、定数が分母の因子で押さえられること、すなわち等号を許す評価 $c\le c+1$ が成り立つことである。証明はこの等号を許す段をそのまま使い、結論も等号を許す $\varepsilon/4$ 以下である。
+
+  適用先の `weak_trace_inner` では、二つの異なる未知定数に対して二度使う。初期値の $H$ 評価の定数 $M$ と、選んだ Galerkin 試験関数の Lipschitz 定数 $L$ である。これにより、トレース評価を構成する三つの $\varepsilon/4$ の各片を、その定数が判明する前に割り当てられる。
+
+  $\varepsilon/2$ 版の姉妹補題は `LerayHopf/R3/FrechetKolmogorov.lean` の `mul_div_two_mul_add_one_lt` である。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 3（PR #234）で `Torus/TraceEnergy.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/Torus/TraceEnergy.lean` の `LerayHopf.mul_div_four_mul_add_one_le`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+
+  姉妹補題 `mul_div_two_mul_add_one_lt` の doc comment は leray-hopf#229（PR #231）で二段階に修正されており、二次の誤りは「証明が $c/(c+1)<1$ を用いて狭義の評価を示す」と述べた点にあった。本補題の主張は等号を許す $\le\varepsilon/4$ であり、証明が経由する段も等号を許す $c\le c+1$ である。同型の overclaim を持ち込まないよう、gloss もその形で述べてある。
+chapter: energy
+tags: [private-helper, torus, energy, textbook-step]

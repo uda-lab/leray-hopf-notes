@@ -1,0 +1,12 @@
+name: LerayHopf.isCoboundedUnder_ge_atTop_of_le
+tier: gloss
+statement_ja: |
+  **一様上界から `liminf` の下からの余有界性。** 定数 $C$ によりすべての $k$ で $b_k\le C$ となる実数列は、`atTop` に沿って $\ge$ について余有界である（`Filter.IsCoboundedUnder (· ≥ ·) atTop b`）。
+
+  純粋にフィルタの帳簿仕事であるため切り出されている。Navier–Stokes の内容は入らず、一様上界の存在だけを使う。この余有界性は `Filter.liminf` の評価補題が要求する副次条件であり、`liminf_nonneg_atTop_of_nonneg_of_le` がこれを内部で用いる。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 3（PR #234）で `Torus/TraceEnergy.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/Torus/TraceEnergy.lean` の `LerayHopf.isCoboundedUnder_ge_atTop_of_le`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: energy
+tags: [private-helper, torus, energy, textbook-step]
