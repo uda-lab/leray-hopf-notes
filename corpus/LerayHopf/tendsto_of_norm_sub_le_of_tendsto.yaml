@@ -1,0 +1,12 @@
+name: LerayHopf.tendsto_of_norm_sub_le_of_tendsto
+tier: gloss
+statement_ja: |
+  **収束列に押さえられた列は収束する。** すべての $n$ で $\|b_n-y\|\le\|a_n-x\|$ が成り立ち、かつ $a_n\to x$ ならば、$b_n\to y$ である。
+
+  任意のノルム付き加法群の上で述べてあり、二つの列は**別々の空間**に住んでよい。適用点では $a$ が Sobolev 代表元 $f'$ の Schwartz 近似、$b$ がその Fourier 逆像で $f$ に収束する列であり、Sobolev 固有の構造は関与しない。挟み撃ちだけである。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 4（PR #235）で `R3/SobolevEmbedding.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/SobolevEmbedding.lean` の `LerayHopf.tendsto_of_norm_sub_le_of_tendsto`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: compactness
+tags: [private-helper, sobolev-embedding, textbook-step]

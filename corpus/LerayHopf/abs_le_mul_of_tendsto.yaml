@@ -1,0 +1,14 @@
+name: LerayHopf.abs_le_mul_of_tendsto
+tier: gloss
+statement_ja: |
+  **積の形の評価が極限に移る。** 実数列について $f_n\to L$、$a_n\to A$、$b_n\to B$ であり、すべての $n$ で $|f_n|\le C\,a_n b_n$ が成り立つならば、次が成り立つ。
+
+  $$|L|\le C\,A\,B$$
+
+  移流項の内容を一切含まない形で述べた稠密拡張の一手である。稠密な部分クラスの上でのみ知られている評価を、近似列に沿った極限で全体へ移す。適用先の `R3NSForms_of_gap` では、近似列は `ConvectionGap.schwartz_dense` が与える Schwartz 近似、$f$ は試験ベクトルを固定した三重線形形式（`b_cont_fixedTest` により連続）、$a$ と $b$ は二つの引数のノルムである。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 5（PR #236）で `R3/ConvectionForm.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.abs_le_mul_of_tendsto`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: limit-passage
+tags: [private-helper, convection-form, textbook-step]

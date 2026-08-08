@@ -1,0 +1,14 @@
+name: LerayHopf.liminf_nonneg_atTop_of_nonneg_of_le
+tier: gloss
+statement_ja: |
+  **非負性が `liminf` に移る。** 非負であって、かつ定数 $C$ により上から押さえられている実数列は、`atTop` に沿った `liminf` が非負である。
+
+  $$0\le b_k\ \ (\forall k),\quad b_k\le C\ \ (\forall k)\ \Longrightarrow\ 0\le\liminf_{k\to\infty} b_k$$
+
+  上界は飾りではない。余有界性がなければ、下に非有界な列の `Filter.liminf` は各点評価では制御されないため、二つの仮定はいずれも効いている（余有界性は `isCoboundedUnder_ge_atTop_of_le` が供給する）。適用先の `dissipation_liminf_le_of_aeTendsto` では、列は Galerkin 散逸積分であり、その一様上界は Galerkin エネルギー不等式が与える。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 3（PR #234）で `Torus/TraceEnergy.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/Torus/TraceEnergy.lean` の `LerayHopf.liminf_nonneg_atTop_of_nonneg_of_le`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: energy
+tags: [private-helper, torus, energy, textbook-step]

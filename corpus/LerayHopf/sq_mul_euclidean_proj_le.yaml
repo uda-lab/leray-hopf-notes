@@ -1,0 +1,14 @@
+name: LerayHopf.sq_mul_euclidean_proj_le
+tier: gloss
+statement_ja: |
+  **有界な乗数と一成分の積。** $0\le\Phi$ かつ $\|a\|\le\Phi$ ならば、任意のベクトル $v$ と成分番号 $j$ に対して次が成り立つ。
+
+  $$\bigl(a\cdot(\operatorname{proj}_j v)\bigr)^2\le\Phi^2\|v\|^2$$
+
+  初等的な二つの事実の合成である。$|a|\le\Phi$ を平方して $a^2\le\Phi^2$ を得ること、および一成分がノルムを超えないこと $|\operatorname{proj}_j v|\le\|v\|$（`euclidean_proj_le_norm_CF`）である。適用先の `mulBddR_projComp_norm_tendsto_CF` では球上の積分の下で各点ほとんど至るところ用いられ、$a$ は有界な切断 $\varphi_s(x)$、$v$ は場の値である。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 5（PR #236）で `R3/ConvectionForm.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/ConvectionForm.lean` の `LerayHopf.sq_mul_euclidean_proj_le`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: limit-passage
+tags: [private-helper, convection-form, textbook-step]

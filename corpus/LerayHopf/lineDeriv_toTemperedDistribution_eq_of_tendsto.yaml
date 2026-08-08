@@ -1,0 +1,20 @@
+name: LerayHopf.lineDeriv_toTemperedDistribution_eq_of_tendsto
+tier: gloss
+statement_ja: |
+  **$L^2$ 極限の超関数微分。** Schwartz 関数列 $\varphi_n$ が $L^2$ で $f$ に収束し、その第 $m$ 方向の線微分 $\partial_m\varphi_n$ が $L^2$ で $g$ に収束するならば、$f$ の超関数微分は $g$ である。
+
+  $$\partial_m (f:\mathcal S')=(g:\mathcal S')$$
+
+  議論は Hausdorff 空間 $\mathcal S'$ における極限の一意性である。次の二つの列
+
+  $$n\mapsto\partial_m\bigl((\varphi_n)_{L^2}:\mathcal S'\bigr),\qquad n\mapsto\bigl((\partial_m\varphi_n)_{L^2}:\mathcal S'\bigr)$$
+
+  は同一の列である（Schwartz 側の `lineDerivOp` が `toTemperedDistributionCLM` と可換）。埋め込み $L^2\hookrightarrow\mathcal S'$ の連続性から、前者は $\partial_m(f:\mathcal S')$ に、後者は $(g:\mathcal S')$ に収束する。
+
+  仮定は二つの $L^2$ 収束のみであり、Sobolev 所属も Fourier の道具立ても入らない。勾配収束の段が方向 $m$ ごとにこれを適用できるのはそのためである。
+gap:
+  level: none
+provenance: |
+  leray-hopf issue #154 Wave 4（PR #235）で `R3/SobolevEmbedding.lean` から textbook step として切り出された private 補題。抽出元: `LerayHopf/R3/SobolevEmbedding.lean` の `LerayHopf.lineDeriv_toTemperedDistribution_eq_of_tendsto`。notes 側は leray-hopf v0.2.1 への repin（#239）で取り込んだ。
+chapter: compactness
+tags: [private-helper, sobolev-embedding, textbook-step]

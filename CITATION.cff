@@ -28,13 +28,13 @@ references:
     repository-code: "https://github.com/uda-lab/leray-hopf"
     url: "https://github.com/uda-lab/leray-hopf"
     license: "Apache-2.0"
-    # The pinned commit below is the v0.2.0 release commit, so the release can be named
+    # The pinned commit below is the v0.2.1 release commit, so the release can be named
     # here too. `version` / `date-released` describe the upstream release; `commit` stays
     # authoritative for what was extracted. Only set `version` while the pin sits exactly
     # on a release tag — drop it again on any repin to an untagged commit, rather than
     # letting it claim a release the extraction did not come from.
-    version: "0.2.0"
-    date-released: "2026-08-02"
+    version: "0.2.1"
+    date-released: "2026-08-08"
     # Exact leray-hopf commit this corpus/site is pinned to; keep in sync with
     # extracted/PIN whenever a repin PR updates it.
-    commit: "2a0679058d97979a4fba589bd92d0786ed09b97f"
+    commit: "e704400f2fb2f26b2ee7f4372c3e1ecbbc82f3dc"
